@@ -2,10 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | PIR with compressed queries and amortized query processing |
-| **Authors** | Sebastian Angel, Hao Chen, Kim Laine, Srinath Setty |
-| **Year** | 2017 (ePrint), 2018 (S&P) |
-| **ePrint / Venue** | ePrint 2017/1142; IEEE S&P 2018 |
+| **Paper** | [PIR with compressed queries and amortized query processing](https://eprint.iacr.org/2017/1142) (2018) |
 | **Archetype** | Construction + Building-block (oblivious expansion is a reusable primitive) |
 | **PIR Category** | Group A — FHE/HE-based |
 | **Security model** | Semi-honest single-server CPIR |
@@ -13,7 +10,6 @@
 | **Correctness model** | Deterministic (FHE noise budget managed by parameter selection) |
 | **Rounds (online)** | 1 (non-interactive) |
 | **Record-size regime** | Small (288 bytes in benchmarks) |
-| **PDF** | `Papers/Group A - FHE Based PIR/SealPIR_2017_1142.pdf` |
 
 ## Lineage
 

@@ -493,10 +493,7 @@ Aim for **15–30 footnotes per construction paper** (fewer for short/theory pap
 
 | Field | Value |
 |-------|-------|
-| **Paper** | <Title (from paper, not filename)> |
-| **Authors** | <e.g., Menon, Wu> |
-| **Year** | <Year> |
-| **ePrint / Venue** | <ID or conference> |
+| **Paper** | [<Title>](<ePrint or arXiv URL>) (<Year>) |
 | **Archetype** | <Primary (+ secondary archetypes) — see §1> |
 | **PIR Category** | <Group letter and name — see §7 Taxonomy> |
 | **Security model** | <e.g., Semi-honest single-server / Malicious / 2-server non-colluding / Information-theoretic> |
@@ -504,7 +501,6 @@ Aim for **15–30 footnotes per construction paper** (fewer for short/theory pap
 | **Correctness model** | <Deterministic / Probabilistic (failure prob ≤ negl(κ)) / Conditional (requires non-adaptive queries) / Occasional (constant failure, amplifiable) / Probabilistic (failure grows over Q queries) / Distribution-dependent / Inherited from base scheme> |
 | **Rounds (online)** | <e.g., 1 (non-interactive) / 2> |
 | **Record-size regime** | <Small (≤10 KB) / Moderate (10–100 KB) / Large (≥100 KB) / Parameterized> |
-| **PDF** | `Papers/<Group>/<filename>.pdf` |
 
 ## Lineage
 | Field | Value |

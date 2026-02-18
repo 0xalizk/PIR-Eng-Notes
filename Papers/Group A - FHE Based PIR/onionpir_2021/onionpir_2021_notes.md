@@ -2,10 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | OnionPIR: Response Efficient Single-Server PIR |
-| **Authors** | Muhammad Haris Mughees, Hao Chen, Ling Ren |
-| **Year** | 2021 |
-| **ePrint / Venue** | USENIX NDSS 2021[^venue] |
+| **Paper** | [OnionPIR: Response Efficient Single-Server PIR](https://eprint.iacr.org/2021/1081) (2021) |
 | **Archetype** | Construction (primary) |
 | **PIR Category** | Group A — FHE-based |
 | **Security model** | Semi-honest single-server |
@@ -13,9 +10,6 @@
 | **Correctness model** | Deterministic (noise budget is analytically bounded; no probabilistic failure) |
 | **Rounds (online)** | 1 (non-interactive: client sends query, server returns response) |
 | **Record-size regime** | Large (30 KB per entry in experiments)[^recordsize] |
-| **PDF** | `Papers/Group A - FHE Based PIR/OnionPIR_2021_1081.pdf` |
-
-[^venue]: Page 1 header. Proceedings of NDSS 2021.
 [^circular]: RGSW encryption of the secret key A = RGSW(-s) is provided to the server for query expansion (Algorithm 2, line 12-13). This implicitly requires a circular-security assumption.
 [^recordsize]: Section 6.2, p.10: "We set each database entry to be 30 KB."
 

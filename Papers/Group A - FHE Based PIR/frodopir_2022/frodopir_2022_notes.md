@@ -2,10 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | FrodoPIR: Simple, Scalable, Single-Server Private Information Retrieval |
-| **Authors** | Alex Davidson, Goncalo Pestana, Sofia Celi |
-| **Year** | 2022 |
-| **ePrint / Venue** | 2022/981 |
+| **Paper** | [FrodoPIR: Simple, Scalable, Single-Server Private Information Retrieval](https://eprint.iacr.org/2022/981) (2022) |
 | **Archetype** | Construction |
 | **PIR Category** | Filed Group A (FHE-based); functionally **Group C (client-independent preprocessing)**. Uses plain LWE, not RLWE/FHE. The offline phase is entirely client-independent: the server computes a global hint matrix once, and all clients download the same public parameters. No per-client server interaction is required during preprocessing.[^filing] |
 | **Security model** | Semi-honest single-server |
@@ -13,7 +10,6 @@
 | **Correctness model** | Probabilistic (correct with high probability when q >= 8*rho^2*sqrt(m); Theorem 2)[^correct] |
 | **Rounds (online)** | 1 (non-interactive: client sends query vector, server returns response) |
 | **Record-size regime** | Small (1 KB default benchmarks); performance degrades for large elements due to linear query size[^regime] |
-| **PDF** | `Papers/Group A - FHE Based PIR/FrodoPIR_2022_981.pdf` |
 
 [^filing]: The paper is filed in Group A because it uses lattice-based (LWE) cryptography, but its architecture is structurally Group C: the server performs a one-time, client-independent preprocessing step that produces global public parameters, which all clients download. There is no `cinit` message -- the scheme omits the client-initialization step entirely (Section 4.2, p. 12).
 

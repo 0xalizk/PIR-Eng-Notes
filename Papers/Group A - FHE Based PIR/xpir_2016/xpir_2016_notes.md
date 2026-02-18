@@ -2,10 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | XPIR: Private Information Retrieval for Everyone |
-| **Authors** | Carlos Aguilar-Melchor, Joris Barrier, Laurent Fousse, Marc-Olivier Killijian |
-| **Year** | 2016 (ePrint 2014, revised 2016) |
-| **ePrint / Venue** | ePrint 2014/1025 |
+| **Paper** | [XPIR: Private Information Retrieval for Everyone](https://eprint.iacr.org/2014/1025) (2016) |
 | **Archetype** | Construction + System |
 | **PIR Category** | Group A — FHE-based PIR |
 | **Security model** | Semi-honest single-server |
@@ -13,7 +10,6 @@
 | **Correctness model** | Deterministic (given correct parameter selection by the auto-optimizer) |
 | **Rounds (online)** | 1 (non-interactive: client sends query, server returns reply) |
 | **Record-size regime** | Large (>=10 Mbit elements in throughput benchmarks); parameterized |
-| **PDF** | `Papers/Group A - FHE Based PIR/XPIR_computational_2014_1025.pdf` |
 
 ## Lineage
 

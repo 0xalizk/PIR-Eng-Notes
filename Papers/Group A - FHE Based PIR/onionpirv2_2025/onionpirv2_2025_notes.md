@@ -2,10 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | OnionPIRv2: Efficient Single-Server PIR |
-| **Authors** | Yue Chen, Ling Ren (University of Illinois at Urbana-Champaign) |
-| **Year** | 2025 |
-| **ePrint / Venue** | FHEPIR_2025_1142 |
+| **Paper** | [OnionPIRv2: Efficient Single-Server PIR](https://eprint.iacr.org/2025/1142) (2025) |
 | **Archetype** | Construction + Engineering optimization |
 | **PIR Category** | Group A — FHE-based |
 | **Security model** | Semi-honest single-server |
@@ -13,7 +10,6 @@
 | **Correctness model** | Deterministic (empirical: 1–3 bits noise budget remaining after decryption, validated over 5000+ runs)[^1] |
 | **Rounds (online)** | 1 (non-interactive: client sends query, server returns response) |
 | **Record-size regime** | Moderate (best at 4 KB and above; two parameter sets target ~3.75 KB and ~22.5 KB entries)[^2] |
-| **PDF** | `Papers/Group A - FHE Based PIR/FHEPIR_2025_1142.pdf` |
 
 [^1]: §4.1, p.11: "Each parameter set leaves a noise budget of 1 to 3 bits after client decryption. We have tested these parameters in more than 5000 runs and all results are correct."
 [^2]: Table 2, p.12: The n=2048 setting uses 3.75 KB native entries; the n=4096 setting uses 22.5 KB entries. Response overhead degrades below ~4 KB.

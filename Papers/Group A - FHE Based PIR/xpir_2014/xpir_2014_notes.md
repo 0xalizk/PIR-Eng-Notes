@@ -2,10 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | Bandwidth Efficient PIR from NTRU |
-| **Authors** | Yarkin Doroz, Berk Sunar, Ghaith Hammouri |
-| **Year** | 2014 |
-| **ePrint / Venue** | ePrint 2014/232 |
+| **Paper** | [Bandwidth Efficient PIR from NTRU](https://eprint.iacr.org/2014/232) (2014) |
 | **Archetype** | Construction |
 | **PIR Category** | Group A — FHE-based PIR |
 | **Security model** | Semi-honest single-server (computational PIR) |
@@ -13,7 +10,6 @@
 | **Correctness model** | Deterministic (correctness condition on noise: \|\|c^{2^d} f^{2^d}\|\|\_inf < q\_d/2) [^1] |
 | **Rounds (online)** | 1 (non-interactive: client sends query, server sends response) |
 | **Record-size regime** | Small (single-bit entries; extendable to w-bit via parallel evaluations) [^2] |
-| **PDF** | `Papers/Group A - FHE Based PIR/XPIR_2014_232.pdf` |
 
 ## Lineage
 

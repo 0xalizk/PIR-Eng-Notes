@@ -2,10 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | Constant-weight PIR: Single-round Keyword PIR via Constant-weight Equality Operators |
-| **Authors** | Rasoul Akhavan Mahdavi, Florian Kerschbaum |
-| **Year** | 2022 |
-| **ePrint / Venue** | arXiv 2202.07569v2 |
+| **Paper** | [Constant-weight PIR: Single-round Keyword PIR via Constant-weight Equality Operators](https://arxiv.org/abs/2202.07569) (2022) |
 | **Archetype** | Construction + Building-block (constant-weight equality operators are a standalone primitive; PIR is the application) |
 | **PIR Category** | Group A — FHE-based |
 | **Security model** | Semi-honest single-server computational PIR |
@@ -13,7 +10,6 @@
 | **Correctness model** | Deterministic (standard BFV decryption correctness, conditioned on noise budget; lossy mapping variant has probabilistic collision bound) |
 | **Rounds (online)** | 1 (non-interactive) |
 | **Record-size regime** | Large (primary evaluation targets large payloads, 268 KB+ where CwPIR outperforms MulPIR) |
-| **PDF** | `Papers/Group A - FHE Based PIR/FastPIR_orig_arxiv_2202.07569.pdf` |
 
 ## Lineage
 

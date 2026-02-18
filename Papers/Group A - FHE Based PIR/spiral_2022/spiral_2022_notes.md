@@ -2,10 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | Spiral: Fast, High-Rate Single-Server PIR via FHE Composition |
-| **Authors** | Samir Jordan Menon, David J. Wu |
-| **Year** | 2022 (IEEE S&P 2022; ePrint 2022/368) |
-| **ePrint** | 2022/368 |
+| **Paper** | [Spiral: Fast, High-Rate Single-Server PIR via FHE Composition](https://eprint.iacr.org/2022/368) (2022) |
 | **Group** | A -- FHE-based PIR |
 | **Sub-model** | Public-parameter upload (query-independent public params sent offline) |
 | **Archetype** | Construction (multi-variant: 4 variants with Pareto-optimal tradeoffs) |

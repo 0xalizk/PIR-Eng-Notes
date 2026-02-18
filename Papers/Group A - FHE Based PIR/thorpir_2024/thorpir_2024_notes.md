@@ -2,10 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | ThorPIR: Single Server PIR via Homomorphic Thorp Shuffles |
-| **Authors** | Ben Fisch, Arthur Lazzaretti, Zeyu Liu, Charalampos Papamanthou |
-| **Year** | 2024 |
-| **ePrint / Venue** | ePrint 2024/482 |
+| **Paper** | [ThorPIR: Single Server PIR via Homomorphic Thorp Shuffles](https://eprint.iacr.org/2024/482) (2024) |
 | **Archetype** | Construction (primary) + Building-block (secondary: LWR-based FHE-friendly PRG) |
 | **PIR Category** | **Group A + D hybrid** -- FHE-based PIR (Group A) with client-dependent preprocessing (Group D)[^1] |
 | **Security model** | Semi-honest single-server |
@@ -13,7 +10,6 @@
 | **Correctness model** | Deterministic (given correct FHE decryption) |
 | **Rounds (online)** | 1 (non-interactive: client sends Q indices, server returns Q elements) |
 | **Record-size regime** | Small (360 bits per element in benchmarks) |
-| **PDF** | `Papers/Group A - FHE Based PIR/FHEPIR_2024_482.pdf` |
 
 [^1]: Filed in Group A but the preprocessing is client-dependent: the client generates BFV keys and encrypted PRG seeds, and the server homomorphically computes a per-client shuffled/hinted database. This makes it functionally a Group A + Group D hybrid.
 

@@ -2,10 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | Compressible FHE with Applications to PIR |
-| **Authors** | Craig Gentry, Shai Halevi |
-| **Year** | 2019 |
-| **ePrint / Venue** | 2019/733; TCC 2019 |
+| **Paper** | [Compressible FHE with Applications to PIR](https://eprint.iacr.org/2019/733) (2019) |
 | **Archetype** | Construction (theory-only) + Building-block |
 | **PIR Category** | Group A — FHE-based PIR |
 | **Security model** | Semi-honest single-server, computational (RLWE) |
@@ -13,7 +10,6 @@
 | **Correctness model** | Deterministic (noise analysis proves decryption succeeds with overwhelming probability under heuristic independence; failure probability < 2^{-277} in Appendix A variant, < 2^{-570} in Section 5 variant) [^2] |
 | **Rounds (online)** | 1 (non-interactive: client sends query, server returns response) |
 | **Record-size regime** | Large (>=100 KB); scheme needs entry size above ~100 KB for amortization to dominate [^3] |
-| **PDF** | `Papers/Group A - FHE Based PIR/MulPIR_2019_733.pdf` |
 
 [^1]: The PIR scheme uses a leveled variant of GSW without bootstrapping, hence only RLWE is needed (no circular security). See Section 5, p. 19: secret key chosen from error distribution, ring-LWE over R_Q. Circular security would be needed only for compressible *fully* homomorphic encryption via bootstrapping (Section 4, p. 10).
 

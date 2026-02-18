@@ -2,10 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | Addra: Metadata-Private Voice Communication over Fully Untrusted Infrastructure |
-| **Authors** | Ishtiyaque Ahmad, Yuntian Yang, Divyakant Agrawal, Amr El Abbadi, Trinabh Gupta |
-| **Year** | 2021 |
-| **ePrint / Venue** | OSDI 2021 (ePrint 2021/044) |
+| **Paper** | [Addra: Metadata-Private Voice Communication over Fully Untrusted Infrastructure](https://eprint.iacr.org/2021/044) (2021) |
 | **Archetype** | System + Construction |
 | **PIR Category** | Group A — FHE/HE-based |
 | **Security model** | Semi-honest single-server (untrusted server; adversary controls entire communication infrastructure) |
@@ -13,7 +10,6 @@
 | **Correctness model** | Deterministic (BFV decryption correctness with chosen parameters; q >> p ensures noise budget) |
 | **Rounds (online)** | 1 (non-interactive: query uploaded once per round, reused across subrounds) |
 | **Record-size regime** | Small (96 bytes — one LPCNet voice frame encoding 40 ms audio) |
-| **PDF** | `Papers/Group A - FHE Based PIR/Addra_FastPIR_2021_044.pdf` |
 
 ## Lineage
 
