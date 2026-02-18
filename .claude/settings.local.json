@@ -1,0 +1,73 @@
+{
+  "env": {
+    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ls*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(echo:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(sort:*)",
+      "Bash(uniq:*)",
+      "Bash(diff:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(cd * && mv *)",
+      "Bash(rm:*)",
+      "Bash(touch:*)",
+      "Bash(chmod:*)",
+      "Bash(sed:*)",
+      "Bash(awk:*)",
+      "Bash(cd:*)",
+      "Bash(pwd)",
+      "Bash(which:*)",
+      "Bash(env)",
+      "Bash(printenv:*)",
+      "Bash(xargs:*)",
+      "Bash(tee:*)",
+      "Bash(tr:*)",
+      "Bash(cut:*)",
+      "Bash(basename:*)",
+      "Bash(dirname:*)",
+      "Bash(realpath:*)",
+      "Bash(stat:*)",
+      "Bash(git:*)",
+      "Bash(gh:*)",
+      "Read(/Users/alia/Desktop/Github/Agentic/PIR_research_and_bench/**)",
+      "Write(/Users/alia/Desktop/Github/Agentic/PIR_research_and_bench/**)",
+      "Edit(/Users/alia/Desktop/Github/Agentic/PIR_research_and_bench/**)",
+      "Read(~/.zprofile)",
+      "WebFetch",
+      "WebSearch",
+      "Bash(test:*)",
+      "Bash(then)",
+      "Bash(else)",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(python3:*)"
+    ],
+    "deny": [
+      "Bash(sudo:*)",
+      "Bash(su:*)",
+      "Bash(rm -rf /)",
+      "Write(~/.bash_profile)",
+      "Write(~/.bashrc)",
+      "Write(~/.zshrc)",
+      "Write(~/.zprofile)",
+      "Write(~/.profile)",
+      "Write(~/.zshenv)",
+      "Write(~/.zlogout)"
+    ],
+    "additionalDirectories": [
+      "/Users/alia/Desktop/Github/Agentic/PIR_research_and_bench",
+      "/Users/alia/.claude"
+    ]
+  }
+}
