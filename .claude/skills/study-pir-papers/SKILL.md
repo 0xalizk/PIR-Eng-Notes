@@ -469,6 +469,25 @@ Record: the model restriction (linear queries, bounded storage, etc.), the bound
 
 After completing all passes, produce notes in this format. **Omit sections marked N/A for the paper's archetype** — do not leave them as empty placeholders. See §0 Step 2 for which sections to include per archetype.
 
+### Footnote convention
+
+Use GitHub Markdown footnotes (`[^N]`) to cite the paper for every non-trivial claim. Place the inline marker at the end of the sentence making the claim, and place the definition immediately after the paragraph (not at the bottom of the file).
+
+**Format:** `[^N]: <Location> (p.<page>): <what it says>`
+
+- **Location** = Section, Table, Figure, Theorem, Remark, Definition, Equation, Appendix, or Abstract.
+- **Page number** is required when available.
+- **Explanation** briefly states what the cited location says, in your own words.
+
+Example:
+```
+The key innovation is ciphertext translation, achieving (n+1)^2/2 compression on GSW encodings.[^1]
+
+[^1]: Remark 3.3 (p.15): RegevToGSW takes t_GSW Regev encodings and outputs a single GSW encoding with (n+1)^2*t_GSW elements, yielding an (n+1)^2/2 compression factor.
+```
+
+Aim for **15–30 footnotes per construction paper** (fewer for short/theory papers). Every numeric claim, asymptotic bound, benchmark figure, and design rationale should have a footnote.
+
 ```markdown
 # <Scheme Name> — Engineering Notes
 
@@ -1140,6 +1159,9 @@ Before writing the final note, verify:
 - [ ] Complexity table has at least 3 metrics filled
 - [ ] PIR Category matches the paper's directory group (or deviation is noted with explanation)
 - [ ] No placeholder markers (e.g., `<e.g.,`) remain
+- [ ] Footnotes use `[^N]: <Location> (p.<page>): <explanation>` format with specific page/section citations
+- [ ] At least 15 footnotes for construction papers (fewer OK for theory/survey)
+- [ ] Footnote definitions placed immediately after the paragraph they support (not at end of file)
 - [ ] All chart-derived values marked as "approximate"
 - [ ] PDF path matches the actual file
 - [ ] Notation collisions are documented in Uncertainties
