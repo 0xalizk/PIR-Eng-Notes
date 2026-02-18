@@ -69,7 +69,7 @@ Some papers are filed in one group but functionally belong to another. Route by 
 4. Follow the reading strategy for the paper's archetype (§2).
 5. Extract notation, tables, figures, and protocol structure per §§3–5.
 6. Produce engineering notes using the **output template in §6**. Produce footnotes to support statements about the scheme.
-7. Write output to `<scheme>_<year>_notes.md` (lowercase scheme name, publication year) in the same directory as the paper's PDF. Example: `spiral_2022_notes.md`, `sealpir_2018_notes.md`.
+7. Write output to `<Scheme>_<year>_notes.md` (preserve the scheme's canonical capitalization, e.g. SealPIR, OnionPIR, XPIR) in a folder named `<Scheme>_<year>/` alongside the paper's PDF. Example: `SealPIR_2018/SealPIR_2018_notes.md`, `Spiral_2022/Spiral_2022_notes.md`.
 8. Run the validation checklist (§8) before finalizing.
 
 **Tool notes:**
