@@ -50,31 +50,31 @@ Visualization/
 
 | Plot | Description |
 |------|-------------|
-| [**T1**](output/top_level/T1_communication_scatter.png) | Communication scatter: query size vs response size (log-log) |
-| [**T2**](output/top_level/T2_throughput_bar.png) | Throughput bar chart: all schemes with concrete throughput |
-| [**T3**](output/top_level/T3_pareto_frontier.png) | Pareto frontier: total communication vs server time |
-| [**T4**](output/top_level/T4_heatmap_overview.png) | Heatmap overview: all 35 schemes, 7 metrics, color-coded |
-| [**T5**](output/top_level/T5_online_vs_offline.png) | Online vs offline cost split: stacked bars |
-| [**T6**](output/top_level/T6_timeline_scatter.png) | Timeline: throughput evolution by publication year |
+| [**T1**](output/top_level#communication-design-space--query-vs-response-size) | Communication scatter: query size vs response size (log-log) |
+| [**T2**](output/top_level#server-throughput-comparison) | Throughput bar chart: all schemes with concrete throughput |
+| [**T3**](output/top_level#pareto-frontier--communication-vs-server-time) | Pareto frontier: total communication vs server time |
+| [**T4**](output/top_level#pir-scheme-heatmap-overview) | Heatmap overview: all 35 schemes, 7 metrics, color-coded |
+| [**T5**](output/top_level#online-vs-offline-cost-split) | Online vs offline cost split: stacked bars |
+| [**T6**](output/top_level#pir-throughput-evolution-over-time) | Timeline: throughput evolution by publication year |
 
 #### Per-Group
 
 | Plot | Group | Description |
 |------|-------|-------------|
-| [**A1**](output/group_a/A1_fhe_efficiency_frontier.png) | FHE-Based | Expansion factor vs server time |
-| [**A2**](output/group_a/A2_evolution_timeline.png) | FHE-Based | Communication evolution timeline |
-| [**A3**](output/group_a/A3_full_comparison_heatmap.png) | FHE-Based | Full comparison heatmap table |
-| [**B1**](output/group_b/B1_throughput_vs_communication.png) | Stateless | Throughput vs communication scatter |
-| [**B2**](output/group_b/B2_query_response_bars.png) | Stateless | Query/response paired bars |
-| [**B3**](output/group_b/B3_server_time_comparison.png) | Stateless | Server time comparison |
-| [**C1**](output/group_c/C1_online_throughput.png) | Client-Indep. | Online throughput bar chart |
-| [**C2**](output/group_c/C2_hint_vs_online_comm.png) | Client-Indep. | Hint size vs online communication |
-| [**C3**](output/group_c/C3_throughput_scaling.png) | Client-Indep. | Throughput scaling with DB size |
-| [**D1**](output/group_d/D1_online_latency_bars.png) | Client-Dep. | Online latency bars |
-| [**D2**](output/group_d/D2_preprocessing_roi.png) | Client-Dep. | Server vs client latency scatter |
-| [**D3**](output/group_d/D3_client_storage_vs_server.png) | Client-Dep. | Client storage vs server time |
-| [**D4**](output/group_d/D4_asymptotic_classification.png) | Client-Dep. | Asymptotic classification table (theory-only) |
-| [**X1**](output/group_x/X1_narrative_table.png) | Extensions | Narrative comparison table |
+| [**A1**](output/group_a#fhe-efficiency-frontier--expansion-factor-vs-server-time) | FHE-Based | Expansion factor vs server time |
+| [**A2**](output/group_a#fhe-based-pir-communication-evolution) | FHE-Based | Communication evolution timeline |
+| [**A3**](output/group_a#group-a-fhe-based-full-comparison) | FHE-Based | Full comparison heatmap table |
+| [**B1**](output/group_b#stateless-pir--throughput-vs-communication-tradeoff) | Stateless | Throughput vs communication scatter |
+| [**B2**](output/group_b#stateless-pir--queryresponse-size-comparison) | Stateless | Query/response paired bars |
+| [**B3**](output/group_b#stateless-pir--server-computation-time) | Stateless | Server time comparison |
+| [**C1**](output/group_c#client-independent-preprocessing--online-throughput) | Client-Indep. | Online throughput bar chart |
+| [**C2**](output/group_c#hint-size-vs-online-communication-tradeoff) | Client-Indep. | Hint size vs online communication |
+| [**C3**](output/group_c#throughput-scaling-with-database-size) | Client-Indep. | Throughput scaling with DB size |
+| [**D1**](output/group_d#client-dependent-preprocessing--online-server-latency) | Client-Dep. | Online latency bars |
+| [**D2**](output/group_d#server-vs-client-online-latency) | Client-Dep. | Server vs client latency scatter |
+| [**D3**](output/group_d#client-storage-vs-server-computation-tradeoff) | Client-Dep. | Client storage vs server time |
+| [**D4**](output/group_d#asymptotic-classification--theory-only-schemes) | Client-Dep. | Asymptotic classification table (theory-only) |
+| [**X1**](output/group_x#extensions--narrative-comparison) | Extensions | Narrative comparison table |
 
 ### Data
 
