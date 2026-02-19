@@ -4,7 +4,7 @@
 |-------|-------|
 | **Paper** | [Communication-Computation Trade-offs in PIR](https://eprint.iacr.org/2019/1483) (2019) |
 | **Archetype** | Comparison / multi-paradigm |
-| **PIR Category** | Group X — Variants & Surveys (covers FHE-based, number-theoretic, and keyword PIR) |
+| **PIR Category** | Group X — Extensions |
 | **Security model** | Semi-honest single-server CPIR (all constructions); SPIR extension in Appendix E.1 |
 | **Additional assumptions** | RLWE (SealPIR/MulPIR); Phi-hiding / safe primes (Gentry-Ramzan) |
 | **Correctness model** | Deterministic (FHE noise budget managed by parameter selection for HE schemes; exact arithmetic for Gentry-Ramzan) |

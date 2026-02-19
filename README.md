@@ -59,9 +59,9 @@
 | 2024 [WangRen](Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/wangren_2024/WangRen_2024_notes.md) | Tight ST = O(nw) tradeoff (theory) |
 | 2025 [IshaiShiWichs](Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md) | IT-PIR constructions + OWF/SZK lower bounds |
 
-### Group X — Variants & Surveys
+### Group X — Extensions
 
 | Paper | Key Contribution |
 |-------|-----------------|
-| 2019 [KeywordPIR](Schemes/Group%20X%20-%20Keyword%20Symmetric%20Distributional%20PIR/keywordpir_2019/KeywordPIR_2019_notes.md) | Comparison of SealPIR, MulPIR, Gentry-Ramzan for keyword PIR |
-| 2025 [DistributionalPIR](Schemes/Group%20X%20-%20Keyword%20Symmetric%20Distributional%20PIR/distributionalpir_2025/DistributionalPIR_2025_notes.md) | Distribution-dependent PIR model + compiler framework |
+| 2019 [KeywordPIR](Schemes/Group%20X%20-%20Extensions/keywordpir_2019/KeywordPIR_2019_notes.md) | Comparison of SealPIR, MulPIR, Gentry-Ramzan for keyword PIR |
+| 2025 [DistributionalPIR](Schemes/Group%20X%20-%20Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md) | Distribution-dependent PIR model + compiler framework |

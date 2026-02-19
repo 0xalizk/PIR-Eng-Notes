@@ -19,7 +19,7 @@ All 4 issues are minor:
 
 ### Paper 1: KeywordPIR (2019)
 
-**File:** `Schemes/Group X - Keyword Symmetric Distributional PIR/keywordpir_2019/KeywordPIR_2019_notes.md`
+**File:** `Schemes/Group X - Extensions/keywordpir_2019/KeywordPIR_2019_notes.md`
 **Total footnotes:** 52
 
 #### Verified Correct
@@ -40,7 +40,7 @@ All 4 issues are minor:
 
 ### Paper 2: DistributionalPIR (2025)
 
-**File:** `Schemes/Group X - Keyword Symmetric Distributional PIR/distributionalpir_2025/DistributionalPIR_2025_notes.md`
+**File:** `Schemes/Group X - Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md`
 **Total footnotes:** 47
 
 #### Verified Correct

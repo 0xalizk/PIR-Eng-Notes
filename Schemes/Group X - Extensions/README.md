@@ -1,4 +1,4 @@
-## Group X — Keyword, Symmetric & Distributional PIR
+## Group X — Extensions
 
 #### KeywordPIR (2019)
 

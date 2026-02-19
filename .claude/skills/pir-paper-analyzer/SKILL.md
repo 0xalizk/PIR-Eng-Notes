@@ -21,7 +21,7 @@ Before reading, determine the paper's **group** and **archetype** to route yours
 | **B — Stateless single-server** | §3.1 (Lattice/FHE) | §3.2, §3.3 | Identify sub-model first (see below). |
 | **C — Client-independent preprocessing** | §3.1 (often plain LWE) | §3.2, §3.3 | Many use plain LWE — skip RLWE/GSW notation if so. DEPIR papers (BarelyDoublyEfficient) are theory/feasibility results. |
 | **D — Client-dependent preprocessing** | §3.2 (PRF/symmetric) | §3.1 (unless paper uses FHE) | PRF-first; use §3.7b for Group D parameters. **Not all Group D schemes have probabilistic correctness** — check whether deterministic (SinglePass, WangRen) or probabilistic (Piano, RMS24, CK20). |
-| **X — Variants & Surveys** | Varies — see per-paper routing below | Check archetype first | Per-paper routing: **KeywordPIR** → §3.1 + number-theoretic; **DistributionalPIR** → §3.1 + §3.6 |
+| **X — Extensions** | Varies — see per-paper routing below | Check archetype first | Per-paper routing: **KeywordPIR** → §3.1 + number-theoretic; **DistributionalPIR** → §3.1 + §3.6 |
 
 **Group B sub-models** (identify during Pass 0):
 
@@ -968,7 +968,7 @@ The 34 papers in this collection primarily address **computational PIR** (cPIR) 
 | **B — Stateless single-server** | No persistent per-client state on the **client** between queries. Server may store ephemeral per-query evaluation keys but NOT persistent per-client state. **Sub-models:** *Hintless* (no offline comm: YPIR, HintlessPIR), *CRS/query-bundled* (keys from CRS or per-query: WhisPIR, InsPIRe), *Public-parameter upload* (public key material offline: NPIR), *Client-hint upload* (secret-key-dependent keys offline: Pirouette, VIA-C, Respire). | HintlessPIR, YPIR, Respire, WhisPIR, Pirouette, InsPIRe, NPIR, VIA |
 | **C — Client-independent preprocessing** | Server generates one global hint shared by all clients ("global preprocessing"). Client downloads it once. DEPIR papers (BarelyDoublyEfficient) achieve sublinear server computation — currently theoretical. | SimplePIR, DoublePIR, FrodoPIR, VeriSimplePIR, IncrementalPIR |
 | **D — Client-dependent preprocessing** | Each client gets a personalized offline hint. Includes both single-server and two-server schemes. Not all Group D schemes have probabilistic correctness (SinglePass, WangRen are deterministic). | Piano, Plinko, TreePIR (2-server), CK20 (2-server+1-server), IncPIR (2-server), SinglePass (2-server), WangRen, IshaiShiWichs, RMS24 |
-| **X — Variants & Surveys** | Keyword PIR, symmetric PIR, distributional PIR, model-defining papers, foundational surveys, and multi-contribution comparison papers | SealPIR/KeywordPIR, DistributionalPIR |
+| **X — Extensions** | Keyword PIR, symmetric PIR, distributional PIR, model-defining papers, foundational surveys, and multi-contribution comparison papers | SealPIR/KeywordPIR, DistributionalPIR |
 
 **Key concept — DEPIR:** Doubly-Efficient PIR achieves sublinear server computation via preprocessing. BarelyDoublyEfficient is the first from plain LWE in the CRS model (a theory/feasibility result, not yet practical).
 

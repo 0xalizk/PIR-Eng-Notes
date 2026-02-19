@@ -4,7 +4,7 @@
 |-------|-------|
 | **Paper** | [Distributional Private Information Retrieval](https://eprint.iacr.org/2025/132) (2025) |
 | **Archetype** | Model/definition + Construction + Compiler/framework |
-| **PIR Category** | Group X — Variants & Surveys |
+| **PIR Category** | Group X — Extensions |
 | **Security model** | Single-server CPIR (identical to standard PIR; computational or information-theoretic) |
 | **Additional assumptions** | Underlying batch-PIR scheme's assumptions (e.g., LWE/RingLWE when instantiated with SimplePIR) |
 | **Correctness model** | Relaxed/probabilistic — three notions: explicit, worst-case, and average-case correctness |
