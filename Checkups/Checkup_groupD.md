@@ -4,6 +4,23 @@ This report verifies that each footnote in the Group D PIR scheme notes files ac
 
 **Generated**: 2026-02-19
 
+### Summary
+
+| Paper | Footnotes | Correct | Partially Correct | Incorrect |
+|---|---|---|---|---|
+| CK20 | 43 | 42 | 1 | 0 |
+| IncPIR | 56 | 44 | 12 | 0 |
+| IshaiShiWichs | 41 | 37 | 4 | 0 |
+| Piano | 51 | 45 | 6 | 0 |
+| Plinko | 54 | 51 | 3 | 0 |
+| RMS24 | 49 | 41 | 8 | 0 |
+| SinglePass | 60 | 54 | 6 | 0 |
+| TreePIR | 47 | 46 | 1 | 0 |
+| WangRen | 35 | 31 | 4 | 0 |
+| **Total** | **436** | **391 (90%)** | **45 (10%)** | **0** |
+
+No incorrect citations were found. The 45 "Partially correct" verdicts are mostly minor issues: truncated quotes, page numbers off by one, or close paraphrases rather than verbatim text.
+
 ---
 
 ## CK20 — Footnote Validation
@@ -275,5 +292,216 @@ This report verifies that each footnote in the Group D PIR scheme notes files ac
 | 52 | Section 6 (p.24) | Puncturable iPRF would lead to improvements for single-server PIR using LWE-based puncturable PRFs. | Correct | Exact match on p.24. |
 | 53 | Section 6 (p.24) | Nearly-constant online client query time seems possible. | Correct | Exact match on p.24. |
 | 54 | Section 6 (p.24) | Open possibility of other iPRF applications. | Correct | Same as #49. |
+
+## RMS24 — Footnote Validation
+
+| # | Cited Location | Claim Summary | Verdict | Notes |
+|---|---------------|---------------|---------|-------|
+| 1 | Section 3.5 (p.8) | Correctness failure analysis; Lemma 1 gives per-hint probability >= 1/(2*sqrt(N)); failure prob < e^{-lambda/2}; replenishment preserves distribution. | Correct | Lemma 1 on p.8 confirms all claims. |
+| 2 | Section 3.1 (p.4) | Partition-based hints from TreePIR; backup hints from CK; quote about describing techniques on partition-based hints. | Correct | Verbatim match on p.4. |
+| 3 | Section 1 (p.2) | Quote about dummy subset containing one random index from each of sqrt(N)/2 partitions not in query subset. | Correct | Verbatim match on p.2. |
+| 4 | Section 5 (p.13) | Piano PIR weakens correctness guarantee; backup hints are partition-specific; publishing permutation key enables attack. | Partially correct | Content matches but some phrasing is close paraphrase rather than exact quote. |
+| 5 | Section 2 (p.3) | Standard stateful PIR definition: adaptive correctness and privacy via indistinguishability. | Correct | Confirmed on p.3. |
+| 6 | Section 3.1 (p.4) | Quote about dummy subset and random swapping of the two subsets. | Correct | Verbatim match on p.4. |
+| 7 | Table 1 (p.2) | Two-server and single-server asymptotic complexities. | Correct | Table 1 on p.2 confirms all stated complexities. |
+| 8 | Section 3.6 (p.9) | Amortized cost depends only on online phase and hint replenishment; O(1) response, O(sqrt(N)) server computation. | Correct | Confirmed on p.9. |
+| 9 | Section 3.4 (p.7) | Client retrieves lambda*sqrt(N) main and backup hints; backup hints in pairs; ~0.4*lambda*sqrt(N) queries before re-running. | Partially correct | The 0.4 figure is from the simpler non-paired strategy; with pairs, the bound is lambda*sqrt(N)/2. The footnote conflates the two. |
+| 10 | Section 3.5 (p.8) | Lemma 2: Pr(b \| i) = Pr(b \| i') = tau/2 where tau = C(sqrt(N)-1, sqrt(N)/2)^{-1}. | Correct | Lemma 2 on p.8 confirms. |
+| 11 | Section 3.2 (p.5) | Median cutoff, O(1) membership testing, "offset" PRF for index determination. | Correct | Confirmed on p.5. |
+| 12 | Section 2 (p.4) | "PRF is one of the most common cryptographic primitives and can be instantiated from any one-way function." | Partially correct | Quote is truncated; full sentence continues with AES and SHA mentions. Location spans p.3-4 boundary. |
+| 13 | Section 4.1 (p.9) | AES as PRF with CryptoPP's AES-NI implementation. | Correct | Confirmed on p.9. |
+| 14 | Section 3.5 (p.8) | Lemma 1: per-hint containment probability >= 1/(2*sqrt(N)); failure bound < e^{-lambda/2}. | Correct | Lemma 1 on p.8 confirms. |
+| 15 | Section 3.1 (p.4) | "A database of size N is divided into sqrt(N) partitions each of size sqrt(N)." | Correct | Verbatim match on p.4. |
+| 16 | Section 3.2 (p.5) | Hint storage as tuple (j, v-hat_j, e_j, P_j). | Correct | Confirmed on p.5. |
+| 17 | Section 3.4 (p.7) | Backup hints in pairs; each pair stores parities for both halves. | Correct | Confirmed on p.7. |
+| 18 | Section 4.1 (p.9) | 32-bit numbers for V_j; hint IDs 32-bit (single-server) and 64-bit (two-server). | Correct | Confirmed on p.9-10. |
+| 19 | Section 3.6 (p.9) | Offline phase: O(lambda*sqrt(N)) communication, O(lambda*N) computation. | Correct | Verbatim match on p.9. |
+| 20 | Section 3.2 (p.5-6) | Compact encoding costs (sqrt(N)/2+1)*log(N) bits; reduces request size by half. | Partially correct | The paper says sending directly costs sqrt(N)*log(N) bits (not 2*sqrt(N)*log(N)). The encoding formula is correct. |
+| 21 | Section 3.6 (p.9) | Streaming offline phase: N communication, O(lambda*N) computation; every 0.5*lambda*sqrt(N) queries; amortized response O(sqrt(N)/lambda). | Correct | Confirmed on p.9. |
+| 22 | Section 3.5 (p.8) | Privacy: Pr(b \| i) = tau/2 for any query index (Lemma 2). | Correct | Confirmed on p.8. |
+| 23 | Section 3.5 (p.8) | Lemma 1 and following paragraph establish failure bound. | Correct | Confirmed. |
+| 24 | Section 3.5 (p.9) | Hints after query identically distributed; matrix H; R_i and R_{-i} preserved. | Correct | Confirmed on p.8-9. |
+| 25 | Section 3.5 (p.8-9) | Geometric-like distribution for J; hint distribution as mixture of R and R_{-i}. | Correct | Confirmed on p.9. |
+| 26 | Section 2 (p.3) | Piano PIR does not satisfy standard definition due to non-adversarial query requirement. | Correct | Confirmed on p.3. |
+| 27 | Table 2 (p.11) | Two-server at 2^28 x 32B: storage, communication, and computation figures. | Partially correct | Footnote says "60.16 KB communication" and "842 ms" but table shows 60.16 MB and 842 s. Online figures (34.1 KB, 2.7 ms) are correct. |
+| 28 | Section 3.6 (p.9) | Online response O(1), 4x because both servers send two parities; abstract's "2x" for online server alone. | Correct | Confirmed on p.9. |
+| 29 | Table 3 (p.11) | Single-server at 8 GB: 8192 MB offline comm, 1146 s offline compute, 100 MB client storage. | Correct | Table 3 confirmed. |
+| 30 | Table 3 (p.11) | Client storage 100 MB (1.5x two-server's 60 MB); at 64 GB, 660 MB. | Correct | Confirmed. |
+| 31 | Section 3.4 (p.7-8) | Algorithm 4 streams DB one partition at a time; O(lambda*sqrt(N)) client memory. | Correct | Confirmed. |
+| 32 | Section 4.2 (p.10) | AWS m5.8xlarge, 3.1 GHz Intel Xeon, 128 GB RAM. | Correct | Confirmed. |
+| 33 | Section 4.3 (p.10) | Balance of low storage, communication, and computation by avoiding major bottlenecks. | Correct | Confirmed on p.10-11. |
+| 34 | Section 4.3 (p.11) | Communication ~2x better than Piano; computation 1.7-3.7x better; stronger correctness. | Correct | Confirmed on p.11. |
+| 35 | Section 3.1 (p.4) | Techniques applicable to CK10 or TreePIR's partition-based hints. | Correct | Verbatim match on p.4. |
+| 36 | Section 3.2 (p.6) | Compact encoding costs (sqrt(N)/2+1)*log(N) bits vs explicit subsets. | Partially correct | Paper says naive cost is sqrt(N)*log(N), not 2*sqrt(N)*log(N) as footnote implies. |
+| 37 | Section 4.1 (p.10) | Filtering 7/8 of elements; probability 6 x 10^{-5} for N = 2^20. | Correct | Confirmed on p.10. |
+| 38 | Section 4.1 (p.9) | Implemented in C++; available at GitHub. | Correct | Confirmed. |
+| 39 | Section 4.1 (p.9-10) | Single AES output broken into four to eight 32-bit pseudorandom numbers. | Correct | Confirmed on p.9-10. |
+| 40 | Section 4.1 (p.9) | Two-server ~600 LOC; single-server ~500 LOC. | Correct | Confirmed. |
+| 41 | Section 4.1 (p.9) | Lambda set to 80. | Correct | Confirmed. |
+| 42 | Section 4.1 (p.10) | 32-bit numbers for V_j; corner case with equal medians; discarded with small probability. | Partially correct | Content spans p.9-10 boundary; minor location note. |
+| 43 | Section 2 (p.3) | DNS lookup motivation; Kaminsky attack makes Piano's model insufficient. | Correct | Confirmed on p.3. |
+| 44 | Section 1 (p.1) | "An efficient PIR scheme enables many privacy-preserving applications, such as password check." | Correct | Confirmed. |
+| 45 | Section 6 (p.14) | Database updates as open challenge for stateful PIR. | Correct | Confirmed. |
+| 46 | Section 6 (p.14) | O(lambda*sqrt(N)) client storage large in practice; single-server offline must stream whole DB. | Correct | Confirmed. |
+| 47 | Section 6 (p.14) | Omega(sqrt(N)) request size as open problem; techniques exist but sacrifice other aspects. | Correct | Confirmed. |
+| 48 | Section 6 (p.14) | Reducing O(sqrt(N)) request size open problem. | Correct | Same as #47. |
+| 49 | Section 6 (p.14) | Database updates and keyword PIR as open challenges; recent progress [19, 24]. | Correct | Confirmed. |
+
+## SinglePass — Footnote Validation
+
+| # | Cited Location | Claim Summary | Verdict | Notes |
+|---|---------------|---------------|---------|-------|
+| 1 | Abstract (p.1) | SinglePass proposes first client-preprocessing PIR with "single pass" preprocessing; existing works proportional to lambda * N. | Correct | Verbatim match in the abstract. |
+| 2 | Section 4 (p.10) | MIR [30] as one of three state-of-the-art schemes benchmarked. | Correct | Confirmed on p.10. |
+| 3 | Section 1 (p.2) | "the preprocessing performs one linear pass over the database, operating on each element exactly once." | Correct | Verbatim match on p.2. |
+| 4 | Theorem 3.1 (p.8-9) | Hint runs in O(N * w) time, outputs hint of (N/Q) * w bits. | Correct | Confirmed in Theorem 3.1. |
+| 5 | Lemma 3.1 (p.7) | Show and Shuffle: Pr[SaS -> 1] = 1/2 for any adversary. | Correct | Verbatim match. |
+| 6 | Lemma 3.1 (p.7) | Perfect indistinguishability (probability exactly 1/2). | Correct | Confirmed. |
+| 7 | Section 3.1 (p.6-7) | "This experiment models exactly one round of our PIR query..." | Partially correct | Verbatim match except PDF has typo "completey" for "completely." |
+| 8 | Section 2.2.1 (p.5) | PRFs not necessary for security; PRG only for compressing randomness. | Correct | Confirmed on p.5. |
+| 9 | Appendix A (p.16) | Client can store only seed for permutations but Query would take O(N) time. | Correct | Confirmed on p.16. |
+| 10 | Appendix A, Correctness (p.17) | XOR derivation yielding DB[x]. | Correct | Confirmed on p.17. |
+| 11 | Figure 3 (p.9) | DB partitioning: DB_i = DB[i*m : (i+1)*m]. | Correct | Verbatim match in Figure 3. |
+| 12 | Section 2.2.2 (p.5-6) | Fisher-Yates shuffle in O(N) time via Lemma 2.1. | Correct | Confirmed. |
+| 13 | Figure 3, Hint (p.9) | h_j = XOR of DB_i[p_i(j)] for all i. | Correct | Confirmed in Figure 3. |
+| 14 | Figure 3, Query step 5 (p.9) | "For i in [Q], i != i*, swap p_i(ind) and p_i(r_i)." | Correct | Verbatim match. |
+| 15 | Theorem 3.1 (p.9, p.16) | Client stores O(N log N + (N/Q) * w) bits. | Correct | Confirmed. |
+| 16 | Figure 3, Query step 1 (p.9) | "Parse x = (i*, j*). Find ind such that p_{i*}(ind) = j*." | Correct | Verbatim match. |
+| 17 | Section 1 (p.1) | "such approaches store no additional bits per client at the server." | Correct | Confirmed. |
+| 18 | Figure 3 (p.9) | Hint run by Server 0, producing (ck, h). | Correct | Confirmed. |
+| 19 | Figure 3, Query steps 3-4 (p.9) | S_refresh from uniform r_i samples. | Correct | Confirmed. |
+| 20 | Section 1.2 (p.3) | Column-sending example with replacement. | Correct | Confirmed on p.3. |
+| 21 | Appendix A (p.17) | Server 0 privacy via PRG security; q_0 independent of query. | Correct | Confirmed. |
+| 22 | Appendix A-B (p.17-19) | Server 1 privacy via hybrid argument using Show-and-Shuffle. | Correct | Confirmed across Appendices A and B. |
+| 23 | Appendix A (p.17) | Correctness derivation: XOR chain yielding DB[x]. | Correct | Confirmed. |
+| 24 | Appendix A (p.17) | Hint update: h_k = h_k XOR old XOR new for each swap. | Correct | Verbatim match on p.17. |
+| 25 | Table 2 (p.15) | Query bandwidth = 0.68 KB. | Correct | Confirmed. |
+| 26 | Table 2 (p.15) | Query time = 0.02 ms. | Correct | Confirmed. |
+| 27 | Table 2 (p.15) | Preprocessing time = 0.122 s. | Correct | Confirmed. |
+| 28 | Table 2 (p.15) | Client size = 23.3 MB. | Correct | Confirmed. |
+| 29 | Theorem 3.1 (p.9) | "The server stores only DB." | Correct | Confirmed. |
+| 30 | Table 2 (p.15) | 23.3 MB includes hint array and expanded permutations. | Correct | Confirmed. |
+| 31 | Theorem 3.1 (p.16) | Client stores permutations (N * log N bits) and hint ((N/Q) * w bits). | Correct | Confirmed. |
+| 32 | Abstract (p.1) | "it requires exactly one linear pass over the database." | Correct | Verbatim match. |
+| 33 | Section 5 (p.11) | O(1) hint update for edits via XOR. | Correct | Verbatim match on p.11. |
+| 34 | Section 5 (p.11) | Addition: new permutation sampled once per N/Q additions; subsequent additions O(1). | Correct | Verbatim match. |
+| 35 | Table 2 (p.15) | Update time = 0.19 ms for batch of 500. | Correct | Confirmed. |
+| 36 | Section 5 (p.11) | Deletion = edit where DB[x]_new = 0 or special delete value. | Correct | Verbatim match. |
+| 37 | Section 4 (p.10) | ~300 lines Go + ~150 lines C, extending Checklist. | Correct | Verbatim match. |
+| 38 | Section 4 (p.10) | Normalized by client storage for fair comparison. | Correct | Confirmed. |
+| 39 | Figure 4 (p.10) | SinglePass better even at 2 queries; others need 50+. | Correct | Confirmed. |
+| 40 | Table 2 (p.15) | "Comparison for Updatable Database with 3,000,000 32-byte elements." | Correct | Verbatim match in caption. |
+| 41 | Appendix C (p.19) | "50-100x better preprocessing time and approximately 80x better storage." | Correct | Verbatim match. |
+| 42 | Section 4 (p.10) | Private encyclopedia service use case. | Correct | Verbatim match. |
+| 43 | Table 2 (p.15) | Blocklist application benchmark from Checklist. | Partially correct | Quote originates from p.13, not Table 2 directly. Content accurate. |
+| 44 | Section 1 (p.2) | "our scheme does not require the client to perform offline computation for extended periods." | Correct | Verbatim match on p.2. |
+| 45 | Section 5 (p.11) | Edit and Add in O(1) time. | Correct | Confirmed. |
+| 46 | Theorem 3.1 (p.8) | Security for any polynomial N(lambda), T(lambda). | Correct | Confirmed. |
+| 47 | Section 1 (p.1) | "the preprocessing roughly equals the cost of a single PIR query." | Partially correct | Exact quote appears on p.2, not p.1. |
+| 48 | Footnote 6 (p.13) | Pure PIR supports index queries; cuckoo hashing for keyword PIR with 2x overhead. | Correct | Verbatim match in Footnote 6. |
+| 49 | Section 1 (p.2) | Storage only worse for N > 1 billion elements with stated parameters. | Correct | Verbatim match on p.2. |
+| 50 | Table 1 (p.2) | SinglePass query BW O(Q * w) vs Checklist's O(log(N)(lambda * log(N) + w)). | Correct | Confirmed in Table 1. |
+| 51 | Section 2.1 (p.4) | "Throughout this work, we will operate entirely over the two server model." | Correct | Verbatim match. |
+| 52 | Appendix A, Footnote 7 (p.16) | Storing inverse permutation with constant overhead and space tradeoff. | Partially correct | Content accurate but notes' paraphrase does not closely match footnote 7's actual wording. |
+| 53 | Table 1 (p.2) | "Q in [N] is a parameter that determines query time and size, along with storage." | Correct | Verbatim match in Table 1 caption. |
+| 54 | Section 1 (p.2) | Preprocessing equals cost of single PIR query via permutation approach. | Partially correct | Quote is accurate; the "permutation approach" attribution is editorial interpretation, not direct quote. |
+| 55 | Lemma 3.1 (p.7) | Perfect indistinguishability enables unlimited queries without degradation. | Correct | Confirmed. |
+| 56 | Section 5 (p.11) | "our new single pass PIR scheme only preprocesses each element exactly once... update the hint data structure in O(1) time." | Correct | Verbatim match on p.11. |
+| 57 | Section 4 (p.10) | ~300 lines Go + ~150 lines C. | Correct | Duplicate of #37, confirmed. |
+| 58 | Section 4 (p.10) | "All schemes are run on a single thread." | Correct | Verbatim match. |
+| 59 | Section 4 (p.10) | "Benchmarks are all run on an AWS EC2 instance of size t2.2xlarge." | Correct | Verbatim match. |
+| 60 | Section 7 (p.13) | Open questions: independence from lambda, single server, removing linear dependency on N. | Correct | Verbatim match on p.13. |
+
+## TreePIR — Footnote Validation
+
+| # | Cited Location | Claim Summary | Verdict | Notes |
+|---|---------------|---------------|---------|-------|
+| 1 | Section 2.1 (p.6) | Privacy defined per-server; non-collusion required. | Correct | Definition 2.2 on p.6 confirms. |
+| 2 | Lemma 4.1 (p.21) | Polylog-bandwidth variant requires DDH; base TreePIR requires only OWF. | Correct | Lemma 4.1 on p.21 and Theorem 4.1 on p.17 confirm. |
+| 3 | Appendix A.1 (p.27) | Base protocol has probabilistic client time; shift optimization makes it deterministic. | Correct | Confirmed on p.27. |
+| 4 | Figure 6 (p.18) | Client sends q_0 to server_0 and q_1 to server_1; each returns parity array. | Correct | Figure 6 confirmed. |
+| 5 | Figure 1 (p.4) | Comparison table; Shi et al. hides very large security-parameter factors. | Correct | Figure 1 and footnote beta confirmed. |
+| 6 | Section 4.1-4.2 (pp.14-18) | wpPRF defines sets with one element per chunk; puncturing produces key for parities minus target. | Correct | Confirmed across pp.14-18. |
+| 7 | Figure 5 (p.13) | Puncture outputs seeds not on path to i; PEval reconstructs tree. | Correct | Figure 5 confirmed. |
+| 8 | Definition 3.2 (p.12) | Privacy experiment: adversary gets k_{x_b} and cannot guess b. | Correct | Definition 3.2 confirmed. |
+| 9 | Definition 3.3 (p.12) | Weak correctness: PEval matches Eval for x' != x only. | Correct | Definition 3.3 confirmed. |
+| 10 | Theorem 3.1 (p.13) | wpPRF satisfies all properties from PRG security (OWF). | Correct | Verbatim match. |
+| 11 | Section 2.3 (p.7) | GGM PRF requires n sequential G applications; punctured key size n * lambda. | Correct | Confirmed on p.7. |
+| 12 | Section 3.1, proof (p.14) | Enumeration time N log N; first set O(N log N), subsequent incremental. | Correct | Formula confirmed on p.14. |
+| 13 | Section 3 (p.9) | Standard pPRF includes x explicitly; wpPRF drops x. | Correct | Confirmed on pp.9-10. |
+| 14 | Section 4.3 (p.20-21) | Lemma 4.1 via DDH; base TreePIR via OWF. | Correct | Same as #2, confirmed. |
+| 15 | Section 5 (p.22) | 530 lines C++ and 470 lines Go. | Correct | Verbatim match on p.22. |
+| 16 | Equations 1-3 (p.20) | Coverage probability: (1 - 1/sqrt(N))^{lambda*sqrt(N)} <= (1/e)^lambda. | Correct | Equations 1-3 confirmed. |
+| 17 | Figure 6 (p.18) | T = {T_j = (k_j, p_j) : j in [M]}, M = lambda * sqrt(N). | Correct | Figure 6 confirmed. |
+| 18 | Section 4.1 (p.15) | Set S: each element with prob 1/sqrt(N), exactly one per chunk. | Correct | Confirmed on p.15. |
+| 19 | Figure 6, Answer (p.18) | P_b = [phi_0,...,phi_{sqrt(N)}] via PEval-based set reconstruction. | Correct | Figure 6 Answer phase confirmed. |
+| 20 | Theorem 4.1 (p.17) | Offline complexities: server O(lambda*N*log(N)), client O(lambda*sqrt(N)), bandwidth O(lambda*sqrt(N)). | Correct | Theorem 4.1 confirmed. |
+| 21 | Figure 6 (p.18) | Server_0 in offline and online; server_1 online only; privacy symmetric. | Correct | Figure 6 and p.19 confirm. |
+| 22 | Section 4.2 (pp.17-19) | Privacy proof: simulator samples random key and alpha. | Correct | p.19 confirms simulator construction. |
+| 23 | Definition 2.2 (p.6) | Privacy via simulator; non-collusion assumed. | Correct | Same as #1, confirmed. |
+| 24 | Figure 1 (p.4), Section 4.4 (p.21) | D = 1/2 tradeoff; general parameterization with set size N^D. | Correct | Section 4.4 on p.21 confirmed. |
+| 25 | Section 4.2, proof (p.20) | Coverage probability analysis for first query. | Correct | Confirmed on p.20. |
+| 26 | Section 4.2 (p.20) | Table T updated after query; distribution maintained. | Correct | Confirmed on p.20. |
+| 27 | Equations 1-3 (p.20) | Direct probability calculation. | Correct | Same as #16. |
+| 28 | Section 4.2 (p.20) | Induction for query Q_t for any t < 1/nu(lambda). | Correct | Confirmed on p.20. |
+| 29 | Inferred | Punctured key = 32 * 128 / 8 = 512 bytes per server for N=2^32, lambda=128. | Correct | Correctly inferred from the construction. |
+| 30 | Figure 7 (p.23) | Amortized query time 3508 ms over 2000 queries for N=2^32, 1-bit elements. | Correct | Figure 7 confirmed. |
+| 31 | Figure 8 (p.24) | Client storage 67 MB for N=2^22, 256-byte elements. | Correct | Figure 8 confirmed. |
+| 32 | Theorem 4.1 (p.17) | M = lambda*sqrt(N) sets; each query consumes and replaces one entry. | Correct | Theorem 4.1 and Figure 6 confirmed. |
+| 33 | Figure 6, Reconstruct (p.18) | T_j <- (k', P_0[x^l] XOR DB[x]); fresh key k'. | Correct | Figure 6 confirmed. |
+| 34 | Section 5 (p.22) | Single-threaded on AWS EC2 m5d.8xlarge. | Correct | Confirmed on p.22. |
+| 35 | Figure 7 (p.23) | TreePIR 3.6x faster than Checklist; much less storage and bandwidth than PRP-PIR. | Partially correct | 3.6x ratio matches (12574/3508). Storage and bandwidth ratios are approximate; stated 8,190x and 2,024x are slightly off from table data. |
+| 36 | Figure 8 (p.24) | TreePIR+SPIRAL 150 ms; 14.4x less bandwidth than PRP-PIR. | Correct | Confirmed. |
+| 37 | Figure 9 (p.24) | At 2^28 x 32B: 312 ms (2.3x faster than Checklist), 8.5x less storage. | Correct | Confirmed. |
+| 38 | Section 5.1 (pp.22-23) | SCT auditing application from Henzinger et al. | Correct | Confirmed. |
+| 39 | Section 5.1 (p.23) | Compromised credential checking for large 1-bit databases. | Correct | Confirmed. |
+| 40 | Section 5.3 (pp.25-26) | Waterfall approach from Kogan/Corrigan-Gibbs; N updates trigger re-preprocessing; deletions via special value. | Correct | Confirmed. |
+| 41 | Section 5.2 (p.25) | Checklist good for small DB with large elements; TreePIR best for large DB or small elements. | Correct | Verbatim match on p.25. |
+| 42 | Section 4.3 (p.21) | Cannot recurse with preprocessing-based PIR; sqrt(N) words are dynamic and index-dependent. | Correct | Confirmed on p.21. |
+| 43 | Section 4.4 (p.21) | General D-parameterized tradeoff. | Correct | Same as #24. |
+| 44 | Section 5 (p.22) | Shi et al. bandwidth >= 2*lambda^4*log(lambda)*log(N) > 400 MB for lambda=128. | Correct | Confirmed on p.22. |
+| 45 | Appendix A.1 (p.27) | Shift technique from PRP-PIR; single sample guarantees coverage. | Correct | Confirmed on p.27. |
+| 46 | Section 5 (p.22) | "530 lines of C++ code and 470 lines of Go code." | Correct | Verbatim match. |
+| 47 | Abstract (p.1) | "weak privately puncturable pseudorandom functions, which we believe can have further applications." | Correct | Verbatim match. |
+
+## WangRen — Footnote Validation
+
+| # | Cited Location | Claim Summary | Verdict | Notes |
+|---|---------------|---------------|---------|-------|
+| 1 | Section 1.1 (p.2) | "Assuming one-way functions exist" is the sole computational assumption. | Correct | Theorem 1.1 on p.2 confirms. |
+| 2 | Lemma 4.4 (p.19) | Construction 4.2 satisfies correctness; deterministic, no failure probability. | Correct | Lemma 4.4 on p.19 confirms perfect correctness. |
+| 3 | Section 1.1 (p.3) | Tight tradeoff ST = O(nw) when w = Omega(log n). | Correct | Confirmed on p.3. |
+| 4 | Theorem 1.1 (p.2) | Client storage, communication, server computation, and client computation expressions. | Correct | All four bullet points match Theorem 1.1. |
+| 5 | Section 3.1 (p.12) | DS interface: Init, Access, Locate, Relocate. Parameterized by lambda, m, m'. | Correct | Section 3.1 on p.12 confirmed. |
+| 6 | Section 3.1 (p.13) | Perfect security via Experiments 3.1-3.2; Lemma 3.16 proves by induction. | Correct | Confirmed on p.13 and p.16. |
+| 7 | Lemma 3.13-3.15 (pp.15-16) | Elements appear once; Access and Locate are inverses; Relocate moves to empty positions. | Correct | All three lemmas confirmed. |
+| 8 | Section 1.2 (p.7) | Client storage O(lambda + m log m) for hint table reconstruction via small-domain PRP. | Correct | Confirmed on p.7. |
+| 9 | Section 1.2 (p.7) | Separate PRP per DS instance; keys derived from master key via PRF; T instances share global array C. | Correct | Confirmed on p.7. |
+| 10 | Theorem 3.3 (p.13) | Access O(1) expected, Locate O(1) expected, Relocate+Locate O(1) expected + O(1) amortized. | Correct | Theorem 3.3 on p.13 confirmed. |
+| 11 | Definition 3.6 (p.15) | Helper graph G: m' nodes, directed edges, disjoint chains and cycles (Corollary 3.10). | Correct | Definition 3.6 and Corollary 3.10 confirmed. |
+| 12 | Construction 3.4 (p.14) | Hist stores array C and hash map M; all operations O(1). | Partially correct | Construction 3.4 on p.14 confirmed for operations. Storage formula attributed to p.14 actually appears on p.15. |
+| 13 | Construction 4.2 (p.18) | DS_j instantiated with PRP(ck_j, .) where ck_j = PRF(ck_hat, j), sharing global Hist. | Correct | Exact match on p.18. |
+| 14 | Construction 4.2 (p.18) | Client stores ck_hat, Hist, and hints h = (h_0,...,h_{m'-1}). | Correct | Exact match on p.18. |
+| 15 | Section 1.2 (p.4-5) | Hint table is T x m' matrix with m' = 2m = 2n/T; random subset of m positions contains DB entries. | Correct | Confirmed on p.4-5. |
+| 16 | Construction 4.2 (p.18) | HintConstruct: h_c = h_c XOR DB_j[e] where c = DS_j.Locate(e). | Correct | Confirmed on p.18. |
+| 17 | Section 1.2 (p.5) | Consumed columns not replenished; hint table has one fewer column per query; limited queries. | Correct | Confirmed on p.5. |
+| 18 | Section 1.2 (p.3) | DB divided into T rows of size m = n/T; DB_j = DB[j*m : (j+1)*m]. | Correct | Confirmed on p.3. |
+| 19 | Construction 4.2, Query (p.18) | j* = floor(i/m), c = DS_{j*}.Locate(i mod m). | Correct | Confirmed on p.18. |
+| 20 | Section 4.3 (p.21) | Amortized preprocessing communication O(Tw). | Correct | Lemma 4.9 proof on p.21 confirmed. |
+| 21 | Lemma 4.3 (p.19) | Hint correctness by induction; HintConstruct initializes correctly; Reconstruct updates parities on element moves. | Partially correct | Content accurate; one quoted phrase is close paraphrase rather than verbatim. |
+| 22 | Lemma 4.9 (p.21) | Online communication O(Tw + T log n); amortized total O(Tw + T log n) bits. | Correct | Confirmed on p.21. |
+| 23 | Section 4.3 (p.21) | Client storage breakdown: h = O(Qw), ck = O(Q log n), total O(Qw + Q log n). | Correct | Confirmed on p.21-22. |
+| 24 | Construction 4.2 (p.18) | Client streams entire database for HintConstruct. | Partially correct | Paper says "streams the database by each element" not "one entry at a time"; same meaning. |
+| 25 | Theorem 4.1 (p.17), Theorem 1.1 (p.2) | S*T = O(n(w + log n)) = O(nw) when w = Omega(log n). | Correct | Confirmed. |
+| 26 | Theorem B.1 (p.27) | Lower bound: ST = Omega(nw) for l = O(1) servers, original DB storage, error <= 1/15. | Correct | Theorem B.1 on p.27 confirmed. |
+| 27 | Appendix B.1 (p.27-28) | w-bit entries yield nw-bit encoded database; client storage scales by w. | Correct | Confirmed on p.27-28. |
+| 28 | Theorem B.2 (p.28) | Amortized multi-query lower bound ST = Omega(nw). | Correct | Theorem B.2 on p.28 confirmed. |
+| 29 | Appendix B.1 (p.28) | Amortized bound via reduction from [CGHK22]. | Correct | Confirmed on p.28. |
+| 30 | Theorem B.3 (p.28) | SZK barrier generalized from [ISW24] for w-bit entries. | Correct | Theorem B.3 on p.28 confirmed. |
+| 31 | Appendix B.2 (p.28-29) | "The original barrier immediately generalizes to the w-bit entry case." | Correct | Exact match on p.28. |
+| 32 | Theorem B.4 (p.29) | Communication-based SZK barrier with thresholds 1/9 and 1/18 of nw^2/S. | Correct | Theorem B.4 on p.29 confirmed. |
+| 33 | Section 1.1 (p.3) | "The server performs no extra computation aside from retrieving the T entries requested by the client." | Correct | Exact match on p.3. |
+| 34 | Section 4.3 (p.22) | Efficient database updates: O(1) expected PRP calls and two XORs per update. | Correct | Confirmed on p.22. |
+| 35 | Appendix A.2 (p.27) | Arbitrary queries via PRP over domain [n]; client sends PRP key to server. | Correct | Confirmed on p.27. |
 
 
