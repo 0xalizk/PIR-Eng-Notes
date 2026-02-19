@@ -1,8 +1,12 @@
+---
+name: validate-footnotes
+description: Validate footnoted citations in PIR engineering notes against source PDFs — supports validating an entire group or a single scheme
+argument-hint: "[group or scheme name]"
+---
+
 # Validate Footnotes
 
 Verify every footnoted citation in engineering notes against the source PDF. Supports two scopes: an entire group or a single scheme. NEVER enter plan mode. Execute directly.
-
----
 
 ## 1. Locate inputs
 
