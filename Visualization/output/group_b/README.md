@@ -10,13 +10,13 @@
 <details>
 <summary>Footnotes</summary>
 
-1. **HintlessPIR** — Table 1, Table 2 in [HintlessPIR_2023_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/hintlesspir_2023/HintlessPIR_2023_notes.md#performance-benchmarks)
-2. **YPIR** — Table 2 in [YPIR_2024_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/ypir_2024/YPIR_2024_notes.md#performance-benchmarks)
-3. **Respire** — Table 1, Table 2 in [Respire_2024_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/respire_2024/Respire_2024_notes.md#performance-benchmarks)
-4. **Pirouette** — Table 7 in [Pirouette_2025_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/pirouette_2025/Pirouette_2025_notes.md#performance-benchmarks)
-5. **InsPIRe** — Table 2, Table 3 in [InsPIRe_2025_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/inspire_2025/InsPIRe_2025_notes.md#performance-benchmarks)
-6. **NPIR** — Table 1 in [NPIR_2025_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/npir_2025/NPIR_2025_notes.md#performance-benchmarks)
-7. **VIA** — Table 1, Table 2 in [VIA_2025_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/via_2025/VIA_2025_notes.md#performance-benchmarks)
+1. **HintlessPIR** — Table 1, Table 2 in [HintlessPIR_2023_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/hintlesspir_2023/HintlessPIR_2023_notes.md#performance-benchmarks)
+2. **YPIR** — Table 2 in [YPIR_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/ypir_2024/YPIR_2024_notes.md#performance-benchmarks)
+3. **Respire** — Table 1, Table 2 in [Respire_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#performance-benchmarks)
+4. **Pirouette** — Table 7 in [Pirouette_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#performance-benchmarks)
+5. **InsPIRe** — Table 2, Table 3 in [InsPIRe_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md#performance-benchmarks)
+6. **NPIR** — Table 1 in [NPIR_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#performance-benchmarks)
+7. **VIA** — Table 1, Table 2 in [VIA_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md#performance-benchmarks)
 
 </details>
 
@@ -30,14 +30,14 @@
 <details>
 <summary>Footnotes</summary>
 
-1. **Pirouette** — Table 7 in [Pirouette_2025_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/pirouette_2025/Pirouette_2025_notes.md#performance-benchmarks)
-2. **Respire** — Table 1, Table 2 in [Respire_2024_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/respire_2024/Respire_2024_notes.md#performance-benchmarks)
-3. **NPIR** — Table 1 in [NPIR_2025_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/npir_2025/NPIR_2025_notes.md#performance-benchmarks)
-4. **InsPIRe** — Table 2, Table 3 in [InsPIRe_2025_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/inspire_2025/InsPIRe_2025_notes.md#performance-benchmarks)
-5. **VIA** — Table 1, Table 2 in [VIA_2025_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/via_2025/VIA_2025_notes.md#performance-benchmarks)
-6. **WhisPIR** — Figure 1, Figure 2, Figure 4 in [WhisPIR_2024_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/whispir_2024/WhisPIR_2024_notes.md#performance-benchmarks)
-7. **HintlessPIR** — Table 1, Table 2 in [HintlessPIR_2023_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/hintlesspir_2023/HintlessPIR_2023_notes.md#performance-benchmarks)
-8. **YPIR** — Table 2 in [YPIR_2024_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/ypir_2024/YPIR_2024_notes.md#performance-benchmarks)
+1. **Pirouette** — Table 7 in [Pirouette_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#performance-benchmarks)
+2. **Respire** — Table 1, Table 2 in [Respire_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#performance-benchmarks)
+3. **NPIR** — Table 1 in [NPIR_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#performance-benchmarks)
+4. **InsPIRe** — Table 2, Table 3 in [InsPIRe_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md#performance-benchmarks)
+5. **VIA** — Table 1, Table 2 in [VIA_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md#performance-benchmarks)
+6. **WhisPIR** — Figure 1, Figure 2, Figure 4 in [WhisPIR_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/whispir_2024/WhisPIR_2024_notes.md#performance-benchmarks)
+7. **HintlessPIR** — Table 1, Table 2 in [HintlessPIR_2023_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/hintlesspir_2023/HintlessPIR_2023_notes.md#performance-benchmarks)
+8. **YPIR** — Table 2 in [YPIR_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/ypir_2024/YPIR_2024_notes.md#performance-benchmarks)
 
 </details>
 
@@ -51,14 +51,14 @@
 <details>
 <summary>Footnotes</summary>
 
-1. **HintlessPIR** — Table 1, Table 2 in [HintlessPIR_2023_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/hintlesspir_2023/HintlessPIR_2023_notes.md#performance-benchmarks)
-2. **InsPIRe** — Table 2, Table 3 in [InsPIRe_2025_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/inspire_2025/InsPIRe_2025_notes.md#performance-benchmarks)
-3. **Respire** — Table 1, Table 2 in [Respire_2024_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/respire_2024/Respire_2024_notes.md#performance-benchmarks)
-4. **YPIR** — Table 2 in [YPIR_2024_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/ypir_2024/YPIR_2024_notes.md#performance-benchmarks)
-5. **VIA** — Table 1, Table 2 in [VIA_2025_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/via_2025/VIA_2025_notes.md#performance-benchmarks)
-6. **NPIR** — Table 1 in [NPIR_2025_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/npir_2025/NPIR_2025_notes.md#performance-benchmarks)
-7. **WhisPIR** — Figure 1, Figure 2, Figure 4 in [WhisPIR_2024_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/whispir_2024/WhisPIR_2024_notes.md#performance-benchmarks)
-8. **Pirouette** — Table 7 in [Pirouette_2025_notes.md](../../../Schemes/Group B - Stateless Single Server PIR/pirouette_2025/Pirouette_2025_notes.md#performance-benchmarks)
+1. **HintlessPIR** — Table 1, Table 2 in [HintlessPIR_2023_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/hintlesspir_2023/HintlessPIR_2023_notes.md#performance-benchmarks)
+2. **InsPIRe** — Table 2, Table 3 in [InsPIRe_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md#performance-benchmarks)
+3. **Respire** — Table 1, Table 2 in [Respire_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#performance-benchmarks)
+4. **YPIR** — Table 2 in [YPIR_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/ypir_2024/YPIR_2024_notes.md#performance-benchmarks)
+5. **VIA** — Table 1, Table 2 in [VIA_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md#performance-benchmarks)
+6. **NPIR** — Table 1 in [NPIR_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#performance-benchmarks)
+7. **WhisPIR** — Figure 1, Figure 2, Figure 4 in [WhisPIR_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/whispir_2024/WhisPIR_2024_notes.md#performance-benchmarks)
+8. **Pirouette** — Table 7 in [Pirouette_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#performance-benchmarks)
 
 </details>
 

@@ -10,11 +10,11 @@
 <details>
 <summary>Footnotes</summary>
 
-1. **SealPIR** — Figure 9 in [sealpir_2018_notes.md](../../../Schemes/Group A - FHE Based PIR/sealpir_2018/sealpir_2018_notes.md#performance-benchmarks)
-2. **MulPIR** — Section 5, Appendix A in [mulpir_2019_notes.md](../../../Schemes/Group A - FHE Based PIR/mulpir_2019/mulpir_2019_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
-3. **OnionPIR** — Table 3, Table 4 in [onionpir_2021_notes.md](../../../Schemes/Group A - FHE Based PIR/onionpir_2021/onionpir_2021_notes.md#performance-benchmarks)
-4. **FrodoPIR** — Table 6, Table 7 in [frodopir_2022_notes.md](../../../Schemes/Group A - FHE Based PIR/frodopir_2022/frodopir_2022_notes.md#performance-benchmarks)
-5. **OnionPIRv2** — Table 2 in [onionpirv2_2025_notes.md](../../../Schemes/Group A - FHE Based PIR/onionpirv2_2025/onionpirv2_2025_notes.md#performance-benchmarks)
+1. **SealPIR** — Figure 9 in [sealpir_2018_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md#performance-benchmarks)
+2. **MulPIR** — Section 5, Appendix A in [mulpir_2019_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/mulpir_2019/mulpir_2019_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
+3. **OnionPIR** — Table 3, Table 4 in [onionpir_2021_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpir_2021/onionpir_2021_notes.md#performance-benchmarks)
+4. **FrodoPIR** — Table 6, Table 7 in [frodopir_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/frodopir_2022/frodopir_2022_notes.md#performance-benchmarks)
+5. **OnionPIRv2** — Table 2 in [onionpirv2_2025_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpirv2_2025/onionpirv2_2025_notes.md#performance-benchmarks)
 
 </details>
 
@@ -28,16 +28,16 @@
 <details>
 <summary>Footnotes</summary>
 
-1. **XPIR (2014)** — Table 2, Table 3 in [xpir_2014_notes.md](../../../Schemes/Group A - FHE Based PIR/xpir_2014/xpir_2014_notes.md#performance-benchmarks)
-2. **SealPIR** — Figure 9 in [sealpir_2018_notes.md](../../../Schemes/Group A - FHE Based PIR/sealpir_2018/sealpir_2018_notes.md#performance-benchmarks)
-3. **MulPIR** — Section 5, Appendix A in [mulpir_2019_notes.md](../../../Schemes/Group A - FHE Based PIR/mulpir_2019/mulpir_2019_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
-4. **OnionPIR** — Table 3, Table 4 in [onionpir_2021_notes.md](../../../Schemes/Group A - FHE Based PIR/onionpir_2021/onionpir_2021_notes.md#performance-benchmarks)
-5. **Addra/FastPIR** — Figure 9, Figure 10 in [addra_2021_notes.md](../../../Schemes/Group A - FHE Based PIR/addra_2021/addra_2021_notes.md#performance-benchmarks)
-6. **CwPIR** — Table 7, Table 8 in [cwpir_2022_notes.md](../../../Schemes/Group A - FHE Based PIR/cwpir_2022/cwpir_2022_notes.md#performance-benchmarks)
-7. **Spiral** — Table 3, Table 5 in [spiral_2022_notes.md](../../../Schemes/Group A - FHE Based PIR/spiral_2022/spiral_2022_notes.md#performance-benchmarks)
-8. **FrodoPIR** — Table 6, Table 7 in [frodopir_2022_notes.md](../../../Schemes/Group A - FHE Based PIR/frodopir_2022/frodopir_2022_notes.md#performance-benchmarks)
-9. **ThorPIR** — Table 2 in [thorpir_2024_notes.md](../../../Schemes/Group A - FHE Based PIR/thorpir_2024/thorpir_2024_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
-10. **OnionPIRv2** — Table 2 in [onionpirv2_2025_notes.md](../../../Schemes/Group A - FHE Based PIR/onionpirv2_2025/onionpirv2_2025_notes.md#performance-benchmarks)
+1. **XPIR (2014)** — Table 2, Table 3 in [xpir_2014_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2014/xpir_2014_notes.md#performance-benchmarks)
+2. **SealPIR** — Figure 9 in [sealpir_2018_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md#performance-benchmarks)
+3. **MulPIR** — Section 5, Appendix A in [mulpir_2019_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/mulpir_2019/mulpir_2019_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
+4. **OnionPIR** — Table 3, Table 4 in [onionpir_2021_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpir_2021/onionpir_2021_notes.md#performance-benchmarks)
+5. **Addra/FastPIR** — Figure 9, Figure 10 in [addra_2021_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/addra_2021/addra_2021_notes.md#performance-benchmarks)
+6. **CwPIR** — Table 7, Table 8 in [cwpir_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/cwpir_2022/cwpir_2022_notes.md#performance-benchmarks)
+7. **Spiral** — Table 3, Table 5 in [spiral_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/spiral_2022/spiral_2022_notes.md#performance-benchmarks)
+8. **FrodoPIR** — Table 6, Table 7 in [frodopir_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/frodopir_2022/frodopir_2022_notes.md#performance-benchmarks)
+9. **ThorPIR** — Table 2 in [thorpir_2024_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
+10. **OnionPIRv2** — Table 2 in [onionpirv2_2025_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpirv2_2025/onionpirv2_2025_notes.md#performance-benchmarks)
 
 </details>
 
@@ -51,17 +51,17 @@
 <details>
 <summary>Footnotes</summary>
 
-1. **XPIR (2014)** — Table 2, Table 3 in [xpir_2014_notes.md](../../../Schemes/Group A - FHE Based PIR/xpir_2014/xpir_2014_notes.md#performance-benchmarks)
-2. **XPIR (2016)** — Figure 6, Figure 7, Figure 8 in [xpir_2016_notes.md](../../../Schemes/Group A - FHE Based PIR/xpir_2016/xpir_2016_notes.md#performance-benchmarks)
-3. **SealPIR** — Figure 9 in [sealpir_2018_notes.md](../../../Schemes/Group A - FHE Based PIR/sealpir_2018/sealpir_2018_notes.md#performance-benchmarks)
-4. **MulPIR** — Section 5, Appendix A in [mulpir_2019_notes.md](../../../Schemes/Group A - FHE Based PIR/mulpir_2019/mulpir_2019_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
-5. **OnionPIR** — Table 3, Table 4 in [onionpir_2021_notes.md](../../../Schemes/Group A - FHE Based PIR/onionpir_2021/onionpir_2021_notes.md#performance-benchmarks)
-6. **Addra/FastPIR** — Figure 9, Figure 10 in [addra_2021_notes.md](../../../Schemes/Group A - FHE Based PIR/addra_2021/addra_2021_notes.md#performance-benchmarks)
-7. **CwPIR** — Table 7, Table 8 in [cwpir_2022_notes.md](../../../Schemes/Group A - FHE Based PIR/cwpir_2022/cwpir_2022_notes.md#performance-benchmarks)
-8. **Spiral** — Table 3, Table 5 in [spiral_2022_notes.md](../../../Schemes/Group A - FHE Based PIR/spiral_2022/spiral_2022_notes.md#performance-benchmarks)
-9. **FrodoPIR** — Table 6, Table 7 in [frodopir_2022_notes.md](../../../Schemes/Group A - FHE Based PIR/frodopir_2022/frodopir_2022_notes.md#performance-benchmarks)
-10. **ThorPIR** — Table 2 in [thorpir_2024_notes.md](../../../Schemes/Group A - FHE Based PIR/thorpir_2024/thorpir_2024_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
-11. **OnionPIRv2** — Table 2 in [onionpirv2_2025_notes.md](../../../Schemes/Group A - FHE Based PIR/onionpirv2_2025/onionpirv2_2025_notes.md#performance-benchmarks)
+1. **XPIR (2014)** — Table 2, Table 3 in [xpir_2014_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2014/xpir_2014_notes.md#performance-benchmarks)
+2. **XPIR (2016)** — Figure 6, Figure 7, Figure 8 in [xpir_2016_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2016/xpir_2016_notes.md#performance-benchmarks)
+3. **SealPIR** — Figure 9 in [sealpir_2018_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md#performance-benchmarks)
+4. **MulPIR** — Section 5, Appendix A in [mulpir_2019_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/mulpir_2019/mulpir_2019_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
+5. **OnionPIR** — Table 3, Table 4 in [onionpir_2021_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpir_2021/onionpir_2021_notes.md#performance-benchmarks)
+6. **Addra/FastPIR** — Figure 9, Figure 10 in [addra_2021_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/addra_2021/addra_2021_notes.md#performance-benchmarks)
+7. **CwPIR** — Table 7, Table 8 in [cwpir_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/cwpir_2022/cwpir_2022_notes.md#performance-benchmarks)
+8. **Spiral** — Table 3, Table 5 in [spiral_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/spiral_2022/spiral_2022_notes.md#performance-benchmarks)
+9. **FrodoPIR** — Table 6, Table 7 in [frodopir_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/frodopir_2022/frodopir_2022_notes.md#performance-benchmarks)
+10. **ThorPIR** — Table 2 in [thorpir_2024_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
+11. **OnionPIRv2** — Table 2 in [onionpirv2_2025_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpirv2_2025/onionpirv2_2025_notes.md#performance-benchmarks)
 
 </details>
 

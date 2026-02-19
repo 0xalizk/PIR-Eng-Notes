@@ -7,6 +7,7 @@ footnotes section linking each data point back to its notes file.
 
 import os
 from pathlib import Path
+from urllib.parse import quote
 
 from plot_config import GROUP_DIR_NAMES
 from plot_utils import (
@@ -95,7 +96,9 @@ def _make_footnote_entry(idx, scheme, notes_path, output_dir):
             rel = str(notes_path)
         notes_filename = notes_path.name
         # Link to performance-benchmarks section
-        link = f"[{notes_filename}]({rel}#performance-benchmarks)"
+        # URL-encode spaces so links render inside <details> HTML blocks
+        rel_encoded = quote(rel, safe="/.#")
+        link = f"[{notes_filename}]({rel_encoded}#performance-benchmarks)"
     else:
         link = "(notes file not found)"
 
