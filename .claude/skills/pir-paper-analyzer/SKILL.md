@@ -63,7 +63,7 @@ Some papers are filed in one group but functionally belong to another. Route by 
 
 ### Step 3 — Follow the Quick Start
 
-1. Locate the PDF: use `Glob` with `Papers/**/*.pdf` or a specific group path.
+1. Locate the PDF: use `Glob` with `Schemes/**/*.pdf` or a specific group path.
 2. **Classify the paper** (§1) — identify archetype(s) before reading.
 3. Read pages 1–2 to identify section structure and total page count (Pass 0). If section headings are not visible (common for papers with 5+ page introductions), scan pages at intervals (e.g., 5, 10, 15) to find section boundaries.
 4. Follow the reading strategy for the paper's archetype (§2).
