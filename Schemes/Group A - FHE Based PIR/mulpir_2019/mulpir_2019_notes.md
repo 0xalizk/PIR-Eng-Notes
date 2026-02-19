@@ -1,5 +1,7 @@
 ## MulPIR — Engineering Notes
 
+*The underlying paper is "Compressible FHE with Applications to PIR" by Gentry & Halevi [[1]](https://eprint.iacr.org/2019/733). The name "MulPIR" was coined by Ali et al. [[2]](https://eprint.iacr.org/2019/1483), who implemented this paper's multiplicative-homomorphism PIR construction using SEAL.*
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [Compressible FHE with Applications to PIR](https://eprint.iacr.org/2019/733) (2019) |

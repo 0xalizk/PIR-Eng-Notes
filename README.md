@@ -70,4 +70,4 @@
 | 2025 [DistributionalPIR](Schemes/Group%20X%20-%20Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md) | Distribution-dependent PIR model + compiler framework |
 | 2019 [KeywordPIR](Schemes/Group%20X%20-%20Extensions/keywordpir_2019/KeywordPIR_2019_notes.md)[^1] | Comparison of SealPIR, MulPIR, Gentry-Ramzan for keyword PIR |
 
-[^1]: TODO: need to extract MulPIR [[1](https://github.com/apple/swift-homomorphic-encryption)] [[2](https://github.com/tlepoint/fhe.rs)] as a separate scheme from KeywordPIR paper
+[^1]: The "MulPIR" referenced in KeywordPIR is the Ali et al. [[1]](https://eprint.iacr.org/2019/1483) implementation of Gentry & Halevi's "Compressible FHE with Applications to PIR" [[2]](https://eprint.iacr.org/2019/733), which is already covered under [mulpir_2019](Schemes/Group%20A%20-%20FHE%20Based%20PIR/mulpir_2019/mulpir_2019_notes.md#mulpir--engineering-notes). Open-source implementations: [[3](https://github.com/apple/swift-homomorphic-encryption)] [[4](https://github.com/tlepoint/fhe.rs)].
