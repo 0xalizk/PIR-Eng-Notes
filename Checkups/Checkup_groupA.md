@@ -1,4 +1,4 @@
-# Group A Footnote Validation Report
+## Group A Footnote Validation Report
 
 **Date:** 2026-02-19
 **Scope:** All 11 engineering notes in Group A (FHE-Based PIR)
@@ -6,7 +6,7 @@
 
 ---
 
-## Summary
+### Summary
 
 | # | Paper | Notes File | Total FN | Correct | Minor | Incorrect |
 |---|-------|-----------|----------|---------|-------|-----------|
@@ -27,39 +27,39 @@
 
 ---
 
-## INCORRECT Findings (5 total)
+### INCORRECT Findings (5 total)
 
 These are factual errors that misrepresent what the cited paper says.
 
-### 1. SealPIR — [^36]: Cites external document, not the SealPIR paper
+#### 1. SealPIR — [^36]: Cites external document, not the SealPIR paper
 
 - **Statement in notes:** "Oblivious expansion (Expand): The core technique of using substitution/automorphism operations to expand a single ciphertext into a selection vector. Adopted by OnionPIR, Spiral, YPIR, WhisPIR, NPIR, and essentially all subsequent FHE-based PIR schemes."
 - **Cited location:** "Section 7.5 of SKILL taxonomy"
 - **What the PDF actually says:** The SealPIR paper has no Section 7.5. The paper's sections go from 7.4 (Case study: Pung) to Section 8 (Discussion). The paper was published in 2018 and could not reference OnionPIR (2021), Spiral (2022), WhisPIR, YPIR, or NPIR.
 - **Problem:** The footnote cites a "SKILL taxonomy" document that is external to the SealPIR paper. This is not a valid citation to the PDF under review. The adoption claim is editorially reasonable but cannot be sourced to a 2018 paper.
 
-### 2. XPIR-2016 — [^44]: Fabricated data point for Netflix use-case
+#### 2. XPIR-2016 — [^44]: Fabricated data point for Netflix use-case
 
 - **Statement in notes:** "720p at 30fps (400 Kbit/s needed): User can hide choice among 35,000 movies. 720p at 60fps (800 Kbit/s needed): Hide choice among ~8,000 movies. 1024p at 60fps (2 Mbit/s needed): Hide choice among ~8,000 movies with higher quality."
 - **Cited location:** p. 15, Section 4.1, "The Netflix Use-case"
 - **What the PDF actually says:** The paper provides exactly **two** data points: (1) 35K movies at 720p-30fps, and (2) 8K movies at **1024p-60fps**. The paper says: "hiding his choice among just 8K movies (as in [46]) he can get a stream at 1024p-60fps."
 - **Problem:** The notes insert a fabricated middle row "720p at 60fps (800 Kbit/s): ~8,000 movies" that does not appear in the paper. The paper only maps 8K movies to 1024p-60fps, not 720p-60fps. Three scenarios are presented when the paper only provides two.
 
-### 3. Addra/FastPIR — [^24]: Wrong query time attributed to FastPIR
+#### 3. Addra/FastPIR — [^24]: Wrong query time attributed to FastPIR
 
 - **Statement in notes:** "Client Query time: 1.4 ms" (in the Core Metrics table for FastPIR at n=32,768, m=96B)
 - **Cited location:** Paper p.13, Figure 10
 - **What the PDF actually says:** Figure 10 shows that FastPIR (F, d=1) Query CPU time at n=32,768 is **21.3 ms**, not 1.4 ms. The value 1.4 ms belongs to **SealPIR (d=2)**.
 - **Problem:** The notes attribute SealPIR's query time (1.4 ms) to FastPIR. The correct value is 21.3 ms — a 15x discrepancy. Notably, the notes themselves correctly report 21.3 ms in the detailed benchmark table further down, creating an internal inconsistency.
 
-### 4. CwPIR — [^30]: "10x speedup" claim contradicted by cited numbers
+#### 4. CwPIR — [^30]: "10x speedup" claim contradicted by cited numbers
 
 - **Statement in notes:** "The constant-weight operator with small k achieves up to 10x speedup over folklore (e.g., n=2^16: 0.038s vs 0.54s for k=1/8 log_2 n at N=8192)."
 - **Cited location:** Table 4, p. 9
 - **What the PDF actually says:** Table 4 shows Plain Folklore at N=8192, n=2^16 has runtime 0.54s. Plain CW with k=1/8 log_2 n at N=8192 has runtime 0.038s. The ratio is 0.54/0.038 = **~14x**.
 - **Problem:** The notes claim "up to 10x speedup" but the specific example cited actually demonstrates ~14x. The "10x" figure comes from the abstract's general claim, but when paired with this particular data point it becomes inconsistent. The cited numbers are correct; the summary characterization is wrong.
 
-### 5. ThorPIR — [^10]: Bits/bytes unit error causes ~8x bandwidth discrepancy
+#### 5. ThorPIR — [^10]: Bits/bytes unit error causes ~8x bandwidth discrepancy
 
 - **Statement in notes:** "Online bandwidth is dominated by the Q = 1024 partition indices and Q returned elements. Each element is 360 bits = 45 bytes."
 - **Cited location:** Table 2 (p.27)
@@ -68,9 +68,9 @@ These are factual errors that misrepresent what the cited paper says.
 
 ---
 
-## MINOR Issues by Paper
+### MINOR Issues by Paper
 
-### SealPIR (2018) — 7 minor issues
+#### SealPIR (2018) — 7 minor issues
 
 **[^3]** — Wrong page number. Figure 2 appears on page 3, not page 4. Values and noise characterizations are correct.
 
@@ -88,7 +88,7 @@ These are factual errors that misrepresent what the cited paper says.
 
 ---
 
-### XPIR-2014 (2014) — 4 minor issues
+#### XPIR-2014 (2014) — 4 minor issues
 
 **[^1]** — Variable transcription error. The footnote quotes the exponent as c^{2^**i**} but the paper uses c^{2^**d**}. The notes body text is correct; only the footnote quote has the wrong variable.
 
@@ -100,7 +100,7 @@ These are factual errors that misrepresent what the cited paper says.
 
 ---
 
-### XPIR-2016 (2016) — 3 minor issues
+#### XPIR-2016 (2016) — 3 minor issues
 
 **[^36]** — Page imprecision. The 60-bit performance numbers (700 Mbit/s query generation, 5 Gbit/s decryption) appear on p. 11, not p. 12. The 120-bit numbers are on p. 12.
 
@@ -110,7 +110,7 @@ These are factual errors that misrepresent what the cited paper says.
 
 ---
 
-### MulPIR (2019) — 4 minor issues
+#### MulPIR (2019) — 4 minor issues
 
 **[^6]** — Dimension notation error. The notes write H dimensions as "n_0(t-1) x n_0*t" but since n_0 = r(t-1), this expands to r(t-1)^2 x r(t-1)*t — not what the paper describes. The correct dimensions are simply n_0 x n_2 (equivalently r(t-1) x rt). The rate conclusion "(t-1)/t" is correct.
 
@@ -122,7 +122,7 @@ These are factual errors that misrepresent what the cited paper says.
 
 ---
 
-### OnionPIR (2021) — 7 minor issues
+#### OnionPIR (2021) — 7 minor issues
 
 **[^circular]** — Imprecise line reference. Only Algorithm 2 line 13 uses A = RGSW(-s); line 12 is a plain assignment. Additionally, circular security is an editorial inference — the paper never explicitly mentions it.
 
@@ -140,13 +140,13 @@ These are factual errors that misrepresent what the cited paper says.
 
 ---
 
-### OnionPIRv2 (2025) — 1 minor issue
+#### OnionPIRv2 (2025) — 1 minor issue
 
 **[^10]** — Omitted qualifier. The paper says the database "becomes larger by **roughly** a factor of log q / log t" but the footnote omits "roughly."
 
 ---
 
-### Addra/FastPIR (2021) — 3 minor issues
+#### Addra/FastPIR (2021) — 3 minor issues
 
 **[^3]** — Wrong page and section. The quoted text about per-hop latency appears on p. 1 (Introduction), not p. 2 Section 2.1.
 
@@ -156,7 +156,7 @@ These are factual errors that misrepresent what the cited paper says.
 
 ---
 
-### CwPIR (2022) — 8 minor issues
+#### CwPIR (2022) — 8 minor issues
 
 **[^1]** — Imprecise attribution. The notes attribute "extra rounds of communication" to both Chor et al. and Ali et al., but the Ali et al. hashing approach does not necessarily require extra rounds.
 
@@ -176,7 +176,7 @@ These are factual errors that misrepresent what the cited paper says.
 
 ---
 
-### Spiral (2022) — 4 minor issues
+#### Spiral (2022) — 4 minor issues
 
 **[^2]** — "Broad range" slightly overstated. The abstract uses "broad range" but Table 2 only shows three specific configurations.
 
@@ -188,7 +188,7 @@ These are factual errors that misrepresent what the cited paper says.
 
 ---
 
-### FrodoPIR (2022) — 3 minor issues
+#### FrodoPIR (2022) — 3 minor issues
 
 **[^ci]** — Wrong page for quote. The quote "the offline phase of the protocol is performed by the server alone, completely independent of the number of clients or queries" appears on p. 2, not Section 2.3 p. 7 as cited.
 
@@ -198,13 +198,13 @@ These are factual errors that misrepresent what the cited paper says.
 
 ---
 
-### ThorPIR (2024) — 1 minor issue
+#### ThorPIR (2024) — 1 minor issue
 
 **[^8]** — Bits/bytes unit confusion. The footnote writes "360 bits = 2880 bits" which is mathematically incoherent. The correct statement is "360 **bytes** = 2880 bits." The downstream calculation (2880/3 = 960 ciphertexts) is correct, confirming the intended value. This same error appears in the notes metadata table.
 
 ---
 
-## Issue Distribution
+### Issue Distribution
 
 | Category | Count | Examples |
 |----------|-------|---------|
@@ -221,7 +221,7 @@ These are factual errors that misrepresent what the cited paper says.
 
 ---
 
-## Recommendations
+### Recommendations
 
 **Priority fixes (INCORRECT — 5 items):**
 1. SealPIR [^36]: Replace SKILL taxonomy citation with a paper-sourced reference or mark as editorial

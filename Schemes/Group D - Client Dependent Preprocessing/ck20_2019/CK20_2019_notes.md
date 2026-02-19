@@ -1,4 +1,4 @@
-# CK20 — Engineering Notes
+## CK20 — Engineering Notes
 
 | Field | Value |
 |-------|-------|
@@ -11,7 +11,7 @@
 | **Rounds (online)** | 1 (single round: client sends query, server responds) |
 | **Record-size regime** | Single-bit retrieval (DB in {0,1}^n); multi-bit via parallel repetition (Remark 37, Appendix C.1) |
 
-## Lineage
+### Lineage
 
 | Field | Value |
 |-------|--------|
@@ -22,16 +22,16 @@
 
 [^1]: Abstract (p.1): "We present the first protocols for private information retrieval that allow fast (sublinear-time) database lookups without increasing the server-side storage requirements."
 
-## Core Idea
+### Core Idea
 
 CK20 presents the first PIR protocols with *sublinear* online server time while requiring *no extra server storage* beyond the database itself. Prior work either required the server to scan the entire database per query (Omega(n) time) or required the server to store a blowup of the database in encoded form.[^2] CK20 achieves this by introducing a new cryptographic primitive called a *puncturable pseudorandom set*, which allows the client to compactly represent a pseudorandom subset S of the database that can be "punctured" at any element to hide the punctured element's identity. In the offline phase, the server precomputes parities of shifted versions of S; in the online phase, the client sends a punctured set key, and the server computes the parity of the remaining elements in sublinear time. A lower bound (Theorem 23) proves these constructions achieve the optimal communication-time tradeoff (up to polylog factors) for PIR schemes where the server stores the database unencoded.[^3]
 
 [^2]: Section 1 (p.2): "In particular, in all existing PIR schemes, the work at the servers grows linearly with the database size."
 [^3]: Section 6 (p.28): "(C+1)(T+1) = Omega-tilde(n)" for any offline/online PIR scheme with C bits of offline communication and T online server probes.
 
-## Formal Definitions
+### Formal Definitions
 
-### Definition 8 — Offline/Online PIR (Two-Server)
+#### Definition 8 — Offline/Online PIR (Two-Server)
 
 An offline/online PIR scheme is a tuple Pi = (Setup, Hint, Query, Answer, Reconstruct) of five efficient algorithms:[^4]
 
@@ -48,7 +48,7 @@ An offline/online PIR scheme is a tuple Pi = (Setup, Hint, Query, Answer, Recons
 [^4]: Definition 8 (p.17): Formal syntax of offline/online PIR.
 [^5]: Definition 8 (p.17): Security definition in terms of query distribution indistinguishability.
 
-### Definition 40 — Multi-Query Offline/Online PIR (Appendix D)
+#### Definition 40 — Multi-Query Offline/Online PIR (Appendix D)
 
 Extends Definition 8 to support polynomially many adaptive queries from a single offline phase:[^6]
 
@@ -63,21 +63,21 @@ Extends Definition 8 to support polynomially many adaptive queries from a single
 [^6]: Definition 40 (p.52): Formal syntax of multi-query offline/online PIR.
 [^7]: Games 41-42, Fig. 3 (p.54): Left-server and right-server security games.
 
-### Definition 46 — Single-Server Offline/Online PIR (Appendix E)
+#### Definition 46 — Single-Server Offline/Online PIR (Appendix E)
 
 Identical syntax to Definition 8 but with a single-server security notion: the joint distribution of (q_h, q) must be computationally indistinguishable across different query indices i.[^8]
 
 [^8]: Definition 46 (p.61): Single-server security requiring indistinguishability of the combined offline/online view.
 
-### Relationship to standard PIR
+#### Relationship to standard PIR
 
 Offline/online PIR is a *strict generalization* of standard PIR: any standard two-server PIR scheme with information-theoretic security can be cast as an offline/online scheme (Remark 10), but the online server's time would be Omega(n).[^9] CK20 achieves the first offline/online constructions where the online server runs in o(n) time.
 
 [^9]: Remark 10 (p.18): Any two-server perfectly secure PIR scheme can be viewed as an offline/online scheme.
 
-## Novel Primitives / Abstractions
+### Novel Primitives / Abstractions
 
-### Puncturable Pseudorandom Set
+#### Puncturable Pseudorandom Set
 
 | Field | Detail |
 |-------|--------|
@@ -98,7 +98,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 [^14]: Section B.2 (p.39): Efficiency analysis of Construction 4 from puncturable PRF.
 [^15]: Section 2 (p.12-13): "A puncturable pseudorandom set is very closely related to a puncturable pseudorandom function."
 
-### Sparse Distributed Point Functions (Appendix G)
+#### Sparse Distributed Point Functions (Appendix G)
 
 | Field | Detail |
 |-------|--------|
@@ -117,7 +117,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 [^19]: Appendix G (p.67): "Unfortunately, such a construction is impossible" (both sides sparse), citing BIM04.
 [^20]: Appendix G (p.67): Discussion of the relaxation from standard DPFs to sparse DPFs.
 
-## Cryptographic Foundation
+### Cryptographic Foundation
 
 | Layer | Detail |
 |-------|--------|
@@ -127,7 +127,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 
 [^21]: Appendix C.2 (p.49-50): Failure probability analysis. Each read fails when j = bottom or i_punc != i, with combined probability at most (s-1)/n + 1/n <= 1/2 for s <= n/2.
 
-## Key Data Structures
+### Key Data Structures
 
 - **Database:** x in {0,1}^n stored in unmodified form on both servers (two-server) or the single server. No encoding, no extra storage.
 - **Client hint (single-query):** A set key sk in K, shift vector delta = (delta_1, ..., delta_m) in [n]^m, and parity bits h = (h_1, ..., h_m) in {0,1}^m, where m = (n/s) log n. Total client storage: O(lambda * kappa + (lambda * n / s(n)) * log^2 n) bits.[^22]
@@ -136,7 +136,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 [^22]: Appendix C.2 (p.50): Client storage claim for the single-query scheme.
 [^23]: Appendix D.2 (p.58): Client stores m = O-tilde(n^{1/2}) puncturable pseudorandom set keys.
 
-## Variants
+### Variants
 
 | Variant | Key Difference | Offline Comm | Online Comm | Online Server Time | Assumption | Ref |
 |---------|---------------|-------------|-------------|-------------------|------------|-----|
@@ -148,9 +148,9 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 | Single-server FHE (Thm 22) | Uses FHE to simulate both servers; optimal tradeoff | O-tilde_lambda(sqrt(n)) | O-tilde_lambda(sqrt(n)) | O-tilde_lambda(sqrt(n)) | FHE | p.27 |
 | Simple single-server (Remark 21 / App E.2) | Very simple; LHE only; linear online bit operations but no public-key ops online | O(sqrt(n)) total | O(sqrt(n)) total | O(n) bit ops, no PK ops | LHE | p.25, p.62 |
 
-## Protocol Phases
+### Protocol Phases
 
-### Construction 16: Two-Server Single-Query PIR
+#### Construction 16: Two-Server Single-Query PIR
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -164,7 +164,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 
 [^24]: Construction 16 (p.20): Full specification of two-server PIR with sublinear online time.
 
-### Construction 44: Two-Server Multi-Query PIR
+#### Construction 44: Two-Server Multi-Query PIR
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -179,7 +179,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 
 [^25]: Construction 44 (p.56): Full specification of multi-query offline/online PIR.
 
-## Two-Server Protocol Details
+### Two-Server Protocol Details
 
 | Aspect | Offline Server (Left) | Online Server (Right) |
 |--------|----------------------|----------------------|
@@ -190,9 +190,9 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 | **Security guarantee** | Statistical (two-server variants) or computational (multi-query) | Statistical or computational |
 | **Non-collusion assumption** | Required -- neither server learns the other's query |
 
-## Correctness Analysis
+### Correctness Analysis
 
-### Option B: Probabilistic Correctness
+#### Option B: Probabilistic Correctness
 
 | Field | Detail |
 |-------|--------|
@@ -210,9 +210,9 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 [^28]: Appendix D.2 (p.57): Multi-query failure probability via union bound.
 [^29]: Appendix C.2 (p.49-50): "By running lambda instances of the scheme in parallel, using independent randomness for each instance, we can drive the overall failure probability (when the puncturable pseudorandom set is perfectly secure) to 2^{-lambda}."
 
-## Complexity
+### Complexity
 
-### Core metrics
+#### Core metrics
 
 | Metric | Asymptotic | Concrete | Phase |
 |--------|-----------|---------|-------|
@@ -221,7 +221,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 | Online server computation | O-tilde_lambda(sqrt(n)) | N/A (no implementation) | Online |
 | Client online computation | O-tilde(s(n) + n/s(n)) * poly(lambda) = O-tilde_lambda(sqrt(n)) | N/A (no implementation) | Online |
 
-### Preprocessing metrics
+#### Preprocessing metrics
 
 | Metric | Asymptotic (Thm 11 / Thm 14) | Concrete | Phase |
 |--------|------|---------|-------|
@@ -233,7 +233,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 
 [^30]: Theorem 11 (p.18) and Theorem 14 (p.19): Main complexity results for two-server constructions.
 
-### Preprocessing Characterization
+#### Preprocessing Characterization
 
 | Aspect | Value |
 |--------|-------|
@@ -244,7 +244,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 
 [^31]: Section 4.1 (p.23): Hint refresh mechanism in the multi-query scheme.
 
-## Lower Bounds
+### Lower Bounds
 
 | Field | Detail |
 |-------|--------|
@@ -263,7 +263,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 [^35]: Section 6 (p.28): "The offline/online PIR schemes we construct in Section 3 achieve the optimal trade-off, up to log factors."
 [^36]: Remark 24 (p.28): "The lower bound of Theorem 23 does not preclude schemes that achieve better communication and lower bound by virtue of having the servers store some form of encoding of the database."
 
-## Performance Benchmarks
+### Performance Benchmarks
 
 No implementation. Analytical estimates:
 
@@ -285,7 +285,7 @@ No implementation. Analytical estimates:
 [^37]: Remark 12 (p.18): "It is possible to make these hidden factors as small as O(lambda * log n)."
 [^38]: Remark 13 (p.18): Trading communication for online time.
 
-## Single-Server Construction (Theorem 20, Section 5)
+### Single-Server Construction (Theorem 20, Section 5)
 
 The single-server scheme converts the two-server construction into a single-server setting using linearly homomorphic encryption (LHE):[^39]
 
@@ -299,7 +299,7 @@ The single-server scheme converts the two-server construction into a single-serv
 [^40]: Section 5.1 (p.27): Rebalancing step using the CGKS95 technique.
 [^41]: Theorem 22 (p.27): FHE-based single-server scheme achieving optimal bounds.
 
-## Comparison with Prior Work (Table 2, p.6)
+### Comparison with Prior Work (Table 2, p.6)
 
 Table 2 in the paper provides a comprehensive comparison. Key entries for CK20's constructions (rows marked as "Thm. 11", "Thm. 14", "Thm. 17"):
 
@@ -317,14 +317,14 @@ All columns omit poly(lambda) factors and polylog(n) factors.[^42]
 
 [^42]: Table 2 (p.6): Comparison table. "All columns omit poly(lambda) factors, for security parameter lambda, and also low-order polylog(n) factors."
 
-## Portable Optimizations
+### Portable Optimizations
 
 - **Puncturable pseudorandom sets as a building block:** The primitive is independently useful wherever one needs a compact representation of a pseudorandom set that can be privately punctured. Potential applications beyond PIR include anonymous credentials, private set membership, and oblivious RAM.
 - **Shift-based set derandomization:** The technique of generating multiple sets from a single base set via random shifts (Section 1.5, p.10) reduces communication from O(n log n) (sending explicit sets) to O-tilde(sqrt(n)), and is reusable in any scheme based on parity hints over random subsets.
 - **Sparse DPF abstraction (Appendix G):** The sparse DPF framework provides a clean interface for future constructions: any primitive satisfying the sparse DPF interface yields an offline/online PIR scheme. Improving sparse DPF key sizes would directly improve PIR communication.
 - **Hint refresh via puncture-and-replace (Section 4.1):** The multi-query scheme's technique of refreshing consumed hints by generating a new set constrained to contain the queried index (GenWith) and obtaining the new parity from the left server is reused in later Group D schemes (Piano, Plinko, TreePIR).
 
-## Deployment Considerations
+### Deployment Considerations
 
 - **Database updates:** Not addressed. The parity hints become stale if the database changes; the entire offline phase would need re-execution.
 - **Extra server storage:** Zero -- a key advantage over BIM04/DIO01-style preprocessing.
@@ -333,7 +333,7 @@ All columns omit poly(lambda) factors and polylog(n) factors.[^42]
 - **Cold start suitability:** No -- requires offline phase with O-tilde(n) server computation before any query.
 - **Amortization crossover (multi-query):** The multi-query scheme (Theorem 17) amortizes the linear offline computation over polynomially many queries. Each online query costs O-tilde(sqrt(n)), so the amortized per-query cost approaches O-tilde(sqrt(n)) after sufficiently many queries.
 
-## Key Tradeoffs & Limitations
+### Key Tradeoffs & Limitations
 
 - **Theory-only:** No implementation or concrete parameter analysis. All bounds include unspecified poly(lambda, log n) factors.
 - **Single-query vs multi-query:** The basic construction (Section 3) requires re-running the full offline phase per query. The multi-query extension (Section 4) requires PRP assumptions and the PRP-based puncturable set construction (Theorem 7) with fast InSet, adding complexity.
@@ -341,7 +341,7 @@ All columns omit poly(lambda) factors and polylog(n) factors.[^42]
 - **Communication vs standard PIR:** Online communication is Omega-tilde(sqrt(n)), which is higher than polylog(n) communication of standard cPIR (CMS99). The lower bound (Theorem 23) proves this is inherent for schemes with sublinear online time and no extra server storage.
 - **Offline phase is linear:** The offline server always performs Omega(n) work, scanning the entire database. This is unavoidable by the BIM04 lower bound. The benefit is that this work happens *before* the client decides which bit to read.
 
-## Open Problems
+### Open Problems
 
 The paper lists the following open questions (Section 7, p.29):[^43]
 
@@ -352,7 +352,7 @@ The paper lists the following open questions (Section 7, p.29):[^43]
 
 [^43]: Section 7 (p.29): Open questions.
 
-## Uncertainties
+### Uncertainties
 
 - The paper uses "n" exclusively for the database size in bits (n = total bits, not N records of w bits). This is consistent with multi-server PIR conventions but differs from Group A/B/C papers that typically use N for the number of records.
 - Remark 12 (p.18) states that the poly(lambda, log n) hidden factors "can be made as small as O(lambda log n)" but does not provide a worked example with concrete parameters.

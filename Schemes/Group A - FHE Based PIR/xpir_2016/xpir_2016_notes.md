@@ -1,4 +1,4 @@
-# XPIR — Engineering Notes
+## XPIR — Engineering Notes
 
 | Field | Value |
 |-------|-------|
@@ -11,7 +11,7 @@
 | **Rounds (online)** | 1 (non-interactive: client sends query, server returns reply) |
 | **Record-size regime** | Large (>=10 Mbit elements in throughput benchmarks); parameterized |
 
-## Lineage
+### Lineage
 
 | Field | Value |
 |-------|--------|
@@ -20,18 +20,18 @@
 | **Superseded by** | SealPIR [Group A] introduced query compression via oblivious expansion, which XPIR lacks. XPIR's NTTTools library and optimization ideas influenced later work. |
 | **Concurrent work** | Doroz, Sunar, Hammouri "Bandwidth Efficient PIR from NTRU" (ePrint 2014/232, WAHC'14) — NTRU-based, different authors and techniques. Community calls that paper "XPIR-2014." |
 
-## Core Idea
+### Core Idea
 
 Prior cPIR schemes based on number-theoretic assumptions (Paillier, RSA) process the database at ~1 Mbit/s, making trivial full-database download faster in almost all settings.[^1] XPIR replaces the underlying cryptosystem with a Ring-LWE-based additively homomorphic encryption scheme that achieves 5–20 Gbit/s server-side processing throughput on a commodity laptop, making cPIR faster than trivial download for databases with more than ~10 elements over a 100 Mbit/s connection.[^2] The system includes an auto-optimizer that jointly selects encryption parameters (N, q), PIR parameters (recursion depth d, aggregation alpha), and factors in upload/download bandwidth to minimize round-trip time or other user-defined cost functions.[^3]
 
-## System Context
+### System Context
 
 - **Application:** General-purpose cPIR library with four evaluated use-cases: Netflix-like private video streaming (static DB), IPTV (dynamic DB), Match.com-like private keyword search (static DB), NYSE stock market private data retrieval (dynamic DB).[^4]
 - **Key constraint driving PIR design:** Total round-trip time (query generation + upload + server processing + download + decryption) must beat trivial full-database download for the given network setting.[^5]
 - **System architecture:** Single server (MSI GT60 laptop, Core i7-3630QM, 8 GB DDR3 RAM) with client on the same or remote machine. Network simulated at ADSL (1 Mbps up / 20 Mbps down) and FTTH (100 Mbps symmetric).[^6]
 - **Where PIR fits:** The XPIR library is the complete system — it includes the Ring-LWE cryptosystem, the PIR protocol, and the auto-optimizer as a single GPLv3 package.[^7]
 
-## Cryptographic Foundation
+### Cryptographic Foundation
 
 | Layer | Detail |
 |-------|--------|
@@ -41,21 +41,21 @@ Prior cPIR schemes based on number-theoretic assumptions (Paillier, RSA) process
 | **Key structure** | Secret key s sampled from chi (error distribution) over R_q. Public key pk = (pk1, pk2) derived via SKE.Encrypt(s, 0). Randomness from Salsa20/20 CSPRNG (up to 256-bit security).[^11] |
 | **Correctness condition** | Decryption recovers m = e mod t where e = b - a*s. Correct if accumulated noise stays below the plaintext modulus t. Maximum number of additions h_a is a parameter to ParamGen.[^12] |
 
-## Key Data Structures
+### Key Data Structures
 
 - **Database:** n elements of l bits each, optionally reshaped into a d-dimensional hypercube of side length ceil(n^{1/d}) via recursion.[^13]
 - **Query:** d vectors of ceil(n^{1/d}) ciphertexts each (one per recursion dimension). Each ciphertext encrypts 0 except at the target index position, which encrypts 1.[^14]
 - **Reply:** A vector of ceil(l / l_0) ciphertexts, where l_0 is the absorbable plaintext bits per ciphertext.[^15]
 - **NTT-CRT representation:** All polynomials (keys, query elements, database chunks) stored in Number-Theoretic Transform + Chinese Remainder Theorem form for O(N log N) polynomial multiplication instead of O(N^2).[^16]
 
-## Database Encoding
+### Database Encoding
 
 - **Representation:** Flat array of n elements, each split into chunks of l_0 bits (plaintext capacity per ciphertext). With recursion (d > 1), reshaped into a d-dimensional array of side ceil(n^{1/d}).[^17]
 - **Record addressing:** Multi-dimensional index decomposition (i_1, ..., i_d) in base ceil(n^{1/d}).[^18]
 - **Preprocessing required:** For static databases, elements are pre-imported into NTT-CRT form at 5 Gbit/s (laptop) to 10 Gbit/s (high-end server). This is the main bottleneck for the preprocessing phase.[^19]
 - **Aggregation:** Groups of alpha elements can be aggregated into a single "super-element" of size l * alpha, reducing n to ceil(n/alpha) at the cost of increased reply size.[^20]
 
-## Protocol Phases
+### Protocol Phases
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -68,7 +68,7 @@ Prior cPIR schemes based on number-theoretic assumptions (Paillier, RSA) process
 | **Reply Send** | Server | Send reply vector R = (R_1, ..., R_{ceil(l/l_0)}) | ceil(l/l_0) * ciphertext_size (down) | Per query |
 | **Reply Extract** | Client | Decrypt d encryption layers; recover element at index i | -- | Per query |
 
-## Auto-Optimization Algorithm
+### Auto-Optimization Algorithm
 
 The auto-optimizer is XPIR's signature engineering contribution. It runs on the client after receiving the database shape (n, l) and network bandwidth (U, D) from the server.[^3]
 
@@ -101,7 +101,7 @@ The auto-optimizer is XPIR's signature engineering contribution. It runs on the 
 
 **Runtime:** The optimizer runs in a few milliseconds for any database configuration.[^23]
 
-## Encryption Parameter Sets
+### Encryption Parameter Sets
 
 | Parameters (N, q bits) | Max h_a (sums) | Plaintext capacity | Ciphertext size | Expansion factor F | Security (bits) |
 |------------------------|----------------|-------------------|-----------------|--------------------|-----------------|
@@ -113,17 +113,17 @@ The auto-optimizer is XPIR's signature engineering contribution. It runs on the 
 
 **Security notes:** For constant modulus q, security increases exponentially with polynomial degree N while computational cost increases only (almost) linearly. Upgrading from (2048, 120) to (4096, 120) roughly doubles cost but increases theoretical security to 335 bits (capped at 256 by the PRNG).[^25]
 
-## NTTTools Library
+### NTTTools Library
 
 XPIR's custom polynomial arithmetic library (NTTTools) is a key engineering contribution, built without external dependencies (no NTL, no GMP except for decryption lifting coefficients).[^26]
 
-### NTT-CRT Representation
+#### NTT-CRT Representation
 
 - **NTT (Number-Theoretic Transform):** FFT analog over finite fields for polynomial multiplication in O(N log N). Uses Harvey's NTT algorithm, restricted to power-of-two polynomial degrees.[^27]
 - **CRT (Chinese Remainder Theorem):** Represents large modulus q as a product of small primes, enabling native 64-bit arithmetic. Multiplication cost is linear in log(q) (number of CRT components).[^28]
 - **Combined NTT-CRT:** All polynomials stored in evaluation-domain, coordinate-wise representation. Encryption requires only 3 NTT-CRT transforms plus basic operations. Decryption requires inverse NTT plus CRT lifting.[^29]
 
-### Pre-computed Newton Coefficients
+#### Pre-computed Newton Coefficients
 
 A novel optimization for modular multiplication when one operand (the query element) is reused many times.[^30]
 
@@ -132,7 +132,7 @@ A novel optimization for modular multiplication when one operand (the query elem
 - **Cost:** Two integer multiplications + one conditional subtraction (replacing the costly division).
 - **Impact:** In the PIR reply generation, the query elements are the reused multipliers. Pre-computation is amortized across all database element absorptions.[^30]
 
-### Performance Comparison: NTTTools vs Double-CRT (HElib)
+#### Performance Comparison: NTTTools vs Double-CRT (HElib)
 
 **Pre-processing (NTT transforms):**[^31]
 
@@ -159,7 +159,7 @@ NTTTools is 2-3x faster for processing and ~10x faster for pre-processing, mainl
 
 **Memory:** NTTTools uses 8 KB per polynomial (degree 1024, 60-bit coefficients) by default, plus 2x with pre-computed quotients. Double-CRT uses ~40 KB per object for large amounts.[^33]
 
-## PIR Pre-processing and Reply Generation Throughput
+### PIR Pre-processing and Reply Generation Throughput
 
 | Parameters | (1024, 60) | (2048, 120) | (4096, 120) |
 |------------|-----------|-------------|-------------|
@@ -173,7 +173,7 @@ NTTTools is 2-3x faster for processing and ~10x faster for pre-processing, mainl
 
 **Implication:** After NTT-CRT import, the database is processed at roughly 20 Gbit/s during reply generation. The bottleneck is importing data into NTT-CRT form (~5 Gbit/s). For dynamic databases where import cannot be done ahead of time, processing is limited by the import phase to ~5 Gbit/s.[^35]
 
-## Encryption and Decryption Performance
+### Encryption and Decryption Performance
 
 For polynomial degree 4096 and varying modulus size (Figure 5):[^36]
 
@@ -189,9 +189,9 @@ For polynomial degree 4096 and varying modulus size (Figure 5):[^36]
 - At 60-bit modulus: query generation at 700 Mbit/s, decryption at 5 Gbit/s.
 - At 120-bit modulus: query generation at 850 Mbit/s, decryption at 710 Mbit/s (CRT lifting bottleneck).[^36]
 
-## Complexity
+### Complexity
 
-### Core metrics
+#### Core metrics
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -202,7 +202,7 @@ For polynomial degree 4096 and varying modulus size (Figure 5):[^36]
 | Client computation (decryption) | O(d * l / l_0) decryptions | 710 Mbit/s – 5 Gbit/s depending on modulus [^36] | Online |
 | Throughput (user-perceived) | Depends on n, d, bandwidth | ~15/n Gbit/s for d=1 (approximate, from Figure 6) [^37] | Online |
 
-### FHE-specific metrics
+#### FHE-specific metrics
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -210,15 +210,15 @@ For polynomial degree 4096 and varying modulus size (Figure 5):[^36]
 | Multiplicative depth | 0 (additive-only HE; no ciphertext-ciphertext multiplication) | 0 | -- |
 | Recursion depth d | 1 or 2 (chosen by optimizer) | d=1 best for throughput; d=2 best for latency with n >= 1000 [^37] | -- |
 
-## Performance Benchmarks
+### Performance Benchmarks
 
-### Hardware
+#### Hardware
 
 - **Server:** MSI GT60 laptop, Core i7-3630QM 2.67 GHz (mobile), 8 GB DDR3 RAM. Single-core for NTTTools microbenchmarks (Figure 3, 4). All cores (4C/8T) with OpenMP for PIR throughput (Figure 2).[^34][^31]
 - **Storage:** OCZ Vertex 460 SSD (4 Gbit/s contiguous read) for databases exceeding RAM.[^38]
 - **Alternative server:** 10-core Xeon E7-4870 roughly doubles throughput and caps at RAM bandwidth.[^39]
 
-### Static Database Throughput (Figure 6, log-scale, approximate)
+#### Static Database Throughput (Figure 6, log-scale, approximate)
 
 User-perceived throughput of streaming data on FTTH (100 Mbit/s), database files >= 10 Mbit:[^37]
 
@@ -236,7 +236,7 @@ User-perceived throughput of streaming data on FTTH (100 Mbit/s), database files
 - d=2 with recursion: query size proportional to 2*sqrt(n), significant overhead for small n but superior for n >= ~1000.[^40]
 - 256-bit security (4096,120) is only ~10% worse than 91-bit security (2048,120) due to doubled ciphertext capacity.[^25]
 
-### Static Database Latency (Figure 7, log-scale, approximate)
+#### Static Database Latency (Figure 7, log-scale, approximate)
 
 Initial latency before user starts receiving data, on FTTH:[^40]
 
@@ -250,7 +250,7 @@ Initial latency before user starts receiving data, on FTTH:[^40]
 
 Latency grows linearly in n for d=1 and as sqrt(n) for d=2. Upload bandwidth is the main bottleneck.[^40]
 
-### Dynamic Database Throughput (Figure 8, log-scale, approximate)
+#### Dynamic Database Throughput (Figure 8, log-scale, approximate)
 
 Without pre-processing (IPTV-like setting), FTTH 100 Mbit/s:[^41]
 
@@ -258,7 +258,7 @@ Without pre-processing (IPTV-like setting), FTTH 100 Mbit/s:[^41]
 - d=1 at n=100: ~25 Mbit/s (approximate). Sufficient for one 720p-30fps stream per 50 simultaneous clients.[^41]
 - d=2 provides less benefit for dynamic data since the import bottleneck dominates.[^41]
 
-### Round-Trip Time (Figure 10, static data, log-scale, approximate)
+#### Round-Trip Time (Figure 10, static data, log-scale, approximate)
 
 RTT on FTTH, using (1024, 60) parameters, F ~= 6:[^42]
 
@@ -273,7 +273,7 @@ RTT on FTTH, using (1024, 60) parameters, F ~= 6:[^42]
 
 Trivial PIR is faster only for databases with fewer than ~10 elements (where cPIR expansion factor dominates).[^42]
 
-### Concrete Worked Example (from text, exact)
+#### Concrete Worked Example (from text, exact)
 
 n = 10,000 elements, l = 1 Mbit each, parameters (1024, 60), F ~= 6, FTTH, no recursion/aggregation:[^43]
 - Query generation: 0.05 s (at 2.2 Gbit/s)
@@ -284,14 +284,14 @@ n = 10,000 elements, l = 1 Mbit each, parameters (1024, 60), F ~= 6, FTTH, no re
 
 **With d=2 recursion:** Query sending time divided by factor ~50 (from 10,000 ciphertexts to 200), with little impact on other times.[^43]
 
-### Netflix Use-Case (exact from text)
+#### Netflix Use-Case (exact from text)
 
 Database: 100,000 movies (static files, pre-processable with H.265/HEVC compression):[^44]
 - **720p at 30fps** (400 Kbit/s needed): User can hide choice among **35,000 movies**.
 - **720p at 60fps** (800 Kbit/s needed): Hide choice among ~8,000 movies.
 - **1024p at 60fps** (2 Mbit/s needed): Hide choice among ~8,000 movies with higher quality.
 
-### Sniffer Use-Case (exact from text)
+#### Sniffer Use-Case (exact from text)
 
 Private packet sniffer filtering traffic by source IP:[^45]
 - Parameters (1024, 60) for Class B network (65,535 addresses): query size 1 GByte.
@@ -299,14 +299,14 @@ Private packet sniffer filtering traffic by source IP:[^45]
 - **Bimodal traffic distribution** (40% small, 40% MTU, 20% mid): sniffer processes link at **600 Mbit/s** (approximate, from Figure 9).[^46]
 - **Buffered packets** filling a plaintext: sniffer processes link at roughly **3 Gbit/s** for parameters (2048, 120).[^47]
 
-## Application Scenarios
+### Application Scenarios
 
 - **Private video streaming (Netflix-like):** Static pre-processed database. User hides choice among 8K-35K movies depending on quality/framerate tradeoff. Multiple concurrent users are scalable: disk access is synchronous across users, so costs do not increase.[^48]
 - **IPTV:** Dynamic database (cannot pre-process). Single processor handles 100 720p-30fps streams for 50 simultaneous clients, or 5000 streams of distant IP web cameras.[^41]
 - **Private keyword search (Match.com):** Private criteria search over dating profiles. With public pre-filtering by city, latency drops from 10 minutes to 6-60 seconds for 5-keyword queries.[^49]
 - **Private stock market data (NYSE):** Dynamic stream at 5-10 Gbit/s. Latency-oriented: client retrieves company information in ~100 ms, which is acceptable since the data is already 100 ms old.[^50]
 
-## Comparison with Prior Work
+### Comparison with Prior Work
 
 | Metric | XPIR (Ring-LWE) | Paillier cPIR | Trivial PIR (full download) |
 |--------|-----------------|---------------|---------------------------|
@@ -318,14 +318,14 @@ Private packet sniffer filtering traffic by source IP:[^45]
 
 **Key takeaway:** XPIR is the first cPIR system where server processing throughput (5-20 Gbit/s) exceeds typical network bandwidth, making cPIR faster than trivial download for nearly all practical database sizes. The auto-optimizer selects Ring-LWE cPIR in almost all settings; Paillier is chosen only for extremely low bandwidths; trivial download only when bandwidth exceeds ~20 Gbit/s.[^51]
 
-## Portable Optimizations
+### Portable Optimizations
 
 - **Pre-computed Newton quotients for modular multiplication:** Replace costly integer division with pre-computed scaled approximation when one multiplicand is reused. Applicable to any NTT-based polynomial arithmetic where the same polynomial is multiplied against many others (universal for PIR reply generation).[^30]
 - **NTT-CRT mixed representation:** Combine NTT (for polynomial multiplication) with CRT (for handling large moduli in native 64-bit words). Applicable to any Ring-LWE-based system.[^28]
 - **Harvey's NTT algorithm:** Very fast NTT restricted to power-of-two polynomial degrees; applicable to any RLWE scheme with matching degree constraints.[^27]
 - **Auto-optimization framework:** The joint parameter search over (encryption params, recursion depth, aggregation, bandwidth) is applicable to any PIR system with configurable parameters.[^3]
 
-## Implementation Notes
+### Implementation Notes
 
 - **Language / Library:** C++, custom NTTTools library. No external crypto dependencies (no NTL, no GMP except for CRT lifting in decryption). GPLv3 license.[^7]
 - **Polynomial arithmetic:** NTT-based using Harvey's algorithm, restricted to power-of-two polynomial degrees. CRT for large moduli decomposed into 60-bit or 30-bit primes.[^27][^28]
@@ -336,7 +336,7 @@ Private packet sniffer filtering traffic by source IP:[^45]
 - **Randomness:** Salsa20/20 CSPRNG providing up to 256 bits of security.[^11]
 - **Open source:** https://github.com/XPIR-team/XPIR [^7]
 
-## Key Tradeoffs & Limitations
+### Key Tradeoffs & Limitations
 
 - **No query compression:** XPIR sends one ciphertext per database element per recursion dimension. Without recursion (d=1), query size is O(n). Recursion (d=2) reduces this to O(sqrt(n)) but increases reply expansion to F^2. SealPIR's later oblivious expansion technique dramatically improves this.[^14]
 - **Additive-only HE:** The Ring-LWE scheme supports only Sum and Absorb (plaintext * ciphertext), not ciphertext * ciphertext multiplication. This prevents the multiplicative homomorphic operations used in later schemes (GSW external products, BFV SIMD). The advantage is zero multiplicative depth, keeping parameters small.[^9]
@@ -346,7 +346,7 @@ Private packet sniffer filtering traffic by source IP:[^45]
 - **Dynamic database penalty:** Without pre-processing, throughput drops ~6x because NTT-CRT import must be done on-the-fly during reply generation.[^41]
 - **Trivial PIR still wins for n <= ~4 elements** or when available bandwidth exceeds database processing throughput (~20 Gbit/s static, ~5 Gbit/s dynamic).[^52]
 
-## Deployment Considerations
+### Deployment Considerations
 
 - **Database updates:** Static databases can be fully pre-processed. Dynamic databases must import data on-the-fly at ~5 Gbit/s. No incremental update mechanism — the entire database (or changed chunks) must be re-imported.[^35]
 - **Sharding:** Not explicitly addressed, but the authors note that disk access is synchronous for concurrent users, so adding users does not increase per-query I/O cost.[^48]
@@ -356,14 +356,14 @@ Private packet sniffer filtering traffic by source IP:[^45]
 - **Cold start suitability:** Yes (no offline communication beyond catalog exchange), though the performance cache benchmark adds startup latency.
 - **Multiple users:** Synchronous disk access means concurrent users share I/O cost. 12 users hiding choice among 8K movies at 720p-30fps use 8% of one processor.[^48]
 
-## Open Problems (as stated or implied by the authors)
+### Open Problems (as stated or implied by the authors)
 
 - Extending the auto-optimizer to multi-core and distributed server settings.[^54]
 - Combining cPIR with replicated-database PIR for better security/performance tradeoffs (the Popcorn approach cited in [46]).[^55]
 - Adapting XPIR for very small databases (n <= 10) where cPIR expansion factor dominates and trivial download is faster.[^52]
 - Supporting ciphertext-ciphertext multiplication for richer homomorphic operations (addressed by later schemes using BFV/GSW).[^9]
 
-## Uncertainties
+### Uncertainties
 
 - **"n" notation collision:** The paper uses uppercase N for polynomial degree and lowercase n for number of database elements. This is explicitly noted as "unusual notation" on p. 4.[^56] Throughout these notes, N = polynomial degree, n = number of database elements.
 - **Chart-derived values:** All values extracted from Figures 6, 7, 8, 9, 10, 11 are approximate (log-scale charts). Values marked "approximate" throughout.
@@ -373,7 +373,7 @@ Private packet sniffer filtering traffic by source IP:[^45]
 
 ---
 
-## Footnotes
+### Footnotes
 
 [^1]: p. 1, Abstract and Section 1 -- "Sion and Carbunar showed that cPIR schemes were not practical"; p. 2, Section 1.1 -- "a multiplication over a large modulus... restricts both the database size and the throughput."
 

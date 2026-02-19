@@ -1,6 +1,6 @@
-# Group B — Stateless Single-Server PIR
+## Group B — Stateless Single-Server PIR
 
-### HintlessPIR (2023)
+#### HintlessPIR (2023)
 
 | Metric | Asymptotic | Concrete (2^30 x 1B = 1.07 GB) | Phase |
 |--------|-----------|-------------------------------|-------|
@@ -11,7 +11,7 @@
 | Throughput | -- | 1750 MB/s (single-thread) | Online |
 | Response overhead | O(1) constant factor > SimplePIR | ~33x (current impl); ~9x with optimizations | -- |
 
-### YPIR (2024)
+#### YPIR (2024)
 
 | Metric | Asymptotic | Concrete (32 GB, 1-bit records) | Phase |
 |--------|-----------|-------------------------------|-------|
@@ -22,7 +22,7 @@
 | Throughput | O(M) where M = memory bandwidth | 12.1 GB/s/core | Online |
 | Response overhead | -- | 32 MB / 32 GB = 0.001x (response independent of DB size) | -- |
 
-### Respire (2024)
+#### Respire (2024)
 
 | Metric | Concrete (256 MB, 2^20 x 256B) | Concrete (1 GB, 2^22 x 256B) | Concrete (8 GB, 2^25 x 256B) | Phase |
 |--------|-------------------------------|-------------------------------|-------------------------------|-------|
@@ -32,7 +32,7 @@
 | Throughput | 204 MB/s | 295 MB/s | 393 MB/s | Online |
 | Offline communication | 3.9 MB | 3.9 MB | 3.9 MB | Offline (per client) |
 
-### WhisPIR (2024)
+#### WhisPIR (2024)
 
 | Metric | Concrete (benchmark params) | Phase |
 |--------|---------------------------|-------|
@@ -42,7 +42,7 @@
 | Server computation | ~0.5--30 s single-threaded (approximate, from Figures 2, 4; varies with DB size and param settings) | Online |
 | Client computation | "A few dozen milliseconds regardless of the database size" (key generation, encryption, decryption) | Online |
 
-### Pirouette (2025)
+#### Pirouette (2025)
 
 | Metric | Asymptotic | Concrete (2^25 x 256 B = 8 GB) | Phase |
 |--------|-----------|-------------------------------|-------|
@@ -52,7 +52,7 @@
 | Throughput (seq.) | -- | 137 MB/s (Pirouette) / 148 MB/s (Pirouette^H) | Online |
 | Throughput (32-core par.) | -- | 585 MB/s (Pirouette full par.) / 178 MB/s (Pirouette^H par. Phase 0) | Online |
 
-### InsPIRe (2025)
+#### InsPIRe (2025)
 
 | Metric | Asymptotic (InsPIRe) | Concrete (1 GB, 64 B entries) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -62,7 +62,7 @@
 | Server computation | O(N*d + t*ell_ks*d^2 + t*ell_gsw*d*lg(d)) online | 960 ms (online server time) | Online |
 | Throughput | -- | 1006 MB/s (1 GB, 64 B entry) | Online |
 
-### NPIR (2025)
+#### NPIR (2025)
 
 | Metric | Asymptotic | Concrete (32 KB records, 8 GB DB) | Phase |
 |--------|-----------|----------------------------------|-------|
@@ -73,7 +73,7 @@
 | Throughput | -- | 550.91 MB/s | Online |
 | Response overhead | O(1) | 4x (128 KB / 32 KB) | -- |
 
-### VIA (2025)
+#### VIA (2025)
 
 | Metric | Asymptotic | Concrete (32 GB) | Phase |
 |--------|-----------|-------------------|-------|

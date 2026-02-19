@@ -1,4 +1,4 @@
-# ThorPIR -- Engineering Notes
+## ThorPIR -- Engineering Notes
 
 | Field | Value |
 |-------|-------|
@@ -17,7 +17,7 @@
 
 ---
 
-## Lineage
+### Lineage
 
 | Field | Value |
 |-------|--------|
@@ -28,7 +28,7 @@
 
 ---
 
-## Core Idea
+### Core Idea
 
 ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear offline bandwidth and a low-depth FHE preprocessing circuit. The key insight is replacing the random permutation used in prior hint-based PIR constructions[^3] with a **Thorp shuffle** -- a card-shuffling algorithm that can be evaluated as an O(lambda)-depth circuit (vs. O(N) depth for Fisher-Yates or O(lambda * log N) depth for sorting networks). The client sends encrypted PRG seeds to the server, which homomorphically generates pseudorandom bits via a novel LWR-based PRG, homomorphically performs the Thorp shuffle on the encrypted database, and returns encrypted hints. The client decrypts to obtain hints identical in structure to the two-server scheme of [55], enabling sublinear online queries.
 
@@ -36,9 +36,9 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-## Novel Primitives / Abstractions
+### Novel Primitives / Abstractions
 
-### 1. LWR-based FHE-friendly PRG
+#### 1. LWR-based FHE-friendly PRG
 
 | Field | Detail |
 |-------|--------|
@@ -55,7 +55,7 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 [^5]: 1680x improvement over homomorphic AES evaluation, which takes 86 seconds for 128 bits on a single CPU [89].
 
-### 2. Improved Thorp Shuffle Mixing Bound
+#### 2. Improved Thorp Shuffle Mixing Bound
 
 | Field | Detail |
 |-------|--------|
@@ -67,7 +67,7 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-## Cryptographic Foundation
+### Cryptographic Foundation
 
 | Layer | Detail |
 |-------|--------|
@@ -86,7 +86,7 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-## Key Data Structures
+### Key Data Structures
 
 - **Database encoding**: DB in {0,1}^N split into K = N/Q partitions db_1,...,db_K, each of size K = 2^20 elements. Elements addressed as tuples (q,k) in [Q] x [K].[^8]
 - **Hints**: K = N/Q XOR-parity hints h_1,...,h_K where h_j = XOR_{i in [Q]} db_i[tau_i(j)] for Q Thorp shuffle permutations tau_1,...,tau_Q.
@@ -97,7 +97,7 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-## Protocol Phases
+### Protocol Phases
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -116,7 +116,7 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-## Preprocessing Metrics (Group D style)
+### Preprocessing Metrics (Group D style)
 
 | Metric | Proven Security (Thm 4.5) | Conjectured Security (Conj 3.3) |
 |--------|---------------------------|----------------------------------|
@@ -134,9 +134,9 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-## Correctness Analysis
+### Correctness Analysis
 
-### Option C: Deterministic Correctness
+#### Option C: Deterministic Correctness
 
 Deterministic correctness follows from: (1) BFV decryption correctness (unconditional given sufficient noise budget), (2) correctness of the Thorp shuffle permutation (the homomorphic evaluation exactly matches plaintext evaluation), and (3) the hint reconstruction formula DB[x] = h XOR (XOR of cached elements) recovers the target element by cancellation.[^12] The relaxed bootstrapping preserves correctness because PRG outputs and DB entries occupy a fixed subset of the BFV plaintext space Z_t, which is exactly the domain where relaxed bootstrapping guarantees correct output [62].
 
@@ -144,9 +144,9 @@ Deterministic correctness follows from: (1) BFV decryption correctness (uncondit
 
 ---
 
-## Complexity
+### Complexity
 
-### Asymptotic Complexity (Table 1 from paper)
+#### Asymptotic Complexity (Table 1 from paper)
 
 | Metric | Asymptotic | Phase |
 |--------|-----------|-------|
@@ -165,7 +165,7 @@ Deterministic correctness follows from: (1) BFV decryption correctness (uncondit
 
 [^13]: Table 1 in the paper compares ThorPIR's asymptotics against PIANO [91], MIR [73], CHK1/CHK2 [27], ZLTS [90], and LP [53]. ThorPIR is the only scheme besides CHK1 with sublinear preprocessing depth. Compared to CHK1, ThorPIR wins on every metric except depth (O_lambda(1) vs O(1) for CHK1) due to CHK1's large hidden constants: CHK1's offline bandwidth and storage are >10x and >5x the database size respectively.
 
-### Concrete Benchmarks (Table 2 from paper)
+#### Concrete Benchmarks (Table 2 from paper)
 
 **Database**: N = 2^30 entries, 360 bits each = 360 GB total. Server: 128K GPUs (RTX 3060 Ti equivalent). Client: single-thread CPU.
 
@@ -193,7 +193,7 @@ Deterministic correctness follows from: (1) BFV decryption correctness (uncondit
 
 ---
 
-## Online Phase Detail
+### Online Phase Detail
 
 **Query time breakdown** (per query):
 - Client: 1 inverse Thorp shuffle evaluation + (Q-1) forward Thorp shuffle evaluations + Q resampling checks against USED dictionaries. Total: O_lambda(Q) = O(lambda * Q) Thorp shuffle operations at ~O(lambda) each. Concretely: ~3.6 ms.[^16]
@@ -207,7 +207,7 @@ Deterministic correctness follows from: (1) BFV decryption correctness (uncondit
 
 ---
 
-## BFV Operation Costs (measured on GCP N2, Intel Xeon Gold 6268, D=32768)
+### BFV Operation Costs (measured on GCP N2, Intel Xeon Gold 6268, D=32768)
 
 | Operation | Time (single-thread CPU) |
 |-----------|-------------------------|
@@ -221,7 +221,7 @@ Deterministic correctness follows from: (1) BFV decryption correctness (uncondit
 
 ---
 
-## Preprocessing Runtime Estimation Detail
+### Preprocessing Runtime Estimation Detail
 
 **PRG evaluation (single-thread CPU)**: n=220 plaintext multiplications (seed expansion) + 16 ciphertext multiplications (squaring for Fermat) + 4 additional ciphertext multiplications (k-1=4 repetitions) + 7 levels of ciphertext multiplication (modulus switching overhead). Total: ~23 seconds per PRG call, reducible to ~12.3 seconds with input Q reduced from 860 to 680 bits.[^18]
 
@@ -233,7 +233,7 @@ Deterministic correctness follows from: (1) BFV decryption correctness (uncondit
 
 ---
 
-## Conjectured Security Variant
+### Conjectured Security Variant
 
 Under Conjecture 3.3, the Thorp shuffle requires only lambda = 45 rounds (instead of 480) for 128-bit security against computational adversaries making q = sqrt(N) queries.[^19] This eliminates bootstrapping entirely and enables:
 
@@ -257,7 +257,7 @@ The conjectured parameters use D = 2^17 (SEAL library does not support this; run
 
 ---
 
-## Dynamic Databases and Updates
+### Dynamic Databases and Updates
 
 ThorPIR handles database updates in O_lambda(1) time per element:
 1. Server streams the update (index, old value, new value) to all clients.
@@ -271,7 +271,7 @@ This is one inverse Thorp shuffle evaluation, two XORs, and a hash table update 
 
 ---
 
-## Security Analysis Summary
+### Security Analysis Summary
 
 **Privacy** (Theorem 7.1): Proven via simulation. In the preprocessing phase, the client downloads the entire database (linear-bandwidth variant) or sends only encrypted parameters (sublinear variant), leaking nothing about future queries. In the online phase, the Q indices o_1,...,o_Q sent to the server are each uniformly distributed in [K] from the server's perspective, by the CCA security of the Thorp shuffle and the resampling of already-used indices from [K]\USED_i.[^22]
 
@@ -284,7 +284,7 @@ This is one inverse Thorp shuffle evaluation, two XORs, and a hash table update 
 
 ---
 
-## Comparison: Why Not Sorting Networks?
+### Comparison: Why Not Sorting Networks?
 
 The paper explicitly addresses this alternative (Section 9.1). Two reasons:
 1. **Depth**: The best O(log N)-depth sorting networks (AKS [1]) have constant factor ~1800. Practical O(log^2 N)-depth networks are still asymptotically worse and concretely far deeper than Thorp shuffles. Under FHE, each comparison requires O(lambda) depth (to compare lambda-bit random tags), giving total depth Omega(lambda * log N) vs. O(lambda) for the Thorp shuffle.
@@ -292,7 +292,7 @@ The paper explicitly addresses this alternative (Section 9.1). Two reasons:
 
 ---
 
-## Uncertainties and Open Questions
+### Uncertainties and Open Questions
 
 1. **LWR parameter security is heuristic.** No concrete LWR security estimators exist. The reduction LWR -> LWE uses two unproven assumptions (footnote 6, p.25). The actual security level may be lower than 128 bits.[^23]
 2. **Conjecture 3.3 is unproven.** The >100x preprocessing improvement relies on an unproven conjecture about the Thorp shuffle's mixing time for computational adversaries. The known lower bound on distinguishing rounds is omega(log N); the conjecture asserts lambda rounds suffice for 2^{-c*lambda} advantage. There is a known attack for t <= log N rounds but no known attack for t > lambda.
@@ -305,7 +305,7 @@ The paper explicitly addresses this alternative (Section 9.1). Two reasons:
 
 ---
 
-## Key Takeaways for Engineering
+### Key Takeaways for Engineering
 
 1. **The Thorp shuffle is the key enabler.** Its O(lambda)-depth circuit is what makes FHE-based preprocessing practical. The 2.5x improvement in mixing bound (Theorem 3.2) directly reduces preprocessing cost by 2.5x.
 2. **The LWR-based PRG is independently useful.** At 0.4 ms/bit vs. 672 ms/bit for homomorphic AES, it is a 1680x improvement applicable to any FHE application needing pseudorandom bit generation.

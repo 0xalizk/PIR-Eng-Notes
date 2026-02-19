@@ -1,4 +1,4 @@
-# IncPIR — Engineering Notes
+## IncPIR — Engineering Notes
 
 | Field | Value |
 |-------|-------|
@@ -11,7 +11,7 @@
 | **Rounds (online)** | 1 (client sends set to online server, receives XOR parity) |
 | **Record-size regime** | Small (32-byte Tor relay descriptors in evaluation; general b-bit objects) |
 
-## Lineage
+### Lineage
 
 | Field | Value |
 |-------|--------|
@@ -23,7 +23,7 @@
 [^1]: Section 4.1 (p.5): "We start by describing the CK protocol and then describe our approach to make its preprocessing incremental."
 [^2]: Section 6.3 (p.11): "Appendix E discusses how to make the SACM OO-PIR scheme [51] incremental."
 
-## Core Idea
+### Core Idea
 
 IncPIR addresses the problem that all existing offline/online PIR schemes require complete repreprocessing when the database changes, which defeats the benefits of preprocessing for mutable databases.[^3] The paper introduces *incremental preprocessing*: four new algorithms (DBUpd, HintReq, HintRes, HintUpd) that allow the client to update its existing hint h to reflect database additions, deletions, and in-place edits at a cost proportional to the number of mutations m rather than the database size n.[^4] The core technical mechanism is an *incremental pseudorandom set* (PRS) that extends the range of a PRF/PRP-generated set from [n] to [n+m] by probabilistically replacing existing elements with new-range elements according to a hypergeometric distribution, storing only compact auxiliary information rather than explicit indices.[^5] This enables the CK protocol's hints to remain valid after mutations without sacrificing security (every set remains a uniform random subset of the updated database range). For a batch of 10,000 updates on a 1M-item database, incremental preprocessing is 56x cheaper than preprocessing from scratch.[^6]
 
@@ -32,7 +32,7 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 [^5]: Section 5.2 (p.8): "Our goal is then to devise a procedure to extend the range of the PRS; in other words, to obtain S' in [n+m] by modifying, in expectation, only a handful of elements in S."
 [^6]: Abstract (p.1): "the computational cost of updating the hints in our incremental CK scheme (iCK) for a batch of 10,000 updates (additions, deletions, edits) is 56x cheaper than preprocessing from scratch."
 
-## Formal Definitions
+### Formal Definitions
 
 - **Model name:** Incremental Offline/Online PIR (Definition 2, p.3-4)
 - **Syntax:** Eight algorithms: four inherited from OO-PIR (Prep, Query, Resp, Recov) and four new (DBUpd, HintReq, HintRes, HintUpd)[^4]
@@ -43,9 +43,9 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 [^7]: Section 3.2, Security (p.4): Security definition for incremental OO-PIR.
 [^8]: Section 3.2, Correctness (p.4): Correctness definition requires probability >= 1-negl(lambda) after IncPrep + standard Query/Resp/Recov.
 
-## Novel Primitives / Abstractions
+### Novel Primitives / Abstractions
 
-### Incremental Pseudorandom Set (PRS)
+#### Incremental Pseudorandom Set (PRS)
 
 | Field | Detail |
 |-------|--------|
@@ -64,7 +64,7 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 [^11]: Section 5.3, Figure 1 (p.9): Construction of incremental PRS Psi using KDF-derived keys and PRP evaluation.
 [^12]: Section 5.3 (p.9): "Unfortunately our construction does not preserve the puncturable property since we use a PRP instead of a PRF... there does not exist puncturable PRP constructions."
 
-## Cryptographic Foundation
+### Cryptographic Foundation
 
 | Layer | Detail |
 |-------|--------|
@@ -77,7 +77,7 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 [^14]: Section 5.3 (p.9): aux = [(r_ell, t_ell)]_{ell in [L]} tracks subrange extents and element counts.
 [^15]: Section 6.2 (p.11): "The proposed online phase does not meet our correctness definition because the client fails to puncture the set at index i with probability O(1/sqrt(n))."
 
-## Key Data Structures
+### Key Data Structures
 
 - **Database D:** Array of n items, each of size b bits, replicated across both offline and online servers[^16]
 - **Client hint h:** J = (n/s) * log(n) entries, each consisting of a set key k_j, auxiliary information aux_j, and a parity p_j = XOR_{e in S_j} D[e], where S_j has size s = sqrt(n)[^17]
@@ -90,7 +90,7 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 [^18]: Figure 3 (p.10): DBUpd algorithm producing delta = (delta_add, delta_edit, delta_del).
 [^19]: Figure 7 (p.11): "Client keeps state = (n', j*), where n' is the current database size, and j* indicates which set is currently used for query."
 
-## Database Encoding
+### Database Encoding
 
 - **Representation:** Flat array D[1], ..., D[n], each entry b bits
 - **Record addressing:** Direct index addressing; additions are appended to the end (D[n+1], ..., D[n+m])[^20]
@@ -99,7 +99,7 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 
 [^20]: Section 3.3, Additions (p.4): "We aim to support databases where new items are appended to the end: if the initial database is of size n, then after m additions the database has size n+m."
 
-## Protocol Phases
+### Protocol Phases
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -113,7 +113,7 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 | Recov | Client | Recovers D[i] = p_S XOR r_i | -- (local) | Per query |
 | Refresh | Client + Both servers | Generates new set, gets parity from offline server | O(sqrt(n) * log(n')) bits | Per query (amortized) |
 
-## Two-Server Protocol Details
+### Two-Server Protocol Details
 
 | Aspect | Server 1 (Offline) | Server 2 (Online) |
 |--------|----------|----------|
@@ -127,9 +127,9 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 [^22]: Section 4.1 (p.5): "It is secure against the online server because q_i is a uniformly random subset of [n] of size sqrt(n)-1."
 [^23]: Section 3.1 (p.3): "The servers are semi-honest: they do not collude but are interested in learning which objects the client is fetching from the database."
 
-## Correctness Analysis
+### Correctness Analysis
 
-### Option B: Probabilistic Correctness Analysis
+#### Option B: Probabilistic Correctness Analysis
 
 | Field | Detail |
 |-------|--------|
@@ -148,16 +148,16 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 [^26]: Section 4.2.1, batched additions (p.6): "the client samples a number w from the hypergeometric distribution HG(n+m, m, sqrt(n))."
 [^27]: Section 6.2, Appendix A.4.2 (p.18): Checklist's modification doubles online communication but achieves negl(lambda) correctness error.
 
-### Concrete failure probability examples
+#### Concrete failure probability examples
 
 For a database of size 2^20 with sets of size 2^10:[^24]
 - Initially: failure probability approximately 10^{-7}
 - After 2^10 additions: failure probability still approximately 10^{-7}
 - After 2^18 additions: failure probability increases to approximately 10^{-6}
 
-## Complexity
+### Complexity
 
-### Core metrics
+#### Core metrics
 
 | Metric | Asymptotic | Concrete (N=2^20, b=32B) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -169,7 +169,7 @@ For a database of size 2^20 with sets of size 2^10:[^24]
 
 [^28]: Figure 9 (p.13): Microbenchmarks for N=2^20, b=32 bytes. Query 7.87 ms client, Response 0.06 ms server, Refresh 4.90 ms client.
 
-### Preprocessing metrics
+#### Preprocessing metrics
 
 | Metric | Asymptotic | Concrete (N=2^20, b=32B) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -180,7 +180,7 @@ For a database of size 2^20 with sets of size 2^10:[^24]
 
 [^29]: Figure 9 (p.13): Full microbenchmark table for three database sizes with 1% addition batch.
 
-### Preprocessing Characterization
+#### Preprocessing Characterization
 
 | Aspect | Value |
 |--------|-------|
@@ -189,7 +189,7 @@ For a database of size 2^20 with sets of size 2^10:[^24]
 | **Number of DB passes** | 1 for initial Prep; incremental updates do not require DB passes |
 | **Hint refresh mechanism** | Incremental — IncPrep updates existing hints proportional to mutation count m |
 
-### Update metrics
+#### Update metrics
 
 | Metric | Value | Notes |
 |--------|-------|-------|
@@ -207,7 +207,7 @@ For a database of size 2^20 with sets of size 2^10:[^24]
 [^33]: Section 3.3, Weak deletion (p.4): "We relax the above definition to require only that new clients do not learn any deleted items."
 [^34]: Section 3.3 (p.4): "We consider three types of mutations: addition of new objects, deletion of existing objects, and in-place edits."
 
-## Mutation Model
+### Mutation Model
 
 | Aspect | Detail |
 |--------|--------|
@@ -220,7 +220,7 @@ For a database of size 2^20 with sets of size 2^10:[^24]
 [^35]: Definition 2 (p.3-4): "DBUpd(D, op) -> (D', delta), a deterministic algorithm executed by offline server that takes in the original database D, and a set of operations op."
 [^36]: Section 4.2.2 (p.6): In-place edits — "the client only needs to update the parities of all of the sets that contain the index of the object that has changed." Section 4.2.3 (p.7): Deletions — "we handle deletions by replacing the data with a uniform random object r."
 
-### Strong vs Weak Deletion
+#### Strong vs Weak Deletion
 
 The paper distinguishes two deletion semantics:[^33]
 
@@ -230,7 +230,7 @@ The paper distinguishes two deletion semantics:[^33]
 
 [^37]: Section 4.2.3, Deletion against malicious clients (p.7): "Indeed, secure deletion against malicious clients is impossible in CK... The client holds a set S that includes the index e and other indices. It uses the online server as an oracle to obtain each and every item at indices in S except for e."
 
-## Composability
+### Composability
 
 | Base Scheme | Integration Point | Improvement | Limitations |
 |------------|-------------------|-------------|-------------|
@@ -244,13 +244,13 @@ The paper distinguishes two deletion semantics:[^33]
 [^41]: Section 7 (p.12): PIR-Tor application with incremental OO-PIR.
 [^42]: Section 1 (p.1): "an implementation of PIR-Tor that uses our iCK construction improves the throughput achieved by Tor directory nodes by roughly 7x."
 
-## Performance Benchmarks
+### Performance Benchmarks
 
 **Hardware:** CloudLab m510 machines (8-core 2 GHz Intel Xeon D-1548, 64 GB RAM), Ubuntu 20.04. Network: 20 ms latency, 1.1 Gbps throughput. Results averaged over 10 trials, standard deviations < 10% of mean.[^43]
 
 [^43]: Section 8, Evaluation testbed (p.12): Hardware and experimental setup.
 
-### Microbenchmarks (Figure 9, 1% addition batch, b=32 bytes)
+#### Microbenchmarks (Figure 9, 1% addition batch, b=32 bytes)
 
 | Metric | N = 2^16 | N = 2^18 | N = 2^20 |
 |--------|----------|----------|----------|
@@ -271,14 +271,14 @@ The paper distinguishes two deletion semantics:[^33]
 
 [^29]
 
-### Update cost comparison (N=2^20, b=32B)
+#### Update cost comparison (N=2^20, b=32B)
 
 | Operation | IncPrep Server | Prep from scratch Server | Speedup |
 |-----------|---------------|-------------------------|---------|
 | 1% additions | 1.03 sec | 58.67 sec | ~57x[^38] |
 | Edits/deletions | Cheaper than additions | 58.67 sec | > 57x (inferred) |
 
-### Throughput under load (Figure 10, approximate chart-derived values)
+#### Throughput under load (Figure 10, approximate chart-derived values)
 
 | Scheme | Online throughput (queries/sec) | Online latency at low load (ms) |
 |--------|-------------------------------|-------------------------------|
@@ -290,7 +290,7 @@ Incremental CK achieves approximately 6x higher throughput than DPF-PIR because 
 
 [^44]: Section 8.2 (p.13): "Compared to DPF-PIR, incremental CK improves the throughput achieved by roughly 6x. Since incremental CK performs no cryptography (the indices are sent in the clear), it achieves a higher throughput and lower latency."
 
-### PIR-Tor evaluation (7K Tor relays, b=2KB)
+#### PIR-Tor evaluation (7K Tor relays, b=2KB)
 
 **Online communication (Figure 11a, approximate):**
 
@@ -323,9 +323,9 @@ Client local storage grows over time due to accumulated auxiliary information in
 
 [^47]: Figure 12b (p.14): "the percentage of client storage growth is less than 8%" over 90 days.
 
-## Application Scenarios
+### Application Scenarios
 
-### PIR-Tor (Section 7)
+#### PIR-Tor (Section 7)
 
 - **Application parameters:** ~7,000 Tor relays (growing over time), each relay descriptor ~2 KB. Clients query directory servers every 10-15 minutes.[^41]
 - **Deployment protocol:** Tor directory servers are split into offline and online roles; a server can be offline for one client and online for another. Client picks two random directory servers as offline/online pair.[^48]
@@ -336,7 +336,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 [^48]: Section 7, Assigning roles (p.12): "a server can act as an offline server for one client and an online server for another."
 [^49]: Section 7 (p.12): "the security is compromised roughly (q/p)^2."
 
-## Deployment Considerations
+### Deployment Considerations
 
 - **Database updates:** Incremental — IncPrep cost proportional to mutation count m, not database size n[^30]
 - **Sharding:** Not discussed; the 2-server model requires full DB replication
@@ -348,7 +348,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 
 [^50]: Section 1, Limitations (p.2): "Our incremental preprocessing schemes work best when the database changes slowly (e.g., a few percent of entries are added, deleted, or updated at a given time)."
 
-## Key Tradeoffs & Limitations
+### Key Tradeoffs & Limitations
 
 - **Online communication regression:** Because incremental PRS is not puncturable, online query sends sqrt(n) indices in the clear rather than CK's polylog(n) communication via punctured PRF keys. In practice this is acceptable since b > 1 bit for real applications (Section 8).[^12]
 - **Client storage growth:** Auxiliary information aux accumulates with each Add invocation, growing client storage. Refresh mechanism gradually resets this, but storage still grows over time (< 8% over 90 days in evaluation).[^47]
@@ -360,7 +360,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 [^51]: Section 1 (p.1): "our approach is not black-box. Instead, it requires exploiting the structure of the underlying OO-PIR protocol."
 [^52]: Section 9 (p.14): "it is unclear how to support incremental preprocessing and PIR-by-keywords given that mutations that changes the keywords of existing items or add new keywords would impact the underlying search data structure."
 
-## Comparison with Prior Work
+### Comparison with Prior Work
 
 | Metric | Incremental CK (this paper) | CK [23] (non-incremental) | DPF-PIR [30,1] |
 |--------|------------|----------------|----------------|
@@ -375,7 +375,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 
 **Key takeaway:** IncPIR is the scheme of choice for 2-server non-colluding PIR deployments where the database mutates at a moderate rate (a few percent per update cycle). The 56x preprocessing speedup over CK comes at the cost of increased online communication (indices in the clear vs. punctured keys) and weak-only deletion semantics. For static databases, non-incremental CK or DPF-PIR remain preferable depending on whether preprocessing cost or online communication is the binding constraint.
 
-## Portable Optimizations
+### Portable Optimizations
 
 - **Hypergeometric sampling for set extension:** The technique of sampling w from HG(n+m, m, s) to determine how many elements to replace when extending a set's range from [n] to [n+m] is applicable to any PIR scheme using pseudorandom subsets (Piano, RMS24, TreePIR). It provides a rigorous way to maintain uniformity of set membership after range extension.[^26]
 - **PRP-from-PRF for arbitrary domains:** The chain PRF -> small-domain PRP (Patarin [49]) -> arbitrary-domain PRP (Black-Rogaway [9]) is a practical recipe for building PRPs over non-power-of-two domains, useful in any scheme requiring random permutations over database indices.[^13]
@@ -384,7 +384,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 
 [^53]: Section 5.2, Complications (p.8): "we use a different key for each of the PRPs... the original set key k becomes a master key used to derive keys k_1 and k_2 by a key derivation function KDF."
 
-## Implementation Notes
+### Implementation Notes
 
 - **Language / Library:** C++ (~2,000 lines)[^54]
 - **Polynomial arithmetic:** N/A (no FHE; XOR-based parity computation)
@@ -398,7 +398,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 [^54]: Section 8, Implementation (p.12): "Our incremental CK implementation is ~2,000 lines of C++."
 [^55]: Section 8, Implementation (p.12): "We generate the hypergeometric sampling for hint updates using multiple Bernoulli samplings."
 
-## Open Problems
+### Open Problems
 
 - **Puncturable incremental PRS:** Designing an incremental PRS that preserves puncturability would restore CK's polylog online communication while maintaining incremental preprocessing. "Designing a puncturable incremental PRS is an interesting open question."[^12]
 - **Single-server incremental preprocessing:** This paper addresses only two-server schemes. "designing efficient incremental preprocessing for single-server PIR remains an open question (existing schemes rely on obfuscation)."[^52]
@@ -407,7 +407,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 
 [^56]: Section 9 (p.14): "Since our incremental preprocessing is not black-box, it remains to be seen how to apply it to schemes where the hints are kept at the servers."
 
-## Related Papers in Collection
+### Related Papers in Collection
 
 - **CK (Corrigan-Gibbs & Kogan, 2020) [Group D]:** Base scheme that IncPIR makes incremental. CK introduces the offline/online model with puncturable pseudorandom sets.
 - **SACM (Shi et al., 2021) [Group D]:** Alternative base scheme; IncPIR provides an incremental version in Appendix E, but it is not yet practical.
@@ -415,7 +415,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 - **Piano (2023) [Group D]:** Later single-server sublinear PIR with PRF-based sets; could potentially benefit from IncPIR's hypergeometric set extension technique.
 - **IncrementalPIR (2026) [Group C]:** Later work addressing incremental preprocessing for SimplePIR in the single-server model; cites IncPIR as inspiration for the multi-server incremental definition.
 
-## Uncertainties
+### Uncertainties
 
 - **n vs N notation:** The paper uses n for database size (number of items) throughout. This is consistent within the paper but differs from some other papers in the collection that use N.
 - **Cycle walking cost:** The paper notes (Section 8) that PRP evaluation for non-power-of-two ranges is more expensive due to cycle walking [9], making IncPrep computation "not strictly linear in the number of additions." The exact overhead is not quantified.

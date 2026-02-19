@@ -1,12 +1,12 @@
-# PIR Engineering Notes
+## PIR Engineering Notes
 
 Structured engineering notes for 36 Private Information Retrieval (PIR) research papers, covering scheme design, complexity analysis, cryptographic assumptions, and reported benchmarks. Each paper has a per-scheme notes file produced from the source PDF using a standardized template. All footnoted claims cite specific pages/sections of the original paper.
 
 ---
 
-# Key Contributions by Paper
+## Key Contributions by Paper
 
-## Group A — FHE-Based PIR
+### Group A — FHE-Based PIR
 
 | Paper | Key Contribution |
 |-------|-----------------|
@@ -22,7 +22,7 @@ Structured engineering notes for 36 Private Information Retrieval (PIR) research
 | FrodoPIR | Plain LWE with client-independent global hint (functionally Group C) |
 | ThorPIR | Client-dependent FHE preprocessing (functionally Group D) |
 
-## Group B — Stateless Single Server PIR
+### Group B — Stateless Single Server PIR
 
 | Paper | Key Contribution |
 |-------|-----------------|
@@ -35,7 +35,7 @@ Structured engineering notes for 36 Private Information Retrieval (PIR) research
 | NPIR | NTRU packing for high communication rate |
 | VIA | DMux-CMux architecture, 3 variants (VIA/VIA-C/VIA-B) |
 
-## Group C — Client-Independent Preprocessing
+### Group C — Client-Independent Preprocessing
 
 | Paper | Key Contribution |
 |-------|-----------------|
@@ -45,7 +45,7 @@ Structured engineering notes for 36 Private Information Retrieval (PIR) research
 | BarelyDoublyEfficient | First DEPIR from plain LWE in CRS model (theory) |
 | IncrementalPIR | Entry-level incremental preprocessing for SimplePIR |
 
-## Group D — Client-Dependent Preprocessing
+### Group D — Client-Dependent Preprocessing
 
 | Paper | Key Contribution |
 |-------|-----------------|
@@ -59,7 +59,7 @@ Structured engineering notes for 36 Private Information Retrieval (PIR) research
 | SinglePass | Streaming single-pass preprocessing, deterministic |
 | WangRen | Tight ST = O(nw) tradeoff (theory) |
 
-## Group X — Variants & Surveys
+### Group X — Variants & Surveys
 
 | Paper | Key Contribution |
 |-------|-----------------|

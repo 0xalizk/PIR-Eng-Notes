@@ -1,4 +1,4 @@
-# CwPIR (Constant-weight PIR) — Engineering Notes
+## CwPIR (Constant-weight PIR) — Engineering Notes
 
 | Field | Value |
 |-------|-------|
@@ -11,7 +11,7 @@
 | **Rounds (online)** | 1 (non-interactive) |
 | **Record-size regime** | Large (primary evaluation targets large payloads, 268 KB+ where CwPIR outperforms MulPIR) |
 
-## Lineage
+### Lineage
 
 | Field | Value |
 |-------|--------|
@@ -20,7 +20,7 @@
 | **Superseded by** | N/A |
 | **Concurrent work** | N/A |
 
-## Core Idea
+### Core Idea
 
 Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the selection vector by receiving it from the client (encrypted, then expanded). This requires the selection vector to be over index space, making keyword PIR require extra rounds to first resolve a keyword to an index.[^1] CwPIR takes a fundamentally different approach: the server *computes* the selection vector itself by evaluating an equality operator between the client's encrypted query and each database identifier. By encoding identifiers as constant-weight codewords (binary strings with fixed Hamming weight k), the equality check circuit has multiplicative depth O(log k) rather than O(log n) for the folklore binary equality operator.[^2] This makes the equality-operator approach practical for the first time and naturally enables single-round keyword PIR since the server can compare the encrypted query against arbitrary keyword identifiers without resolving them to indices first.[^3]
 
@@ -28,9 +28,9 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 [^2]: The folklore binary equality operator for domain {0,1}^l has multiplicative depth 1 + ceil(log_2 l), which grows with the bit-length of the domain. The constant-weight equality operator has multiplicative depth ceil(log_2 k), depending only on the Hamming weight k, not the code length m. (Table 3, p. 9; Section 3.1, p. 6)
 [^3]: "Constant-weight keyword PIR is the first practical, single-round solution for single-server keyword PIR." (Abstract, p. 1)
 
-## Novel Primitives / Abstractions
+### Novel Primitives / Abstractions
 
-### Primitive 1: Plain Constant-weight Equality Operator
+#### Primitive 1: Plain Constant-weight Equality Operator
 
 | Field | Detail |
 |-------|--------|
@@ -47,7 +47,7 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 [^4]: Equation (5), p. 6: f_PCW(x, y) = product over {j : y[j]=1} of x[j].
 [^5]: Table 3 (p. 9) comparison: Plain Folklore has l * M operations with depth ceil(log_2 l); Plain CW has k * M operations with depth ceil(log_2 k), where M = number of multiplications.
 
-### Primitive 2: Arithmetic Constant-weight Equality Operator
+#### Primitive 2: Arithmetic Constant-weight Equality Operator
 
 | Field | Detail |
 |-------|--------|
@@ -62,7 +62,7 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 [^6]: Algorithm 2 and surrounding text, p. 6. The circuit performs m + k multiplications with multiplicative depth 1 + ceil(log_2 k).
 [^7]: Table 3, p. 9. Arithmetic Folklore: {0,1}^l domain, 2l * M operations, depth 1 + ceil(log_2 l). Arithmetic CW: CW(m,k) domain, pM + (m+k) * M operations, depth 1 + ceil(log_2 k).
 
-### Primitive 3: Perfect Mapping (integers to constant-weight codes)
+#### Primitive 3: Perfect Mapping (integers to constant-weight codes)
 
 | Field | Detail |
 |-------|--------|
@@ -75,7 +75,7 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 
 [^8]: Algorithm 3, p. 6. The procedure assigns bits greedily from position m-1 down to 0, using binomial coefficient comparisons.
 
-## Cryptographic Foundation
+### Cryptographic Foundation
 
 | Layer | Detail |
 |-------|--------|
@@ -90,7 +90,7 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 [^11]: Algorithm 4, p. 7, line 6: "ct_i(x) = Enc(sk, m_i(x))" — encryption with the secret key.
 [^12]: Table 1 (p. 3) shows operation costs for different N. Larger multiplicative depth requires larger N for valid decryption.
 
-## Key Data Structures
+### Key Data Structures
 
 - **Database:** Table of n rows, each with an identifier from domain ID and payload data. Payload data is converted to FV plaintexts during setup, with at most s plaintexts per row.[^13]
 - **Constant-weight code table:** Each identifier in the database is pre-mapped to a constant-weight codeword CW(m, k) during the offline setup stage.[^14]
@@ -104,7 +104,7 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 [^16]: Algorithm 5, p. 8. Output is m ciphertexts after oblivious expansion.
 [^17]: Algorithm 6, p. 8. "The output of this stage is an encrypted selection vector of size n, with each bit in a separate ciphertext."
 
-## Protocol Phases
+### Protocol Phases
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -115,16 +115,16 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 | **Inner Product** | Server | For each of s payload plaintexts: compute inner product of selection vector with corresponding DB column | s ciphertexts ↓ | Per query |
 | **Extract** | Client | Decrypt received ciphertexts; extract payload data | -- | Per query |
 
-## Query Structure
+### Query Structure
 
 | Component | Type | Size | Purpose |
 |-----------|------|------|---------|
 | Compressed CW query | ceil(m/2^c) FV ciphertexts | 216 KB (k=2, N=8192) | Encrypted constant-weight encoding of the query identifier |
 | Parameters (m, k, c) | Plaintext integers | negligible | Code length, Hamming weight, compression factor |
 
-## Correctness Analysis
+### Correctness Analysis
 
-### Option A2: Library-based noise management
+#### Option A2: Library-based noise management
 
 - **Library / version:** Microsoft SEAL 3.6
 - **Parameter constraints:** N >= 8192 required for CwPIR (the equality operator circuit has multiplicative depth ceil(log_2 k), plus the oblivious expansion adds depth). CwPIR requires N >= 8192 whereas SealPIR can use N = 4096.[^18]
@@ -135,9 +135,9 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 [^19]: Section 3.3.3 "Query Expansion," p. 7. "We replace the use of two substitutions and one plaintext multiplication in the inner loop of Algorithm 1 with one substitution and two plaintext multiplications."
 [^20]: Table 3, p. 9: Plain CW multiplicative depth = ceil(log_2 k).
 
-## Complexity
+### Complexity
 
-### Core metrics
+#### Core metrics
 
 | Metric | Asymptotic | Concrete (k=2, n=16384, 1 plaintext payload) | Phase |
 |--------|-----------|----------------------------------------------|-------|
@@ -151,7 +151,7 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 [^22]: Table 6, p. 11. CwPIR: n*k*M + n*s*PM operations (excluding expansion).
 [^23]: Table 3, p. 9.
 
-### FHE-specific metrics
+#### FHE-specific metrics
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -161,7 +161,7 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 
 [^24]: Table 7, p. 11, "Code Length" column.
 
-### Keyword PIR additional complexity (sparse databases)
+#### Keyword PIR additional complexity (sparse databases)
 
 | Metric | Asymptotic | Notes |
 |--------|-----------|-------|
@@ -172,15 +172,15 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 [^25]: Section 3.3.5, p. 8. For keyword PIR: "the code length, m, and Hamming weight, k, are chosen such that C(m,k) >= |S(ID)|."
 [^26]: Section 3.3.5, p. 8. "In the selection vector calculation step, encrypted bits of the selection vector are generated only for identifiers in the database." Computation scales with n = |ID|, not |S(ID)|.
 
-## Performance Benchmarks
+### Performance Benchmarks
 
-### Hardware
+#### Hardware
 
 Intel Xeon E5-4640 @ 2.40 GHz, 32 physical cores, Ubuntu 16.04. All protocols implemented in C++ with SEAL 3.6 (or SEAL 3.7 for expanded evaluation). SealPIR/MulPIR use OpenMined PIR implementation. 128-bit security. N in {4096, 8192, 16384}.[^27]
 
 [^27]: Section 5, p. 11.
 
-### Table 7 (p. 11): Index PIR runtime comparison (response = 1 plaintext)
+#### Table 7 (p. 11): Index PIR runtime comparison (response = 1 plaintext)
 
 **Folklore PIR** (N = 8192, Query = 216 KB, Response = 106 KB):
 
@@ -230,7 +230,7 @@ Intel Xeon E5-4640 @ 2.40 GHz, 32 physical cores, Ubuntu 16.04. All protocols im
 | 131072 | 2700 | 513 | 1.2 | 170 | 140 | 320 |
 | 262144 | 5400 | 725 | 1.4 | 340 | 290 | 640 |
 
-### Table 8 (p. 11): Communication cost (payload = 1 plaintext)
+#### Table 8 (p. 11): Communication cost (payload = 1 plaintext)
 
 | Scheme | Upload Cost | Download Cost | Total Comm. |
 |--------|-----------|--------------|-------------|
@@ -238,7 +238,7 @@ Intel Xeon E5-4640 @ 2.40 GHz, 32 physical cores, Ubuntu 16.04. All protocols im
 | MulPIR | 122 KB | 119 KB | 241 KB |
 | CwPIR | 216 KB | 106 KB | 322 KB |
 
-### Table 9 (p. 12): Keyword PIR with large items (server runtime)
+#### Table 9 (p. 12): Keyword PIR with large items (server runtime)
 
 Server: Intel Xeon(R) CPU E7-8860 v4 @ 2.20 GHz, 144 cores, Ubuntu 20.04. Parallelized.[^28]
 
@@ -263,7 +263,7 @@ Server: Intel Xeon(R) CPU E7-8860 v4 @ 2.20 GHz, 144 cores, Ubuntu 20.04. Parall
 | 48 | 10000 | 13.0 | 1.3 | 541 |
 | 48 | 10000 | 100.0 | 10.0 | 3300 |
 
-### Large payload comparison (Figure 2, p. 12, approximate values)
+#### Large payload comparison (Figure 2, p. 12, approximate values)
 
 At n = 16384 rows, comparing CwPIR (k=2) vs MulPIR (d=2, lower-bound estimate):
 
@@ -279,9 +279,9 @@ CwPIR outperforms MulPIR when payload exceeds ~268 KB (DB size ~4.3 GB).[^29]
 
 [^29]: Section 5, p. 12. "constant-weight PIR has a smaller runtime than MulPIR when the payload size exceeds 268 KB, which corresponds to a database size of 4.3 GB." The MulPIR values are lower-bound estimates since the OpenMined implementation does not support large payloads.
 
-## Equality Operator Benchmarks (Section 4)
+### Equality Operator Benchmarks (Section 4)
 
-### Table 4 (p. 9): Plain equality operators (seconds, single-thread)
+#### Table 4 (p. 9): Plain equality operators (seconds, single-thread)
 
 | Operator | Config | n=2^8 | n=2^16 | n=2^32 | n=2^64 | n=2^128 | n=2^256 | n=2^512 |
 |----------|--------|-------|--------|--------|--------|---------|---------|---------|
@@ -295,15 +295,15 @@ Bold numbers indicate best runtimes per domain size. The constant-weight operato
 
 [^30]: Table 4, p. 9. "The constant-weight plain operator consistently outperforms the folklore operator in terms of running time."
 
-### Parallelization speedup (Figure 1, p. 10)
+#### Parallelization speedup (Figure 1, p. 10)
 
 The constant-weight operator benefits more from parallelization than folklore. The folklore circuit gains at most ~2x speedup, while the constant-weight circuit achieves up to **10x speedup** because the m homomorphic multiplications in the CW operator can be done independently in parallel.[^31]
 
 [^31]: Section 4.2, p. 10. "The folklore circuit runs at most 2 times faster with parallelization, whereas the constant-weight circuit has more than a 10x speedup in some cases."
 
-## Application Scenarios
+### Application Scenarios
 
-### Private File Retrieval (Section 6)
+#### Private File Retrieval (Section 6)
 
 CwPIR is proposed for private file retrieval where items are large (e.g., documents) and retrieved by name/keyword rather than index. Key advantages for this application:[^32]
 - **No hash table required:** Unlike MulPIR/SealPIR keyword PIR approaches, CwPIR does not need to store identifiers in a hash table or resolve keywords to indices.
@@ -313,7 +313,7 @@ CwPIR is proposed for private file retrieval where items are large (e.g., docume
 
 [^32]: Section 6 "Keyword PIR for Private File Retrieval," p. 12. "constant-weight PIR is performed without the use of a hash-table to store the identifiers or multiple rounds of communication."
 
-### Keyword PIR domain size analysis (Figure 4, p. 14)
+#### Keyword PIR domain size analysis (Figure 4, p. 14)
 
 For n = 16384 rows, payload = 1 plaintext (~20.1 KB), database ~330 MB, varying domain bit-length:
 - For log_2 |S| <= 27: k = 2 gives smallest server time (~20-30s).
@@ -323,9 +323,9 @@ For n = 16384 rows, payload = 1 plaintext (~20.1 KB), database ~330 MB, varying 
 
 [^33]: Section 6, p. 13-14. "Initially, for log_2 |S| <= 27, k = 2 has the smallest server time. However, when log_2 |S| approaches 28, the expansion constitutes a significant portion of the server time and a switch to k = 3 results in a smaller total server time."
 
-## Comparison with Prior Work
+### Comparison with Prior Work
 
-### Table 6 (p. 11): Protocol properties (|S(ID)| = |ID| = n)
+#### Table 6 (p. 11): Protocol properties (|S(ID)| = |ID| = n)
 
 | Method | Mult Depth | Query Bit-length | # Operations (excl. expansion) | Download Cost (cts) |
 |--------|-----------|-----------------|-------------------------------|-------------------|
@@ -334,7 +334,7 @@ For n = 16384 rows, payload = 1 plaintext (~20.1 KB), database ~330 MB, varying 
 | Folklore PIR | ceil(log_2 n) | ceil(log_2 n) | n * (log_2 n) * M + n * s * PM | s |
 | **CwPIR** | **ceil(log k)** | **O(k-th root of (k! * n) + k)** | **n * k * M + n * s * PM** | **s** |
 
-### Table 10 (p. 13): Keyword PIR properties (sparse database, |S| = domain size)
+#### Table 10 (p. 13): Keyword PIR properties (sparse database, |S| = domain size)
 
 | Method | Mult Depth | Query Bit-length | # Operations (excl. expansion) | Download Cost (cts) |
 |--------|-----------|-----------------|-------------------------------|-------------------|
@@ -346,7 +346,7 @@ For n = 16384 rows, payload = 1 plaintext (~20.1 KB), database ~330 MB, varying 
 
 [^34]: Table 10, p. 13, and surrounding text. "the number of operations (excluding expansion) of constant-weight PIR does not depend on the size of the domain."
 
-### Table 11 (p. 13): Query encoding size comparison (bits required)
+#### Table 11 (p. 13): Query encoding size comparison (bits required)
 
 | Domain Bit-length | CW (k=1) | CW (k=2) | CW (k=3) | CW (k=4) | Dim-wise (d=1) | Dim-wise (d=2) | Dim-wise (d=3) |
 |-------------------|----------|----------|----------|----------|---------------|---------------|---------------|
@@ -362,7 +362,7 @@ For the same multiplicative depth (matching k to d), the constant-weight code pr
 
 [^35]: Section 6, p. 13. "for the same multiplicative depth, the constant-weight code is smaller than the dimension-wise encoding."
 
-## Deployment Considerations
+### Deployment Considerations
 
 - **Database updates:** CwPIR supports database updates without client interaction. The server simply recomputes the CW mapping for changed identifiers in the setup stage. No hash function renegotiation needed (unlike hash-table-based keyword PIR).[^36]
 - **Sharding:** Not discussed.
@@ -373,7 +373,7 @@ For the same multiplicative depth (matching k to d), the constant-weight code pr
 
 [^36]: Section 6, p. 12. "updates to the database may require a change in the parameters of the hash function to avoid collisions. An additional round of communication is required for each query to communicate new hash function parameters to the user."  This problem exists for hash-table approaches; CwPIR avoids it.
 
-## Key Tradeoffs & Limitations
+### Key Tradeoffs & Limitations
 
 - **Server computation is high:** CwPIR's server must evaluate the equality operator against every database row (n * k multiplications for selection vector). For small payloads, this dominates and makes CwPIR slower than SealPIR/MulPIR. The crossover vs MulPIR occurs at payload ~268 KB.[^37]
 - **Upload cost depends on domain size for keyword PIR:** The query encoding length grows with |S(ID)| (the domain size), not the database size n. For very large domains, the expansion step becomes the bottleneck (Figure 4).[^38]
@@ -387,7 +387,7 @@ For the same multiplicative depth (matching k to d), the constant-weight code pr
 [^40]: Section 4.1, p. 9. "Faster runtimes for the plain constant-weight circuit come at the cost of higher memory usage during the protocol."
 [^41]: Section 6, p. 13-14 and Table 11.
 
-## Portable Optimizations
+### Portable Optimizations
 
 - **Constant-weight equality operators:** The equality operator primitive is applicable beyond PIR to any setting requiring encrypted equality checks: secure search, secure pattern matching, private set intersection.[^42] The plain CW operator is especially useful when one operand is public and the domain can be mapped to constant-weight codes.
 - **Modified oblivious expansion (Algorithm 5):** Replaces 2 substitutions + 1 PM with 1 substitution + 2 PM per inner-loop iteration. This optimization was adopted by the OpenMined community for MulPIR.[^43]
@@ -397,7 +397,7 @@ For the same multiplicative depth (matching k to d), the constant-weight code pr
 [^43]: Footnote 1, p. 7: "This modification in the expansion algorithm was first adopted in the implementation of MulPIR from the OpenMined community."
 [^44]: Algorithm 8, Appendix A (p. 16). Theorem 2 (p. 17) proves collision probability is 1/C(m,k).
 
-## Implementation Notes
+### Implementation Notes
 
 - **Language / Library:** C++ with Microsoft SEAL library, version 3.6 (PIR protocols) and version 3.7 (extended evaluation).[^45]
 - **Polynomial arithmetic:** NTT-based (via SEAL), using SIMD batch encoding for parallelism across plaintext slots.
@@ -410,7 +410,7 @@ For the same multiplicative depth (matching k to d), the constant-weight code pr
 [^47]: Section 4, p. 9 and Section 3.3.3, p. 8: "this step... can be done in parallel across the identifiers in the database" and "The s inner products can also be done in parallel."
 [^48]: Footnotes 2 and 3, pages 9 and 11.
 
-## Related Papers in Collection
+### Related Papers in Collection
 
 - **SealPIR [Group A]:** Introduced oblivious expansion for query compression and the recursion/dimension approach. CwPIR's Algorithm 5 is a modified version of SealPIR's Algorithm 1. SealPIR uses selection-vector communication; CwPIR uses equality-operator computation.
 - **MulPIR [Group A]:** Replaced SealPIR's layered encryption with homomorphic multiplications for better communication. CwPIR competes with MulPIR directly and outperforms it for payloads > 268 KB.
@@ -419,7 +419,7 @@ For the same multiplicative depth (matching k to d), the constant-weight code pr
 
 [^49]: SKILL.md lineage note: "FastPIR/Addra (2021) uses one-hot selection vectors (NOT equality operators) — it is a system paper embedding a BFV-based PIR scheme, distinct from CwPIR."
 
-## Open Problems
+### Open Problems
 
 - Can the constant-weight equality operator be combined with more efficient FHE schemes (e.g., Regev+GSW composition from Spiral) to further reduce computation?
 - The paper notes that hardware accelerators (GPUs) or HE acceleration libraries (Intel HEXL) could substantially improve performance.[^50]
@@ -427,7 +427,7 @@ For the same multiplicative depth (matching k to d), the constant-weight code pr
 
 [^50]: Section 6, p. 12: "The results... can easily be enhanced using hardware accelerators (GPUs) or accelerators for the homomorphic encryption libraries such as HEXL [10]."
 
-## Uncertainties
+### Uncertainties
 
 - **Notation collision: n vs N:** The paper uses n for number of database rows and N for the polynomial modulus degree of the FV cryptosystem. These are clearly distinguished throughout.
 - **Notation collision: k:** In this paper, k is the Hamming weight of constant-weight codes, NOT the security parameter. The security parameter is implicitly 128 bits (from SEAL parameter selection).

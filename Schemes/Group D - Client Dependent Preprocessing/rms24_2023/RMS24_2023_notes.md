@@ -1,4 +1,4 @@
-# RMS24 -- Engineering Notes
+## RMS24 -- Engineering Notes
 
 | Field | Value |
 |-------|-------|
@@ -15,7 +15,7 @@
 
 ---
 
-## Lineage
+### Lineage
 
 | Field | Value |
 |-------|--------|
@@ -32,7 +32,7 @@
 
 ---
 
-## Core Idea
+### Core Idea
 
 RMS24 presents a stateful PIR scheme that achieves amortized sublinear communication and computation for both two-server and single-server settings, while maintaining *standard* PIR correctness (correctness for arbitrary, adaptively chosen query sequences).[^5] The database of N entries is divided into sqrt(N) partitions. Each client hint selects sqrt(N)/2 + 1 random partitions and picks one random index from each, storing the XOR parity. The key innovation is the **dummy subset**: when querying, the client constructs a real subset (the hint's subset minus the queried index) and a dummy subset (one random index from each unrepresented partition), then sends both in random order to the server.[^6] This eliminates the information leakage that prior schemes suffered -- where the server could learn which partition the queried index belongs to -- without requiring parallel repetition. The result is O(1) online response overhead (2x the insecure baseline for two servers, 4x for one server) with O(sqrt(N)) client storage and computation.[^7]
 
@@ -44,7 +44,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 ---
 
-## Variants
+### Variants
 
 | Variant | Key Difference | Servers | Online Response | Hint Replenishment | Amortization Window |
 |---------|---------------|---------|----------------|--------------------|---------------------|
@@ -57,9 +57,9 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 ---
 
-## Novel Primitives / Abstractions
+### Novel Primitives / Abstractions
 
-### 1. Dummy Subsets
+#### 1. Dummy Subsets
 
 | Field | Detail |
 |-------|--------|
@@ -72,7 +72,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 [^10]: Section 3.5 (p.8): Lemma 2 proves Pr(b | i) = Pr(b | i') for any two query indices i and i', where b is the bit vector encoding which partitions go to which subset. The proof shows each event has probability tau/2 where tau = C(sqrt(N)-1, sqrt(N)/2)^{-1}, independent of the queried index.
 
-### 2. Partition-Based Hints with Median Cutoff Selection
+#### 2. Partition-Based Hints with Median Cutoff Selection
 
 | Field | Detail |
 |-------|--------|
@@ -87,7 +87,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 ---
 
-## Cryptographic Foundation
+### Cryptographic Foundation
 
 | Layer | Detail |
 |-------|--------|
@@ -104,7 +104,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 ---
 
-## Key Data Structures
+### Key Data Structures
 
 - **Database layout:** N entries divided into sqrt(N) equal-size partitions, each of size sqrt(N). Entry i belongs to partition floor(i / sqrt(N)).[^15]
 - **Main hint (j, v-hat_j, e_j, P_j):** Hint ID j, median cutoff v-hat_j (32-bit), extra index e_j (32-bit), parity P_j (w-bit XOR of all selected entries). Each hint covers sqrt(N)/2 + 1 partitions with one index per partition.[^16]
@@ -122,9 +122,9 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 ---
 
-## Protocol Phases
+### Protocol Phases
 
-### Two-Server Scheme
+#### Two-Server Scheme
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -138,7 +138,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 [^20]: Section 3.2 (p.5-6): "The encoding using b and r costs sqrt(N) + sqrt(N) * log(sqrt(N)) = (sqrt(N)/2 + 1) * log(N) bits, slightly reducing the client's request size by half" compared to sending two explicit subsets.
 
-### Single-Server Scheme
+#### Single-Server Scheme
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -152,7 +152,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 ---
 
-## Two-Server Protocol Details
+### Two-Server Protocol Details
 
 | Aspect | Offline Server | Online Server |
 |--------|----------------|---------------|
@@ -167,7 +167,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 ---
 
-## Correctness Analysis (Option B: Probabilistic)
+### Correctness Analysis (Option B: Probabilistic)
 
 | Field | Detail |
 |-------|--------|
@@ -191,9 +191,9 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 ---
 
-## Complexity
+### Complexity
 
-### Core metrics
+#### Core metrics
 
 | Metric | Asymptotic | Concrete (2^28 entries x 32 bytes = 8 GB) | Phase |
 |--------|-----------|-------------------------------------------|-------|
@@ -207,7 +207,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 [^28]: Section 3.6 (p.9): "The online response overhead is O(1), or 4x to be precise, since both the online server and the offline server both send back two parities." For two-server, only 2 parities are needed from the online server (the other 2 come from replenishment). The "2x" figure is from the abstract: "the online response overhead is only twice that of simply fetching the desired entry without privacy."
 
-### Preprocessing metrics
+#### Preprocessing metrics
 
 | Metric | Two-Server Asymptotic | Two-Server Concrete (8 GB) | Single-Server Asymptotic | Single-Server Concrete (8 GB) |
 |--------|----------------------|---------------------------|-------------------------|------------------------------|
@@ -221,7 +221,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 [^30]: Table 3 (p.11): Client storage for single-server at 8 GB is 100 MB (1.5x the two-server's 60 MB because of backup hint pairs). At 2^28 x 256-byte entries (64 GB), client storage is 660 MB.
 
-### Preprocessing Characterization
+#### Preprocessing Characterization
 
 | Aspect | Two-Server | Single-Server |
 |--------|-----------|---------------|
@@ -234,15 +234,15 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 ---
 
-## Performance Benchmarks
+### Performance Benchmarks
 
-### Hardware
+#### Hardware
 
 AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18. All experiments single-threaded.[^32]
 
 [^32]: Section 4.2 (p.10): "We run all experiments on an AWS m5.8xlarge instance equipped with a 3.1 GHz Intel Xeon processor and 128 GB RAM."
 
-### Two-Server Benchmarks (Table 2)
+#### Two-Server Benchmarks (Table 2)
 
 | Database | Client Storage (MB) | Offline Comm. (MB) | Offline Compute (s) | Online Comm. (KB) | Online Compute (ms) |
 |----------|--------------------|--------------------|---------------------|-------------------|---------------------|
@@ -252,7 +252,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 | 2^28 x 32B (8 GB) | 60.16 | 60.16 | 842 | 34.1 | 2.7 |
 | 2^28 x 256B (64 GB) | 340.16 | 340.16 | 2242 | 35.0 | 5.23 |
 
-### Single-Server Benchmarks (Table 3)
+#### Single-Server Benchmarks (Table 3)
 
 | Database | Client Storage (MB) | Offline Comm. (MB) | Offline Compute (s) | Online Comm. (KB) | Online Compute (ms) | Amortized Comm. (KB) | Amortized Compute (ms) |
 |----------|--------------------|--------------------|---------------------|-------------------|---------------------|---------------------|----------------------|
@@ -264,9 +264,9 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 ---
 
-## Comparison with Prior Work
+### Comparison with Prior Work
 
-### Two-Server (at 2^28 x 32B = 8 GB)
+#### Two-Server (at 2^28 x 32B = 8 GB)
 
 | Metric | RMS24 | DPF-PIR | Checklist | TreePIR |
 |--------|-------|---------|-----------|---------|
@@ -277,7 +277,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 | Online compute (ms) | 2.7 | 745 | 1.8 | 14 |
 | DB params | 2^28 x 32B | 2^28 x 32B | 2^28 x 32B | 2^28 x 32B |
 
-### Single-Server (at 2^28 x 32B = 8 GB)
+#### Single-Server (at 2^28 x 32B = 8 GB)
 
 | Metric | RMS24 | Spiral | SimplePIR | Piano |
 |--------|-------|--------|-----------|-------|
@@ -295,7 +295,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 ---
 
-## Portable Optimizations
+### Portable Optimizations
 
 - **Dummy subset technique:** Applicable to any partition-based hint PIR scheme to eliminate leakage from the queried index's partition membership. Removes the need for parallel repetition (lambda-factor blowup on all costs). Could be applied to TreePIR's hint system.[^35]
 - **PRF-based median cutoff for partition selection:** Using the median of PRF outputs to select exactly half the partitions allows O(1) membership testing per hint without storing the full partition set. Generalizable to any scheme needing pseudorandom subset selection with compact representation.
@@ -310,7 +310,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 ---
 
-## Implementation Notes
+### Implementation Notes
 
 - **Language:** C++ (RMS24 scheme); baselines in C++ (DPF-PIR, Spiral) and Go (Checklist, TreePIR, SimplePIR, Piano)[^38]
 - **PRF:** AES-128 via CryptoPP with AES-NI. A single 128-bit AES output is broken into four to eight 32-bit pseudorandom numbers, shared across different hint/partition combinations to save computation.[^39]
@@ -334,7 +334,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 ---
 
-## Application Scenarios
+### Application Scenarios
 
 - **Private DNS lookup:** Mentioned as a motivating application where adversarial query influence is realistic (Kaminsky attack), making Piano's non-adaptive correctness model insufficient.[^43]
 - **Private password checking:** Mentioned as a general PIR application.[^44]
@@ -345,7 +345,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 ---
 
-## Deployment Considerations
+### Deployment Considerations
 
 - **Database updates:** Not addressed. Hints become stale if the database changes; full re-preprocessing is required.[^45]
 - **Two-server trust model:** Requires two non-colluding servers. The offline server holds the PRF key and must not collude with the online server.
@@ -360,7 +360,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 ---
 
-## Key Tradeoffs & Limitations
+### Key Tradeoffs & Limitations
 
 - **Client storage:** O(lambda*sqrt(N)) is sublinear but still large in practice -- 60 MB at 8 GB, 660 MB at 64 GB. Shared limitation with all amortized sublinear PIR schemes.
 - **Request size:** O(sqrt(N) * log N) bits is the dominant cost for small databases. At 2^28 entries, this is ~34 KB. The paper notes this as an open problem -- techniques exist to reduce it but sacrifice other aspects.[^47]
@@ -372,7 +372,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 ---
 
-## Open Problems
+### Open Problems
 
 - **Reducing request size:** Can the O(sqrt(N)) request size be reduced without sacrificing other efficiency metrics?[^48]
 - **Reducing client storage:** The O(lambda*sqrt(N)) client storage is a limitation shared by all amortized sublinear PIR schemes.
@@ -385,7 +385,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 ---
 
-## Related Papers in Collection
+### Related Papers in Collection
 
 | Paper | Group | Relationship |
 |-------|-------|-------------|
@@ -398,7 +398,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 ---
 
-## Uncertainties
+### Uncertainties
 
 - **Median corner case:** When two or more elements of V_j equal the median, the hint is discarded. The paper states this happens with probability ~6 x 10^{-5} for N = 2^20 and decreases with database size. The pseudocode omits this handling for readability.
 - **Exact amortization window (single-server):** The paper states "close to, but fewer than, 0.5*lambda*sqrt(N)" queries. The "0.4*lambda*sqrt(N)" figure used in Table 1 caption is described as conservative ("say 0.4*lambda*sqrt(N)").

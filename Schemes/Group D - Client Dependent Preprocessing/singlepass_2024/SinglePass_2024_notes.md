@@ -1,4 +1,4 @@
-# SinglePass — Engineering Notes
+## SinglePass — Engineering Notes
 
 | Field | Value |
 |-------|-------|
@@ -11,7 +11,7 @@
 | **Rounds (online)** | 1 (client sends q_0, q_1 to servers; each server responds with A_b) |
 | **Record-size regime** | Moderate (512–2048 bytes in benchmarks) |
 
-## Lineage
+### Lineage
 
 | Field | Value |
 |-------|--------|
@@ -23,7 +23,7 @@
 [^1]: Abstract (p.1): "we propose the first client-preprocessing PIR scheme with 'single pass' client-preprocessing... it requires exactly one linear pass over the database. This is in stark contrast with existing works, whose preprocessing is proportional to lambda * N."
 [^2]: Section 4 (p.10): MIR [30] is listed as one of three novel state-of-the-art client preprocessing PIR schemes benchmarked against.
 
-## Core Idea
+### Core Idea
 
 SinglePass addresses the fundamental bottleneck of client-preprocessing PIR: existing schemes require lambda * N database accesses during preprocessing (where lambda = 128 is the security parameter), making the offline phase roughly 128x slower than necessary. The paper replaces the standard approach of sampling lambda * sqrt(N) independent pseudorandom subsets with Q random permutations over chunks of size m = N/Q, generated via Fisher-Yates shuffle from a single PRG seed.[^3] Each column j of the permutation matrix yields a hint h_j = XOR of DB_i[p_i(j)] for i in [Q], and the client stores these hints alongside the permutations. Because the permutations are generated from a compact seed, the preprocessing is a single linear pass over the database in O(N * w) time.[^4] The "Show and Shuffle" lemma (Lemma 3.1) proves that after each query, performing a random swap on each permutation produces a distribution identical to freshly sampled permutations, enabling unlimited queries with deterministic correctness and perfect security against each server individually.[^5]
 
@@ -31,7 +31,7 @@ SinglePass addresses the fundamental bottleneck of client-preprocessing PIR: exi
 [^4]: Theorem 3.1 (p.8–9): Hint runs in O(N * w) time and outputs a hint of size (N/Q) * w bits.
 [^5]: Lemma 3.1 (p.7): "Show and Shuffle Perfect Indistinguishability... for any adversary A, for any L, K in N: Pr[SaS_{A,L,K} -> 1] = 1/2."
 
-## Novel Primitives / Abstractions
+### Novel Primitives / Abstractions
 
 | Field | Detail |
 |-------|--------|
@@ -48,7 +48,7 @@ SinglePass addresses the fundamental bottleneck of client-preprocessing PIR: exi
 [^6]: Lemma 3.1 (p.7): The Show and Shuffle game achieves perfect indistinguishability (probability exactly 1/2) for any adversary.
 [^7]: Section 3.1 (p.6–7): "This experiment models exactly one round of our PIR query, and will help us show that after each query, the resulting state of the client's hint is completely uniform."
 
-## Cryptographic Foundation
+### Cryptographic Foundation
 
 | Layer | Detail |
 |-------|--------|
@@ -60,7 +60,7 @@ SinglePass addresses the fundamental bottleneck of client-preprocessing PIR: exi
 [^9]: Appendix A (p.16): "the client can store only the seed used for the permutations... by Lemma 2.1 this would require Query to run in O(N) time." Alternatively, storing expanded permutations gives O(Q) query time.
 [^10]: Appendix A, Correctness proof (p.17): "Follows by construction... h_j = XOR_{i in Q} DB_i[p_i(j)], so XOR_{i != i*} A_1[i] XOR h_{ind} = DB_{i*}[j*] = DB[x]."
 
-## Key Data Structures
+### Key Data Structures
 
 - **Database partitioning:** DB is an array of N elements of size w bits, partitioned into Q chunks DB_0, ..., DB_{Q-1} of m = N/Q elements each. DB_i = DB[i*m : (i+1)*m].[^11]
 - **Permutations:** Q permutations p_0, ..., p_{Q-1}, each a permutation of [m] = [N/Q], generated via Fisher-Yates shuffle from a PRG seed. Stored in expanded form (or as seed + O(N) re-expansion).[^12]
@@ -74,7 +74,7 @@ SinglePass addresses the fundamental bottleneck of client-preprocessing PIR: exi
 [^14]: Figure 3, Query step 5 (p.9): "For i in [Q], i != i*, swap p_i(ind) and p_i(r_i)."
 [^15]: Theorem 3.1 (p.9 and p.16): "The client stores a state with O(N log N + (N/Q) * w) bits."
 
-## Database Encoding
+### Database Encoding
 
 - **Representation:** Flat array of N elements of w bits, logically partitioned into Q sub-arrays of m = N/Q elements each.
 - **Record addressing:** Two-level index x = (i*, j*) where i* in [Q] identifies the chunk and j* in [m] identifies the position within the chunk. The global index maps as i* = floor(x / m), j* = x mod m.[^16]
@@ -83,7 +83,7 @@ SinglePass addresses the fundamental bottleneck of client-preprocessing PIR: exi
 [^16]: Figure 3, Query step 1 (p.9): "Parse x = (i*, j*). Find ind in [m] such that p_{i*}(ind) = j*."
 [^17]: Section 1 (p.1): "such approaches store no additional bits per client at the server."
 
-## Protocol Phases
+### Protocol Phases
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -92,7 +92,7 @@ SinglePass addresses the fundamental bottleneck of client-preprocessing PIR: exi
 | **Answer** | Server 0 + Server 1 | Each server looks up Q elements from DB by the indices in q_b, returns A_b | Q * w bits ↓ from each server | Per query |
 | **Reconstruct** | Client | DB[x] = XOR_{i in [Q], i != i*} A_1[i] XOR h_{ind}; then update hints using A_0 and A_1 | — | Per query |
 
-## Two-Server Protocol Details
+### Two-Server Protocol Details
 
 | Aspect | Server 0 | Server 1 |
 |--------|----------|----------|
@@ -109,9 +109,9 @@ SinglePass addresses the fundamental bottleneck of client-preprocessing PIR: exi
 [^21]: Appendix A (p.17): Server 0 privacy relies on PRG security; each q_0 = S_refresh consists of Q uniform random elements of [N/Q], independent of the query.
 [^22]: Appendix A (p.17) and Appendix B (p.17–19): Server 1 privacy proved via hybrid argument using Show-and-Shuffle indistinguishability (Lemma 3.1).
 
-## Correctness Analysis
+### Correctness Analysis
 
-### Option C: Deterministic Correctness
+#### Option C: Deterministic Correctness
 
 Deterministic correctness — the scheme always returns the correct answer by construction. Each hint h_j = XOR_{i in [Q]} DB_i[p_i(j)], so for a query to index x = (i*, j*) with ind = p_{i*}^{-1}(j*), Server 1 returns A_1 containing DB_i[p_i(ind)] for i != i* (and a random element for chunk i*). The client computes XOR_{i != i*} A_1[i] XOR h_{ind} = XOR_{i != i*} DB_i[p_i(ind)] XOR XOR_{i in [Q]} DB_i[p_i(ind)] = DB_{i*}[p_{i*}(ind)] = DB_{i*}[j*] = DB[x].[^23]
 
@@ -121,9 +121,9 @@ The key invariant maintained across queries is that after the swap operations in
 
 [^24]: Appendix A (p.17): "for each swap between p_i(k) and p_i(v), we let h_k = h_k XOR DB_i[p_i(k)] XOR DB_i[p_i(v)], effectively removing the old element from this hint's position and adding the new one."
 
-## Complexity
+### Complexity
 
-### Core metrics
+#### Core metrics
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -136,7 +136,7 @@ The key invariant maintained across queries is that after the swap operations in
 [^25]: Table 2 (p.15): SinglePass query bandwidth = 0.68 KB for 3M x 32B updatable database.
 [^26]: Table 2 (p.15): SinglePass query time = 0.02 ms for 3M x 32B updatable database.
 
-### Preprocessing metrics
+#### Preprocessing metrics
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -151,7 +151,7 @@ The key invariant maintained across queries is that after the swap operations in
 [^29]: Theorem 3.1 (p.9): "The server stores only DB."
 [^30]: Table 2 (p.15): Client storage 23.3 MB; this includes both the hint array and the expanded permutations.
 
-### Preprocessing Characterization
+#### Preprocessing Characterization
 
 | Aspect | Value |
 |--------|-------|
@@ -163,7 +163,7 @@ The key invariant maintained across queries is that after the swap operations in
 [^31]: Theorem 3.1 (p.16): Client stores the permutations (N entries of log N bits each) and the hint (N/Q entries of w bits each).
 [^32]: Abstract (p.1): "it requires exactly one linear pass over the database."
 
-### Update metrics
+#### Update metrics
 
 | Metric | Value | Notes |
 |--------|-------|-------|
@@ -177,7 +177,7 @@ The key invariant maintained across queries is that after the swap operations in
 [^35]: Table 2 (p.15): SinglePass update time = 0.19 ms for a batch of 500 updates.
 [^36]: Section 5 (p.11): "We also define a deletion to be an edit where DB[x]_new equals 0 (or a special delete value)."
 
-## Performance Benchmarks
+### Performance Benchmarks
 
 **Static database (session-based scenario):** Benchmarked on AWS EC2 t2.2xlarge, single thread. Implementation: approximately 300 lines of Go + 150 lines of C, extending the Checklist PIR framework.[^37] Compared against Checklist, TreePIR, MIR, and DPF (state-of-the-art two-server PIR without preprocessing). Tests normalized by client storage — Q chosen so SinglePass uses comparable client storage to each competitor.[^38]
 
@@ -208,7 +208,7 @@ The key invariant maintained across queries is that after the swap operations in
 
 [^41]: Appendix C (p.19): "SinglePass achieves 50-100x better preprocessing time and approximately 80x better storage across the board, with similar query time."
 
-## Application Scenarios
+### Application Scenarios
 
 - **Private encyclopedia service:** The primary application scenario motivating the benchmarks. A user browses a private encyclopedia website, performs a short session of queries, then leaves. Fast preprocessing is critical because it happens "on demand" when the user arrives.[^42]
 - **Private blocklist lookups:** Mentioned as a deployment scenario from Checklist. The updatable variant of SinglePass is benchmarked against Checklist's blocklist parameters (3M x 32B elements, batches of 500 updates).[^43]
@@ -218,7 +218,7 @@ The key invariant maintained across queries is that after the swap operations in
 [^43]: Table 2 (p.15): "we provide a benchmark of SinglePass and Checklist for the blocklist application studied in Checklist."
 [^44]: Section 1 (p.2): "our scheme does not require the client to perform offline computation for extended periods of time... the first query runs at approximately the cost of a single PIR query for a non-preprocessing PIR scheme."
 
-## Deployment Considerations
+### Deployment Considerations
 
 - **Database updates:** O(1) edits and O(1) amortized additions. Server streams changes to client; client updates hint locally. No re-preprocessing required.[^45]
 - **Sharding:** Not discussed.
@@ -233,7 +233,7 @@ The key invariant maintained across queries is that after the swap operations in
 [^47]: Section 1 (p.1): "the preprocessing roughly equals the cost of a single PIR query for a non-preprocessing PIR scheme."
 [^48]: Footnote 6 (p.13): "our single pass scheme is a pure PIR scheme that only supports index queries. However, using cuckoo hashing it could be translated to a keyword PIR scheme with a 2x overhead."
 
-## Key Tradeoffs & Limitations
+### Key Tradeoffs & Limitations
 
 - **Client storage scales linearly with N:** Client storage is O(N log N + (N/Q) * w), which is linear in N. However, the lambda factor is eliminated, so for practical parameters (w = 1024 bytes, Q = sqrt(N), lambda = 128), SinglePass storage is smaller than Checklist's O(N log N + lambda * sqrt(N) * w) for N greater than approximately 1 billion.[^49]
 - **Query bandwidth grows with Q:** Query bandwidth is O(Q * w), higher than Checklist's O(log(N) * (lambda * log(N) + w)). This is the main cost paid for faster preprocessing.[^50]
@@ -245,9 +245,9 @@ The key invariant maintained across queries is that after the swap operations in
 [^51]: Section 2.1 (p.4): "Throughout this work, we will operate entirely over the two server model."
 [^52]: Appendix A, Footnote 7 (p.16): "We can store the inverse along with the permutation with constant overhead. In practice, for some scenarios, it might be beneficial to not store the inverse in order to save space."
 
-## Comparison with Prior Work
+### Comparison with Prior Work
 
-### Asymptotic comparison (Table 1, exact)
+#### Asymptotic comparison (Table 1, exact)
 
 | Metric | SinglePass | Checklist |
 |--------|-----------|-----------|
@@ -261,7 +261,7 @@ Q is a tunable parameter in [N] controlling the tradeoff between query time and 
 
 [^53]: Table 1 (p.2): "Q in [N] is a parameter that determines query time and size, along with storage."
 
-### Concrete comparison (Table 2, 3M x 32B updatable DB, exact)
+#### Concrete comparison (Table 2, 3M x 32B updatable DB, exact)
 
 | Metric | SinglePass | Checklist |
 |--------|-----------|-----------|
@@ -273,7 +273,7 @@ Q is a tunable parameter in [N] controlling the tradeoff between query time and 
 
 **Key takeaway:** SinglePass achieves 100x faster preprocessing, 47x faster queries, and 19x faster updates compared to Checklist at comparable client storage, at a modest cost of lower query bandwidth efficiency. It is ideal for session-based scenarios where preprocessing must be fast and the number of queries may be small (as few as 1–2).
 
-## Portable Optimizations
+### Portable Optimizations
 
 - **Permutation-based hint construction:** Replacing independent pseudorandom subsets with random permutations over database chunks eliminates the lambda factor from preprocessing. This technique could apply to any client-preprocessing PIR scheme that currently uses pseudorandom sets.[^54]
 - **Show-and-Shuffle state refresh:** The swap-based hint refresh mechanism (replace one permutation entry with a random swap after each query) is a general technique for maintaining uniform permutation distributions across adaptive queries. It avoids the need for re-sampling or puncturable PRFs.[^55]
@@ -283,7 +283,7 @@ Q is a tunable parameter in [N] controlling the tradeoff between query time and 
 [^55]: Lemma 3.1 (p.7): Show and Shuffle perfect indistinguishability enables unlimited queries without hint degradation.
 [^56]: Section 5 (p.11): "our new single pass PIR scheme only preprocesses each element exactly once. Since our hint only consists of a single (partitioned) permutation of the database, we can update the hint data structure in O(1) time."
 
-## Implementation Notes
+### Implementation Notes
 
 - **Language / Library:** Go (approximately 300 lines) + C (approximately 150 lines), built as an extension to the Checklist PIR framework[^57]
 - **Polynomial arithmetic:** N/A (no FHE; purely XOR-based)
@@ -296,20 +296,20 @@ Q is a tunable parameter in [N] controlling the tradeoff between query time and 
 [^58]: Section 4 (p.10): "All schemes are run on a single thread."
 [^59]: Section 4 (p.10): "Benchmarks are all run on an AWS EC2 instance of size t2.2xlarge."
 
-## Open Problems
+### Open Problems
 
 - Can single-pass preprocessing be achieved in the **single-server** setting (removing the two-server requirement)?[^60]
 - Can the **linear dependency** of client storage on N be eliminated (achieving sublinear client storage with single-pass preprocessing)?[^60]
 
 [^60]: Section 7 (p.13): "Some natural next questions for this line of work are whether we can have a client-preprocessing PIR scheme whose efficiency is independent of lambda, and that operates in the single server setting; and whether we can get rid of the linear dependency of our scheme's client state and the database size."
 
-## Uncertainties
+### Uncertainties
 
 - **Concrete query bandwidth for static benchmarks:** The static database benchmarks (Section 4, Figures 4–5) are presented only as charts on log scale, not as tables. Exact values for preprocessing time, query time, bandwidth, and storage for specific (N, w, Q) configurations in the static setting are not tabulated — only the updatable scenario has Table 2.
 - **Permutation storage format:** The paper notes that storing the inverse permutation alongside the forward permutation has "constant overhead" (Footnote 7, p.16) but does not specify whether the implementation stores both or only one direction.
 - **MIR reference [30]:** Cited as "Preprint" — exact publication venue unclear at time of this paper's writing.
 
-## Related Papers in Collection
+### Related Papers in Collection
 
 - **Checklist [Group D]** — Primary comparator. SinglePass eliminates the lambda factor from Checklist's preprocessing.
 - **TreePIR [Group D]** — 2-server client-preprocessing scheme by the same authors. Benchmarked against in Section 4.

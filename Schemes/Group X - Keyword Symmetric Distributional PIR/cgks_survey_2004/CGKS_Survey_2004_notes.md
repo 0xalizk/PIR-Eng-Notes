@@ -1,4 +1,4 @@
-# A Survey on Private Information Retrieval — Notes
+## A Survey on Private Information Retrieval — Notes
 
 | Field | Value |
 |-------|-------|
@@ -10,7 +10,7 @@
 | **PIR models covered** | k-DB information-theoretic PIR, 1-DB computational PIR (CPIR), SPIR (symmetric PIR), keyword PIR, block PIR, robust PIR (k-out-of-m), Byzantine PIR, t-private PIR, PIR with preprocessing, commodity-based PIR |
 | **Excluded topics** | Locally decodable codes, PIR schemes with bounded error probability, quantum PIR, practical/applied PIR implementations, connections to older pre-CGKS papers[^1] |
 
-## Taxonomy of PIR Models
+### Taxonomy of PIR Models
 
 The survey organizes PIR into two fundamental branches, then explores variants of each.[^2]
 
@@ -34,9 +34,9 @@ The survey organizes PIR into two fundamental branches, then explores variants o
 - **PIR with preprocessing**: Databases precompute and store additional data to reduce online work
 - **Commodity-based PIR**: A third party supplies random strings to reduce direct communication
 
-## Schemes Covered
+### Schemes Covered
 
-### Information-Theoretic PIR Upper Bounds (Table 1, p. 5)
+#### Information-Theoretic PIR Upper Bounds (Table 1, p. 5)
 
 | Tool / Technique | Theorem | Ref | 2-DB | 3-DB | 4-DB | k-DB (general) |
 |------------------|---------|-----|------|------|------|----------------|
@@ -50,7 +50,7 @@ The survey organizes PIR into two fundamental branches, then explores variants o
 
 All complexities are up to constant factors.[^3]
 
-### Computational PIR Schemes
+#### Computational PIR Schemes
 
 | Scheme | Assumption | # DBs | Communication | Reference |
 |--------|-----------|-------|---------------|-----------|
@@ -60,7 +60,7 @@ All complexities are up to constant factors.[^3]
 | Kushilevitz-Ostrovsky | One-way trapdoor permutations | 1 | n - o(n) | [48] |
 | Stern / Mann | Homomorphic encryption | 1 | n^epsilon | [57],[50] |
 
-### SPIR Schemes (Section 7.2)
+#### SPIR Schemes (Section 7.2)
 
 | Scheme | # DBs | Communication | Shared randomness | Alice model | Reference |
 |--------|-------|---------------|-------------------|-------------|-----------|
@@ -70,9 +70,9 @@ All complexities are up to constant factors.[^3]
 | Gertner et al. (logarithmic DBs) | ceil(lg n)+1 | O(lg^2 n * lg lg n) | O(lg^2 n * lg lg n) | Dishonest | [34] |
 | Mishra-Sarkar | 1 | O(n^epsilon) | -- | Dishonest | [51],[52] |
 
-## Model Definitions
+### Model Definitions
 
-### Definition 2.1 — 1-round k-DB Information Retrieval Scheme[^4]
+#### Definition 2.1 — 1-round k-DB Information Retrieval Scheme[^4]
 
 Database: x = x_1 x_2 ... x_n in {0,1}^n with k non-communicating copies.
 1. Alice wants to know x_i.
@@ -82,25 +82,25 @@ Database: x = x_1 x_2 ... x_n in {0,1}^n with k non-communicating copies.
 
 **Complexity**: sum_{j=1}^{k} |q_j| + |ANS_j(q_j)|.
 
-### Definition 2.2 — Private Information Retrieval (information-theoretic)[^5]
+#### Definition 2.2 — Private Information Retrieval (information-theoretic)[^5]
 A k-DB information retrieval scheme where, after the query is made and answered, the database does not have any information about what i is. The database is assumed computationally unbounded. Hence privacy is unconditional: the database does not have enough *information* to figure out anything about i.
 
-### Definition 2.3 — Computationally Private Information Retrieval (CPIR)[^6]
+#### Definition 2.3 — Computationally Private Information Retrieval (CPIR)[^6]
 A k-DB information retrieval scheme where, assuming some limitations on what the database can compute, after the query is made and answered, the database does not have any information about what i is. Privacy rests on computational hardness assumptions.
 
-### Definition 6.5 — PERKY (Private Retrieval by Keywords)[^7]
+#### Definition 6.5 — PERKY (Private Retrieval by Keywords)[^7]
 There are k databases with the same list of N strings of length l. Alice has a string w in {0,1}^l. Alice wants to determine if w is on the list without the databases knowing anything about w.
 
-### Definition 7.1 — k-out-of-m PIR (Robust PIR)[^8]
+#### Definition 7.1 — k-out-of-m PIR (Robust PIR)[^8]
 A k-out-of-m PIR scheme is an m-DB PIR scheme that works even if only k of the databases send back answers (the rest return nothing).
 
-### Definition 7.5 — b-Byzantine k-out-of-m PIR[^9]
+#### Definition 7.5 — b-Byzantine k-out-of-m PIR[^9]
 A PIR scheme that works even if only k of the m databases return answers and at most b of them return incorrect answers. The b bad databases do not collude.
 
-### Definition 7.8 — Symmetric PIR (SPIR)
+#### Definition 7.8 — Symmetric PIR (SPIR)
 A PIR scheme where, at the end, Alice learns nothing more than x_i. Databases may share a common random string. Two sub-types: (1) honest-but-curious Alice (follows the protocol but tries to infer extra information), and (2) dishonest Alice (may deviate from protocol).
 
-## Key Upper Bounds
+### Key Upper Bounds
 
 **Information-Theoretic PIR:**
 
@@ -128,7 +128,7 @@ A PIR scheme where, at the end, Alice learns nothing more than x_i. Databases ma
 
 10. **Keyword PIR**: There exists an O((N+l)(lg N))-bit PERKY(l,N,k) scheme. KEY IDEA: The words are sorted. Alice uses block PIR and binary search.
 
-## Key Lower Bounds
+### Key Lower Bounds
 
 1. **Deterministic lower bound (folklore)**: If Alice uses a deterministic scheme, then n bits are required. This holds even with multiple non-communicating copies.[^16]
 
@@ -146,7 +146,7 @@ A PIR scheme where, at the end, Alice learns nothing more than x_i. Databases ma
 
 8. **Mann's privacy cost lower bound (Theorem 8.1 [50])**: Every k-DB alpha(n)-bit PIR scheme where every database receives the same number of bits has alpha(n) >= (k^2/(k-1) - epsilon) lg n. In particular, any 2-DB equal-query scheme has complexity at least 3.5 lg n.
 
-## Proof Techniques
+### Proof Techniques
 
 | Technique | Used in | Description |
 |-----------|---------|-------------|
@@ -160,7 +160,7 @@ A PIR scheme where, at the end, Alice learns nothing more than x_i. Databases ma
 | **Communication complexity reduction** | Th 8.5 (Itoh) | Show that linearity lets Alice reconstruct all answers from the database's response to basis queries, reducing k-DB PIR to 1-DB PIR and deriving a contradiction |
 | **Conditional Disclosure of Secrets** | Th 7.10-7.12 (Gertner et al.) | Generalization of secret sharing used to transform PIR into SPIR; an extra database holds the random mask |
 
-## Implication Chains
+### Implication Chains
 
 The survey documents a rich web of implications between PIR and fundamental cryptographic primitives.[^18]
 
@@ -181,7 +181,7 @@ Key takeaway: In the computational setting, sublinear 1-DB PIR is *equivalent in
 
 The survey also notes an important barrier: Impagliazzo and Rudich [39] showed that proving OT from one-way functions alone (without trapdoor) would imply P != NP via a non-relativizing argument, which is considered very difficult. Since OT is equivalent to SPIR and SPIR is close to PIR, this suggests it is unlikely that sublinear PIR can be obtained from one-way functions alone.
 
-## Open Problems
+### Open Problems
 
 The survey lists four open problems (Section 9, p. 29):[^20]
 
@@ -195,7 +195,7 @@ The survey lists four open problems (Section 9, p. 29):[^20]
 
 Additional frustration noted: "The biggest frustration about PIR's is the lack of good lower bounds. This is particularly striking since we are dealing with communication complexity where lower bounds are possible and plentiful."
 
-## Commentary / Author Reflections
+### Commentary / Author Reflections
 
 Section 10 (p. 29) contains Gasarch's personal commentary after reading 27 PIR papers:
 
@@ -205,7 +205,7 @@ Section 10 (p. 29) contains Gasarch's personal commentary after reading 27 PIR p
 
 3. **Significance assessment**: "While I don't see PIR as being fundamental, I do see it as both connecting to fields of interest and using interesting techniques."
 
-## Historical Significance
+### Historical Significance
 
 This survey is one of the foundational reference works for the entire PIR field, published as a column in the Bulletin of the European Association for Theoretical Computer Science (BEATCS), introduced by Lance Fortnow's "Computational Complexity Column." Its significance includes:
 

@@ -1,4 +1,4 @@
-# VIA: Communication-Efficient Single-Server Private Information Retrieval -- Engineering Notes
+## VIA: Communication-Efficient Single-Server Private Information Retrieval -- Engineering Notes
 
 | Field | Value |
 |-------|-------|
@@ -11,7 +11,7 @@
 | **Rounds (online)** | 1 (non-interactive) |
 | **Record-size regime** | Small (log p bits per record; 8 bits for VIA, 4 bits for VIA-C/VIA-B) / Variable via blinded extraction |
 
-## Lineage
+### Lineage
 
 | Field | Value |
 |-------|--------|
@@ -20,7 +20,7 @@
 | **Superseded by** | N/A |
 | **Concurrent work** | N/A |
 
-## Core Idea
+### Core Idea
 
 VIA addresses the high online communication cost of lattice-based PIR schemes that eliminate offline communication. Prior hintless schemes (YPIR, HintlessPIR) achieve O_lambda(sqrt(N)) online communication; VIA achieves O_lambda(1) -- specifically O(log N) online communication -- by replacing coefficient expansion with a DMux-CMux binary tree that generates the encrypted one-hot vector from only log I RGSW ciphertexts of control bits.[^1] The DMux-CMux architecture requires only logarithmically many ciphertexts to select among I rows and J columns, yielding the name "VIA" from the symmetric triangular layout of the DMux and CMux trees.[^2] VIA-C further compresses queries to O(log N) elements in Z_q via a novel LWE-to-RLWE conversion that introduces only O(n log n) noise variance, achieving 87.6x smaller queries than Respire for a 32 GB database.[^3]
 
@@ -30,7 +30,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^3]: Section 1.1 (p.4): VIA-C's LWE-to-RLWE conversion reduces queries to l*log(IJn_1/n_2) = l*log N elements in Z_{q_1}. For a 32 GB database, VIA-C's query size is only 0.659 KB vs. Respire's 57.77 KB.
 
-## Variants
+### Variants
 
 | Variant | Key Difference | Offline Comm | Online Query | Online Response | Best For |
 |---------|---------------|-------------|--------------|----------------|----------|
@@ -44,9 +44,9 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^6]: Section 4.5 (p.14): VIA-B models each database record as an element of R_{n_3,p} where n_3 <= n_2, and each packed element contains n_1/n_3 individual records.
 
-## Novel Primitives / Abstractions
+### Novel Primitives / Abstractions
 
-### DMux (Homomorphic Demultiplexer)
+#### DMux (Homomorphic Demultiplexer)
 
 | Field | Detail |
 |-------|--------|
@@ -61,7 +61,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^7]: Section 3.1, Algorithm 2 (p.8): DMux is a binary tree of depth m = log I. At each level i, each node splits via DMux(C_{ctrl,i}, res_j) = (res_{2j} = c - C box c, res_{2j+1} = C box c), performing 2^i external products at level i.
 
-### CRot (Controlled Rotation)
+#### CRot (Controlled Rotation)
 
 | Field | Detail |
 |-------|--------|
@@ -73,7 +73,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^8]: Section 4.2 (p.12): CRot takes a tuple C_rot of RGSW ciphertexts with gamma_i in {0,1} and an RLWE ciphertext c = RLWE_S(M), outputting RLWE_S(M * X^{-sum_i gamma_i * 2^i}).
 
-### LWE-to-RLWE Conversion (Novel)
+#### LWE-to-RLWE Conversion (Novel)
 
 | Field | Detail |
 |-------|--------|
@@ -87,7 +87,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^9]: Section 4.1 (p.11-12), Lemma 4.2 (p.12): The LWE-to-RLWE algorithm requires 2 log n key-switching keys and performs 2 log n key-switching operations. Noise variance is theta_c + 2*theta_ks*log n, i.e., O(n log n), compared to O(n^3) for [28].
 
-## Cryptographic Foundation
+### Cryptographic Foundation
 
 | Layer | Detail |
 |-------|--------|
@@ -103,9 +103,9 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^12]: Appendix C.2 (p.27): The correctness condition is ||E_final||_inf <= floor((q_3 - q_4)/p)/2 - 1, with the error probability bounded by erfc(floor((q_3 - q_4)/p)/2 - 1 / sqrt(2*theta_ans)).
 
-## Ring Architecture / Modulus Chain
+### Ring Architecture / Modulus Chain
 
-### VIA Parameters
+#### VIA Parameters
 
 | Ring | Dimension | Modulus (bits) | Value | Role / Phase |
 |------|-----------|---------------|-------|--------------|
@@ -117,7 +117,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^13]: Section 5.1 (p.16-17) and Appendix B (p.22): VIA uses q_1 = 268369921 * 268369921 ~ 2^57, q_2 = 34359214081 ~ 2^35, q_3 = 2147352577 ~ 2^31, q_4 = 2^15, p = 256. Both q_{1,1}, q_{1,2} are primes with q_{1,1}, q_{1,2} = 1 mod 2*n_1 for NTT.
 
-### VIA-C / VIA-B Parameters
+#### VIA-C / VIA-B Parameters
 
 | Ring | Dimension | Modulus (bits) | Value | Role / Phase |
 |------|-----------|---------------|-------|--------------|
@@ -133,7 +133,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^15]: Section 5.1 (p.16): "We choose the lattice parameters to ensure that each of the underlying RLWE/MLWE assumptions which we require for security provides 110 bits of classical security. We use the lattice estimator tool [46] for our security estimates."
 
-## Key Data Structures
+### Key Data Structures
 
 - **Database:** X in R_{n_2,p}^N, structured as an I x J matrix over R_{n_1,p} where N*n_2 = I*J*n_1. Each entry db[i,j] = iota^{n_2->n_1}((db_{kIJ+iJ+j})_{k in [n_1/n_2]}) packs n_1/n_2 = 4 elements of R_{n_2,p} into one element of R_{n_1,p} via subring embedding.[^16]
 - **Query (VIA):** Four components: c_rot = RLWE_{S_1}(X^{-gamma}) (rotation), C_ctrl = RGSW_{S_1}(alpha) (log I control bits), C_sel = RGSW_{S_2}(rev(beta)) (log J selection bits), rsk (ring-switching key from S_1 to S_2).
@@ -146,7 +146,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^18]: Table 1 (p.18): VIA-C offline communication is 14.8 MB for all database sizes tested (1 GB, 4 GB, 32 GB).
 
-## Database Encoding
+### Database Encoding
 
 - **Representation:** I x J matrix over R_{n_1,p}. Each matrix entry packs d = n_1/n_2 = 4 records from R_{n_2,p}.
 - **Record addressing:** Index idx decomposes as idx = gamma * IJ + alpha * J + beta, where (alpha, beta, gamma) in [I] x [J] x [n_1/n_2]. Binary representations of alpha and beta serve as DMux control bits and CMux selection bits respectively.
@@ -157,7 +157,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^20]: Section 3.2 (p.9): Blinded extraction allows the client to send c_rot = Enc(x^{-t}) for any t in [n_1], enabling retrieval of any coefficient. Multi-sample extraction generalizes to variable-sized records.
 
-## Database Dimensions (Table 4)
+### Database Dimensions (Table 4)
 
 | Database Size | VIA (I, J) | VIA-C (I, J) |
 |---------------|-----------|-------------|
@@ -167,9 +167,9 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^21]: Appendix B, Table 4 (p.22): Database dimension choices for VIA and VIA-C across database sizes.
 
-## Protocol Phases
+### Protocol Phases
 
-### VIA Protocol (Figure 4, p.10)
+#### VIA Protocol (Figure 4, p.10)
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -183,7 +183,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 | Answer Step 6: ModSwitch | Server | ModSwitch_{q_3,q_4}(ans') -> final answer | 15.5 KB down | Per query |
 | Decode | Client | Dec_{st}(ans) -> record d | -- | Per query |
 
-### VIA-C Protocol (Figure 8, p.14)
+#### VIA-C Protocol (Figure 8, p.14)
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -198,7 +198,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^22]: Figure 8 (p.14): VIA-C adds CRot (step 6) and response compression (step 7) compared to VIA. The rotation ciphertext is not sent directly; instead, encrypted rotation bits are sent and CRot is applied homomorphically.
 
-### VIA-B Protocol (Figure 9, p.15)
+#### VIA-B Protocol (Figure 9, p.15)
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -211,9 +211,9 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^23]: Section 4.7 (p.15-16): VIA-B runs T independent VIA-C queries, then uses homomorphic repacking (MLWEs-to-RLWE conversion) to pack T answers into a single RLWE ciphertext. The repacking algorithm achieves logarithmic noise variance scaling.
 
-## Correctness Analysis
+### Correctness Analysis
 
-### Option A: FHE Noise Analysis
+#### Option A: FHE Noise Analysis
 
 VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks variance-based noise through 8 phases.
 
@@ -236,9 +236,9 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 
 [^25]: Section 5.1 (p.16) and Figure 11 (p.19): First dimension processing is the dominant computational overhead. VIA uses p = 256 (8-bit records), VIA-C uses p = 16 (4-bit records). The smaller p in VIA-C reduces first-dimension noise but also reduces per-query record size.
 
-## Gadget Parameters
+### Gadget Parameters
 
-### VIA (Table 5)
+#### VIA (Table 5)
 
 | Component | Gadget Length (l) | Gadget Base (B) |
 |-----------|------------------|----------------|
@@ -246,7 +246,7 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 | CMux | (4, 3) | (24, 24) |
 | Ring-Switching Key | 4 | 24 |
 
-### VIA-C / VIA-B (Table 6)
+#### VIA-C / VIA-B (Table 6)
 
 | Component | Gadget Length (l) | Gadget Base (B) |
 |-----------|------------------|----------------|
@@ -257,9 +257,9 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 
 [^26]: Appendix B, Tables 5-6 (p.23): Gadget parameters for VIA and VIA-C/VIA-B. The notation (l_1, l_2) and (B_1, B_2) for DMux and CMux corresponds to the two RLev components within each RGSW ciphertext, which may use different parameters.
 
-## Complexity
+### Complexity
 
-### Core metrics
+#### Core metrics
 
 | Metric | Asymptotic | Concrete (32 GB) | Phase |
 |--------|-----------|-------------------|-------|
@@ -284,7 +284,7 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 
 [^28]: Table 3 (p.20): Asymptotic analysis. VIA: offline comp O_lambda(N), offline comm "-" (none), online comp O_lambda(N), online comm O_tilde_lambda(1). VIA-C: offline comp O_lambda(N), offline comm O_lambda(1), online comp O_lambda(N), online comm O_tilde_lambda(1).
 
-### FHE-specific metrics
+#### FHE-specific metrics
 
 | Metric | VIA | VIA-C |
 |--------|-----|-------|
@@ -292,13 +292,13 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 | Multiplicative depth | 1 (first-dim is plaintext-ciphertext multiply, DMux/CMux are external products) | Same |
 | Security level | 110-bit classical | 110-bit classical |
 
-## Performance Benchmarks
+### Performance Benchmarks
 
 **Hardware:** AMD 9950X CPU, 128 GB RAM, Ubuntu 22.04.5. Compiler: clang 19.1.7 with AVX-512DQ and AVX-512IFMA52 instruction sets. Single-threaded execution. All measurements averaged over at least 5 trials with standard deviation at most 5%.[^29]
 
 [^29]: Section 5.2 (p.17): Experimental setup details.
 
-### Table 1: VIA and VIA-C vs. prior work (single query, record size = log_2(p) bits)
+#### Table 1: VIA and VIA-C vs. prior work (single query, record size = log_2(p) bits)
 
 | Metric | HintlessPIR | YPIR | **VIA** | SimplePIR | Respire | **VIA-C** |
 |--------|------------|------|---------|-----------|---------|-----------|
@@ -319,7 +319,7 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 
 [^30]: Table 1 (p.18): Full benchmark table. Values are exact (copied from table).
 
-### Table 2: VIA-B vs. Respire-B (batch, 1-byte records)
+#### Table 2: VIA-B vs. Respire-B (batch, 1-byte records)
 
 | DB | Metric | Respire (T=32) | VIA-B (T=32) | Respire (T=256) | VIA-B (T=256) |
 |----|--------|---------------|-------------|----------------|--------------|
@@ -332,9 +332,9 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 
 [^31]: Table 2 (p.20): Comparison of VIA-B and batched Respire for 1-byte records. VIA-B achieves 3.5x query size reduction and 127x response size reduction at T=256 for 1 GB.
 
-## Comparison with Prior Work
+### Comparison with Prior Work
 
-### Without offline communication (32 GB)
+#### Without offline communication (32 GB)
 
 | Metric | **VIA** | YPIR | HintlessPIR |
 |--------|---------|------|-------------|
@@ -345,7 +345,7 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 | Offline comp | 33.34 s | 315.231 s | -- |
 | Comm reduction vs. YPIR | 3.7x | -- | -- |
 
-### With offline communication (32 GB)
+#### With offline communication (32 GB)
 
 | Metric | **VIA-C** | Respire | SimplePIR |
 |--------|-----------|---------|-----------|
@@ -364,7 +364,7 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 
 **Key takeaway:** VIA is the preferred hintless scheme when minimizing total online communication is paramount and throughput requirements are in the low-GB/s range. It dominates HintlessPIR in all metrics and reduces YPIR's communication by 3.7x while maintaining comparable throughput (3.11 vs. 4.52 GB/s). VIA-C is preferred when offline communication is acceptable and ultra-low online communication is needed -- it achieves 2.1 KB total online for 32 GB, making it suitable for bandwidth-constrained clients. VIA-B extends VIA-C to batch queries on tiny-record databases, achieving 127x response reduction over Respire-B.
 
-## Portable Optimizations
+### Portable Optimizations
 
 - **DMux-CMux architecture:** Applicable to any RLWE-based PIR scheme that currently uses coefficient expansion to generate encrypted one-hot vectors. Reduces the required number of query ciphertexts from O(I) to O(log I), eliminating the need for automorphism-based expansion and client-specific public parameters. The key insight is that logarithmically many RGSW control bits suffice to propagate a single RLWE ciphertext to the target position via a binary tree of external products.[^34]
 - **LWE-to-RLWE conversion via iterative MLWE-to-MLWE:** Generalizable to any scheme needing LWE-to-RLWE format conversion. Achieves O(n log n) noise variance vs. O(n^3) in [28], with compact (logarithmic) public parameters. Can replace the LWE-to-RLWE step in YPIR, Respire, HintlessPIR, InsPIRe.[^35]
@@ -380,7 +380,7 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 
 [^37]: Section 4.6 (p.15): The homomorphic repacking algorithm "introduces only logarithmic noise variance, making it suitable for large-scale ciphertext repacking scenarios."
 
-## Implementation Notes
+### Implementation Notes
 
 - **Language / Library:** C++, approximately 4,000 lines of code. Custom implementation (no SEAL/OpenFHE dependency).[^38]
 - **Polynomial arithmetic:** NTT-based. CRT decomposition used for multi-prime moduli (q_1 = q_{1,1} * q_{1,2}).
@@ -392,7 +392,7 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 
 [^39]: Section 1.2 (p.4): Code anonymously open-sourced.
 
-## Deployment Considerations
+### Deployment Considerations
 
 - **Database updates:** Re-encode via NTT (lightweight); no hint invalidation for VIA. VIA-C/VIA-B: offline evaluation keys are independent of the database, so database updates do not require re-uploading keys.
 - **Sharding:** Not discussed, but the I x J matrix structure is naturally shardable by rows.
@@ -403,7 +403,7 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 
 [^40]: Section 3.2 (p.9): Blinded extraction allows c_rot = Enc(x^{-t}) for arbitrary t in [n_1], and multi-sample extraction extends to variable-sized records.
 
-## Key Tradeoffs & Limitations
+### Key Tradeoffs & Limitations
 
 - **VIA vs. YPIR throughput:** VIA's throughput (3.11 GB/s at 32 GB) is lower than YPIR's (4.52 GB/s) because YPIR's memory-bandwidth-bound architecture (plain LWE matrix-vector multiply) is fundamentally faster for the first-dimension step. VIA trades throughput for 3.7x lower communication.
 - **VIA-C's smaller plaintext modulus:** To accommodate query compression noise (LWE-to-RLWE + RLWE-to-RGSW), VIA-C uses p = 16 (4-bit records) vs. VIA's p = 256 (8-bit records). This means VIA-C requires more queries per byte of useful data for records > 4 bits.
@@ -414,7 +414,7 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 
 [^41]: Section 5.2 (p.19): "VIA employs a 256-bit modulus, whereas VIA-C utilizes a 16-bit modulus. This disparity necessitates twice the computational cost for VIA-C relative to VIA at equivalent database scales."
 
-## Related Papers in Collection
+### Related Papers in Collection
 
 - **Spiral [Group A]:** VIA inherits the Regev+GSW composition and external product framework. VIA's DMux-CMux replaces Spiral's coefficient expansion + ciphertext translation.
 - **Respire [Group B]:** VIA's direct predecessor in architecture (I x J matrix, ring switching, CMux, sample extraction). VIA replaces Respire's coefficient expansion with DMux, eliminating Respire's offline communication.
@@ -423,13 +423,13 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 - **SimplePIR [Group C]:** SimplePIR achieves highest throughput (11.97 GB/s) but requires 724 MB offline communication. VIA-C achieves 690x lower online communication at 1.58 GB/s throughput.
 - **HERMES [ref 29]:** MLWE packing technique. VIA's LWE-to-RLWE conversion is functionally equivalent in the single-ciphertext case but differs in implementation details (log n midpoints, single-ciphertext focus).
 
-## Open Problems
+### Open Problems
 
 - Can the throughput gap between VIA and YPIR/SimplePIR be closed while maintaining logarithmic communication?
 - Can VIA-C's plaintext modulus be increased (e.g., to p = 256) without prohibitive noise growth from query decompression?
 - Can the DMux-CMux technique be adapted to multi-server settings or combined with preprocessing for further communication reduction?
 
-## Uncertainties
+### Uncertainties
 
 - **Subscript conventions for theta:** The paper uses multi-level subscripts extensively (theta_ctrl, theta_DMux, theta_cmux, theta_crot, etc.). The correctness analysis in Appendix C.2 defines each per-phase noise variance, but some symbols (e.g., theta_ctrl for the RGSW ciphertext noise vs. theta_ctrl for the overall control-bit phase noise) are overloaded between the VIA direct-query case and the VIA-C query-decompression case.
 - **Record size ambiguity for VIA benchmarks:** Table 1 does not explicitly state the record size in bytes. From the parameters: VIA retrieves log_2(256) = 8 bits per query; VIA-C retrieves log_2(16) = 4 bits per query. The "record" is a single element of R_{n_2,p}, but the paper also discusses blinded extraction for larger records. Benchmark figures appear to measure single-element retrieval.

@@ -1,4 +1,4 @@
-# Addra / FastPIR — Engineering Notes
+## Addra / FastPIR — Engineering Notes
 
 | Field | Value |
 |-------|-------|
@@ -11,7 +11,7 @@
 | **Rounds (online)** | 1 (non-interactive: query uploaded once per round, reused across subrounds) |
 | **Record-size regime** | Small (96 bytes — one LPCNet voice frame encoding 40 ms audio) |
 
-## Lineage
+### Lineage
 
 | Field | Value |
 |-------|--------|
@@ -20,14 +20,14 @@
 | **Superseded by** | N/A (system contribution; FastPIR's PIR technique is a point in the design space, not a general-purpose PIR improvement) |
 | **Concurrent work** | N/A |
 
-## Core Idea
+### Core Idea
 
 Addra is the first system that hides voice-call metadata over *fully untrusted* infrastructure for tens of thousands of users. The key PIR innovation is FastPIR, a BFV-based CPIR scheme operating at recursion depth d=1 that uses one-hot encoded selection vectors and row-wise SIMD batching to simultaneously achieve small Answer output size *and* low server CPU time.[^1] Prior CPIR schemes (XPIR, SealPIR) trade one for the other: d=1 gives small output but large query/CPU cost in XPIR; d=2 shrinks the query but inflates the response.[^2] FastPIR eliminates this tension through two rotation optimizations (sections 4.3, 4.4) that reduce the cost of packing column outputs into a single response ciphertext.
 
 [^1]: Paper p.5-6: "FastPIR works without recursion and thus keeps the smaller CPIR answer size. However, it optimizes the computation time for Answer."
 [^2]: Paper p.5: recursion with d >= 2 shrinks the query to d * d-th-root(n) ciphertexts but "increases the CPIR Answer output size exponentially with d."
 
-## System Context (Addra)
+### System Context (Addra)
 
 - **Application:** Metadata-private peer-to-peer voice communication (VoIP-like)
 - **Key constraint driving PIR design:** Sub-500 ms per-hop latency. Voice packets generated every 500 ms; each hop in the infrastructure must process within this budget to avoid unbounded packet build-up.[^3]
@@ -44,7 +44,7 @@ Addra is the first system that hides voice-call metadata over *fully untrusted* 
 [^7]: Paper p.5: "a sender pushes a message to the server... this two-hop communication pattern is crucial for voice calls."
 [^8]: Paper p.5: "if a device does not initiate or pick up a call... it calls itself."
 
-## Cryptographic Foundation
+### Cryptographic Foundation
 
 | Layer | Detail |
 |-------|--------|
@@ -58,7 +58,7 @@ Addra is the first system that hides voice-call metadata over *fully untrusted* 
 [^10]: Paper p.7: "each rotation key is 128 KiB, and the set of all possible rotation keys is 256 MiB... in practice, one generates log_2(N/2) keys."
 [^11]: Paper p.9: "These parameters provide a 128-bit security level as guided by the homomorphic encryption standard [5]."
 
-## BFV SIMD Batching — Details
+### BFV SIMD Batching — Details
 
 BFV operates on plaintext vectors of dimension N, where each component is an element of Z_p. The paper views a BFV plaintext as a matrix with 2 rows and N/2 columns.[^12]
 
@@ -71,7 +71,7 @@ Key homomorphic operations used by FastPIR:
 [^12]: Paper p.6: "we will view a BFV plaintext as a matrix with two rows and N/2 columns."
 [^13]: Paper p.7: "a call to BFV.RowRotate with an input i = 7 translates into three rotations by amounts one, two, and four."
 
-## Key Data Structures
+### Key Data Structures
 
 - **Database (mailbox library):** n mailboxes, each storing one message of m components (m = number of Z_p elements per message). Viewed as a matrix L in Z_p^{n x m}. For Addra: m = ceil(96 bytes / (19-bit plaintext capacity)) elements per mailbox.[^14]
 - **Query:** A set of n/N BFV ciphertexts (basic version, Figure 3) or n/(N/2) ciphertexts (optimized version, Figure 5), each encrypting a segment of the one-hot encoding of the target index idx.[^15]
@@ -80,7 +80,7 @@ Key homomorphic operations used by FastPIR:
 [^14]: Paper p.7: "a server holds a library L of n messages where each message has m components."
 [^15]: Paper p.8: Figure 5 shows the optimized Query producing q_0, ..., q_{n/(N/2)-1}.
 
-## Database Encoding
+### Database Encoding
 
 - **Representation:** n x m matrix L in Z_p^{n x m}. The n rows are split into groups of N (or N/2 for the optimized variant) so that each group aligns with one BFV plaintext dimension.
 - **Constraint:** n must be a multiple of N/2 (optimized version). If not, pad L with empty rows.[^16]
@@ -89,7 +89,7 @@ Key homomorphic operations used by FastPIR:
 
 [^16]: Paper p.8: "n = k * (N/2) for some k >= 1, and m is even and <= N."
 
-## Protocol Phases
+### Protocol Phases
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -102,15 +102,15 @@ Key homomorphic operations used by FastPIR:
 | Subround: Response push | Server | Push PIR response to client | Response ↓ (see size below) | Every 480 ms |
 | Decode | Client | Decode PIR response, decrypt with AES, play audio | — | Every 480 ms |
 
-## FastPIR Construction (d=1, One-Hot Encoding)
+### FastPIR Construction (d=1, One-Hot Encoding)
 
-### Why d=1 Works Well Here
+#### Why d=1 Works Well Here
 
 In Addra's setting, the CPIR query is generated *once per round* (every 5 minutes) and reused across all subrounds (every 480 ms). The query cost is amortized over ~625 subrounds. Even though d=1 produces a larger query than d=2, the amortization makes query size nearly irrelevant. What matters is the *per-subround* Answer time and response size — both of which d=1 optimizes.[^17]
 
 [^17]: Paper p.5: "the protocol amortizes the cost of generating and transferring a PIR query across subrounds of a round."
 
-### Basic Version (Figure 3, Section 4.2)
+#### Basic Version (Figure 3, Section 4.2)
 
 **Query(idx, n):**
 1. Create a one-hot vector f of length n: f_i = 1 if i == idx, else 0.
@@ -133,13 +133,13 @@ In Addra's setting, the CPIR query is generated *once per round* (every 5 minute
 2. If idx mod N > N/2: apply ColRotate to the plaintext.
 3. RowRotate the plaintext to align the target entry to position 0.
 
-### Row-wise vs Column-wise Vectorization
+#### Row-wise vs Column-wise Vectorization
 
 FastPIR's key insight: prior schemes (XPIR, SealPIR) apply vectorization *across columns* of L — each BFV plaintext packs N elements from the same column (different rows). FastPIR applies vectorization *across rows* — the one-hot query consumes one BFV slot per row, and the ScMult selects the target row. This is more efficient because: (a) each query ciphertext operates on N rows simultaneously, (b) the server only needs to combine m column outputs (not n row outputs).[^18]
 
 [^18]: Paper p.7: "The difference is that these prior CPIR schemes apply vectorization across columns of the matrix, while FastPIR applies it across rows of the matrix, which is a more efficient use of vectorization in the PIR context."
 
-### Optimization 1: Reducing CPU Cost of Rotations (Section 4.3)
+#### Optimization 1: Reducing CPU Cost of Rotations (Section 4.3)
 
 **Problem:** Combining m column outputs requires m calls to BFV.RowRotate. Non-power-of-two rotation amounts are expensive (decomposed into log_2(i+1) sub-rotations).
 
@@ -149,7 +149,7 @@ FastPIR's key insight: prior schemes (XPIR, SealPIR) apply vectorization *across
 
 [^19]: Paper p.8: "FastPIR rotates the right child by 2^{h-1} positions and adds the rotated vector to the left child... the effect is that FastPIR combines m ciphertexts in lines 22 and 25 in Figure 3 using m fast rotations."
 
-### Optimization 2: Reducing Number of Rotations (Section 4.4)
+#### Optimization 2: Reducing Number of Rotations (Section 4.4)
 
 **Problem:** The basic version produces one ciphertext per column, requiring m rotations to combine.
 
@@ -161,9 +161,9 @@ FastPIR's key insight: prior schemes (XPIR, SealPIR) apply vectorization *across
 
 [^20]: Paper p.8: "This optimization reduces the number of calls to BFV.RowRotate by a factor of two, and eliminates the call to BFV.ColRotate."
 
-## Complexity
+### Complexity
 
-### Core Metrics
+#### Core Metrics
 
 | Metric | Asymptotic | Concrete (n=32,768, m=96B) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -178,7 +178,7 @@ FastPIR's key insight: prior schemes (XPIR, SealPIR) apply vectorization *across
 [^23]: Paper p.10: "of which 398 ms is for CPIR query processing at the workers."
 [^24]: Paper p.13, Figure 10: Client CPU costs for Query and Decode.
 
-### FHE-specific Metrics
+#### FHE-specific Metrics
 
 | Metric | Value |
 |--------|-------|
@@ -192,7 +192,7 @@ FastPIR's key insight: prior schemes (XPIR, SealPIR) apply vectorization *across
 
 [^25]: Paper p.11: "Addra encrypts the 96 bytes into a 64 KB ciphertext, which is a 682x increase."
 
-## System-Level Performance
+### System-Level Performance
 
 | Metric | Value | Configuration |
 |--------|-------|---------------|
@@ -216,11 +216,11 @@ FastPIR's key insight: prior schemes (XPIR, SealPIR) apply vectorization *across
 [^28]: Paper p.11: "An Addra client consumes ~27.5 seconds of CPU time per five-minute round... 94% of this time is from the dialing protocol."
 [^29]: Paper p.10: "for 65,536 users... the processing time is higher than the 480 ms subround time budget."
 
-## Performance Benchmarks — FastPIR Microbenchmarks (Isolated CPIR Comparison)
+### Performance Benchmarks — FastPIR Microbenchmarks (Isolated CPIR Comparison)
 
 **Hardware:** Single AWS c5.12xlarge instance (48 vCPU, 3.6 GHz, 96 GiB RAM). All libraries configured for 128-bit security.[^30]
 
-### Answer CPU Time (ms) — from Figure 9
+#### Answer CPU Time (ms) — from Figure 9
 
 | n | m | XPIR (d=1) | XPIR (d=2) | SealPIR (d=1) | SealPIR (d=2) | FastPIR (d=1) |
 |---|---|-----------|-----------|--------------|--------------|--------------|
@@ -231,7 +231,7 @@ FastPIR's key insight: prior schemes (XPIR, SealPIR) apply vectorization *across
 
 *Values approximate, read from log-scale Figure 9.*
 
-### Concrete Costs at n=32,768 (from Figure 10)
+#### Concrete Costs at n=32,768 (from Figure 10)
 
 | Metric | XPIR (d=1) | XPIR (d=2) | SealPIR (d=1) | SealPIR (d=2) | FastPIR (d=1) |
 |--------|-----------|-----------|--------------|--------------|--------------|
@@ -245,7 +245,7 @@ FastPIR's key insight: prior schemes (XPIR, SealPIR) apply vectorization *across
 
 [^30]: Paper p.12: "We microbenchmarked the XPIR, SealPIR, and FastPIR libraries on a single CPU of an AWS instance of type c5.12xlarge."
 
-### At n=1,048,576 (from Figure 10)
+#### At n=1,048,576 (from Figure 10)
 
 | Metric | XPIR (d=1) | XPIR (d=2) | SealPIR (d=1) | SealPIR (d=2) | FastPIR (d=1) |
 |--------|-----------|-----------|--------------|--------------|--------------|
@@ -254,7 +254,7 @@ FastPIR's key insight: prior schemes (XPIR, SealPIR) apply vectorization *across
 | **Answer size (KiB)** | 32 | 288 | 32 | 320 | 64 |
 | **Client Query CPU (ms), m=96B** | 3801.8 | 41.5 | 19.2 | 1.4 | 679.0 |
 
-## FastPIR Optimization Impact (from Figure 9 labels)
+### FastPIR Optimization Impact (from Figure 9 labels)
 
 | Variant | Description | Relative Cost (vs full FastPIR, at n=2^{15}, m=256B) |
 |---------|-------------|------------------------------------------------------|
@@ -266,7 +266,7 @@ As n increases, the benefit of rotation optimizations diminishes because the Ans
 
 [^31]: Paper p.12-13: "as n increases the lower the CPU time benefit of the optimizations diminishes... dominated by the time to run BFV.ScMult and BFV.Add."
 
-## Comparison with Prior Work (System-Level)
+### Comparison with Prior Work (System-Level)
 
 | Metric | Addra | Pung-XPIR (d=2) | Pung-SealPIR (d=2) |
 |--------|-------|-----------------|-------------------|
@@ -280,9 +280,9 @@ As n increases, the benefit of rotation optimizations diminishes because the Ans
 
 **Key takeaway:** Addra achieves 7.2x lower latency than Pung at 32K users, primarily because of (a) 2-hop message delivery vs. Pung's tree-based multi-round retrieval, and (b) FastPIR's lower Answer CPU time vs. XPIR/SealPIR.
 
-## Correctness Analysis
+### Correctness Analysis
 
-### Option A2: Library-based Noise Management
+#### Option A2: Library-based Noise Management
 
 - **Library / version:** Microsoft SEAL 3.5[^32]
 - **Parameter constraints:** N = 4096, multiplicative depth = 1 (only plaintext-ciphertext multiply, no ciphertext-ciphertext multiply). The BFV.ScMult operation does not consume a full multiplication level.
@@ -292,7 +292,7 @@ As n increases, the benefit of rotation optimizations diminishes because the Ans
 [^32]: Paper p.9: "Microsoft SEAL library v3.5 [68]."
 [^33]: The absence of ct-ct multiplication is implicit in the construction (Figures 3 and 5): all multiplications are BFV.ScMult(plaintext, ciphertext).
 
-## Implementation Notes
+### Implementation Notes
 
 - **Language / Library:** C++ with Microsoft SEAL 3.5 (for BFV operations)
 - **FastPIR LOC:** ~1,000 lines of C++[^34]
@@ -309,7 +309,7 @@ As n increases, the benefit of rotation optimizations diminishes because the Ans
 [^34]: Paper p.8: "Our prototype of FastPIR is ~1000 lines of C++."
 [^35]: Paper p.9: "Our prototype of Addra is ~2,000 lines of C++."
 
-## Deployment Considerations
+### Deployment Considerations
 
 - **Database updates:** Mailbox contents change every subround (480 ms). The master recompiles the message library and re-broadcasts to workers each subround. No incremental update mechanism — full library broadcast each time.[^36]
 - **Scalability bottleneck:** The time to broadcast the mailbox library from master to workers is the immediate scalability ceiling. At 65K users, CPIR processing alone (1,186 ms) exceeds the 480 ms subround budget.[^37]
@@ -324,7 +324,7 @@ As n increases, the benefit of rotation optimizations diminishes because the Ans
 [^38]: Paper p.2: "Addra assumes clients with unlimited data plans."
 [^39]: Paper p.9: "Addra runs this protocol infrequently (every five minutes)."
 
-## Key Tradeoffs & Limitations
+### Key Tradeoffs & Limitations
 
 - **Query size vs Answer time:** FastPIR's d=1 approach produces larger queries than SealPIR (d=2), but this is acceptable because queries are amortized over hundreds of subrounds. The per-subround Answer time and response size are what matter for voice-call latency.
 - **Bandwidth overhead:** 682x ciphertext expansion means Addra consumes 1.46 Mbps download for 96-byte voice packets. This is orders of magnitude more than non-private VoIP but acceptable for modern broadband.[^40]
@@ -338,7 +338,7 @@ As n increases, the benefit of rotation optimizations diminishes because the Ans
 [^41]: Paper p.2: "does not currently scale to hundreds of thousands or a few million users due to the overhead of PIR which grows quadratically."
 [^42]: Paper p.14: "Addra cannot retrieve long-lived messages from the server, which is a requirement for such applications."
 
-## Open Problems (as stated by the authors)
+### Open Problems (as stated by the authors)
 
 - Scaling Addra to hundreds of thousands or millions of users.[^43]
 - Accelerating CPIR computation via GPUs and FPGAs on worker machines.
@@ -349,7 +349,7 @@ As n increases, the benefit of rotation optimizations diminishes because the Ans
 
 [^43]: Paper p.14: "Our future work involves further scaling Addra from tens of thousands of users to hundreds of thousands or a few million users."
 
-## Uncertainties
+### Uncertainties
 
 - The exact BFV parameters (noise budget, number of rotation keys generated) are not fully specified; the paper states N=4096, p=270337, q=109-bit composite, and references SEAL 3.5 defaults for the rest.
 - The breakdown of the 726 ms latency does not fully account for all components (398 ms CPIR + 186 ms broadcast + ~142 ms unspecified network/overhead).

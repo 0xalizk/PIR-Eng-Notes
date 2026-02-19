@@ -1,4 +1,4 @@
-# Spiral: Fast, High-Rate Single-Server PIR via FHE Composition -- Engineering Notes
+## Spiral: Fast, High-Rate Single-Server PIR via FHE Composition -- Engineering Notes
 
 | Field | Value |
 |-------|-------|
@@ -11,7 +11,7 @@
 
 ---
 
-## Core Contribution
+### Core Contribution
 
 Spiral introduces a family of single-server PIR protocols that compose two lattice-based encryption schemes -- Regev (matrix variant) and GSW -- via novel **ciphertext translation** techniques (ScalToMat, RegevToGSW). This composition enables a client to compress its entire query into a single scalar Regev ciphertext (~14 KB), which the server expands into both matrix Regev ciphertexts (for first-dimension processing) and GSW ciphertexts (for dimension folding). The key innovation is that ciphertext translation replaces the need to send large GSW ciphertexts, achieving (n+1)^2/2 compression on GSW encodings.[^1] Across four variants, Spiral achieves Pareto-optimal tradeoffs between query size, response size, rate, throughput, and public parameter size, simultaneously improving over OnionPIR (the prior state-of-the-art) by 4.5x in query size, 1.5x in rate, and 2x in throughput.[^2]
 
@@ -21,7 +21,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 ---
 
-## Variants
+### Variants
 
 | Variant | Key Difference | Query Size | Public Params | Rate (2^18 x 30KB) | Throughput | Best For |
 |---------|---------------|-----------|--------------|---------------------|------------|----------|
@@ -43,7 +43,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 ---
 
-## Cryptographic Foundation
+### Cryptographic Foundation
 
 | Layer | Detail |
 |-------|--------|
@@ -57,7 +57,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 ---
 
-## Ring Architecture / Modulus Chain
+### Ring Architecture / Modulus Chain
 
 | Ring | Dimension | Modulus (bits) | Role / Phase |
 |------|-----------|---------------|--------------|
@@ -71,7 +71,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 ---
 
-## Key Data Structures
+### Key Data Structures
 
 - **Database:** D = {d_1, ..., d_N} of N = 2^{v1+v2} records, each d_i in R_p^{n x n} with ||d_i||_inf <= p/2. Arranged as a (v2+1)-dimensional hypercube: 2^{v1} x 2 x 2 x ... x 2 (first dimension large, remaining v2 dimensions binary).[^8]
 - **Public parameters (pp):** Conversion key ck = (V, W, Pi) for RegevToGSW, automorphism keys W_0, ..., W_{rho-1} for coefficient expansion, plus key S for response encoding. Size: 14--18 MB (Spiral), 344 KB--3 MB (SpiralStream), 14--47 MB (SpiralPack).
@@ -85,7 +85,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 ---
 
-## Database Encoding
+### Database Encoding
 
 - **Representation:** (v2+1)-dimensional hypercube with dimensions 2^{v1} x 2 x ... x 2.
 - **Record addressing:** Tuple (i, j_1, ..., j_{v2}) where i in [0, 2^{v1}-1] and j_k in {0,1}. Equivalently, (i, j) where j in [0, 2^{v2}-1].
@@ -96,7 +96,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 ---
 
-## Protocol Phases
+### Protocol Phases
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -110,7 +110,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 ---
 
-## Query Structure
+### Query Structure
 
 | Component | Type | Size | Purpose |
 |-----------|------|------|---------|
@@ -123,9 +123,9 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 ---
 
-## Novel Primitives / Abstractions
+### Novel Primitives / Abstractions
 
-### ScalToMat (Scalar-to-Matrix Translation)
+#### ScalToMat (Scalar-to-Matrix Translation)
 
 | Field | Detail |
 |-------|--------|
@@ -137,7 +137,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 | **Noise (worst-case)** | ||E||_inf <= ||e||_inf + dtBz/2 where e is the input encoding error, t = floor(log_z q) + 1, B = bound on chi |
 | **Noise (subgaussian)** | sigma_E^2 = sigma_e^2 + dt z^2 sigma_chi^2 / 4 |
 
-### RegevToGSW (Regev-to-GSW Translation)
+#### RegevToGSW (Regev-to-GSW Translation)
 
 | Field | Detail |
 |-------|--------|
@@ -156,7 +156,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 ---
 
-## Regev+GSW Composition: Why Two Ciphertext Types?
+### Regev+GSW Composition: Why Two Ciphertext Types?
 
 The fundamental design tension in lattice-based PIR is:
 
@@ -179,11 +179,11 @@ The fundamental design tension in lattice-based PIR is:
 
 ---
 
-## Correctness Analysis (Option A: FHE Noise Analysis)
+### Correctness Analysis (Option A: FHE Noise Analysis)
 
 Spiral tracks noise as subgaussian parameters (sigma^2) under the **independence heuristic** (Remark 2.18).
 
-### Noise cascade through protocol phases
+#### Noise cascade through protocol phases
 
 | Phase | Noise Parameter | Growth Type | Notes |
 |-------|----------------|-------------|-------|
@@ -211,7 +211,7 @@ where C is chosen so that epsilon_corr = 2dn^2 exp(-pi C^2) <= 2^{-40}.
 
 ---
 
-## Multiple Decomposition Bases and Their Roles
+### Multiple Decomposition Bases and Their Roles
 
 Spiral uses **five** distinct decomposition bases, each controlling a different noise/computation tradeoff:
 
@@ -229,9 +229,9 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 
 ---
 
-## Complexity
+### Complexity
 
-### Core metrics
+#### Core metrics
 
 | Metric | Asymptotic | Concrete (2^18 x 30KB, 7.9 GB) | Concrete (2^14 x 100KB, 1.6 GB) | Phase |
 |--------|-----------|-------------------------------|--------------------------------|-------|
@@ -245,7 +245,7 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 | Rate | n^2 log p / (n^2 log q_1 + n log q_2) | 0.3573 | 0.1969 | -- |
 | Throughput | -- | 322 MB/s | 114 MB/s | -- |
 
-### Per-variant benchmarks (Table 3, p.30: comparison of all 4 variants)
+#### Per-variant benchmarks (Table 3, p.30: comparison of all 4 variants)
 
 **Database: 2^20 x 256B (268 MB) -- small records**
 
@@ -280,7 +280,7 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 | Rate | 0.1969 | 0.4129 | 0.4811 | 0.5307 | **0.6677** |
 | Throughput | 114 MB/s | 333 MB/s | 683 MB/s | 358 MB/s | **1.35 GB/s** |
 
-### FHE-specific metrics
+#### FHE-specific metrics
 
 | Metric | Spiral | SpiralStream | SpiralPack | SpiralStreamPack |
 |--------|--------|-------------|------------|-----------------|
@@ -290,7 +290,7 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 | Max rate achievable | ~0.53 (for n=2) | ~0.81 | ~0.81 | ~0.81 |
 | Multiplicative depth | v2 (external products) | v2 | v2 | v2 |
 
-### Streaming-setting benchmarks (Table 4, p.32: 100KB records, query expansion amortized)
+#### Streaming-setting benchmarks (Table 4, p.32: 100KB records, query expansion amortized)
 
 | N | Metric | FastPIR | OnionPIR | Spiral | SpiralPack | SpiralStream | SpiralStreamPack |
 |---|--------|---------|----------|--------|------------|-------------|-----------------|
@@ -301,7 +301,7 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 
 *Throughput excludes query expansion cost (amortized over stream lifetime).
 
-### Maximum-rate and maximum-throughput configurations (Table 5, p.32)
+#### Maximum-rate and maximum-throughput configurations (Table 5, p.32)
 
 | Database | Best System (Rate) | Rate | Throughput | Best System (Throughput) | Rate | Throughput |
 |----------|-------------------|------|-----------|------------------------|------|-----------|
@@ -311,7 +311,7 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 
 ---
 
-## Comparison with Prior Work
+### Comparison with Prior Work
 
 | Metric | Spiral | SealPIR | FastPIR | OnionPIR | Configuration |
 |--------|--------|---------|---------|----------|--------------|
@@ -330,7 +330,7 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 
 ---
 
-## Modulus Switching (Section 3.4)
+### Modulus Switching (Section 3.4)
 
 Spiral introduces a **two-modulus** switching approach that achieves higher rate than standard single-modulus switching.[^20]
 
@@ -345,9 +345,9 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 
 ---
 
-## Parameter Selection (Section 5.1)
+### Parameter Selection (Section 5.1)
 
-### Fixed parameters
+#### Fixed parameters
 
 | Parameter | Value | Rationale |
 |-----------|-------|-----------|
@@ -358,7 +358,7 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 | z_{coeff,GSW} | 2 | Fixed at minimum to minimize GSW expansion noise; negligible computation impact since v2*t_GSW << 2^{v1} |
 | epsilon_corr (correctness) | 2^{-40} | Target correctness error per ring coefficient |
 
-### Searched parameters
+#### Searched parameters
 
 | Parameter | Search Range | Impact |
 |-----------|-------------|--------|
@@ -373,7 +373,7 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 
 **Search procedure:** ~3 million candidate parameter sets pruned to ~700,000 feasible sets (correctness < 2^{-40}), cached in 40 MB. Heuristic cost model using AWS pricing ($0.0195/CPU-hour, $0.09/GB outbound) selects minimum total cost. Search takes ~10 seconds.[^21]
 
-### Sample parameters (Table 1, p.27)
+#### Sample parameters (Table 1, p.27)
 
 | Database | log p | log q_2 | t_{coeff,Reg} | t_conv | t_GSW | (v_1, v_2) | T | Rate | Est. CPU | Actual CPU |
 |----------|-------|---------|--------------|--------|-------|-----------|---|------|----------|-----------|
@@ -384,7 +384,7 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 
 ---
 
-## Implementation Notes
+### Implementation Notes
 
 - **Language / Library:** C++, ~4,000 lines of code.
 - **Polynomial arithmetic:** NTT-based (nega-cyclic NTT). Adapted from SEAL library [SEA19] for FFT implementation. Intel HEXL library [BKS+21] for response-decoding FFTs.
@@ -398,9 +398,9 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 
 ---
 
-## Application Scenarios
+### Application Scenarios
 
-### Private video streaming
+#### Private video streaming
 - Library of 2^14 movies, 2 GB each. Using SpiralStreamPack:
   - Upload: 30 MB query
   - Download: 2.5 GB response
@@ -408,12 +408,12 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
   - Server cost: **$0.33** (1.9x over no-privacy baseline of $0.18)
   - Comparison: OnionPIR costs $3.01 (17x over baseline, 9x more expensive than Spiral).[^23]
 
-### Private voice calls (Addra system)
+#### Private voice calls (Addra system)
 - 2^20 users, 5-minute call = 625 rounds, 96 bytes/round. Using SpiralStream:
   - Upload: 29 MB, Download: 11 MB, CPU: 112 seconds
   - Per-user server cost: $0.0016 (3.9x cheaper than FastPIR/Addra).[^24]
 
-### Private Wikipedia
+#### Private Wikipedia
 - 31 GB database (all English Wikipedia text), 30 KB max article size. Using SpiralPack:
   - 16-core machine, 42 GB RAM, database partitioned into 16 shards
   - End-to-end latency: **4.3 seconds** (2.1x faster than OnionPIR)
@@ -425,7 +425,7 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 
 ---
 
-## Deployment Considerations
+### Deployment Considerations
 
 - **Database updates:** Not addressed. Database is assumed static. Full re-encoding required for updates (NTT conversion of new elements).
 - **Sharding:** Supported naturally -- same query can be applied to multiple database shards in parallel (used in Wikipedia scenario with 16 shards).
@@ -437,7 +437,7 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 
 ---
 
-## Key Tradeoffs & Limitations
+### Key Tradeoffs & Limitations
 
 1. **Large public parameters** (14--125 MB) vs small queries (14 KB). This is the fundamental tradeoff: ciphertext translation requires key-switching matrices that encode the client's secret key under various transformations. Prior schemes have 1--5 MB public parameters.[^26]
 2. **Plaintext dimension n** creates a rate-vs-computation tradeoff: rate = n^2/(n^2+n) increases with n, but first-dimension processing cost is O(n^2(n+1)) per operation. Base Spiral uses n=2; SpiralPack uses n=1 for processing with packing to achieve high effective n.[^27]
@@ -451,7 +451,7 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 
 ---
 
-## Portable Optimizations
+### Portable Optimizations
 
 1. **Ciphertext translation (ScalToMat, RegevToGSW):** Applicable to any setting combining Regev and GSW encodings. Provides (n+1)^2/2 compression on GSW ciphertexts at the cost of key-switching material. Useful beyond PIR for any protocol requiring compact GSW ciphertext communication.
 2. **Two-modulus switching:** Rescaling different ciphertext components to different moduli. Applicable to any matrix Regev scheme to achieve higher communication rate.
@@ -460,7 +460,7 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 
 ---
 
-## Open Problems (stated or implied)
+### Open Problems (stated or implied)
 
 - Hardware acceleration for lattice operations could close the remaining 2.9x gap between SpiralStreamPack and hardware-accelerated AES-based two-server PIR [HH19].
 - Reducing public parameter size while maintaining the query compression benefits of ciphertext translation.
@@ -469,7 +469,7 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 
 ---
 
-## Uncertainties
+### Uncertainties
 
 - The paper's concrete parameter selection relies on the independence heuristic (Remark 2.18) for setting lattice parameters. While empirically validated (Fig. 6 shows several bits of margin), the heuristic is not proven. The worst-case bounds (Theorem 4.5) hold unconditionally but require larger parameters.
 - Security levels: SealPIR and OnionPIR achieve 115 and 111 bits of security respectively; Spiral claims 128 bits. This makes the comparison slightly favorable to Spiral (it could use slightly smaller parameters at 111 bits for an even faster scheme).

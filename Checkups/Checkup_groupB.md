@@ -1,4 +1,4 @@
-# Group B Footnote Validation Report
+## Group B Footnote Validation Report
 
 **Date:** 2026-02-19
 **Scope:** All 8 engineering notes in Group B (Stateless Single-Server PIR)
@@ -6,7 +6,7 @@
 
 ---
 
-## Summary
+### Summary
 
 | # | Paper | Notes File | Total FN | Correct | Minor | Incorrect |
 |---|-------|-----------|----------|---------|-------|-----------|
@@ -27,17 +27,17 @@ summary of all 15 incorrect findings is included at the bottom of the report.
 
 ---
 
-## 1. HintlessPIR (2023)
+### 1. HintlessPIR (2023)
 
 **Notes file:** `hintlesspir_2023/HintlessPIR_2023_notes.md`
 **PDF:** `HintlessPIR_2023_1733.pdf`
 **Total footnotes:** 45 | **Correct:** 42 | **Minor:** 3 | **Incorrect:** 0
 
-### Incorrect findings
+#### Incorrect findings
 
 None.
 
-### Minor issues
+#### Minor issues
 
 - **[^2]:** The quoted sentence is substantively correct and appears on p.9, but the quote is truncated -- the actual sentence continues with "than HintlessPIR, while also being slower by constant factors." The truncation does not change the meaning but the quote marks suggest a verbatim extraction.
 
@@ -47,13 +47,13 @@ None.
 
 ---
 
-## 2. YPIR (2024)
+### 2. YPIR (2024)
 
 **Notes file:** `ypir_2024/YPIR_2024_notes.md`
 **PDF:** `YPIR_2024_270.pdf`
 **Total footnotes:** 45 | **Correct:** 38 | **Minor:** 5 | **Incorrect:** 2
 
-### Incorrect findings
+#### Incorrect findings
 
 - **[^4]:**
   - **Statement in notes:** "Table 7 (p.28): YPIR+SP achieves 444 KB download vs. 3.2 MB for HintlessPIR at 32 GB x 64 KB records."
@@ -67,7 +67,7 @@ None.
   - **What the PDF actually says:** Table 2 at 32 GB for YPIR shows: Upload = 2.5 MB, Download = 12 KB, Server Time = 2.64 s, Throughput = 12.1 GB/s.
   - **Problem:** The footnote incorrectly states YPIR's upload as 724 KB (this is SimplePIR's value) and download as 32 MB (this is DoublePIR's value). The parenthetical also inverts the attribution by calling 12 KB "DoublePIR's small response" when 12 KB is actually YPIR's download. Server time and throughput are correct.
 
-### Minor issues
+#### Minor issues
 
 - **[^16]:** The footnote quotes the asymptotic improvement as "n/log n" but the paper uses "d/log d" (where d is the lattice dimension). Same mathematical concept, different variable name.
 
@@ -81,13 +81,13 @@ None.
 
 ---
 
-## 3. WhisPIR (2024)
+### 3. WhisPIR (2024)
 
 **Notes file:** `whispir_2024/WhisPIR_2024_notes.md`
 **PDF:** `WhisPIR_2024_266.pdf`
 **Total footnotes:** 62 | **Correct:** 55 | **Minor:** 6 | **Incorrect:** 1
 
-### Incorrect findings
+#### Incorrect findings
 
 - **[^29]:**
   - **Statement in notes:** "For n=2^12, d=2048, optimal generator gives 113,664 total rotations vs 386,048 for naive (3.4x improvement). For d=128, optimal gives 448 vs naive thousands."
@@ -95,7 +95,7 @@ None.
   - **What the PDF actually says:** Table 1 shows that for n=2^12, d=2048 the optimal generator g=2269 yields 386,048 total rotations (this is the optimal for that d value, not the naive). The value 113,664 is for d=1024 (with g=5513), not d=2048. For d=128, the n=2^12 table gives 2,496 rotations, not 448. The value 448 appears for n=2^13, d=128.
   - **Problem:** The notes incorrectly attribute the 113,664 rotation count to d=2048 when it belongs to d=1024. They also claim d=128 yields 448 rotations, but that is the n=2^13 table value; n=2^12 gives 2,496. The "386,048 for naive" framing is also misleading -- 386,048 is the optimal generator result for d=2048, not a naive baseline.
 
-### Minor issues
+#### Minor issues
 
 - **[^8]:** Content about the correctness condition is accurate but appears at top of p.5, not p.4 as cited.
 
@@ -111,13 +111,13 @@ None.
 
 ---
 
-## 4. Respire (2024)
+### 4. Respire (2024)
 
 **Notes file:** `respire_2024/Respire_2024_notes.md`
 **PDF:** `Respire_2024_1165.pdf`
 **Total footnotes:** 37 | **Correct:** 29 | **Minor:** 5 | **Incorrect:** 3
 
-### Incorrect findings
+#### Incorrect findings
 
 - **[^4]:**
   - **Statement in notes:** "Three RLWE assumptions with different parameters. Main ring uses uniform secret in [-7,7], Gaussian error with sigma=9.9. Small ring uses Gaussian secret and error with sigma=253.6."
@@ -137,7 +137,7 @@ None.
   - **What the PDF actually says:** The quoted text is about communication size ("27x smaller"), but the notes body uses this citation to support a claim that Respire is "27--50x slower" (computation speed).
   - **Problem:** The cited source says "27x smaller" (communication), but the notes body interprets this footnote as supporting "27--50x slower" (computation), conflating two different metrics.
 
-### Minor issues
+#### Minor issues
 
 - **[^2]:** Footnote quote is accurate ("reduce the query size from 14 KB to 4 KB"). Notes body adds "~" before "4 KB" not present in the original.
 
@@ -151,13 +151,13 @@ None.
 
 ---
 
-## 5. NPIR (2025)
+### 5. NPIR (2025)
 
 **Notes file:** `npir_2025/NPIR_2025_notes.md`
 **PDF:** `NPIR_2025_2257.pdf`
 **Total footnotes:** 35 | **Correct:** 27 | **Minor:** 5 | **Incorrect:** 3
 
-### Incorrect findings
+#### Incorrect findings
 
 - **[^5]:**
   - **Statement in notes:** "NPIR achieves 1.50--2.84x better server throughput than Spiral and 1.77--2.55x better than NTRUPIR for 1--32 GB databases with 32 KB records, while matching Spiral's communication rate of 0.250."
@@ -177,7 +177,7 @@ None.
   - **What the PDF actually says:** The rate 0.250 is stated in the paper. Footnote 1 explicitly warns: "q must be aligned during communication, and the rate is not exactly equal to the scaling factor." The mathematical log_2(q_1) is ~24.5, so 8/24.5 ~ 0.327, not 0.250.
   - **Problem:** The formula is mathematically incorrect. The rate 0.250 arises from practical byte-alignment (8 bits per 32-bit aligned coefficient), not from the raw formula log_2(p)/log_2(q_1). The paper's own footnote acknowledges this distinction.
 
-### Minor issues
+#### Minor issues
 
 - **[^2]:** Quote is accurate; location "Section 5.1 (p.16)" is correct but could be more precisely attributed to the "Parameter selection" paragraph.
 
@@ -191,13 +191,13 @@ None.
 
 ---
 
-## 6. InsPIRe (2025)
+### 6. InsPIRe (2025)
 
 **Notes file:** `inspire_2025/InsPIRe_2025_notes.md`
 **PDF:** `InsPIRe_2025_1352.pdf`
 **Total footnotes:** 35 | **Correct:** 28 | **Minor:** 6 | **Incorrect:** 1
 
-### Incorrect findings
+#### Incorrect findings
 
 - **[^8]:**
   - **Statement in notes:** "InspiRING requires 84 KB key material vs 462 KB (CDKS) and 360 KB (HintlessPIR). Online runtime is 16 ms vs 56 ms (CDKS), though offline is slower (2.4 s vs 2.0 s for HintlessPIR)."
@@ -205,7 +205,7 @@ None.
   - **What the PDF actually says:** Table 5 has two distinct InspiRING parameter sets. InspiRING with log_2 d=10 has Key Material=60 KB, Offline=2.4 s, Online=16 ms. InspiRING with log_2 d=11 has Key Material=84 KB, Offline=36 s, Online=40 ms.
   - **Problem:** The notes conflate the two InspiRING parameter sets, quoting 84 KB key material (from d=11) alongside 16 ms online runtime and 2.4 s offline time (both from d=10). The actual d=11 configuration has 40 ms online and 36 s offline -- not the favorable numbers presented.
 
-### Minor issues
+#### Minor issues
 
 - **[^3]:** Inline claim that InsPIRe_0 "only supports small entry sizes (e.g., 1 bit)" overstates the cited Section 4 (p.12) text, which says "useful when the entry size is small." The stronger "only supports" claim appears on p.18, not p.12.
 
@@ -221,13 +221,13 @@ None.
 
 ---
 
-## 7. Pirouette (2025)
+### 7. Pirouette (2025)
 
 **Notes file:** `pirouette_2025/Pirouette_2025_notes.md`
 **PDF:** `Pirouette_2025_680.pdf`
 **Total footnotes:** 45 | **Correct:** 36 | **Minor:** 6 | **Incorrect:** 3
 
-### Incorrect findings
+#### Incorrect findings
 
 - **[^2]:**
   - **Statement in notes:** The Core Idea paragraph states the server homomorphically bit-decomposes the LWE query, "converting it into ceil(log_2 N) RGSW ciphertexts that encrypt individual index bits." The footnote quotes Section 1.1 (p.2): "The server first performs a homomorphic bit decomposition to the LWE query LWE(idx), and outputs ceil(log_2 N) LWE ciphertexts, each encrypting a single bit idx_l."
@@ -247,7 +247,7 @@ None.
   - **What the PDF actually says:** The notes' parallel execution table lists "91 MB" in the T-Respire computation rows for all three database sizes, but 91 MB is the offline communication figure, not computation time.
   - **Problem:** The claim "All values are exact transcriptions" is false. The parallel table has a transcription error where offline communication (91 MB) is placed in the computation rows for T-Respire.
 
-### Minor issues
+#### Minor issues
 
 - **[^3]:** The 420x figure is from the abstract and is an approximation; 14.8 KB / 36 B = 410x, not 420x. The notes faithfully reproduce the paper's rounded value.
 
@@ -263,13 +263,13 @@ None.
 
 ---
 
-## 8. VIA (2025)
+### 8. VIA (2025)
 
 **Notes file:** `via_2025/VIA_2025_notes.md`
 **PDF:** `VIA_2025_2074.pdf`
 **Total footnotes:** 41 | **Correct:** 32 | **Minor:** 7 | **Incorrect:** 2
 
-### Incorrect findings
+#### Incorrect findings
 
 - **[^1]:**
   - **Statement in notes:** "VIA achieves O_lambda(log N) online communication complexity, the first practical PIR protocol without offline communication to do so."
@@ -283,7 +283,7 @@ None.
   - **What the PDF actually says:** Table 1 at 32 GB shows HintlessPIR query = 1064 KB, response = 17514 KB, total = 18578 KB.
   - **Problem:** HintlessPIR's total is 18578 KB, not 10578 KB. A leading digit "1" was dropped, producing an 8000 KB discrepancy.
 
-### Minor issues
+#### Minor issues
 
 - **[^3]:** The formula "l*log(IJn_1/n_2) = l*log N" is cited as Section 1.1 (p.4), but the exact formula appears on p.13 (Section 4.2). Page 4 has only the general O(log N) statement.
 
@@ -301,7 +301,7 @@ None.
 
 ---
 
-## INCORRECT Findings Summary (15 total)
+### INCORRECT Findings Summary (15 total)
 
 These are factual errors that misrepresent what the cited paper says.
 

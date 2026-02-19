@@ -1,6 +1,6 @@
-# Group C — Client-Independent Preprocessing
+## Group C — Client-Independent Preprocessing
 
-### SimplePIR/DoublePIR (2022)
+#### SimplePIR/DoublePIR (2022)
 
 | Metric | Asymptotic | Concrete (SimplePIR, 1 GB DB, 1-bit entries) | Concrete (DoublePIR, 1 GB DB, 1-bit entries) | Phase |
 |--------|-----------|---------------------------------------------|----------------------------------------------|-------|
@@ -10,7 +10,7 @@
 | Client computation | O(n) per query (key generation + inner product) | < 1 ms | approximately 100 ms (1 GB DB) | Online |
 | Throughput | Limited by memory bandwidth | 10.0 GB/s/core | 7.4 GB/s/core | Online |
 
-### VeriSimplePIR (2024)
+#### VeriSimplePIR (2024)
 
 | Metric | Asymptotic | Concrete | Phase |
 |--------|-----------|----------|-------|
@@ -23,7 +23,7 @@
 | Offline client computation (preprocessing) | O(lambda * n) (lambda LWE encryptions) | Small relative to server | Offline (once per client) |
 | Client persistent storage | O(ell * n * log(q) + lambda * ell + lambda * m) for (H_1, C, Z) | ~800 MiB for password-leak application (400M entries) | Throughout |
 
-### BarelyDoublyEfficient (2025)
+#### BarelyDoublyEfficient (2025)
 
 | Metric | Asymptotic | Concrete | Phase | Source |
 |--------|-----------|----------|-------|--------|
@@ -33,7 +33,7 @@
 | Online communication | O-tilde(sqrt(N)) * poly(lambda) | N/A (no implementation) | Online | Theorem 3.1 (author-stated) |
 | CRS size | O(m * n * log q) = O-tilde(sqrt(N)) * poly(lambda) | N/A (no implementation) | Setup | Corollary 3.1 proof (inferred) |
 
-### IncrementalPIR (2026)
+#### IncrementalPIR (2026)
 
 **Core metrics (online -- identical to SimplePIR):**
 

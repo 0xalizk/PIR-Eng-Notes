@@ -1,6 +1,6 @@
-# Group X — Keyword, Symmetric & Distributional PIR
+## Group X — Keyword, Symmetric & Distributional PIR
 
-### CGKS Survey (2004)
+#### CGKS Survey (2004)
 
 The CGKS Survey is a pedagogical survey, not a single-scheme construction. Its core comparison tables are:
 
@@ -25,7 +25,7 @@ The CGKS Survey is a pedagogical survey, not a single-scheme construction. Its c
 | Kushilevitz-Ostrovsky | One-way trapdoor permutations | 1 | n - o(n) |
 | Stern / Mann | Homomorphic encryption | 1 | n^epsilon |
 
-### KeywordPIR (2019)
+#### KeywordPIR (2019)
 
 **SealPIR variants and MulPIR (d=2, n=2^20, 288B entries):**
 
@@ -50,7 +50,7 @@ The CGKS Survey is a pedagogical survey, not a single-scheme construction. Its c
 | S.Respond (ms) | 51,803 | 5,495 | 2,988 | 2,904 |
 | Server Cost (US cents) | 0.0145 | 0.0016 | **0.0011** | 0.0014 |
 
-### DistributionalPIR (2025)
+#### DistributionalPIR (2025)
 
 | Metric | Asymptotic | Concrete (CrowdSurf: 38 GB Twitter DB, B=24, kappa_avg=0.8, kappa_worst=0.01) | Phase |
 |--------|-----------|---------------------------------------|-------|

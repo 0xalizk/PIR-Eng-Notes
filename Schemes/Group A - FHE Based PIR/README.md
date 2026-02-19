@@ -1,6 +1,6 @@
-# Group A — FHE-Based PIR
+## Group A — FHE-Based PIR
 
-### XPIR (2014)
+#### XPIR (2014)
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase | Confidence |
 |--------|-----------|---------------------------|-------|------------|
@@ -12,7 +12,7 @@
 | Server computation per row (Bundled, d=5) | — | 4.45 ms index comparison + 0.22 ms data aggregation = 4.67 ms total | Online | exact |
 | Server computation per row (Single, d=5) | — | 4.56 ms index comparison + 37 ms data aggregation = 41.56 ms total | Online | exact |
 
-### XPIR (2016)
+#### XPIR (2016)
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -23,7 +23,7 @@
 | Client computation (decryption) | O(d * l / l_0) decryptions | 710 Mbit/s – 5 Gbit/s depending on modulus | Online |
 | Throughput (user-perceived) | Depends on n, d, bandwidth | ~15/n Gbit/s for d=1 (approximate, from Figure 6) | Online |
 
-### SealPIR (2018)
+#### SealPIR (2018)
 
 | Metric | Asymptotic | Concrete (N=2^20, d=2, 288B elements) | Phase |
 |--------|-----------|---------------------------------------|-------|
@@ -36,7 +36,7 @@
 | Client computation (Extract) | O(F^{d-1}) decryptions | 1.39 ms | Online |
 | Response overhead | F^{d-1} | F = approximately 5-12 depending on t'; for d=2, 1 ciphertext response | -- |
 
-### MulPIR (2019)
+#### MulPIR (2019)
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -47,7 +47,7 @@
 | Communication rate | 1 - epsilon for any epsilon > 0 (asymptotic, requiring bootstrapping) | 4/9 approximately 0.44 (concrete, without bootstrapping) | -- |
 | Response overhead | O(1) | 2.25x vs non-private (i.e., rate 0.44 means 1/0.44 approximately 2.27x expansion) | -- |
 
-### OnionPIR (2021)
+#### OnionPIR (2021)
 
 | Metric | Asymptotic | Concrete (N = 10^6, 30 KB entries) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -57,7 +57,7 @@
 | Client computation | Encrypt + decrypt (negligible) | Not reported separately | Online |
 | Response overhead (F) | 2 log q / log t | 4.2x | — |
 
-### Addra/FastPIR (2021)
+#### Addra/FastPIR (2021)
 
 | Metric | Asymptotic | Concrete (n=32,768, m=96B) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -67,7 +67,7 @@
 | Client Query time | O(n/N) encryptions | 1.4 ms | Once per round |
 | Client Decode time | 1 decryption + O(1) rotations | 0.36 ms | Per subround |
 
-### CwPIR (2022)
+#### CwPIR (2022)
 
 | Metric | Asymptotic | Concrete (k=2, n=16384, 1 plaintext payload) | Phase |
 |--------|-----------|----------------------------------------------|-------|
@@ -77,7 +77,7 @@
 | Multiplicative depth | ceil(log_2 k) (for equality operator) | 1 (k=2), 2 (k=3 or 4) | -- |
 | Expansion factor (F) | 2 log q / log t (standard BFV) | Not explicitly stated; N=8192 default modulus | -- |
 
-### Spiral (2022)
+#### Spiral (2022)
 
 | Metric | Asymptotic | Concrete (2^18 x 30KB, 7.9 GB) | Concrete (2^14 x 100KB, 1.6 GB) | Phase |
 |--------|-----------|-------------------------------|--------------------------------|-------|
@@ -91,7 +91,7 @@
 | Rate | n^2 log p / (n^2 log q_1 + n log q_2) | 0.3573 | 0.1969 | -- |
 | Throughput | -- | 322 MB/s | 114 MB/s | -- |
 
-### FrodoPIR (2022)
+#### FrodoPIR (2022)
 
 | Metric | Asymptotic | Concrete (m = 2^20, w = 1 KB) | Phase |
 |--------|-----------|-------------------------------|-------|
@@ -103,7 +103,7 @@
 | Response overhead | < 3.6x | 3.556x (over 1 KB element) | -- |
 | Throughput | O(m * w / server_time) | ~1.27 GB/s | Online |
 
-### ThorPIR (2024)
+#### ThorPIR (2024)
 
 | Metric | Asymptotic | Phase |
 |--------|-----------|-------|
@@ -118,7 +118,7 @@
 | Client storage | O(N^{2/3}) | Persistent |
 | Update time | O_lambda(1) per element update | Online |
 
-### OnionPIRv2 (2025)
+#### OnionPIRv2 (2025)
 
 | Metric | Asymptotic | Concrete (n=2048, ~1 GB DB) | Concrete (n=4096, ~8 GB DB) | Phase |
 |--------|-----------|---------------------------|---------------------------|-------|

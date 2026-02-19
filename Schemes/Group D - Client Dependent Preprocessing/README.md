@@ -1,6 +1,6 @@
-# Group D — Client-Dependent Preprocessing
+## Group D — Client-Dependent Preprocessing
 
-### CK20 (2019)
+#### CK20 (2019)
 
 | Metric | Asymptotic | Concrete | Phase |
 |--------|-----------|---------|-------|
@@ -9,7 +9,7 @@
 | Online server computation | O-tilde_lambda(sqrt(n)) | N/A (no implementation) | Online |
 | Client online computation | O-tilde(s(n) + n/s(n)) * poly(lambda) = O-tilde_lambda(sqrt(n)) | N/A (no implementation) | Online |
 
-### IncPIR (2021)
+#### IncPIR (2021)
 
 | Metric | Asymptotic | Concrete (N=2^20, b=32B) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -19,7 +19,7 @@
 | Client computation (query) | O(sqrt(n) * log(n)) PRP evals | 7.87 ms | Online |
 | Refresh communication | O(sqrt(n) * log(n')) | 8.18 KB | Online |
 
-### Piano (2023)
+#### Piano (2023)
 
 | Metric | Asymptotic | Concrete (100 GB, n = 1.68 * 10^9, 64-byte entries) | Phase |
 |--------|-----------|------------------------------------------------------|-------|
@@ -29,7 +29,7 @@
 | Client computation | O_lambda(sqrt(n)) expected | 11.9 ms (dominated by hint search: O(sqrt(n)) PRF evaluations) | Online |
 | Client storage | O_lambda(sqrt(n) log kappa alpha(kappa)) | 839 MB | Persistent |
 
-### TreePIR (2023)
+#### TreePIR (2023)
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -39,7 +39,7 @@
 | Client computation | O(sqrt(N)) probabilistic; O(sqrt(N)) deterministic with shift | <1 ms | Online |
 | Total online bandwidth | O(sqrt(N)) (base); O(polylog N) (with DDH recursion) | 16.6 KB (base, N=2^32, w=1); 50 KB (with SPIRAL) | Online |
 
-### RMS24 (2023)
+#### RMS24 (2023)
 
 | Metric | Asymptotic | Concrete (2^28 entries x 32 bytes = 8 GB) | Phase |
 |--------|-----------|-------------------------------------------|-------|
@@ -49,7 +49,7 @@
 | Client computation | O(sqrt(N)) | < 1 ms (finding hint + subset construction) | Online |
 | Response overhead | 2x insecure baseline (two-server); 4x (single-server) | 2x (two-server); 4x (single-server) | -- |
 
-### IshaiShiWichs (2024)
+#### IshaiShiWichs (2024)
 
 Construction 2: Sublinear Server Computation (Theorem 4.4/A.3)
 
@@ -62,7 +62,7 @@ Construction 2: Sublinear Server Computation (Theorem 4.4/A.3)
 | Offline bandwidth | O_tilde(n^{1/2}) | N/A (no implementation) | Per query (amortized) |
 | Client space | O_tilde(n^{2/3}) | N/A (no implementation) | -- |
 
-### Plinko (2024)
+#### Plinko (2024)
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -72,7 +72,7 @@ Construction 2: Sublinear Server Computation (Theorem 4.4/A.3)
 | Client computation (query) | O-tilde(n/r) | N/A (no implementation) | Online |
 | Total query time (client + server) | O-tilde(n/r) | N/A (no implementation) | Online |
 
-### SinglePass (2024)
+#### SinglePass (2024)
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -82,7 +82,7 @@ Construction 2: Sublinear Server Computation (Theorem 4.4/A.3)
 | Client computation (Query) | O(Q) | 0.02 ms | Online |
 | Client computation (Reconstruct) | O(Q * w) | -- | Online |
 
-### WangRen (2024)
+#### WangRen (2024)
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|

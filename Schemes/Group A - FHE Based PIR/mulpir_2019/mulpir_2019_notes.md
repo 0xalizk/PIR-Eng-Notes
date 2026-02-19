@@ -1,4 +1,4 @@
-# MulPIR — Engineering Notes
+## MulPIR — Engineering Notes
 
 | Field | Value |
 |-------|-------|
@@ -17,7 +17,7 @@
 
 [^3]: Section 1.1, p. 4: "our scheme needs entry-size above 100KB to approach top performance."
 
-## Lineage
+### Lineage
 
 | Field | Value |
 |-------|--------|
@@ -26,15 +26,15 @@
 | **Superseded by** | MulPIR implementation (Ali et al., S&P 2021) which implements this paper's ideas with SEAL; OnionPIR builds on MulPIR |
 | **Concurrent work** | Dottling et al. [DGI+19] (trapdoor hash functions, compressible HE under different assumptions); Brakerski et al. [BDGM19] (rate-1 FHE under LWE, more general but less practical) |
 
-## Core Idea
+### Core Idea
 
 The paper constructs the first *compressible* fully homomorphic encryption scheme: evaluated GSW ciphertexts (which are bloated matrices) can be publicly compressed into compact, high-rate matrix-encrypting ciphertexts. The compression packs many GSW bit-encryptions into a single PVW-style ciphertext whose plaintext-to-ciphertext ratio approaches 1 - epsilon for any epsilon > 0. Applied to PIR, this yields a single-server scheme with communication rate 4/9 (concrete) or approaching 1 (asymptotic), while the server's amortized work is under 1.8 single-precision modular multiplications per database byte — potentially faster than whole-database AES encryption. [^4]
 
 [^4]: Abstract, p. 1 and Section 1.1, pp. 2–4. The rate 4/9 comes from (n'_0/n'_1)^2 = (2/3)^2 approximately 0.44 (Section 5.2, p. 19). The 1.8 multiplications per byte figure is from Appendix A's variant (p. 32); Section 5's variant uses ~2.3 multiplications per byte (p. 16).
 
-## Novel Primitives / Abstractions
+### Novel Primitives / Abstractions
 
-### Compressible FHE
+#### Compressible FHE
 
 | Field | Detail |
 |-------|--------|
@@ -50,7 +50,7 @@ The paper constructs the first *compressible* fully homomorphic encryption schem
 
 [^5]: Definition 1, p. 6. Compress is a *public* operation: it takes the public key and evaluated ciphertexts, requires no secret key. This is critical — the server can compress its own computed answer.
 
-### Nearly Square Gadget Matrix H
+#### Nearly Square Gadget Matrix H
 
 | Field | Detail |
 |-------|--------|
@@ -64,7 +64,7 @@ The paper constructs the first *compressible* fully homomorphic encryption schem
 
 [^6]: Section 4.4, pp. 13–15. The standard G gadget from [MP12] gives G^{-1}(C) with entries in {0,1}, but G has n_1 x m columns where m = n_1 * log q, so rate <= n_0/m = 1/log q. The nearly square H has dimension n_0(t-1) x n_0*t, so rate = (t-1)/t which approaches 1.
 
-## Cryptographic Foundation
+### Cryptographic Foundation
 
 | Layer | Detail |
 |-------|--------|
@@ -80,7 +80,7 @@ The paper constructs the first *compressible* fully homomorphic encryption schem
 
 [^9]: Section 5.1, p. 18: "the encrypter is the client who has the decryption key. Hence it can create ciphertexts using the secret key" — setting C_i := sigma_i * G + P_i mod q, producing lower noise than public-key encryption.
 
-## Key Data Structures
+### Key Data Structures
 
 - **Database as hypercube:** N entries arranged as N_1 x N_2 x ... x N_D. Concrete: N_1 = 256 (= 2^8), N_2 = N_3 = ... = N_D = 4, with D chosen so that 256 * 4^{D-1} >= N. For N = 2^{20}, D = 7 (Section 5), or N_1 = 256, D = 13 for N = 2^{20} in Appendix A. [^10]
 - **Database blocks as ring matrices:** Each entry broken into blocks of 4 * 2^{12} * 42 bits (approximately 84 KB). Each block is a 2-by-2 plaintext matrix M in R_q, multiplied by gadget matrix H to get redundant representation M' = M * H (mod q), then encoded in CRT representation modulo Q. [^11]
@@ -92,7 +92,7 @@ The paper constructs the first *compressible* fully homomorphic encryption schem
 
 [^12]: Section 5.2, p. 19: G_1 has m'_1 = n'_1 * ceil(log_4 Q) = 3 * 53 = 159 columns; G_2 has m'_2 = n'_1 * ceil(log_{2^{51}} Q) = 3 * 2 = 6 columns. Appendix A.3, p. 28 uses slightly different parameters: G_1 with m'_1 = n'_1 * floor(log_4(Q)) = 2 * 51 = 102; G_2 with m'_2 = n'_1 * ceil(log_{2^{51}} Q) = 3 * 2 = 6.
 
-## Database Encoding
+### Database Encoding
 
 - **Representation:** Hypercube N_1 x N_2 x ... x N_D of 2x2 matrices over R_q, further encoded as 2x3 redundant matrices M' = M * H (mod q) in CRT representation modulo Q. [^11]
 - **Record addressing:** Mixed-radix index (i_1, i_2, ..., i_D) with i_1 in [N_1] and i_j in {0,1} or {0,...,3}.
@@ -101,9 +101,9 @@ The paper constructs the first *compressible* fully homomorphic encryption schem
 
 [^13]: Section 5.1, pp. 17–18: "pre-processing the database to minimize the number of FFTs during processing. Our scheme needs to switch between CRT representation (for arithmetic) and representation in the decoding basis (for G^{-1}). [...] we can drastically reduce the number of FFTs by pre-processing the database, putting it all in CRT representation."
 
-## Protocol Phases
+### Protocol Phases
 
-### Section 5 Variant (pure GSW query)
+#### Section 5 Variant (pure GSW query)
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -119,7 +119,7 @@ The paper constructs the first *compressible* fully homomorphic encryption schem
 
 [^15]: The response size for a single 2x2 plaintext block is a 3x3 matrix over R_q: 9 * 46 * 2^{12} bits approximately 27 KB per block. Rate = (2*2*46*2^{12}) / (3*3*46*2^{12}) = 4/9 approximately 0.44.
 
-### Appendix A Variant (query expansion with automorphisms)
+#### Appendix A Variant (query expansion with automorphisms)
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -136,9 +136,9 @@ The paper constructs the first *compressible* fully homomorphic encryption schem
 
 [^17]: Appendix A.3, p. 29: "a total of 522 ring elements over R_Q, or roughly 26MB." The "online" portion is under 30 MB, an 85% savings over the Section 5 variant's 198 MB.
 
-## Correctness Analysis
+### Correctness Analysis
 
-### Option A: FHE Noise Analysis (Sub-Gaussian / Variance Tracking)
+#### Option A: FHE Noise Analysis (Sub-Gaussian / Variance Tracking)
 
 The paper tracks noise variance through each phase under a heuristic independence assumption, treating noise coordinates as zero-mean normal random variables.
 
@@ -171,9 +171,9 @@ The paper tracks noise variance through each phase under a heuristic independenc
 - **Margin:** 2^{14.3} / 2^{8.6} > 20 standard deviations
 - **Failure probability:** erfc(20/sqrt(2)) < 2^{-293} per coordinate; union over 9 * 2^{12}: < 2^{-277} [^2]
 
-## Complexity
+### Complexity
 
-### Core metrics
+#### Core metrics
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -186,7 +186,7 @@ The paper tracks noise variance through each phase under a heuristic independenc
 
 [^18]: Section 1.1, p. 2: "the computational overhead of our PIR scheme is O-tilde(log log lambda + log log log N)." This counts the overhead factor beyond the inherent omega(N) work. The log log terms arise because q = O-tilde(log N + lambda) and mod-q multiplication costs O-tilde(log log q).
 
-### FHE-specific metrics
+#### FHE-specific metrics
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -195,7 +195,7 @@ The paper tracks noise variance through each phase under a heuristic independenc
 | Multiplicative depth | O(log N_1) for first dim; O(1) per additional dim | 8 (first dim) + 12 (remaining dims, at 1 per fold) | -- |
 | Modulus Q (bits) | O(log N + lambda) | ~106 bits (46 + 60) | -- |
 
-## Estimation Methodology
+### Estimation Methodology
 
 The paper provides detailed analytical cost estimates without running code. The methodology is as follows.
 
@@ -236,11 +236,11 @@ Achieving rate approaching 1 (instead of 4/9) requires bootstrapping just before
 
 [^23]: Section 5, p. 23: "bootstrapping takes close to 2^{30} cycles per plaintext byte (vs. the procedure above that takes around 2^4 cycles per byte). Hence the asymptotic efficiency is likely to take hold only for databases with at least N = 2^{30-4} = 64,000,000 entries."
 
-## How Ciphertext Compression Works
+### How Ciphertext Compression Works
 
 The compression mechanism is the paper's central technical contribution. It operates in two variants:
 
-### Variant 1: PVW-based (Section 4.1)
+#### Variant 1: PVW-based (Section 4.1)
 
 Given l * n_0^2 GSW ciphertexts C_{u,v,w} (each n_1 x m matrices encrypting bits sigma_{u,v,w}), compress into a single PVW ciphertext C* in Z_q^{n_1 x n_0}: [^24]
 
@@ -254,7 +254,7 @@ The key insight: multiplying S into C* telescopes to S * C* = f * Z + E' where Z
 
 **Rate:** alpha = |p|/|q| * n_0/n_1 (Lemma 1, p. 9).
 
-### Variant 2: Nearly-square-gadget-based (Section 4.2)
+#### Variant 2: Nearly-square-gadget-based (Section 4.2)
 
 Same approach but replaces the PVW target with a matrix ciphertext using the nearly square gadget H: [^25]
 
@@ -266,7 +266,7 @@ Compressed ciphertext C* in Z_q^{n_1 x n_2}. Decryption: compute X = S * C = M *
 
 **Rate:** alpha = n_0^2 / (n_1 * n_2) (Lemma 2, p. 12). For n_1 = n_0 + k and n_2 approximately n_0 * (1 + 1/(t-1)), both ratios approach 1 as n_0 grows.
 
-### Why compression works with GSW
+#### Why compression works with GSW
 
 The critical observation is that GSW ciphertexts and PVW/matrix ciphertexts can share the same LWE secret key S = [S'|I]. A GSW ciphertext C encrypting sigma satisfies SC = sigma * SG + E. The compression formula C* = sum C_{u,v,w} x G^{-1}(target) uses the GSW multiplication mechanism — but the "target" is not another GSW ciphertext; it is a *noiseless* encoding of the plaintext position in the PVW/matrix format. Because the target is noiseless, the dominant noise term sigma * E' (where E' comes from the target's encryption noise) vanishes — this is why compression does not need the encrypted scalars to be small, only the original GSW encryption noise. [^26]
 
@@ -276,7 +276,7 @@ The critical observation is that GSW ciphertexts and PVW/matrix ciphertexts can 
 
 [^26]: Section 4.1, p. 10 ("Multiplying GSW ciphertexts by plaintext matrices"): "the 'noiseless ciphertext' M* has E' = 0, hence the term sigma * E' from above does not appear in the resulting noise term, no matter how large sigma is." This is exploited in PIR where the database values (large) multiply the query ciphertexts (bits).
 
-## Variants
+### Variants
 
 | Variant | Key Difference | Query Size | Server Work/Byte | Rate | Best For |
 |---------|---------------|------------|-----------------|------|----------|
@@ -284,7 +284,7 @@ The critical observation is that GSW ciphertexts and PVW/matrix ciphertexts can 
 | Appendix A (query expansion) | First index i_1 encrypted as single Regev ciphertext; server expands via automorphisms + key-switching | ~26 MB online + ~183 MB offline (key-switching gadgets, reusable) | ~1.72 mults (naive) | 4/9 approximately 0.44 | Multi-query scenarios; smaller per-query bandwidth |
 | Asymptotic (with bootstrapping) | Bootstrap before compression to achieve rate -> 1 | Same | + ~2^{30} cycles/byte for bootstrapping | 1 - epsilon | N >= 2^{26} entries; bandwidth-critical |
 
-## Comparison with Prior Work
+### Comparison with Prior Work
 
 | Metric | MulPIR (this paper, Appendix A variant) | SealPIR [ACLS18] | KLL+15 / LP17 (Damgard-Jurik) | Trivial (send whole DB + AES) |
 |--------|----------------------------------------|-----------------|-------------------------------|-------------------------------|
@@ -300,7 +300,7 @@ The critical observation is that GSW ciphertexts and PVW/matrix ciphertexts can 
 
 **Key takeaway:** MulPIR achieves a 440x improvement in communication rate over SealPIR (0.44 vs ~0.001) while using fewer modular multiplications per byte than SealPIR uses CPU cycles per byte. The cost is much larger query sizes (26-198 MB vs SealPIR's ~60 KB) and the requirement for large database entries (>= 100 KB). For large-entry databases (images, video chunks, documents), MulPIR's approach dominates on the response side; for small-entry databases (DNS records, contact discovery), SealPIR is more appropriate.
 
-## Key Tradeoffs & Limitations
+### Key Tradeoffs & Limitations
 
 - **No implementation:** Paper is theory-only; all performance estimates are analytical. The authors explicitly state: "While we did not implement our PIR scheme, we explain in detail why we estimate that it should be not only theoretically efficient but also practically fast" (p. 2) and (footnote 7, p. 16): "Implementing it and measuring its performance may be an interesting topic for future work." [^29]
 - **Very large query sizes:** The Section 5 variant has ~198 MB queries. The Appendix A variant reduces this to ~26 MB online but requires ~183 MB of key-switching gadgets (amortizable across queries). Both are orders of magnitude larger than SealPIR's ~60 KB queries.
@@ -313,7 +313,7 @@ The critical observation is that GSW ciphertexts and PVW/matrix ciphertexts can 
 
 [^30]: Section 5.1, pp. 17–18 and Section 5 complexity analysis, p. 22.
 
-## Portable Optimizations
+### Portable Optimizations
 
 - **Database pre-processing in CRT/evaluation form:** Pre-compute NTT of all database entries so that the server never needs to perform FFTs on the bulk of the data during query processing. Only initial query processing and post-first-dimension conversion require FFTs. Applicable to any RLWE-based PIR. [^13]
 - **Multiple G matrices for different phases:** Using a wide-and-short G for phases with heavy noise accumulation (first dimension) and a more-square G for phases with lighter noise (subsequent dimensions) optimizes the noise-to-rate tradeoff. Applicable to any GSW-based scheme with heterogeneous noise growth. [^12]
@@ -323,7 +323,7 @@ The critical observation is that GSW ciphertexts and PVW/matrix ciphertexts can 
 
 [^31]: Section 5.1, p. 18: "we perform the computation relative to a large modulus Q, then switch to a smaller modulus q before sending the final result to the client, scaling the noise roughly by q/Q."
 
-## Deployment Considerations
+### Deployment Considerations
 
 - **Database updates:** Not addressed. The scheme assumes a static database. Pre-processing (CRT conversion, M' = MH computation) must be redone for updated entries.
 - **Sharding:** Not discussed, but the hypercube structure naturally supports sharding along the first dimension (each shard holds N/N_1 entries corresponding to one hyperrow).
@@ -331,7 +331,7 @@ The critical observation is that GSW ciphertexts and PVW/matrix ciphertexts can 
 - **Cold start suitability:** Section 5 variant: yes (no offline material needed, but 198 MB per query). Appendix A variant: no (requires offline upload of 183 MB key-switching material, but this is reusable).
 - **Entry-size crossover:** The scheme becomes competitive with SealPIR-type schemes above ~100 KB entry sizes. Below this threshold, the per-query overhead is not sufficiently amortized. [^3]
 
-## Application Scenarios
+### Application Scenarios
 
 - **Private movie/video streaming:** Explicitly discussed. A 4 GB movie would be encoded in ~44K plaintext matrices (L approximately 44,000). At this scale, FFT overhead is negligible and the ~1.8 multiplications per byte would yield practical streaming performance. [^10]
 - **Private image retrieval:** A single JPEG image has L approximately 4 matrices. Even at this smaller scale, the scheme achieves rate 0.44. [^10]

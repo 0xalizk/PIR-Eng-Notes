@@ -1,4 +1,4 @@
-# VeriSimplePIR — Engineering Notes
+## VeriSimplePIR — Engineering Notes
 
 | Field | Value |
 |-------|-------|
@@ -11,7 +11,7 @@
 | **Rounds (online)** | 1 (non-interactive; query + answer + verify) |
 | **Record-size regime** | Flexible (benchmarks use 1-bit entries; scales with database size in GiB) |
 
-## Lineage
+### Lineage
 
 | Field | Value |
 |-------|--------|
@@ -23,7 +23,7 @@
 [^1]: Abstract (p. 1): "VeriSimplePIR is a stateful verifiable PIR scheme guaranteeing that all queries are consistent with a fixed, well-formed database."
 [^2]: Section 8, Related Work (p. 13): Dietz and Tessaro "construct a DDH-based variant of APIR without the need for an honest digest assumption. However, there is no public implementation or concrete performance analysis."
 
-## Core Idea
+### Core Idea
 
 VeriSimplePIR's central contribution is adding *verifiability* to SimplePIR — the ability for a client to confirm that server responses are consistent with a fixed, committed database — at essentially zero online cost for honest servers. The scheme introduces two key mechanisms: (1) a *Verifiable Linearly Homomorphic Encryption* (VLHE) primitive that pairs Regev LWE encryption with SIS-based extractable commitments, enabling the server to prove that its homomorphic evaluation was performed correctly; and (2) a *reusable preprocessed proof* protocol where a one-time offline phase produces a single proof (pi) that can verify an arbitrary number of subsequent query-response pairs.[^3] The verification leverages the observation that the proof Z = CD is a linear function of D, so the server can compute D^T C^T = Z^T homomorphically using the VLHE construction without knowing the client's secret challenge C.[^4] Only the *exactly correct* ciphertext passes verification with probability better than 2^{-lambda}, giving the strictest possible soundness guarantee.[^5] The online communication overhead is 1.1-1.5x SimplePIR and online computation on the server is essentially the same, because verification costs are pushed entirely into the preprocessing phase.[^6]
 
@@ -32,9 +32,9 @@ VeriSimplePIR's central contribution is adding *verifiability* to SimplePIR — 
 [^5]: Section 1.2 (p. 2): "only responses that are exactly correct will pass verification with a probability greater than 2^{-lambda}."
 [^6]: Abstract (p. 1): "The online communication overhead is roughly 1.1-1.5x SimplePIR, and the online computation time on the server is essentially the same."
 
-## Novel Primitives / Abstractions
+### Novel Primitives / Abstractions
 
-### VLHE (Verifiable Linearly Homomorphic Encryption)
+#### VLHE (Verifiable Linearly Homomorphic Encryption)
 
 | Field | Detail |
 |-------|--------|
@@ -55,7 +55,7 @@ VeriSimplePIR's central contribution is adding *verifiability* to SimplePIR — 
 [^11]: Section 4.1.2 (p. 8-9): "the only piece of the BatchProve and BatchVerify algorithms that grow with tau is the computation of the hash function Hash on the tau tuples and, of course, the matrix multiplication itself."
 [^12]: Section 1.1 (p. 2): APIR "introduces significant overhead since each plaintext bit is mapped to roughly lambda (security parameter) bits in the encoding."
 
-### Reusable VLHE Proof Protocol
+#### Reusable VLHE Proof Protocol
 
 | Field | Detail |
 |-------|--------|
@@ -69,7 +69,7 @@ VeriSimplePIR's central contribution is adding *verifiability* to SimplePIR — 
 [^13]: Figure 6 (p. 10): Full protocol diagram for computing reusable VLHE proofs.
 [^14]: Section 4.2 (p. 9): "We present a useful protocol to compute a reusable VLHE proof. When a fixed linear function is applied to many encrypted vectors, this reusable proof averts repeatedly computing and sending a fresh Z for every response ciphertext."
 
-## Cryptographic Foundation
+### Cryptographic Foundation
 
 | Layer | Detail |
 |-------|--------|
@@ -87,7 +87,7 @@ VeriSimplePIR's central contribution is adding *verifiability* to SimplePIR — 
 [^19]: Section 2.2, Fiat-Shamir Transform (p. 4): "the prover generates the challenge C <- Hash(A, H) and then computes the response Z <- CD."
 [^20]: Section 6, item 3, Optional Assumption of Honest Digest (p. 11): honest bound ||D||_inf <= p vs extractability bound ||D||_inf <= 2*ell*p.
 
-## Protocol Phases
+### Protocol Phases
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -103,7 +103,7 @@ VeriSimplePIR's central contribution is adding *verifiability* to SimplePIR — 
 [^22]: Construction 5.1, PrQry and PrRec (p. 10-11): Client encrypts challenge, server responds with homomorphic evaluation and batch proof.
 [^23]: Construction 5.1, Verify (p. 11): "Output the result of VLHE.PreVerify(A_1, H_1, u, v, C, Z)." Figure 3 (p. 6): "If Verify outputs Reject, set pi <- bottom and rerun PrQry."
 
-## Formal Security Properties
+### Formal Security Properties
 
 | Property | Definition | Mechanism | Proved Where |
 |----------|-----------|-----------|--------------|
@@ -119,13 +119,13 @@ VeriSimplePIR's central contribution is adding *verifiability* to SimplePIR — 
 [^27]: Lemma C.4 (p. 18): "This follows from lemma B.3 along with the correctness of the VLHE parameters."
 [^28]: Section 1.2 (p. 2): "any digest, even one produced by a malicious server, is sufficient to commit to some database."
 
-## Correctness Analysis
+### Correctness Analysis
 
-### Option D: Inherited from SimplePIR
+#### Option D: Inherited from SimplePIR
 
 The base PIR operations (Query, Answer, Recover) are identical to SimplePIR. Correctness of the PIR retrieval itself depends on the LWE noise bound: decryption succeeds when Delta/2 > ||D*e||_inf, where e is the encryption error vector. The probability of decryption failure is bounded by delta = 2*exp(-pi * (Delta / (s * sqrt(m) * ||D||_inf))^2) (p. 5, eq. 2). VeriSimplePIR inherits this analysis directly.[^29]
 
-### Option F: Verification Soundness
+#### Option F: Verification Soundness
 
 The verification adds a second correctness dimension: can a malicious server fool the client into accepting an incorrect answer?
 
@@ -139,9 +139,9 @@ The verification adds a second correctness dimension: can a malicious server foo
 [^31]: Section 4.2, Security (p. 9): "when verification fails, leakage on C may occur. Then, the client must discard C and the corresponding Z and rerun the proof preprocessing phase."
 [^32]: Section 6, item 3 (p. 11): "the VLHE correctness must account for a database D that is as large as the extractability bound of ||D||_inf <= 2*ell*p, which is larger than the honest database bound of ||D||_inf <= p."
 
-## Complexity
+### Complexity
 
-### Core Metrics
+#### Core Metrics
 
 | Metric | Asymptotic | Concrete | Phase |
 |--------|-----------|----------|-------|
@@ -159,7 +159,7 @@ The verification adds a second correctness dimension: can a malicious server foo
 [^35]: Section 6 (p. 12): "the offline computation with a dishonest digest is roughly 100 seconds for a 4 GB database and roughly 200 seconds for an 8 GB database."
 [^36]: Section 7, Password Leak Detection (p. 13): "The only overhead from VeriSimplePIR is the roughly 800 MB of data that each client must locally store throughout the online phase."
 
-### Verification-Specific Metrics
+#### Verification-Specific Metrics
 
 | Metric | Detail |
 |--------|--------|
@@ -168,15 +168,15 @@ The verification adds a second correctness dimension: can a malicious server foo
 | Verification failure recovery | Requires full rerun of Proof Preprocessing phase (new C, new encryptions, new server evaluation). |
 | Batch verification | tau ciphertext pairs can be batch-verified with a single hash + one matrix multiplication (eq. 5, p. 8). Cost grows linearly with tau. |
 
-## Performance Benchmarks
+### Performance Benchmarks
 
-### Experimental Setup
+#### Experimental Setup
 
 Hardware: Single thread of Intel i7 at 2.5 GHz, 32 GB RAM. Ubuntu 20. C/C++ compiled with clang++ v10, -O3. All SimplePIR benchmarks use log(q) = 32, log(n) = 10. VeriSimplePIR uses log(q) = 64 (optimal for 64-bit machine). Database entries are 1-bit (entry size has essentially no effect on parameters due to tight packing).[^37]
 
 [^37]: Section 6, Experimental Setup (p. 11): "All computational benchmarks presented here were run on a single thread of a machine running Ubuntu 20 with an Intel i7 chip operating at 2.5 GHz with 32 GB of RAM."
 
-### Online Phase (Figure 7, p. 13)
+#### Online Phase (Figure 7, p. 13)
 
 **Online Computation Time (seconds, per query):**
 
@@ -199,7 +199,7 @@ Key observation: VeriSimplePIR with honest digest *outperforms* standard SimpleP
 
 [^38]: Section 6 (p. 12): "the VeriSimplePIR protocol is able to pack more database bits into each machine word, which results in an improved throughput on a 64-bit machine."
 
-### Offline Phase (Figure 8, p. 13)
+#### Offline Phase (Figure 8, p. 13)
 
 **Offline Communication (GiB, one-time per client):**
 
@@ -214,7 +214,7 @@ The VeriSimplePIR bars split into persistent storage (>95% is H_1, plus C and Z)
 
 [^39]: Section 6 (p. 12): "This data is dominated (> 95%) by the size of the digest H_1... the top of the bar represents the data that is not stored once the proof preprocessing phase is finished. Again, this data is almost entirely (> 95%) the matrix H_2."
 
-### Overhead vs SimplePIR (Base Scheme)
+#### Overhead vs SimplePIR (Base Scheme)
 
 | Metric | Overhead (without honest digest) | Overhead (with honest digest) |
 |--------|--------------------------------|------------------------------|
@@ -224,9 +224,9 @@ The VeriSimplePIR bars split into persistent storage (>95% is H_1, plus C and Z)
 | Offline computation (server) | ~100s per 4 GiB (new cost) | ~100s per 4 GiB (new cost) |
 | Client storage | ~800 MiB for 8 GiB DB (new cost) | ~800 MiB for 8 GiB DB (new cost) |
 
-## Comparison with Prior Work
+### Comparison with Prior Work
 
-### VeriSimplePIR vs APIR / APIR+ (Section 6.1, p. 12)
+#### VeriSimplePIR vs APIR / APIR+ (Section 6.1, p. 12)
 
 Comparison uses the non-preprocessed "VLHE PIR" variant (no per-client offline phase) against APIR/APIR+:
 
@@ -241,7 +241,7 @@ APIR+ performance degrades as entry bitwidth grows (Figure 9, p. 14). At 1024-bi
 
 [^40]: Section 6.1 (p. 12): "By the time the database entry bitwidth reaches 1024, the offline communication of APIR+ is roughly 7x the offline communication of the VLHE PIR."
 
-### VeriSimplePIR vs Other Semi-Honest Schemes (Section 7, p. 13)
+#### VeriSimplePIR vs Other Semi-Honest Schemes (Section 7, p. 13)
 
 For the password-leak-detection application (400M entries, 20 bytes each, ~8 GiB):
 
@@ -256,7 +256,7 @@ For the password-leak-detection application (400M entries, 20 bytes each, ~8 GiB
 
 [^41]: Section 7 (p. 13): "DoublePIR is worse in both online communication and online computation, and Spiral has around 25x slower online computation than VeriSimplePIR."
 
-## Key Tradeoffs & Limitations
+### Key Tradeoffs & Limitations
 
 1. **Statefulness:** VeriSimplePIR is inherently stateful — the client must store the digest H_1, challenge C, and proof Z throughout the protocol lifetime. This is ~800 MiB for the password-leak application, feasible for desktop/laptop but potentially prohibitive for mobile devices.[^42]
 
@@ -273,7 +273,7 @@ For the password-leak-detection application (400M entries, 20 bytes each, ~8 GiB
 [^42]: Section 7 (p. 13): "The only overhead from VeriSimplePIR is the roughly 800 MB of data that each client must locally store throughout the online phase."
 [^43]: Section 6, item 3 (p. 11): "if the digest is signed by a sufficient number of trusted parties, a client can be confident that the digest was generated with a database D such that ||D||_inf <= p."
 
-## Open Problems
+### Open Problems
 
 1. **Adding malicious security to sublinear-online PIR:** The paper notes that several recent works achieve sublinear online complexity (CGHK22, LMW23, ZPSZ23) but remain semi-honest. "It remains an interesting open question how to add malicious security to these schemes."[^44]
 
@@ -288,7 +288,7 @@ For the password-leak-detection application (400M entries, 20 bytes each, ~8 GiB
 [^46]: Section 7 (p. 13): "If clients make infrequent queries, they could avoid storing the full digest and instead only store a hash of the digest."
 [^47]: Section 7 (p. 13).
 
-## Uncertainties
+### Uncertainties
 
 - **Benchmark precision from figures:** The online and offline benchmarks (Figures 7, 8, 9) are presented as bar charts without exact numerical tables. The values reported in these notes are approximate readings from the figures. The paper's prose provides some exact ratios (e.g., "12% to 40%", "1.1-1.5x") which are more reliable.
 
