@@ -66,4 +66,4 @@
 | 2025 [DistributionalPIR](Schemes/Group%20X%20-%20Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md) | Distribution-dependent PIR model + compiler framework |
 | 2019 [KeywordPIR](Schemes/Group%20X%20-%20Extensions/keywordpir_2019/KeywordPIR_2019_notes.md)[^1] | Comparison of SealPIR, MulPIR, Gentry-Ramzan for keyword PIR |
 
-[^1]: TODO: need to extract MulPIR as a separate scheme from KeywordPIR paper [[1](https://github.com/apple/swift-homomorphic-encryption)] [[2](https://github.com/tlepoint/fhe.rs)]
+[^1]: TODO: need to extract MulPIR [[1](https://github.com/apple/swift-homomorphic-encryption)] [[2](https://github.com/tlepoint/fhe.rs)] as a separate scheme from KeywordPIR paper
