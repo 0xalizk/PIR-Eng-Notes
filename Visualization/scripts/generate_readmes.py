@@ -152,13 +152,17 @@ def generate_readme(subdir, plot_results):
         lines.append(f"| <sub>**{plot_title}.** {caption} Schemes: {scheme_list}</sub> |")
         lines.append("")
 
-        # Footnotes section
-        lines.append(f"#### Footnotes\n")
+        # Footnotes section (collapsible)
+        lines.append("<details>")
+        lines.append("<summary>Footnotes</summary>")
+        lines.append("")
         for s in schemes:
             fn_num = int(footnote_map[s["id"]])
             notes_path = get_notes_path(s)
             entry = _make_footnote_entry(fn_num, s, notes_path, output_dir)
             lines.append(entry)
+        lines.append("")
+        lines.append("</details>")
         lines.append("")
 
     readme_path = output_dir / "README.md"
