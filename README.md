@@ -7,7 +7,7 @@
 - Per-scheme notes are produced by reading the source PDF (incl. tables/figures which Claude can do to some extent) using a [standardized methodology](.claude/skills/pir-paper-analyzer/SKILL.md). 
 - Footnoted claims cite ([eg](/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-1-f27badb60af2ef334761a58def6c5113)) specific pages/sections of the original paper.
 
-| [![T1: Communication Scatter](Visualization/output/top_level/T1_communication_scatter.png)](Visualization/output/top_level/T1_communication_scatter.png) | [![T2: Throughput Bar](Visualization/output/top_level/T2_throughput_bar.png)](Visualization/output/top_level/T2_throughput_bar.png) | [![T3: Pareto Frontier](Visualization/output/top_level/T3_pareto_frontier.png)](Visualization/output/top_level/T3_pareto_frontier.png) |
+| [![T1: Communication Scatter](Visualization/output/top_level/T1_communication_scatter.png)](Visualization/output/top_level#communication-design-space--query-vs-response-size) | [![T2: Throughput Bar](Visualization/output/top_level/T2_throughput_bar.png)](Visualization/output/top_level#server-throughput-comparison) | [![T3: Pareto Frontier](Visualization/output/top_level/T3_pareto_frontier.png)](Visualization/output/top_level#pareto-frontier--communication-vs-server-time) |
 |:---:|:---:|:---:|
 
 ### Group A — FHE-Based PIR
