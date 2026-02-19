@@ -2,7 +2,7 @@
 
 - Scheme grouping [based on this taxonomy](https://hackmd.io/@keewoolee/SJyGoXCzZe#Taxonomy)
 - Multi-server schemes are excluded
-- Structured engineering notes ([eg](/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md)) for 36 Private Information Retrieval (PIR) research papers: scheme design, complexity analysis, cryptographic assumptions, and reported benchmarks. 
+- Structured engineering notes ([eg](/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md)) for 35 Private Information Retrieval (PIR) research papers: scheme design, complexity analysis, cryptographic assumptions, and reported benchmarks. 
 - Per-scheme notes are produced by reading the source PDF (incl. tables/figures which Claude can do to some extent) using a [standardized methodology](.claude/skills/pir-paper-analyzer/SKILL.md). 
 - Footnoted claims cite ([eg](/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-1-f27badb60af2ef334761a58def6c5113)) specific pages/sections of the original paper.
 
@@ -63,6 +63,5 @@
 
 | Paper | Key Contribution |
 |-------|-----------------|
-| 2004 [CGKS Survey](Schemes/Group%20X%20-%20Keyword%20Symmetric%20Distributional%20PIR/cgks_survey_2004/CGKS_Survey_2004_notes.md) | Foundational pedagogical survey of IT-PIR and cPIR theory |
 | 2019 [KeywordPIR](Schemes/Group%20X%20-%20Keyword%20Symmetric%20Distributional%20PIR/keywordpir_2019/KeywordPIR_2019_notes.md) | Comparison of SealPIR, MulPIR, Gentry-Ramzan for keyword PIR |
 | 2025 [DistributionalPIR](Schemes/Group%20X%20-%20Keyword%20Symmetric%20Distributional%20PIR/distributionalpir_2025/DistributionalPIR_2025_notes.md) | Distribution-dependent PIR model + compiler framework |

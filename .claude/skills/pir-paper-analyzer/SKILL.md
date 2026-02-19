@@ -21,7 +21,7 @@ Before reading, determine the paper's **group** and **archetype** to route yours
 | **B — Stateless single-server** | §3.1 (Lattice/FHE) | §3.2, §3.3 | Identify sub-model first (see below). |
 | **C — Client-independent preprocessing** | §3.1 (often plain LWE) | §3.2, §3.3 | Many use plain LWE — skip RLWE/GSW notation if so. DEPIR papers (BarelyDoublyEfficient) are theory/feasibility results. |
 | **D — Client-dependent preprocessing** | §3.2 (PRF/symmetric) | §3.1 (unless paper uses FHE) | PRF-first; use §3.7b for Group D parameters. **Not all Group D schemes have probabilistic correctness** — check whether deterministic (SinglePass, WangRen) or probabilistic (Piano, RMS24, CK20). |
-| **X — Variants & Surveys** | Varies — see per-paper routing below | Check archetype first | Per-paper routing: **KeywordPIR** → §3.1 + number-theoretic; **DistributionalPIR** → §3.1 + §3.6; **CGKS Survey** → §3.3 + coding theory |
+| **X — Variants & Surveys** | Varies — see per-paper routing below | Check archetype first | Per-paper routing: **KeywordPIR** → §3.1 + number-theoretic; **DistributionalPIR** → §3.1 + §3.6 |
 
 **Group B sub-models** (identify during Pass 0):
 
@@ -97,7 +97,7 @@ Before reading, identify the paper's **archetype(s)**. Check the abstract and fi
 | **Model/definition** | Defines a new PIR variant or model (e.g., Distributional PIR, DEPIR) | Add Formal Definitions section. Document the model independently. Use §2.8. |
 | **Compiler/framework** | Black-box transformation applicable to multiple schemes | Document compiler interface (input/output/preserved properties/overhead). Separate compiler from instantiation. |
 | **Update/maintenance** | Adds update mechanisms to existing schemes (e.g., IncrementalPIR, IncPIR) | Add update-specific metrics, Mutation Model. Document composability with base schemes. Use §2.10. |
-| **Survey** | Reviews multiple schemes, may prove no new constructions | Use survey template (§6.1). Use §2.3. Sub-types: *pedagogical* (textbook-style with full proofs, e.g., CGKS), *SoK* (systematization of knowledge), *brief* (short overview). |
+| **Survey** | Reviews multiple schemes, may prove no new constructions | Use survey template (§6.1). Use §2.3. Sub-types: *pedagogical* (textbook-style with full proofs), *SoK* (systematization of knowledge), *brief* (short overview). |
 | **Comparison / multi-paradigm** | Compares multiple approaches to the same problem (e.g., KeywordPIR comparing SealPIR, MulPIR, Gentry-Ramzan) | Apply per-construction Passes 2-4. Add Cross-Paradigm Comparison section. |
 
 ### Multi-archetype papers
@@ -327,8 +327,8 @@ Rely on Claude's native PDF math rendering. Extract expressions directly from th
 | Communication complexity | (α(n), β(n)) | α = query length, β = answer length per server |
 | XOR | ⊕ | Core operation for information-theoretic PIR |
 | lg | log₂ | Common in theory papers |
-| Number-theoretic | QR (quadratic residuosity), Φ-hiding | Used in foundational constructions (CGKS survey, Gentry-Ramzan KeywordPIR) |
-| Coding theory | Covering codes, Hamming distance | Used in multi-server IT-PIR constructions (CGKS survey) |
+| Number-theoretic | QR (quadratic residuosity), Φ-hiding | Used in foundational constructions (Gentry-Ramzan KeywordPIR) |
+| Coding theory | Covering codes, Hamming distance | Used in multi-server IT-PIR constructions |
 | Set-theoretic | cross-product sets, planar sets | Used in IshaiShiWichs constructions |
 
 ### 3.4 Complexity notation
@@ -935,7 +935,7 @@ _Impossibility results with their model assumptions._
 ## Proof Techniques
 | Technique | Used In | Core Mechanism |
 |-----------|---------|----------------|
-| <e.g., Covering codes> | <CGKS k-server PIR> | <Encode queries as codewords> |
+| <e.g., Covering codes> | <k-server IT-PIR> | <Encode queries as codewords> |
 
 ## Implication Chains
 _Connections between PIR and other primitives._
@@ -956,10 +956,9 @@ _Which results became foundations for modern schemes in Groups A–D._
 
 ### 7.1 Scope
 
-The 35 papers in this collection primarily address **computational PIR** (cPIR) — security from computational hardness assumptions. Key exceptions:
+The 34 papers in this collection primarily address **computational PIR** (cPIR) — security from computational hardness assumptions. Key exceptions:
 - **IshaiShiWichs (Group D):** Proves information-theoretic constructions and lower bounds (perfect privacy, no computational assumptions).
 - **TreePIR, SinglePass, CK20 (Group D):** Use **two-server non-colluding** models alongside or instead of single-server.
-- **CGKS Survey (Group X):** Covers foundational multi-server information-theoretic PIR, cPIR, SPIR, keyword PIR, robust PIR, t-private PIR, lower bounds, and PIR-to-OWF/OT implications.
 
 ### 7.2 Taxonomy (5 groups)
 
@@ -969,7 +968,7 @@ The 35 papers in this collection primarily address **computational PIR** (cPIR) 
 | **B — Stateless single-server** | No persistent per-client state on the **client** between queries. Server may store ephemeral per-query evaluation keys but NOT persistent per-client state. **Sub-models:** *Hintless* (no offline comm: YPIR, HintlessPIR), *CRS/query-bundled* (keys from CRS or per-query: WhisPIR, InsPIRe), *Public-parameter upload* (public key material offline: NPIR), *Client-hint upload* (secret-key-dependent keys offline: Pirouette, VIA-C, Respire). | HintlessPIR, YPIR, Respire, WhisPIR, Pirouette, InsPIRe, NPIR, VIA |
 | **C — Client-independent preprocessing** | Server generates one global hint shared by all clients ("global preprocessing"). Client downloads it once. DEPIR papers (BarelyDoublyEfficient) achieve sublinear server computation — currently theoretical. | SimplePIR, DoublePIR, FrodoPIR, VeriSimplePIR, IncrementalPIR |
 | **D — Client-dependent preprocessing** | Each client gets a personalized offline hint. Includes both single-server and two-server schemes. Not all Group D schemes have probabilistic correctness (SinglePass, WangRen are deterministic). | Piano, Plinko, TreePIR (2-server), CK20 (2-server+1-server), IncPIR (2-server), SinglePass (2-server), WangRen, IshaiShiWichs, RMS24 |
-| **X — Variants & Surveys** | Keyword PIR, symmetric PIR, distributional PIR, model-defining papers, foundational surveys, and multi-contribution comparison papers | SealPIR/KeywordPIR, DistributionalPIR, CGKS Survey |
+| **X — Variants & Surveys** | Keyword PIR, symmetric PIR, distributional PIR, model-defining papers, foundational surveys, and multi-contribution comparison papers | SealPIR/KeywordPIR, DistributionalPIR |
 
 **Key concept — DEPIR:** Doubly-Efficient PIR achieves sublinear server computation via preprocessing. BarelyDoublyEfficient is the first from plain LWE in the CRS model (a theory/feasibility result, not yet practical).
 

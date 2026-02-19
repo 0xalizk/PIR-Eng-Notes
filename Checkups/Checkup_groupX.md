@@ -4,49 +4,20 @@
 
 | Paper | Footnotes | Issues |
 |-------|-----------|--------|
-| CGKS Survey (2004) | 20 | 3 issues |
 | KeywordPIR (2019) | 52 | 2 issues |
 | DistributionalPIR (2025) | 47 | 2 issues |
-| **Total** | **119** | **7 issues** |
+| **Total** | **99** | **4 issues** |
 
-All 7 issues are minor:
+All 4 issues are minor:
 
-1. **CGKS [^14]** — page off by one (p.12 → p.13)
-2. **CGKS [^18]** — page off by one (p.15 → p.16)
-3. **CGKS [^19]** — Naor-Pinkas reference attributed to Section 5.2/p.15 instead of Section 7.2/p.21
-4. **KeywordPIR [^31]** — likely column misalignment when transcribing Table 3's dense layout (n=2^20 vs n=2^22 values)
-5. **KeywordPIR [^45]** — minor: "client prime generation" is notes' interpretation, not the exact "C.Create" column label
-6. **DistributionalPIR [^10]** — says "six routines" but the paper defines five
-7. **DistributionalPIR [^34]** — stateless/stateful decrypt-time labels are swapped
+1. **KeywordPIR [^31]** — likely column misalignment when transcribing Table 3's dense layout (n=2^20 vs n=2^22 values)
+2. **KeywordPIR [^45]** — minor: "client prime generation" is notes' interpretation, not the exact "C.Create" column label
+3. **DistributionalPIR [^10]** — says "six routines" but the paper defines five
+4. **DistributionalPIR [^34]** — stateless/stateful decrypt-time labels are swapped
 
 ---
 
-### Paper 1: CGKS Survey (2004)
-
-**File:** `Schemes/Group X - Keyword Symmetric Distributional PIR/cgks_survey_2004/CGKS_Survey_2004_notes.md`
-**Total footnotes:** 20
-
-#### Verified Correct
-
-[^1], [^2], [^3], [^4], [^5], [^6], [^7], [^8], [^9], [^10], [^11], [^12], [^13], [^15], [^16], [^17], [^20]
-
-#### Issues Found
-
-**[^14] — Incorrect page number**
-- **Notes claim:** "Theorem 4.5 and KEY IDEA (p. 12)"
-- **Paper says:** Theorem 4.5 and its KEY IDEA ("Alice does the O(n^{1/3})-bit scheme from theorem 3.3 on each row, but she sends short seed instead of long message.") appear on p. 13 of the PDF. Section 4.2 begins at the bottom of p. 12, but Theorem 4.5 itself and the KEY IDEA text are on p. 13.
-
-**[^18] — Incorrect page number**
-- **Notes claim:** "Section 5.2 (p. 15): Summary of implication chains."
-- **Paper says:** Section 5.2 ("Summary of What is Known about Computational PIR") begins on p. 16, not p. 15. The implication chain summary is on p. 16.
-
-**[^19] — Incorrect section and page for Naor-Pinkas reference**
-- **Notes claim:** "Section 5.2 (p. 15) also notes that Naor and Pinkas [53] provide a general PIR-to-SPIR transformation using a logarithmic number of oblivious transfers."
-- **Paper says:** The Naor-Pinkas PIR-to-SPIR transformation via a logarithmic number of oblivious transfers is discussed in Section 7.2 (p. 21), not Section 5.2 (p. 15). The relevant passage reads: "The above Theorem follows more generally (and under weaker assumptions) from a general PIR to SPIR transformation by Naor and Pinkas [53]. This transformation takes any PIR scheme and, using a logarithmic number of oblivious transfers, turns it into a (computational) SPIR scheme." The first part of footnote [^19] about Theorem 5.1 (p. 14) and the (n/2)-bit PIR threshold is correct.
-
----
-
-### Paper 2: KeywordPIR (2019)
+### Paper 1: KeywordPIR (2019)
 
 **File:** `Schemes/Group X - Keyword Symmetric Distributional PIR/keywordpir_2019/KeywordPIR_2019_notes.md`
 **Total footnotes:** 52
@@ -67,7 +38,7 @@ All 7 issues are minor:
 
 ---
 
-### Paper 3: DistributionalPIR (2025)
+### Paper 2: DistributionalPIR (2025)
 
 **File:** `Schemes/Group X - Keyword Symmetric Distributional PIR/distributionalpir_2025/DistributionalPIR_2025_notes.md`
 **Total footnotes:** 47

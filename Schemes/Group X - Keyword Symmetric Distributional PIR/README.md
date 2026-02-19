@@ -1,30 +1,5 @@
 ## Group X — Keyword, Symmetric & Distributional PIR
 
-#### CGKS Survey (2004)
-
-The CGKS Survey is a pedagogical survey, not a single-scheme construction. Its core comparison tables are:
-
-**Information-Theoretic PIR Upper Bounds:**
-
-| Tool / Technique | 2-DB | 3-DB | 4-DB | k-DB (general) |
-|------------------|------|------|------|----------------|
-| kth root (XOR + bit arrays) | no PIR | no PIR | n^{1/2} | k * n^{1/lg k} |
-| Covering codes | n^{1/3} | no PIR | n^{1/4} | (k lg k) n^{1/(lg k + lg lg k)} |
-| Polynomial interpolation | n^{1/2} | n^{1/3} | n^{1/4} | (k^2 log k) n^{1/k} |
-| Recursion (Ambainis) | n^{1/3} | n^{1/5} | n^{1/7} | 2^{k^2} n^{1/(2k-1)} |
-| Linear algebra (Ishai-Kushilevitz) | n^{1/3} | n^{1/5} | n^{1/7} | k^3 n^{1/(2k-1)} |
-| Poly-heavy (Beimel et al.) | n^{1/3} | n^{1/5.25} | n^{1/7.87} | n^{O(lg lg k / k lg k)} |
-
-**Computational PIR Schemes:**
-
-| Scheme | Assumption | # DBs | Communication |
-|--------|-----------|-------|---------------|
-| Kushilevitz-Ostrovsky | QR hardness | 1 | O(n^{1/2+delta}) |
-| Cachin et al. | phi-hiding | 1 | O((lg n)^a) (polylog) |
-| Chor-Gilboa | One-way functions | 2 | O(n^epsilon) |
-| Kushilevitz-Ostrovsky | One-way trapdoor permutations | 1 | n - o(n) |
-| Stern / Mann | Homomorphic encryption | 1 | n^epsilon |
-
 #### KeywordPIR (2019)
 
 **SealPIR variants and MulPIR (d=2, n=2^20, 288B entries):**

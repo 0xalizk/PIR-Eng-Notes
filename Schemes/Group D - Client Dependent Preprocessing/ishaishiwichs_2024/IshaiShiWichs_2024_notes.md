@@ -403,7 +403,6 @@ The paper identifies an explicit adaptive correctness attack against Piano [ZPSZ
 - **CK20 [Group D]:** First sublinear-server cPIR without extra server storage; introduced the puncturable pseudorandom set paradigm that this paper combines with classical IT-PIR techniques.
 - **Mughees-Ren / MIR23 [Group D]:** Practical sublinear PIR with adaptive correctness; this paper derives a naive IT construction from MIR23 (Theorem 3.2) and uses it as a baseline.
 - **WangRen [Group D]:** Proves tight space-time tradeoff ST = O(nw) for computational preprocessing PIR; this paper's lower bounds are complementary (tradeoff between client space and bandwidth rather than space and time).
-- **CGKS Survey [Group X]:** Covers foundational multi-server IT-PIR constructions that this paper extends to the single-server preprocessing setting.
 
 ### Uncertainties
 
