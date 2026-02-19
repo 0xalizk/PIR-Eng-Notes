@@ -3,7 +3,7 @@
 - Scheme grouping [based on this taxonomy](https://hackmd.io/@keewoolee/SJyGoXCzZe#Taxonomy)
 - Multi-server schemes are excluded
 - Structured engineering notes ([eg](/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md)) for 36 Private Information Retrieval (PIR) research papers: scheme design, complexity analysis, cryptographic assumptions, and reported benchmarks. 
-- Per-scheme notes are produced from reading the source PDF using a [standardized template](.claude/skills/pir-paper-analyzer/SKILL.md). 
+- Per-scheme notes are produced by reading the source PDF (incl. tables/figures which Claude can do to some extent) using a [standardized methodology](.claude/skills/pir-paper-analyzer/SKILL.md). 
 - Footnoted claims cite ([eg](/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-1-f27badb60af2ef334761a58def6c5113)) specific pages/sections of the original paper.
 
 ### Group A — FHE-Based PIR
