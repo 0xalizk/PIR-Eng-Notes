@@ -10,8 +10,6 @@
 <details>
 <summary>${\color{#E67300}\textbf{Citations and Footnotes}}$</summary>
 
-<sub>
-
 1. **XPIR (2014)** — Table 2, Table 3 in [xpir_2014_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2014/xpir_2014_notes.md#performance-benchmarks)
 2. **SealPIR** — Figure 9 in [sealpir_2018_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md#performance-benchmarks)
 3. **MulPIR** — Section 5, Appendix A in [mulpir_2019_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/mulpir_2019/mulpir_2019_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
@@ -45,8 +43,6 @@
 31. **WangRen** — Theorem 4.1 in [WangRen_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/wangren_2024/WangRen_2024_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
 32. **KeywordPIR** — Table 3, Table 4 in [KeywordPIR_2019_notes.md](../../../Schemes/Group%20X%20-%20Extensions/keywordpir_2019/KeywordPIR_2019_notes.md#performance-benchmarks)
 
-</sub>
-
 </details>
 
 ### Server Throughput Comparison
@@ -58,8 +54,6 @@
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations and Footnotes}}$</summary>
-
-<sub>
 
 1. **Spiral** — Table 3, Table 5 in [spiral_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/spiral_2022/spiral_2022_notes.md#performance-benchmarks)
 2. **OnionPIRv2** — Table 2 in [onionpirv2_2025_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpirv2_2025/onionpirv2_2025_notes.md#performance-benchmarks)
@@ -76,8 +70,6 @@
 13. **SimplePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 14. **IncrementalPIR** — Table 2 in [IncrementalPIR_2026_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md#performance-benchmarks)
 
-</sub>
-
 </details>
 
 ### Pareto Frontier — Communication vs Server Time
@@ -89,8 +81,6 @@
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations and Footnotes}}$</summary>
-
-<sub>
 
 1. **SealPIR** — Figure 9 in [sealpir_2018_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md#performance-benchmarks)
 2. **MulPIR** — Section 5, Appendix A in [mulpir_2019_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/mulpir_2019/mulpir_2019_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
@@ -122,8 +112,6 @@
 28. **KeywordPIR** — Table 3, Table 4 in [KeywordPIR_2019_notes.md](../../../Schemes/Group%20X%20-%20Extensions/keywordpir_2019/KeywordPIR_2019_notes.md#performance-benchmarks)
 29. **DistributionalPIR** — Section 7.2.1, Figure 9, Figure 10, Table 12 in [DistributionalPIR_2025_notes.md](../../../Schemes/Group%20X%20-%20Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md#performance-benchmarks)
 
-</sub>
-
 </details>
 
 ### PIR Scheme Heatmap Overview
@@ -135,8 +123,6 @@
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations and Footnotes}}$</summary>
-
-<sub>
 
 1. **XPIR (2014)** — Table 2, Table 3 in [xpir_2014_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2014/xpir_2014_notes.md#performance-benchmarks)
 2. **XPIR (2016)** — Figure 6, Figure 7, Figure 8 in [xpir_2016_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2016/xpir_2016_notes.md#performance-benchmarks)
@@ -174,8 +160,6 @@
 34. **KeywordPIR** — Table 3, Table 4 in [KeywordPIR_2019_notes.md](../../../Schemes/Group%20X%20-%20Extensions/keywordpir_2019/KeywordPIR_2019_notes.md#performance-benchmarks)
 35. **DistributionalPIR** — Section 7.2.1, Figure 9, Figure 10, Table 12 in [DistributionalPIR_2025_notes.md](../../../Schemes/Group%20X%20-%20Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md#performance-benchmarks)
 
-</sub>
-
 </details>
 
 ### Online vs Offline Cost Split
@@ -188,16 +172,12 @@
 <details>
 <summary>${\color{#E67300}\textbf{Citations and Footnotes}}$</summary>
 
-<sub>
-
 1. **Spiral** — Table 3, Table 5 in [spiral_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/spiral_2022/spiral_2022_notes.md#performance-benchmarks)
 2. **Respire** — Table 1, Table 2 in [Respire_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#performance-benchmarks)
 3. **SimplePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 4. **DoublePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 5. **IncrementalPIR** — Table 2 in [IncrementalPIR_2026_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md#performance-benchmarks)
 6. **DistributionalPIR** — Section 7.2.1, Figure 9, Figure 10, Table 12 in [DistributionalPIR_2025_notes.md](../../../Schemes/Group%20X%20-%20Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md#performance-benchmarks)
-
-</sub>
 
 </details>
 
@@ -210,8 +190,6 @@
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations and Footnotes}}$</summary>
-
-<sub>
 
 1. **XPIR (2016)** — Figure 6, Figure 7, Figure 8 in [xpir_2016_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2016/xpir_2016_notes.md#performance-benchmarks)
 2. **Spiral** — Table 3, Table 5 in [spiral_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/spiral_2022/spiral_2022_notes.md#performance-benchmarks)
@@ -227,8 +205,6 @@
 12. **SimplePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 13. **DoublePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 14. **IncrementalPIR** — Table 2 in [IncrementalPIR_2026_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md#performance-benchmarks)
-
-</sub>
 
 </details>
 
