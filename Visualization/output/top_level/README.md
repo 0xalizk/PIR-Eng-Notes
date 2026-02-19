@@ -8,7 +8,7 @@
 | <sub>**Communication Design Space — Query vs Response Size.** Log-log scatter of query vs response size across all groups. Schemes: XPIR (2014)<sup>1</sup>, SealPIR<sup>2</sup>, MulPIR<sup>3</sup>, OnionPIR<sup>4</sup>, Addra/FastPIR<sup>5</sup>, CwPIR<sup>6</sup>, Spiral<sup>7</sup>, FrodoPIR<sup>8</sup>, ThorPIR<sup>9</sup>, OnionPIRv2<sup>10</sup>, HintlessPIR<sup>11</sup>, YPIR<sup>12</sup>, Respire<sup>13</sup>, WhisPIR<sup>14</sup>, Pirouette<sup>15</sup>, InsPIRe<sup>16</sup>, NPIR<sup>17</sup>, VIA<sup>18</sup>, SimplePIR<sup>19</sup>, DoublePIR<sup>20</sup>, BarelyDoublyEfficient<sup>21</sup>, IncrementalPIR<sup>22</sup>, CK20<sup>23</sup>, IncPIR<sup>24</sup>, Piano<sup>25</sup>, TreePIR<sup>26</sup>, RMS24<sup>27</sup>, IshaiShiWichs<sup>28</sup>, Plinko<sup>29</sup>, SinglePass<sup>30</sup>, WangRen<sup>31</sup>, KeywordPIR<sup>32</sup></sub> |
 
 <details>
-<summary>Footnotes</summary>
+<summary><b style="color: #E67300;">Citations and Footnotes</b></summary>
 
 1. **XPIR (2014)** — Table 2, Table 3 in [xpir_2014_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2014/xpir_2014_notes.md#performance-benchmarks)
 2. **SealPIR** — Figure 9 in [sealpir_2018_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md#performance-benchmarks)
@@ -53,7 +53,7 @@
 | <sub>**Server Throughput Comparison.** Horizontal bar chart of server throughput (GB/s) by group. Schemes: Spiral<sup>1</sup>, OnionPIRv2<sup>2</sup>, FrodoPIR<sup>3</sup>, XPIR (2016)<sup>4</sup>, Pirouette<sup>5</sup>, Respire<sup>6</sup>, NPIR<sup>7</sup>, InsPIRe<sup>8</sup>, HintlessPIR<sup>9</sup>, VIA<sup>10</sup>, YPIR<sup>11</sup>, DoublePIR<sup>12</sup>, SimplePIR<sup>13</sup>, IncrementalPIR<sup>14</sup></sub> |
 
 <details>
-<summary>Footnotes</summary>
+<summary><b style="color: #E67300;">Citations and Footnotes</b></summary>
 
 1. **Spiral** — Table 3, Table 5 in [spiral_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/spiral_2022/spiral_2022_notes.md#performance-benchmarks)
 2. **OnionPIRv2** — Table 2 in [onionpirv2_2025_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpirv2_2025/onionpirv2_2025_notes.md#performance-benchmarks)
@@ -80,7 +80,7 @@
 | <sub>**Pareto Frontier — Communication vs Server Time.** Server time vs total communication with Pareto frontier overlay. Schemes: SealPIR<sup>1</sup>, MulPIR<sup>2</sup>, OnionPIR<sup>3</sup>, Addra/FastPIR<sup>4</sup>, CwPIR<sup>5</sup>, Spiral<sup>6</sup>, FrodoPIR<sup>7</sup>, ThorPIR<sup>8</sup>, OnionPIRv2<sup>9</sup>, HintlessPIR<sup>10</sup>, YPIR<sup>11</sup>, Respire<sup>12</sup>, WhisPIR<sup>13</sup>, Pirouette<sup>14</sup>, InsPIRe<sup>15</sup>, NPIR<sup>16</sup>, VIA<sup>17</sup>, BarelyDoublyEfficient<sup>18</sup>, IncrementalPIR<sup>19</sup>, CK20<sup>20</sup>, IncPIR<sup>21</sup>, Piano<sup>22</sup>, TreePIR<sup>23</sup>, RMS24<sup>24</sup>, IshaiShiWichs<sup>25</sup>, Plinko<sup>26</sup>, WangRen<sup>27</sup>, KeywordPIR<sup>28</sup>, DistributionalPIR<sup>29</sup></sub> |
 
 <details>
-<summary>Footnotes</summary>
+<summary><b style="color: #E67300;">Citations and Footnotes</b></summary>
 
 1. **SealPIR** — Figure 9 in [sealpir_2018_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md#performance-benchmarks)
 2. **MulPIR** — Section 5, Appendix A in [mulpir_2019_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/mulpir_2019/mulpir_2019_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
@@ -122,7 +122,7 @@
 | <sub>**PIR Scheme Heatmap Overview.** Heatmap table of all 35 schemes across key performance metrics. Schemes: XPIR (2014)<sup>1</sup>, XPIR (2016)<sup>2</sup>, SealPIR<sup>3</sup>, MulPIR<sup>4</sup>, OnionPIR<sup>5</sup>, Addra/FastPIR<sup>6</sup>, CwPIR<sup>7</sup>, Spiral<sup>8</sup>, FrodoPIR<sup>9</sup>, ThorPIR<sup>10</sup>, OnionPIRv2<sup>11</sup>, HintlessPIR<sup>12</sup>, YPIR<sup>13</sup>, Respire<sup>14</sup>, WhisPIR<sup>15</sup>, Pirouette<sup>16</sup>, InsPIRe<sup>17</sup>, NPIR<sup>18</sup>, VIA<sup>19</sup>, SimplePIR<sup>20</sup>, DoublePIR<sup>21</sup>, VeriSimplePIR<sup>22</sup>, BarelyDoublyEfficient<sup>23</sup>, IncrementalPIR<sup>24</sup>, CK20<sup>25</sup>, IncPIR<sup>26</sup>, Piano<sup>27</sup>, TreePIR<sup>28</sup>, RMS24<sup>29</sup>, IshaiShiWichs<sup>30</sup>, Plinko<sup>31</sup>, SinglePass<sup>32</sup>, WangRen<sup>33</sup>, KeywordPIR<sup>34</sup>, DistributionalPIR<sup>35</sup></sub> |
 
 <details>
-<summary>Footnotes</summary>
+<summary><b style="color: #E67300;">Citations and Footnotes</b></summary>
 
 1. **XPIR (2014)** — Table 2, Table 3 in [xpir_2014_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2014/xpir_2014_notes.md#performance-benchmarks)
 2. **XPIR (2016)** — Figure 6, Figure 7, Figure 8 in [xpir_2016_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2016/xpir_2016_notes.md#performance-benchmarks)
@@ -170,7 +170,7 @@
 | <sub>**Online vs Offline Cost Split.** Stacked bar comparison of online vs offline communication and computation. Schemes: Spiral<sup>1</sup>, Respire<sup>2</sup>, SimplePIR<sup>3</sup>, DoublePIR<sup>4</sup>, IncrementalPIR<sup>5</sup>, DistributionalPIR<sup>6</sup></sub> |
 
 <details>
-<summary>Footnotes</summary>
+<summary><b style="color: #E67300;">Citations and Footnotes</b></summary>
 
 1. **Spiral** — Table 3, Table 5 in [spiral_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/spiral_2022/spiral_2022_notes.md#performance-benchmarks)
 2. **Respire** — Table 1, Table 2 in [Respire_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#performance-benchmarks)
@@ -189,7 +189,7 @@
 | <sub>**PIR Throughput Evolution Over Time.** Throughput evolution over publication year; marker size inversely proportional to communication. Schemes: XPIR (2016)<sup>1</sup>, Spiral<sup>2</sup>, FrodoPIR<sup>3</sup>, OnionPIRv2<sup>4</sup>, HintlessPIR<sup>5</sup>, YPIR<sup>6</sup>, Respire<sup>7</sup>, Pirouette<sup>8</sup>, InsPIRe<sup>9</sup>, NPIR<sup>10</sup>, VIA<sup>11</sup>, SimplePIR<sup>12</sup>, DoublePIR<sup>13</sup>, IncrementalPIR<sup>14</sup></sub> |
 
 <details>
-<summary>Footnotes</summary>
+<summary><b style="color: #E67300;">Citations and Footnotes</b></summary>
 
 1. **XPIR (2016)** — Figure 6, Figure 7, Figure 8 in [xpir_2016_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2016/xpir_2016_notes.md#performance-benchmarks)
 2. **Spiral** — Table 3, Table 5 in [spiral_2022_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/spiral_2022/spiral_2022_notes.md#performance-benchmarks)

@@ -157,7 +157,7 @@ def generate_readme(subdir, plot_results):
 
         # Footnotes section (collapsible)
         lines.append("<details>")
-        lines.append("<summary>Footnotes</summary>")
+        lines.append('<summary><b style="color: #E67300;">Citations and Footnotes</b></summary>')
         lines.append("")
         for s in schemes:
             fn_num = int(footnote_map[s["id"]])
