@@ -51,7 +51,12 @@
       "Bash(else)",
       "Bash(fi)",
       "Bash(done)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(while read file)",
+      "Bash(do grep -n \"^# [^\\\\s]\" \"$file\")",
+      "Bash(uv run:*)",
+      "Bash(uv pip install:*)",
+      "Bash(uv venv:*)"
     ],
     "deny": [
       "Bash(sudo:*)",
