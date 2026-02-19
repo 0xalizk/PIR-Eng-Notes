@@ -8,11 +8,15 @@
 | <sub>**Client-Independent Preprocessing — Online Throughput.** Bar chart of online throughput for preprocessing-based schemes. Schemes: IncrementalPIR<sup>1</sup>, SimplePIR<sup>2</sup>, DoublePIR<sup>3</sup></sub> |
 
 <details>
-<summary><b style="color: #E67300;">Citations and Footnotes</b></summary>
+<summary>${\color{#E67300}\textbf{Citations and Footnotes}}$</summary>
+
+<sub>
 
 1. **IncrementalPIR** — Table 2 in [IncrementalPIR_2026_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md#performance-benchmarks)
 2. **SimplePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 3. **DoublePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
+
+</sub>
 
 </details>
 
@@ -24,11 +28,15 @@
 | <sub>**Hint Size vs Online Communication Tradeoff.** Scatter of offline hint size vs online communication. Schemes: SimplePIR<sup>1</sup>, DoublePIR<sup>2</sup>, IncrementalPIR<sup>3</sup></sub> |
 
 <details>
-<summary><b style="color: #E67300;">Citations and Footnotes</b></summary>
+<summary>${\color{#E67300}\textbf{Citations and Footnotes}}$</summary>
+
+<sub>
 
 1. **SimplePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 2. **DoublePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 3. **IncrementalPIR** — Table 2 in [IncrementalPIR_2026_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md#performance-benchmarks)
+
+</sub>
 
 </details>
 
@@ -40,12 +48,16 @@
 | <sub>**Throughput Scaling with Database Size.** Throughput scaling with database size (multi-point where available). Schemes: Respire<sup>1</sup>, SimplePIR<sup>2</sup>, DoublePIR<sup>3</sup>, IncrementalPIR<sup>4</sup></sub> |
 
 <details>
-<summary><b style="color: #E67300;">Citations and Footnotes</b></summary>
+<summary>${\color{#E67300}\textbf{Citations and Footnotes}}$</summary>
+
+<sub>
 
 1. **Respire** — Table 1, Table 2 in [Respire_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#performance-benchmarks)
 2. **SimplePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 3. **DoublePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 4. **IncrementalPIR** — Table 2 in [IncrementalPIR_2026_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md#performance-benchmarks)
+
+</sub>
 
 </details>
 
