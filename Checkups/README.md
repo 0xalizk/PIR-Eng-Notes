@@ -6,6 +6,6 @@
 
 #### 1st Pass
 
-**Issues found:** [Group A](1st_pass/issues/Checkup_groupA.md) - [Group B](1st_pass/issues/Checkup_groupB.md) - [Group C](1st_pass/issues/Checkup_groupC.md) - [Group D](1st_pass/issues/Checkup_groupD.md) - [Group X](1st_pass/issues/Checkup_groupX.md)
+**[Issues](1st_pass/issues) found:** Group [A](1st_pass/issues/Checkup_groupA.md) - [B](1st_pass/issues/Checkup_groupB.md) - [C](1st_pass/issues/Checkup_groupC.md) - [D](1st_pass/issues/Checkup_groupD.md) - [X](1st_pass/issues/Checkup_groupX.md)
 
-**[Fixes applied](1st_pass/fixes/README.md):** [Group A](1st_pass/fixes/Fixes_groupA.md) - [Group B](1st_pass/fixes/Fixes_groupB.md) - [Group C](1st_pass/fixes/Fixes_groupC.md) - [Group D](1st_pass/fixes/Fixes_groupD.md) - [Group X](1st_pass/fixes/Fixes_groupX.md)
+**[Fixes](1st_pass/fixes#1st-pass--fixes-applied) applied:** Group [A](1st_pass/fixes/Fixes_groupA.md) - [B](1st_pass/fixes/Fixes_groupB.md) - [C](1st_pass/fixes/Fixes_groupC.md) - [D](1st_pass/fixes/Fixes_groupD.md) - [X](1st_pass/fixes/Fixes_groupX.md)
