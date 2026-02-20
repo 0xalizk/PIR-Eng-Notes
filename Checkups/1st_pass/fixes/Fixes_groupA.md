@@ -2,27 +2,27 @@
 
 ### INCORRECT Fixes
 
-#### [SealPIR notes](Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md) -- [^36]
+#### [SealPIR notes](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md) -- [^36]
 - **Issue:** Cited "Section 7.5 of SKILL taxonomy" which does not exist in the SealPIR paper; adoption claim is editorial
 - **Before:** `Section 7.5 of SKILL taxonomy: "Oblivious query expansion (Expand) — SealPIR, OnionPIR, OnionPIRv2, Spiral, WhisPIR, NPIR."`
 - **After:** `Editorial note: Oblivious query expansion (Expand) was introduced by SealPIR (Section 3.3) and subsequently adopted by OnionPIR, Spiral, and other FHE-based PIR schemes. The adoption claim is based on the cited papers in this collection, not on a specific section of the SealPIR paper itself.`
 
-#### [XPIR-2016 notes](Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2016/xpir_2016_notes.md) -- [^44]
+#### [XPIR-2016 notes](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2016/xpir_2016_notes.md) -- [^44]
 - **Issue:** Fabricated middle row "720p at 60fps (800 Kbit/s): ~8,000 movies" not present in paper; paper gives only two data points
 - **Before:** Three-row table including `720p at 60fps (800 Kbit/s needed): Hide choice among ~8,000 movies.`
 - **After:** Two-row table with only the paper's data points: 35K movies at 720p-30fps and 8K movies at 1024p-60fps
 
-#### [Addra/FastPIR notes](Schemes/Group%20A%20-%20FHE%20Based%20PIR/addra_2021/addra_2021_notes.md) -- [^24]
+#### [Addra/FastPIR notes](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/addra_2021/addra_2021_notes.md) -- [^24]
 - **Issue:** Client Query time cited as 1.4 ms; paper Table 2 says 21.3 ms
 - **Before:** `Client Query time: 1.4 ms`
 - **After:** `Client Query time: 21.3 ms`
 
-#### [CwPIR notes](Schemes/Group%20A%20-%20FHE%20Based%20PIR/cwpir_2022/cwpir_2022_notes.md) -- [^30]
+#### [CwPIR notes](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/cwpir_2022/cwpir_2022_notes.md) -- [^30]
 - **Issue:** "10x speedup" understates the improvement; Table 3 shows CwPIR 1020ms vs SealPIR 14500ms = ~14x
 - **Before:** `up to **10x speedup** over SealPIR` with footnote citing "up to 10x improvement (Table 3)"
 - **After:** `up to **~14x speedup** over SealPIR` with footnote citing "~14x improvement (Table 3: CwPIR 1020 ms vs SealPIR 14500 ms at n=2^20, m=256B)"
 
-#### [ThorPIR notes](Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md) -- [^10]
+#### [ThorPIR notes](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md) -- [^10]
 - **Issue:** "360 bits = 45 bytes" is wrong; paper uses 360 bytes per element throughout
 - **Before:** `360 bits = 45 bytes` (footnote), `360 bits = 2880 bits` ([^8]), `360 bits per element` (metadata table)
 - **After:** `360 bytes` (footnote), `360 bytes = 2880 bits` ([^8]), `360 bytes per element` (metadata table); also fixed body text references
