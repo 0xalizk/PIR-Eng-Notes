@@ -1,7 +1,7 @@
 ### Group B — Stateless Single Server PIR
 
-| Scheme | Year | Footnotes | 🟢 Correct | 🟠 Minor | 🔴 Incorrect | Checkup |
-|--------|------|-----------|------------|----------|--------------|---------|
+| Scheme | Year | Footnotes | ${\color{green}\textsf{Correct}}$ | ${\color{orange}\textsf{Minor}}$ | ${\color{red}\textsf{Incorrect}}$ | Checkup |
+|--------|------|-----------|---------|-------|-----------|---------|
 | HintlessPIR | 2023 | 45 | 44 | 1 | 0 | [Report](Checkup_hintlesspir.md) |
 | YPIR | 2024 | 45 | 43 | 1 | 1 | [Report](Checkup_ypir.md) |
 | WhisPIR | 2024 | 62 | 59 | 3 | 0 | [Report](Checkup_whispir.md) |

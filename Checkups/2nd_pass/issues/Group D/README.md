@@ -1,7 +1,7 @@
 ### Group D — Client Dependent Preprocessing
 
-| Scheme | Year | Footnotes | 🟢 Correct | 🟠 Minor | 🔴 Incorrect | Checkup |
-|--------|------|-----------|------------|----------|--------------|---------|
+| Scheme | Year | Footnotes | ${\color{green}\textsf{Correct}}$ | ${\color{orange}\textsf{Minor}}$ | ${\color{red}\textsf{Incorrect}}$ | Checkup |
+|--------|------|-----------|---------|-------|-----------|---------|
 | CK20 | 2019 | 43 | 32 | 11 | 0 | [Report](Checkup_ck20.md) |
 | IncPIR | 2021 | 56 | 54 | 2 | 0 | [Report](Checkup_incpir.md) |
 | Piano | 2023 | 51 | 50 | 1 | 0 | [Report](Checkup_piano.md) |
