@@ -77,7 +77,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 - **Query:** Single BFV ciphertext packing N_0 + l(d-1) values[^11]
 
 [^9]: §3.6, p.10-11: "The database is represented as a hypercube with initial dimension N_0 = 512, and each of the remaining dimensions is of size 2."
-[^10]: §4.4, p.13: "After server preprocessing, the database is stored in NTT form and becomes larger by a factor of log q / log t."
+[^10]: §4.4, p.13: "After server preprocessing, the database is stored in NTT form and becomes larger by roughly a factor of log q / log t."
 [^11]: §3.3, p.5-6: "With N_0 = 512 and l = 5, we can pack all the query bits into a single BFV ciphertext for all realistic databases."
 
 ### Database Encoding

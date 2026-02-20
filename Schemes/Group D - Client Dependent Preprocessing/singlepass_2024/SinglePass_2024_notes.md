@@ -46,7 +46,7 @@ SinglePass addresses the fundamental bottleneck of client-preprocessing PIR: exi
 | **Relationship to prior primitives** | Novel to this paper. Replaces the puncturable/invertible PRF approach used in CK20/Plinko/TreePIR. Information-theoretic — no cryptographic assumption needed for this component. |
 
 [^6]: Lemma 3.1 (p.7): The Show and Shuffle game achieves perfect indistinguishability (probability exactly 1/2) for any adversary.
-[^7]: Section 3.1 (p.6–7): "This experiment models exactly one round of our PIR query, and will help us show that after each query, the resulting state of the client's hint is completely uniform."
+[^7]: Section 3.1 (p.6-7): "This experiment models exactly one round of our PIR query, and will help us show that after each query, the resulting state of the client's hint is completey uniform." (Note: the PDF contains the typo "completey" for "completely.")
 
 ### Cryptographic Foundation
 
@@ -211,11 +211,11 @@ The key invariant maintained across queries is that after the swap operations in
 ### Application Scenarios
 
 - **Private encyclopedia service:** The primary application scenario motivating the benchmarks. A user browses a private encyclopedia website, performs a short session of queries, then leaves. Fast preprocessing is critical because it happens "on demand" when the user arrives.[^42]
-- **Private blocklist lookups:** Mentioned as a deployment scenario from Checklist. The updatable variant of SinglePass is benchmarked against Checklist's blocklist parameters (3M x 32B elements, batches of 500 updates).[^43]
+- **Private blocklist lookups:** Mentioned as a deployment scenario from Checklist (p.13). The updatable variant of SinglePass is benchmarked against Checklist's blocklist parameters (3M x 32B elements, batches of 500 updates).[^43]
 - **Session-based PIR:** SinglePass is particularly suited for "session-based" use cases where the client preprocesses on demand, issues a small number of queries, and then discards the state. The preprocessing cost is approximately equal to a single non-preprocessing PIR query, so the scheme "breaks even" after just 1–2 queries.[^44]
 
 [^42]: Section 4 (p.10): "The choice of parameters picked throughout the section reflect a sample use case of a private encyclopedia service, where a user would browse to a private encyclopedia website, access a couple of articles privately, and afterwards leave."
-[^43]: Table 2 (p.15): "we provide a benchmark of SinglePass and Checklist for the blocklist application studied in Checklist."
+[^43]: Section 4 (p.13): "we provide a benchmark of SinglePass and Checklist for the blocklist application studied in Checklist." (The benchmark results are in Table 2, p.15.)
 [^44]: Section 1 (p.2): "our scheme does not require the client to perform offline computation for extended periods of time... the first query runs at approximately the cost of a single PIR query for a non-preprocessing PIR scheme."
 
 ### Deployment Considerations
@@ -230,7 +230,7 @@ The key invariant maintained across queries is that after the swap operations in
 
 [^45]: Section 5 (p.11): Edit and Add algorithms run in O(1) time.
 [^46]: Theorem 3.1 (p.8): Security holds "for any N(λ), T(λ) in N" (any polynomial number of queries).
-[^47]: Section 1 (p.1): "the preprocessing roughly equals the cost of a single PIR query for a non-preprocessing PIR scheme."
+[^47]: Section 1 (p.2): "the preprocessing roughly equals the cost of a single PIR query for a non-preprocessing PIR scheme."
 [^48]: Footnote 6 (p.13): "our single pass scheme is a pure PIR scheme that only supports index queries. However, using cuckoo hashing it could be translated to a keyword PIR scheme with a 2x overhead."
 
 ### Key Tradeoffs & Limitations
@@ -243,7 +243,7 @@ The key invariant maintained across queries is that after the swap operations in
 [^49]: Section 1 (p.2): "for a word size of 1024 bytes, Q = sqrt(N), λ = 128 our storage is only worse than the client storage for previous schemes for N greater than one billion elements."
 [^50]: Table 1 (p.2): SinglePass query bandwidth is O(Q * w) vs Checklist's O(log(N) * (λ * log(N) + w)).
 [^51]: Section 2.1 (p.4): "Throughout this work, we will operate entirely over the two server model."
-[^52]: Appendix A, Footnote 7 (p.16): "We can store the inverse along with the permutation with constant overhead. In practice, for some scenarios, it might be beneficial to not store the inverse in order to save space."
+[^52]: Appendix A, Footnote 7 (p.16): Storing the inverse permutation alongside the forward permutation has constant overhead; in some scenarios it may be beneficial to omit the inverse to save space (paraphrase of Footnote 7).
 
 ### Comparison with Prior Work
 
@@ -279,7 +279,7 @@ Q is a tunable parameter in [N] controlling the tradeoff between query time and 
 - **Show-and-Shuffle state refresh:** The swap-based hint refresh mechanism (replace one permutation entry with a random swap after each query) is a general technique for maintaining uniform permutation distributions across adaptive queries. It avoids the need for re-sampling or puncturable PRFs.[^55]
 - **O(1) update via permutation inverse:** Since each database element appears in exactly one hint (determined by the permutation inverse), edits require updating exactly one hint entry. This is inherently cheaper than schemes where each element appears in sqrt(N) independent sets.[^56]
 
-[^54]: Section 1 (p.2): "the preprocessing roughly equals the cost of a single PIR query" — achieved by the permutation approach rather than independent random subsets.
+[^54]: Section 1 (p.2): "the preprocessing roughly equals the cost of a single PIR query" (the permutation approach, rather than independent random subsets, is the mechanism enabling this — editorial note).
 [^55]: Lemma 3.1 (p.7): Show and Shuffle perfect indistinguishability enables unlimited queries without hint degradation.
 [^56]: Section 5 (p.11): "our new single pass PIR scheme only preprocesses each element exactly once. Since our hint only consists of a single (partitioned) permutation of the database, we can update the hint data structure in O(1) time."
 

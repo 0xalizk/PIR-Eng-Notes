@@ -207,7 +207,7 @@ All experiments on a virtual machine with Intel Xeon E5-2695 v3 @ 2.30 GHz, 128 
 | Server Response (ms) | 1,020 | 3,520 | 12,891 |
 | Upload (kB) | 61.4 | 61.4 | 61.4 |
 | Download (kB) | 307 | 307 | 307 |
-| Server Cost (US cents) | 0.0040 | **0.0067** | 0.017 |
+| Server Cost (US cents) | 0.0040 | **0.0040** | 0.017 |
 | **MulPIR (d=2)** | | | |
 | Client Query (ms) | 172 | 192 | 213 |
 | Server Expand (ms) | 391 | 783 | 1,610 |
@@ -392,7 +392,7 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 [^28]: Table 2 (p. 8): "Communication-Computation Trade-Off of homomorphic encryption based PIR Protocols... This table aims at giving an insight on the overall trend but does not accurately reflect the costs."
 [^29]: Table 1 (p. 7): For 2MB entries, SealPIR download is 200,294 kB vs MulPIR's 13,660 kB.
 [^30]: Section 6 (p. 11): "All our experiments are performed in a virtual machine with a Intel(R) Xeon(R) CPU E5-2695 v3 @ 2.30GHz and 128GB, running Debian. Monetary costs were computed using Google Cloud Platform prices [1], which at the time of writing were at one cent per CPU-hour and 8 cents per GB of internet traffic."
-[^31]: Table 3 (p. 12): MulPIR server cost 0.0036 vs SealPIR 0.0067 at n=2^20 with 288B entries.
+[^31]: Table 3 (p. 12): MulPIR server cost 0.0036 vs SealPIR 0.0040 at n=2^20 with 288B entries.
 [^32]: Table 4 (p. 12): "MulPIR enables to reduce the communication of SealPIR by a factor 7x in that setting, which also results in a reduction of the monetary server costs by 35%."
 [^33]: Table 5 footnote (p. 13): "Median over 10 computations. The timings indicated with approximately have been estimated on a smaller number of chunks to finish in a reasonable amount of time."
 [^34]: Table 6 (p. 13): Password Checkup application comparing Gentry-Ramzan and MulPIR across bucket sizes.
@@ -406,7 +406,7 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 [^42]: Table 1 (p. 7): Upload reduced from 61.4 kB to 15.4 kB (75%); download from 307.2 kB to 64 kB (79%) with Remark 1.
 [^43]: Table 1 (p. 7): For 2MB entries, MulPIR download 13,660 kB vs SealPIR 200,294 kB.
 [^44]: Table 3 (p. 12): MulPIR server Expand + Response time is approximately 2x SealPIR's at n=262,144 (2,310 ms vs 1,165 ms).
-[^45]: Table 5 (p. 13): C.Create (client prime generation) for Gentry-Ramzan is 3,294 ms for 1MB database; Table 6 shows 24,324 ms for password checkup with 10k bucket.
+[^45]: Table 5 (p. 13): C.Create for Gentry-Ramzan is 3,294 ms for 1MB database; Table 6 shows 24,324 ms for password checkup with 10k bucket.
 [^46]: Section 6.1 (p. 11): "we observe that d = 3 doesn't improve either communication or computation of MulPIR or SealPIR, due to the fact that the upload for d = 2 already consists of only a single ciphertext."
 [^47]: Section 6 (p. 11): "These results can inform decision making of what is the most appropriate PIR instantiation for a particular application."
 [^48]: Section 5 (p. 10): Simple hashing "has the drawback that the size of the buckets grows asymptotically with the number of items n" while cuckoo hashing "ensures that each bucket only contains a single database element."

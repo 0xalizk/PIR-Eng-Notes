@@ -37,7 +37,7 @@ Addra is the first system that hides voice-call metadata over *fully untrusted* 
 - **Two-hop message delivery:** Caller pushes message to server (1 hop); server answers callee's PIR query and pushes response (2nd hop). This is critical for low latency vs. Pung's log_2(n+1) round trips.[^7]
 - **Cover traffic:** Devices not in a call still participate — they call themselves (query their own mailbox) and write encrypted random messages. This prevents traffic analysis from join/leave timing.[^8]
 
-[^3]: Paper p.2, Section 2.1: "each hop in the communication infrastructure must not spend longer than this time period to process and forward the packet."
+[^3]: Paper p.1, Introduction: "each hop in the communication infrastructure must not spend longer than this time period to process and forward the packet."
 [^4]: Paper p.10: "For the master, we use a machine of type c5.24xlarge... For the workers, we use the compute-optimized machines of type c5.12xlarge."
 [^5]: Paper p.9: "the master receives CPIR queries from all devices and shards them across the workers."
 [^6]: Paper p.5: "our prototype runs a round every five minutes, and a subround every 480 ms."
@@ -55,7 +55,7 @@ Addra is the first system that hides voice-call metadata over *fully untrusted* 
 | **Correctness condition** | BFV decryption correctness: noise must remain below q/(2p) after all homomorphic operations. Parameters chosen per the HE security standard [5] for 128-bit security.[^11] |
 
 [^9]: Paper p.8-9: "we choose N = 2^{12}, p a 19-bit prime 270337, and q a 109-bit composite..."
-[^10]: Paper p.7: "each rotation key is 128 KiB, and the set of all possible rotation keys is 256 MiB... in practice, one generates log_2(N/2) keys."
+[^10]: Paper p.6: "each rotation key is 128 KiB, and the set of all possible rotation keys is 256 MiB... in practice, one generates log_2(N/2) keys."
 [^11]: Paper p.9: "These parameters provide a 128-bit security level as guided by the homomorphic encryption standard [5]."
 
 ### BFV SIMD Batching — Details
@@ -170,7 +170,7 @@ FastPIR's key insight: prior schemes (XPIR, SealPIR) apply vectorization *across
 | Query size | O(n/N) ciphertexts = O(n) | 1,024 KiB (FastPIR, d=1)[^21] | Online (amortized over subrounds) |
 | Response size | 1 ciphertext | 64 KiB[^22] | Per subround |
 | Server Answer time | O(n * m) scalar-ciphertext multiplications + O(m) rotations | 398 ms per worker (32K users, 80 workers)[^23] | Per subround |
-| Client Query time | O(n/N) encryptions | 1.4 ms[^24] | Once per round |
+| Client Query time | O(n/N) encryptions | 21.3 ms[^24] | Once per round |
 | Client Decode time | 1 decryption + O(1) rotations | 0.36 ms[^24] | Per subround |
 
 [^21]: Paper p.13, Figure 10: FastPIR query size = 1,024 KiB for n=32,768, m=96B.
@@ -289,7 +289,7 @@ As n increases, the benefit of rotation optimizations diminishes because the Ans
 - **Depth constraint:** The circuit depth is effectively 1 (one ScMult per query ciphertext against the database, followed by additions and rotations). Rotations consume noise but do not increase multiplicative depth.
 - **Key observation:** Because FastPIR only performs plaintext-ciphertext multiplications (BFV.ScMult) and never ciphertext-ciphertext multiplications, the noise growth is much more controlled than schemes requiring ct-ct multiplication (like SealPIR with query expansion). This allows a smaller ring dimension (N=4096 vs typical N=8192+).[^33]
 
-[^32]: Paper p.9: "Microsoft SEAL library v3.5 [68]."
+[^32]: Paper p.8: "Microsoft SEAL library v3.5 [68]."
 [^33]: The absence of ct-ct multiplication is implicit in the construction (Figures 3 and 5): all multiplications are BFV.ScMult(plaintext, ciphertext).
 
 ### Implementation Notes

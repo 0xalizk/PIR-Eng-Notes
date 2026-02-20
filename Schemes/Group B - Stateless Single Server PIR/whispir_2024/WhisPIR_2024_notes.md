@@ -50,7 +50,7 @@ WhisPIR is a fully stateless single-server PIR protocol that achieves low per-qu
 
 [^7]: Algorithm 4 (p.9): Setup samples PRG seed sigma and uses it to generate c_1 and {a'_i} for switching key polynomials.
 
-[^8]: Section 2.2 (p.4): "The correctness of the Decrypt algorithm holds as long as the noise term of the ciphertext, defined as ct(sk) = m + p*e, satisfies ||e||_inf < q/p."
+[^8]: Section 2.2 (p.5): "The correctness of the Decrypt algorithm holds as long as the noise term of the ciphertext, defined as ct(sk) = m + p*e, satisfies ||e||_inf < q/p."
 
 ---
 
@@ -131,7 +131,7 @@ Standard BGV ciphertexts have 2 components (c_0, c_1) in R_q^2. After multiplyin
 
 WhisPIR's insight is to skip relinearization entirely. After k levels of homomorphic multiplication, the ciphertext has k+1 components: ct = (m + p*e - sum_{i=1}^{k} a_i * s^i, a_1, ..., a_k). This "non-compact" ciphertext is still decryptable -- the client evaluates the polynomial in s to recover the message.[^20] The savings are twofold:
 
-[^19]: Section 3.3 (p.8): "In the full instantiation of BGV, a relinearization operation reduces the degree of the ciphertext back to a linear function of the secret key."
+[^19]: Section 2.2 (p.4): "In the full instantiation of BGV, a relinearization operation reduces the degree of the ciphertext back to a linear function of the secret key."
 
 [^20]: Section 3.3 (p.8): Non-compact ciphertext form: (m + p*e - sum a_i * s^i, a_1, ..., a_k). "By not relinearizing, we save on communicating the relinearization key, which is as large as the rotation switching key."
 
@@ -140,7 +140,7 @@ WhisPIR's insight is to skip relinearization entirely. After k levels of homomor
 
 [^21]: Section 3.3 (p.8): "By not relinearizing, we save on communicating the relinearization key, which is as large as the rotation switching key, at the cost of growing the number of ring elements in the resulting ciphertext by roughly a factor of k."
 
-[^22]: Remark A.2 (p.14): "Regardless of the size of the ciphertext resulting from a homomorphic computation, as long as this ciphertext meets the requirements of Lemma A.1... it can be reduced to a minimal modulus before being sent over the network. This minimum modulus is defined by Equation (5), meaning that all result ciphertexts have a modulus of size roughly p*n."
+[^22]: Remark A.2 (p.15): "Regardless of the size of the ciphertext resulting from a homomorphic computation, as long as this ciphertext meets the requirements of Lemma A.1... it can be reduced to a minimal modulus before being sent over the network. This minimum modulus is defined by Equation (5), meaning that all result ciphertexts have a modulus of size roughly p*n."
 
 ---
 
@@ -167,7 +167,7 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 - **Independence heuristic used?** No explicit heuristic stated; worst-case bounds used throughout.
 - **Dominant noise source:** Homomorphic multiplications in the depth-k database scan (ciphertext-ciphertext multiplications at depth >= 2)
 
-[^25]: Section 2.2 (p.4): Decryption correctness requires ||e||_inf < q/p.
+[^25]: Section 2.2 (p.5): Decryption correctness requires ||e||_inf < q/p.
 
 ---
 
@@ -194,7 +194,7 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 | Ring dimension n | 2^12 = 4096 or 2^13 = 8192 | -- |
 | Ciphertext modulus q | Fits in two 64-bit machine words (~110 bits)[^28] | -- |
 
-[^27]: Section 3.1 (p.6): "After this packing has been performed... we view the database as consisting of N = l^k elements of R_p, and each multiplication reduces the dimension of the database by one."
+[^27]: Section 3.1 (p.6): "After this packing has been performed... we view the database as consisting of N = l^k elements of R_p, and each multiplication reduces the dimension of the remaining database by a factor of l."
 
 [^28]: Section 4.1 (p.10): "The BGV parameters for a database of this size are n = 2^12 and a ciphertext modulus requiring two machine words to represent (roughly 110 bits)."
 
@@ -214,7 +214,7 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 | **Precomputing top coefficient a_k** | Novel | This paper (Section 3.3) | ~2x server computation reduction during DB scan (precompute a_k from fixed DB)[^36] | WhisPIR and similar non-compact schemes with stable DB |
 | **Hoisting-style decomposition** (decompose over full modulus) | Known | [JVC18, LMRSW23] | Makes non-standard basis decomposition over RNS-unfriendly modulus optimal for single-key setting[^37] | Schemes with non-RNS-friendly key switching |
 
-[^29]: Table 1 (p.7): For n=2^12, d=2048, optimal generator gives 113,664 total rotations vs 386,048 for naive (3.4x improvement). For d=128, optimal gives 448 vs naive thousands.
+[^29]: Table 1 (p.7): For n=2^12, d=1024, optimal generator gives 113,664 total rotations. For d=2048, optimal generator gives 386,048 total rotations. For n=2^12, d=128, optimal gives 2,496 total rotations.
 
 [^30]: Section 3.2 (p.7--8): "Our idea is to only rotate the input ciphertext once to the target permutation pi^u, then perform u key switching operations where each operation rotates the secret key by pi^{-1}." Algorithm 3 is "almost entirely a single inner product over R_q."
 
@@ -341,7 +341,7 @@ WhisPIR is applied to URL blocklist checking in end-to-end encrypted messaging a
 - **Query protocol:** Client hashes received URL, computes two Cuckoo hash indices, issues one WhisPIR query for the pair of indices (batch of 2). Switching key reused across both indices. Checks if returned hashes match the URL hash.[^45]
 - **Performance (Figure 6):** WhisPIR achieves <25% of HintlessPIR's communication while coming within ~10% of HintlessPIR's computation time for this application.[^46]
 
-[^44]: Section 5 (p.12): "We determine a blocklist consisting of 2^24 entries... Each entry is a 32-byte hash, and the hash table is double the size of the input keys. This results in a database of roughly 1 GB."
+[^44]: Section 5 (p.13): "We determine a blocklist consisting of 2^24 entries... Each entry is a 32-byte hash, and the hash table is double the size of the input keys. This results in a database of roughly 1 GB."
 
 [^45]: Section 5 (p.12--13): "The application then acts as the client in WhisPIR to query the hash table at these two indices."
 

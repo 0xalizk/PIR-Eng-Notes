@@ -94,7 +94,7 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 [^16]: Section 1, "New Single-Server PIR with Optimal Trade-off Curve" (p.4): "Even more interesting is that we achieve this trade-off without the use of public-key cryptography, because Plinko only requires the existence of one-way functions."
 
-[^17]: Theorem 4.4 (p.12): The iPRF construction uses a small-domain PRP; footnote references [MR14] "Sometimes-Recurse Shuffle" which provides O(log n) calls to the underlying PRF.
+[^17]: Theorem 4.4 (p.12): The iPRF construction uses a small-domain PRP; the proof paragraph following Theorem 4.4 references [MR14] "Sometimes-Recurse Shuffle" which provides O(log n) calls to the underlying PRF.
 
 [^18]: Section 5.2, "Correctness" (p.23): "As iPRFs are also indistinguishable from random functions, we note that our hint distribution is identical to [RMS24]. As a result, we can directly use the correctness arguments from [RMS24]."
 
@@ -161,7 +161,7 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 [^26]: Theorem 5.3 (p.20): "Each online query uses Õ(n/r) bits of communication."
 
-[^27]: Theorem 5.3 (p.20): The server computes n/r parities, each requiring XOR of entries in one block.
+[^27]: Theorem 5.3 (p.20): Each online query runs in Õ(n/r) time (paraphrase; the theorem does not explicitly break down the computation as "n/r parities per block").
 
 [^28]: Section 5.2, "Efficiency" (p.23): "As the first step, the client searches for a hint containing the query index x using our iPRF construction... the client's query time becomes Õ(n/r) with the main cost coming from enumerating the n/r offsets."
 
@@ -249,7 +249,7 @@ The Plinko-Piano variant (Appendix B) uses Piano's set structure (sets of size n
 | **Tightness** | Plinko matches this bound: achieves t = Õ(n/r) for any r, giving r * t = Õ(n). Tight up to polylogarithmic factors for ALL parameterizations.[^42] |
 | **Matching upper bound** | Plinko (this paper) -- first scheme to match for all r, not just r = O(sqrt(n)) |
 
-[^41]: Section 1 (p.4): "Recent lower bounds for traditional PIR have shown that any PIR with pre-processing scheme with client storage r and query time t must obey r * t = Omega(n) [CK20, CHK22, Yeo23]."
+[^41]: Section 1 (p.4): Recent lower bounds show that any PIR with preprocessing scheme with client storage r and query time t must obey r * t = Omega(n) [CK20, CHK22, Yeo23] (paraphrase; exact phrasing varies slightly).
 
 [^42]: Section 1 (p.4): "Plinko obtains optimal query time t = Õ(n/r) for any choice of client storage size r."
 

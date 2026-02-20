@@ -37,7 +37,7 @@ YPIR eliminates the offline hint download required by SimplePIR/DoublePIR by com
 YPIR+SP applies the CDKS packing to the SimplePIR output (an entire column of the database) rather than the DoublePIR output, naturally encoding large records.[^3] For large records (32--64 KB), YPIR+SP achieves 7--14x smaller responses than HintlessPIR with similar query size and only 5% less throughput.[^4]
 
 [^3]: Section 4.6 (p.28): "We consider a variant of YPIR where we apply the LWE-to-RLWE packing procedure to the SimplePIR output rather than the DoublePIR output."
-[^4]: Table 7 (p.28): YPIR+SP achieves 444 KB download vs. 3.2 MB for HintlessPIR at 32 GB x 64 KB records.
+[^4]: Table 7 (p.28): YPIR+SP achieves 444 KB download vs. 724 KB for HintlessPIR at 32 GB x 64 KB records.
 
 ### Cryptographic Foundation
 
@@ -126,7 +126,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | Throughput | O(M) where M = memory bandwidth | 12.1 GB/s/core | Online |
 | Response overhead | -- | 32 MB / 32 GB = 0.001x (response independent of DB size) | -- |
 
-[^14]: Table 2 (p.20): At 32 GB, YPIR achieves 724 KB upload, 32 MB download (but only 12 KB for DoublePIR's small response), 2.64 s server time, 12.1 GB/s throughput.
+[^14]: Table 2 (p.20): At 32 GB, YPIR achieves 2.5 MB upload, 12 KB download, 2.64 s server time, 12.1 GB/s throughput.
 
 #### Preprocessing metrics
 
@@ -137,8 +137,8 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | Client offline upload | 0 | 0 | -- |
 | Server per-client storage | 0 | 0 (stateless) | -- |
 
-[^15]: Section 4.4 (p.21): "For a 32 GB database, the offline precomputation of YPIR would take about 11 CPU-minutes."
-[^16]: Section 4.1 (p.15): NTT-based preprocessing is d/log d faster than naive: "asymptotically reduces the offline preprocessing cost by a factor of n/log n."
+[^15]: Section 4.4 (p.21-22): "For a 32 GB database, the offline precomputation of YPIR would take about 11 CPU-minutes."
+[^16]: Section 4.1 (p.15): NTT-based preprocessing is d/log d faster than naive: "asymptotically reduces the offline preprocessing cost by a factor of d/log d."
 
 #### FHE-specific metrics
 
@@ -168,7 +168,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | CDKS packing (LWE-to-RLWE) | Known (adapted) | [CDKS21] | 1000x ciphertext expansion reduction; eliminates hint download | Any LWE-based PIR needing response compression |
 | Negacyclic matrix encoding for preprocessing | Novel | This paper | 10--15x faster preprocessing (d/log d asymptotic) | Any SimplePIR-family protocol |
 | Preprocessing of CDKS.Pack random components | Novel | This paper | 9x reduction in online packing cost (from O(kappa*d1 + log d2) to O(kappa + log d2) NTTs) | Any scheme using CDKS packing |
-| Cross-client batching | Known (adapted) | [LG15, CMS16] | 1.4--1.7x effective throughput improvement | Any memory-bandwidth-limited PIR |
+| Cross-client batching | Known (adapted) | [LG15, CMS16] | 1.5--1.7x effective throughput improvement | Any memory-bandwidth-limited PIR |
 | PRG seed compression for public parameters | Known | Standard (ChaCha20) | Compresses a1, a2 and pk random components | Any LWE/RLWE PIR with random public matrices |
 | Split modulus switching | Known | [MW22] | Reduces response size via two-target modulus reduction | Any RLWE-based PIR with multi-prime modulus |
 | NTT representation for key-switching / automorphisms | Known (reorganized) | NTT standard practice | Eliminates per-query NTT for packing; permutation on NTT representation replaces automorphism | Any CDKS-based packing |
@@ -274,7 +274,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 
 [^31]: Section 4.1 (p.15) + Appendix B (p.36-37): Full derivation showing A1*d computed via NCyclicMat multiplication in O(d1*log d1) per column.
 [^32]: Section 4.2 (p.16-17): Preprocessing reduces online NTTs from O(kappa*d1 + log d2) to O(kappa + log d2).
-[^33]: Section 4.3 (p.17-18): "Cross-client batching can increase the effective server throughput of many PIR schemes by 1.5-1.7x."
+[^33]: Section 4.3 (p.17-18): "Cross-client batching can increase the effective server throughput of many PIR schemes by 1.5--1.7x."
 
 ### Implementation Notes
 

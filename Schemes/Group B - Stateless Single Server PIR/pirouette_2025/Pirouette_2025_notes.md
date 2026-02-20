@@ -29,7 +29,7 @@
 
 ### Core Idea
 
-Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting a single high-precision LWE ciphertext LWE(idx, Delta) instead of RLWE ciphertexts or transciphered symmetric encryptions.[^1] The server homomorphically bit-decomposes this LWE ciphertext using blind rotation (from TFHE/FHEW bootstrapping), converting it into ceil(log_2 N) RGSW ciphertexts that encrypt individual index bits.[^2] These RGSW ciphertexts then drive the same hypercube record-selection pipeline as Respire (first-dimension processing via RLWE' selectors, folding via CMUX, rotation via CMUX). The result is a 9.3x query-size reduction over T-Respire and 420x over Respire, while server computation is only 2x slower than Respire.[^3]
+Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting a single high-precision LWE ciphertext LWE(idx, Delta) instead of RLWE ciphertexts or transciphered symmetric encryptions.[^1] The server homomorphically bit-decomposes this LWE ciphertext using blind rotation (from TFHE/FHEW bootstrapping), producing ceil(log_2 N) LWE ciphertexts that encrypt individual index bits, and then converts these into RGSW ciphertexts via a separate LWEtoRGSW step.[^2] These RGSW ciphertexts then drive the same hypercube record-selection pipeline as Respire (first-dimension processing via RLWE' selectors, folding via CMUX, rotation via CMUX). The result is a 9.3x query-size reduction over T-Respire and 420x over Respire, while server computation is only 2x slower than Respire.[^3]
 
 [^1]: Abstract (p.1): "our Pirouette protocol, which achieves a query size of just 36 B. This represents a 9.3x reduction compared to T-Respire and a 420x reduction to Respire."
 
@@ -85,12 +85,12 @@ Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting
 
 **Key modulus relationships:**
 - High-precision LWE uses 25-bit plaintext modulus (Delta = floor(q/t)) with 32-bit ciphertext modulus q. This is the defining feature: conventional LWE-based FHE uses 4--5 bit plaintext moduli.[^9]
-- Bit decomposition via blind rotation requires q = 2N (i.e., q_in = 2 * 2^11 for the blind rotation step).[^10]
+- Bit decomposition via blind rotation requires q = 2N (Section 3.1, p.6). Table 3 (p.10) shows the actual parameters: log_2(q_in) = 32 for the input LWE query modulus.[^10]
 - Q = 268496897 * 268460033 approx 2^56 for computation phases, chosen as CRT-friendly product to exploit fast modular arithmetic.[^11]
 
 [^9]: Section 1.1 (p.2): "Our implementation uses a 25-bit plaintext modulus and 32-bit ciphertext modulus for LWE. This differs from conventional LWE-based applications [8,36,40] that typically consider a small plaintext modulus of 4 or 5 bits."
 
-[^10]: Table 3 (p.10): n_in = 1300, n_out = 600, log_2(q_in) = 32, log_2(q_out) = 12, log_2(Q) = 56.
+[^10]: Section 3.1 (p.6): q = 2N is required for the blind rotation step. Table 3 (p.10): n_in = 1300, n_out = 600, log_2(q_in) = 32, log_2(q_out) = 12, log_2(Q) = 56.
 
 [^11]: Table 4 (p.10): "we modulus switch to Q = 268496897 * 268460033 to exploit the CRT and decrease the number of modular additions/multiplications."
 
@@ -257,14 +257,14 @@ Pirouette's correctness relies on bounding the noise variance through a cascade 
 
 | Database | Metric | T-Respire (par. trans) | Pirouette (par. Phase 0) | Pirouette^H (par. Phase 0) | Pirouette (full par.) |
 |----------|--------|----------------------|------------------------|--------------------------|---------------------|
-| 2^20 x 256 B | Computation | 91 MB | 8 s | 6 s | 7 s |
+| 2^20 x 256 B | Computation | -- | 8 s | 6 s | 7 s |
 | | Throughput | 17 MB/s | 32 MB/s | 42 MB/s | 36 MB/s |
-| 2^22 x 256 B | Computation | 91 MB | 12 s | 9 s | 9 s |
+| 2^22 x 256 B | Computation | -- | 12 s | 9 s | 9 s |
 | | Throughput | 46 MB/s | 85 MB/s | 113 MB/s | 109 MB/s |
-| 2^25 x 256 B | Computation | 91 MB | 51 s | 46 s | 14 s |
+| 2^25 x 256 B | Computation | -- | 51 s | 46 s | 14 s |
 | | Throughput | 136 MB/s | 150 MB/s | 178 MB/s | 585 MB/s |
 
-[^24]: Table 7 (p.11): All values are exact transcriptions.
+[^24]: Table 7 (p.11): Values transcribed from official benchmarks. Note: The parallel execution table contains a transcription error where offline communication values (e.g., 91 MB) appear in the computation rows for T-Respire.
 
 ---
 

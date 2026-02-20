@@ -42,13 +42,13 @@ VeriSimplePIR's central contribution is adding *verifiability* to SimplePIR — 
 | **Type** | Cryptographic primitive / encryption scheme with verifiable evaluation |
 | **Interface / Operations** | **Setup**(1^n, 1^m, q) -> pp (A in Z_q^{m x n}); **Commit**(A, D) -> (H, Z) where H = DA, Z = CD; **VerCom**(A, H, Z) -> Accept/Reject; **Encrypt**(A, mu) -> (u, s); **Eval**(D, u) -> v = Du; **Decrypt**(H, s, v) -> v' = floor((v - H*s) / Delta); **Prove**(A, H, u, v, D) -> Z via Fiat-Shamir; **Verify**(A, H, u, v, Z) -> Accept/Reject[^7] |
 | **Security definition** | Semantic security from LWE (ciphertexts indistinguishable from random). Verification uniqueness: under SIS hardness, only the correct ciphertext v = Du passes verification (Lemma 4.1). A computationally bounded server cannot produce any v-tilde != Du with a valid proof Z-tilde.[^8] |
-| **Correctness definition** | Decryption correctness holds when Delta/2 > \|\|De\|\|_inf (noise bound). The extractability of SIS commitments guarantees the evaluated function D satisfies \|\|D\|\|_inf <= 2*ell*p, slightly larger than the honest bound \|\|D\|\|_inf <= p. The ciphertext modulus must satisfy q >= sigma * 2*ell*p^2 * sqrt(2m * ln(2/delta)) (eq. 6, p. 9).[^9] |
+| **Correctness definition** | Decryption correctness holds when Delta/2 > \|\|De\|\|_inf (noise bound). The extractability of SIS commitments guarantees the evaluated function D satisfies \|\|D\|\|_inf <= 2*ell*p, slightly larger than the honest bound \|\|D\|\|_inf <= p. The ciphertext modulus must satisfy q >= 2*sigma*m*ell*p^2 * sqrt(2*ell * ln(2/delta)) (eq. 6, p. 9).[^9] |
 | **Purpose** | Enable verifiable homomorphic evaluation: the server proves it applied the committed linear function D to the client's ciphertext correctly, without learning the plaintext. This is the core building block that makes VeriSimplePIR possible. |
 | **Built from** | Regev LWE encryption [Reg09] + Extractable SIS commitments [BBC+18] + Fiat-Shamir transform [FS87] for non-interactivity. The commitment H = DA is simultaneously an LWE public key component and an SIS commitment to D.[^10] |
 | **Standalone complexity** | Commit: O(ell * m * n) multiplications in Z_q. Prove: one hash (Fiat-Shamir) + matrix multiplication Z = CD in Z^{λ x m}. Verify: one hash + check \|\|Z\|\|_inf <= ell * p + check Z * [A; u] = C * [H; v]. Batch verification of tau ciphertext pairs costs only one additional hash over all tau tuples (eq. 5, p. 8).[^11] |
 | **Relationship to prior primitives** | Extends Regev LWE encryption with a verification layer. The SIS commitment structure D * [A; u] = [H; v] (eq. 3) is the key algebraic identity that ties encryption to commitment. Differs from APIR's MAC-based approach — VLHE uses proof-of-knowledge rather than plaintext MACs, achieving stronger security with less overhead.[^12] |
 
-[^7]: Construction 4.1 (p. 7): Full VLHE API definition with seven algorithms.
+[^7]: Construction 4.1 (p. 7): Full VLHE API definition with eight algorithms.
 [^8]: Lemma 4.1, Verification Uniqueness (p. 8): "Assuming the hardness of SIS_{n,m,q,beta} for beta = 4*ell*p, v-tilde = Du must hold."
 [^9]: Section 4.1.1, Correctness (p. 8) and eq. (6) (p. 9): correctness requirement for the preprocessing variant with enlarged plaintext space Z_{p*ell}.
 [^10]: Section 4 (p. 7): "the basic equation that we will use throughout this section is D [A u] = [H v], which also has the form of an extractable SIS commitment described in section 2.2."
@@ -78,7 +78,7 @@ VeriSimplePIR's central contribution is adding *verifiability* to SimplePIR — 
 | **Commitment scheme** | Extractable SIS-based commitments (Figure 1, p. 3): Prover commits to D via H = DA. Verifier sends random binary challenge C in {0,1}^{λ x ell}. Prover responds with Z = CD. Verifier checks \|\|Z\|\|_inf <= B and ZA = CH. Extractability (Lemma 2.2): an efficient extractor can recover D from any prover succeeding with probability > 2^{-λ+2}.[^17] |
 | **Ring / Field** | Z_q (integers mod q) — no ring structure. All operations are matrix/vector arithmetic over Z_q. Benchmarks use log(q) = 32 (SimplePIR parameters) or log(q) = 64 (VeriSimplePIR optimal).[^18] |
 | **Random oracle** | Hash function modeled as random oracle for the Fiat-Shamir transform, making the interactive SIS commitment protocol non-interactive. C = Hash(A, H) in the commitment phase; C = Hash(A, H, u, v) in the evaluation phase.[^19] |
-| **Correctness condition** | LWE decryption requires Delta/2 > \|\|De\|\|_inf. For the preprocessing variant, q >= sigma * 2*ell*p^2 * sqrt(2m * ln(2/delta)) (eq. 6). For the online phase, q >= p * sigma * \|\|D\|\|_inf * sqrt(2m * ln(2/delta)) (eq. 2). The honest digest assumption relaxes this to \|\|D\|\|_inf <= p (vs. extractability bound of 2*ell*p).[^20] |
+| **Correctness condition** | LWE decryption requires Delta/2 > \|\|De\|\|_inf. For the preprocessing variant, q >= 2*sigma*m*ell*p^2 * sqrt(2*ell * ln(2/delta)) (eq. 6). For the online phase, q >= p * sigma * \|\|D\|\|_inf * sqrt(2m * ln(2/delta)) (eq. 2). The honest digest assumption relaxes this to \|\|D\|\|_inf <= p (vs. extractability bound of 2*ell*p).[^20] |
 
 [^15]: Section 2.1 (p. 3): SIS definition. Section 2.3 (p. 4): LWE definition. Construction 5.1 (p. 10): "assume the hardness of SIS_{n,m,q,beta_1} for beta_1 = 4*ell*p and SIS_{n,ell,q,beta_2} for beta_2 = 4mp."
 [^16]: Section 2.3, Linearly Homomorphic Encryption (p. 4): "The plaintext space of the LHE scheme is vectors over Z_p... A ciphertext encrypts a vector mu in Z_p^m."
@@ -146,9 +146,9 @@ The verification adds a second correctness dimension: can a malicious server foo
 | Metric | Asymptotic | Concrete | Phase |
 |--------|-----------|----------|-------|
 | Online query size | O(m * log(q)) = O(sqrt(N) * log(q)) | Same as SimplePIR | Online |
-| Online answer size | O(ell * log(q)) = O(sqrt(N) * log(q)) | 1.1-1.5x SimplePIR[^33] | Online |
+| Online answer size | O(ell * log(q)) = O(sqrt(N) * log(q)) | 1.1-1.5x SimplePIR[^34] | Online |
 | Online server computation | O(N) (matrix-vector multiply D*u) | Essentially identical to SimplePIR | Online |
-| Online client computation | O(sqrt(N)) for Query + O(sqrt(N)) for Verify (PreVerify is Zu = Cv check) + O(sqrt(N)) for Recover | 12-40% overhead vs SimplePIR (Verify step)[^34] | Online |
+| Online client computation | O(sqrt(N)) for Query + O(sqrt(N)) for Verify (PreVerify is Zu = Cv check) + O(sqrt(N)) for Recover | 12-40% overhead vs SimplePIR (Verify step)[^33] | Online |
 | Offline communication (digest) | O(ell * n * log(q)) for H_1 + O(λ * m * log(q)) for Z matrices | Dominated by H_1; ~95% of total offline storage. ~2-14 GiB for 4-256 GiB databases (Figure 8) | Offline (once) |
 | Offline server computation (preprocessing) | O(N * λ) (D^T * U, λ encryptions evaluated) | ~100s for 4 GiB DB, ~200s for 8 GiB DB (single core, dishonest digest)[^35] | Offline (once per client) |
 | Offline client computation (preprocessing) | O(λ * n) (λ LWE encryptions) | Small relative to server | Offline (once per client) |

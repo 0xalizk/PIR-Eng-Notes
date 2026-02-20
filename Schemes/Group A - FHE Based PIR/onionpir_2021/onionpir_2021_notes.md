@@ -10,7 +10,7 @@
 | **Correctness model** | Deterministic (noise budget is analytically bounded; no probabilistic failure) |
 | **Rounds (online)** | 1 (non-interactive: client sends query, server returns response) |
 | **Record-size regime** | Large (30 KB per entry in experiments)[^recordsize] |
-[^circular]: RGSW encryption of the secret key A = RGSW(-s) is provided to the server for query expansion (Algorithm 2, line 12-13). This implicitly requires a circular-security assumption.
+[^circular]: RGSW encryption of the secret key A = RGSW(-s) is provided to the server for query expansion (Algorithm 2, line 13). This implicitly requires a circular-security assumption (editorial inference — the paper does not explicitly mention circular security).
 [^recordsize]: Section 6.2, p.10: "We set each database entry to be 30 KB."
 
 ### Lineage
@@ -22,15 +22,15 @@
 | **Superseded by** | OnionPIRv2 / FHEPIR_2025 (engineering optimization) |
 | **Concurrent work** | SHECS-PIR (Park and Tibouchi, 2020) — also uses external products but with >2x computation cost over SealPIR[^concurrent]; Ali et al. (2019) — BFV ciphertext multiplication + modulus switching, ~900s computation[^concurrent2] |
 
-[^whatchanged]: Section 1, p.1 "Main contribution 1": "The main technique is to carefully control the noise growth from the ciphertext operations on the server." Section 4.1, p.5: "the noise only grows additively after each external product operation."
+[^whatchanged]: Section 1, p.1 "Main contribution 1": "The main technique is to carefully control the noise growth from the ciphertext operations on the server... with the help of recent advances in homomorphic encryption schemes." Section 4.1, p.5: "the noise only grows additively after each external product operation."
 [^concurrent]: Section 7, p.12: "Park and Tibouchi present a construction based on external products that improve the response overhead to 16x; but their computation cost more than doubled compared to SealPIR."
-[^concurrent2]: Section 7, p.12: "Ali et al. also gives a protocol... to retrieve 60 KB entry from a database with one million entries requires around 900 seconds."
+[^concurrent2]: Section 7, p.12: "Ali et al. also gives a protocol... to retrieve 60 KB entry from a database with one million entries requires around 900 seconds of server computation."
 
 ### Core Idea
 
 OnionPIR achieves a 4.2x response overhead (vs. the insecure baseline of downloading the raw entry), compared to SealPIR's ~100x, by replacing BFV ciphertext multiplications with external products (RGSW x BFV). External products grow noise only additively (O(B * Err(C) + Err(d))) rather than multiplicatively (O(t * (Err(ct1) + Err(ct2)))), which allows: (1) representing the database as a higher-dimensional hypercube (d = 1 + ceil(log_4(N/128)) dimensions instead of 2), (2) using a larger plaintext modulus t = 60 bits (vs. SealPIR's 12 bits), and (3) reducing the ciphertext expansion factor F from ~10 to ~4.2.[^coreidea] A secondary technique, DecompMul, handles the first dimension using decomposed ciphertext-plaintext multiplication to balance noise and computation.
 
-[^coreidea]: Abstract, p.1: "OnionPIR achieves a response size overhead of just 4.2x over the insecure baseline, in contrast to the 100x response overhead of state-of-the-art schemes."
+[^coreidea]: Abstract, p.1: "OnionPIR achieves a response overhead of just 4.2x over the insecure baseline, in contrast to the 100x response overhead of state-of-the-art schemes."
 
 ### Cryptographic Foundation
 
@@ -56,7 +56,7 @@ OnionPIR achieves a 4.2x response overhead (vs. the insecure baseline of downloa
 
 [^hypercube]: Section 4.4, p.7: "The size of the first dimension is N_1 = 128 and each of the remaining dimensions is of size 4. The total number of dimensions is thus d = 1 + ceil(log_4(N/N_1))."
 [^decomp]: Section 4.2, p.6, Figure 4: "DecompPlain(pt): Decompose input pt into two parts each of size log(t)/2 bits."
-[^querypacking]: Section 4.3, p.7: "We pack two values for each query bit, hence, in total 256 values for the first dimension... a total of 386 values will be packed."
+[^querypacking]: Section 4.4, p.7: "We pack two values for each query bit, hence, in total 256 values for the first dimension... a total of 386 values will be packed."
 
 ### Database Encoding
 
@@ -194,7 +194,7 @@ External products have noise growth O(B * Err(C) + Err(d)), which is additive in
 [^fhe_t]: Section 6.2, p.10.
 [^fhe_n]: Section 6.2, p.10.
 [^fhe_l]: Section 2.2, p.3: "Typically, l is set to 5."
-[^fhe_d]: Section 4.4, p.7: "d = 1 + ceil(log_4(N/128))". For N = 10^6: d = 1 + ceil(log_4(7812.5)) = 1 + ceil(6.47) = 1 + 7... the paper states d = 5 for 10^6, so N_1 = 128, 4 remaining dimensions of size 4 give 128 * 4^4 = 128 * 256 = 32768... The paper notes for 1M entries and l = 5: "a total of 386 values will be packed."
+[^fhe_d]: Section 4.4, p.7: "d = 1 + ceil(log_4(N/128))". For N = 10^6: the formula gives d = 1 + ceil(log_4(7812.5)) = 1 + ceil(6.47) = 8. However, the paper uses d = 5 for its concrete protocol with N_1 = 128 and 4 remaining dimensions of size 4, giving 128 * 4^4 = 32768 addressable entries. The paper notes for 1M entries and l = 5: "a total of 386 values will be packed." The d = 5 figure is the actual protocol configuration, not a direct application of the formula to N = 10^6.
 [^fhe_sec]: Section 6.2, p.10: "The LWE estimator by Albrecht et al. suggests these parameters yield about 111 bits of computational security."
 
 #### If-reported metrics
@@ -368,7 +368,7 @@ Key observations from Table 4:
 [^tradeoff_comp]: Table 3, p.11.
 [^tradeoff_ntt]: Section 6.1, p.10 and Section 8, p.13.
 [^tradeoff_static]: Section 8, p.13.
-[^tradeoff_security]: Section 6.2, p.10: "about 111 bits of computational security." SealPIR uses n = 2048 with q = 60 bits and provides 115 bits.
+[^tradeoff_security]: Section 6.2, p.10: "about 111 bits of computational security." SealPIR uses n = 2048 with q = 60 bits and provides 115 bits. Editorial note: The characterization "below the typical 128-bit target" is the notes author's interpretation; the paper does not mention a 128-bit target.
 
 ### Open Problems
 

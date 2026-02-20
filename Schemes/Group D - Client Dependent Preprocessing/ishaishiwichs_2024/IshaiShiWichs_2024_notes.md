@@ -175,7 +175,7 @@ This is the paper's main novel construction using cross-product sets.
 | Answer | Right server | Computes parities as in single-server scheme | O(n^{2/3}) server computation | Per query |
 | Decode | Client | Reconstruction as in single-server scheme | -- | Per query |
 
-[^16]: Appendix B (p.38-39): In the 2-server variant, preprocessing is performed with the left server and queries with the right server, yielding O(n^{2/3}) preprocessing bandwidth and O(n^{1/3}) online bandwidth.
+[^16]: Appendix B (p.38-39): In the 2-server variant, preprocessing is performed with the left server and queries with the right server, yielding O(n^{1/3}) online bandwidth per Table 1 (p.3).
 
 ### Reconstruction Algorithm (Section 4.1)
 
@@ -265,10 +265,10 @@ The key property: for distinct points v, v', if (x,y,z) = pi_r(v) and (x',y',z')
 | Response size (online bandwidth) | O_tilde(n^{1/3}) | N/A (no implementation) | Online |
 | Server computation | O_tilde(n^{2/3}) | N/A (no implementation) | Online |
 | Client computation | O_tilde(n^{1/2}) | N/A (no implementation) | Online |
-| Offline bandwidth | O_tilde(n^{1/6}) | N/A (no implementation) | Per query (amortized) |
+| Offline bandwidth | Not explicitly stated in theorem (see [^25]) | N/A (no implementation) | Per query (amortized) |
 | Client space | O_tilde(n^{2/3}) | N/A (no implementation) | -- |
 
-[^25]: Theorem B.1 (p.39): The 2-server variant offloads preprocessing to the left server, reducing offline bandwidth from O_tilde(n^{1/2}) to O_tilde(n^{1/6}) per query while maintaining O_tilde(n^{1/3}) online bandwidth.
+[^25]: Theorem B.1 (p.39): The 2-server variant offloads preprocessing to the left server, maintaining O_tilde(n^{1/3}) online bandwidth.
 
 #### Preprocessing Characterization
 
@@ -364,7 +364,7 @@ The lower bound extends along several dimensions:
 
 The paper identifies an explicit adaptive correctness attack against Piano [ZPSZ24] and Ghoshal et al. [GZS24a]. These schemes use a single public PRP to permute database indices for load balancing, with O_tilde(1) replacement entries per chunk. The attack: after observing the PRP, adaptively choose sqrt(n) queries that all land in the same chunk, exhausting its replacement entries and causing correctness failure.[^36]
 
-[^36]: Section 1.3 (p.8): The attack exploits that Piano's load balancing uses a public PRP with O_tilde(1) replacement entries per chunk; choosing all queries in one chunk breaks correctness.
+[^36]: Section 1.2-1.3 (p.7-8): The attack exploits that Piano's load balancing uses a public PRP with O_tilde(1) replacement entries per chunk; choosing all queries in one chunk breaks correctness.
 
 ### Application Scenarios
 

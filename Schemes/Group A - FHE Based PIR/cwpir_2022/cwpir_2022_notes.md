@@ -24,8 +24,8 @@
 
 Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the selection vector by receiving it from the client (encrypted, then expanded). This requires the selection vector to be over index space, making keyword PIR require extra rounds to first resolve a keyword to an index.[^1] CwPIR takes a fundamentally different approach: the server *computes* the selection vector itself by evaluating an equality operator between the client's encrypted query and each database identifier. By encoding identifiers as constant-weight codewords (binary strings with fixed Hamming weight k), the equality check circuit has multiplicative depth O(log k) rather than O(log n) for the folklore binary equality operator.[^2] This makes the equality-operator approach practical for the first time and naturally enables single-round keyword PIR since the server can compare the encrypted query against arbitrary keyword identifiers without resolving them to indices first.[^3]
 
-[^1]: Chor et al. [15] and Ali et al. [4] reduce keyword PIR to index PIR using interactive protocols or probabilistic hashing, requiring one or more extra rounds of communication. (Section 2.5, p. 5)
-[^2]: The folklore binary equality operator for domain {0,1}^l has multiplicative depth 1 + ceil(log_2 l), which grows with the bit-length of the domain. The constant-weight equality operator has multiplicative depth ceil(log_2 k), depending only on the Hamming weight k, not the code length m. (Table 3, p. 9; Section 3.1, p. 6)
+[^1]: Chor et al. [15] reduce keyword PIR to index PIR using interactive protocols requiring extra rounds of communication. Ali et al. [4] use probabilistic hashing to reduce keyword PIR to index PIR. (Section 2.5, p. 5)
+[^2]: The arithmetic folklore equality operator for domain {0,1}^l has multiplicative depth 1 + ceil(log_2 l); the plain folklore operator has depth ceil(log_2 l). The constant-weight equality operator has multiplicative depth ceil(log_2 k), depending only on the Hamming weight k, not the code length m. (Table 3, p. 9; Section 3.1, p. 6)
 [^3]: "Constant-weight keyword PIR is the first practical, single-round solution for single-server keyword PIR." (Abstract, p. 1)
 
 ### Novel Primitives / Abstractions
@@ -45,7 +45,7 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 | **Relationship to prior primitives** | Specialization of the plain folklore equality operator (Eq. 4) to constant-weight codes. The folklore operator has depth ceil(log_2 l) for l-bit operands; the CW operator achieves depth ceil(log_2 k) where k << l for large domains.[^5] |
 
 [^4]: Equation (5), p. 6: f_PCW(x, y) = product over {j : y[j]=1} of x[j].
-[^5]: Table 3 (p. 9) comparison: Plain Folklore has l * M operations with depth ceil(log_2 l); Plain CW has k * M operations with depth ceil(log_2 k), where M = number of multiplications.
+[^5]: Table 3 (p. 9) comparison: Plain Folklore has l * M operations with depth ceil(log_2 l); Plain CW has k * M operations with depth ceil(log_2 k), where M denotes a single homomorphic multiplication (unit label, not a count variable).
 
 #### Primitive 2: Arithmetic Constant-weight Equality Operator
 
@@ -85,7 +85,7 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 | **Key structure** | Standard BFV secret key; encryption uses the secret key (not public key) for query construction.[^11] |
 | **Correctness condition** | Standard BFV decryption correctness: noise must remain below the decryption threshold after all homomorphic operations. The multiplicative depth of the equality circuit (ceil(log_2 k)) determines the minimum N required.[^12] |
 
-[^9]: Section 2.1.1, p. 2. Four operations listed: Addition (additive noise growth), Plain Multiplication (multiplicative noise growth), Multiplication (multiplicative noise growth), Substitution (additive noise growth).
+[^9]: Section 2.1.1, p. 2 (four operations listed) and Table 1, p. 3 (noise growth types): Addition (additive noise growth), Plain Multiplication (multiplicative noise growth), Multiplication (multiplicative noise growth), Substitution (additive noise growth).
 [^10]: Section 2.1.1, p. 2. "The polynomial modulus degree, N, is a power of two and t is the plaintext modulus."
 [^11]: Algorithm 4, p. 7, line 6: "ct_i(x) = Enc(sk, m_i(x))" — encryption with the secret key.
 [^12]: Table 1 (p. 3) shows operation costs for different N. Larger multiplicative depth requires larger N for valid decryption.
@@ -131,7 +131,7 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 - **Noise growth type per operation:** Plaintext multiplication (multiplicative noise growth), substitution (additive noise growth). The modified oblivious expansion (Algorithm 5) replaces two substitutions + one plaintext multiplication with one substitution + two plaintext multiplications, for an overall speedup.[^19]
 - **Depth constraint:** Total multiplicative depth = depth of oblivious expansion (c levels, each using substitution + PM) + depth of equality operator (ceil(log_2 k)). For k=2, depth of equality = 1; for k=4, depth = 2.[^20]
 
-[^18]: Table 7 (p. 11): Folklore PIR requires N=8192 at n=256 (produces decryptable results), but at n=512 with N=8192 results are undecryptable (marked *). CwPIR with k=2 uses N=8192 successfully up to n=65536.
+[^18]: Table 7 (p. 11) and p. 11 text: Folklore PIR requires N=8192 at n=256 (produces decryptable results), but at n=512 with N=8192 results are undecryptable (marked *). CwPIR with k=2 uses N=8192 successfully up to n=65536. Note: SealPIR's N=4096 parameter comes from p. 11 text, not Table 7.
 [^19]: Section 3.3.3 "Query Expansion," p. 7. "We replace the use of two substitutions and one plaintext multiplication in the inner loop of Algorithm 1 with one substitution and two plaintext multiplications."
 [^20]: Table 3, p. 9: Plain CW multiplicative depth = ceil(log_2 k).
 
@@ -291,15 +291,15 @@ CwPIR outperforms MulPIR when payload exceeds ~268 KB (DB size ~4.3 GB).[^29]
 | Plain CW, k=1/4 log_2 n (N=8192) | depth=1 | 0.11 | 0.25 | -- | -- | -- | -- | -- |
 | **Plain CW, k=1/8 log_2 n (N=8192)** | **depth=0** | **0.0005** | **0.038** | -- | **0.54** | -- | -- | -- |
 
-Bold numbers indicate best runtimes per domain size. The constant-weight operator with small k achieves up to **10x speedup** over folklore (e.g., n=2^16: 0.038s vs 0.54s for k=1/8 log_2 n at N=8192).[^30]
+Bold numbers indicate best runtimes per domain size. The constant-weight operator with small k achieves up to **~14x speedup** over folklore (e.g., n=2^16: 0.038s vs 0.54s for k=1/8 log_2 n at N=8192).[^30]
 
-[^30]: Table 4, p. 9. "The constant-weight plain operator consistently outperforms the folklore operator in terms of running time."
+[^30]: Table 4, p. 9. The cited numbers (0.038s vs 0.54s) yield a ratio of 0.54/0.038 = ~14x. "The constant-weight plain operator consistently outperforms the folklore operator in terms of running time."
 
 #### Parallelization speedup (Figure 1, p. 10)
 
 The constant-weight operator benefits more from parallelization than folklore. The folklore circuit gains at most ~2x speedup, while the constant-weight circuit achieves up to **10x speedup** because the m homomorphic multiplications in the CW operator can be done independently in parallel.[^31]
 
-[^31]: Section 4.2, p. 10. "The folklore circuit runs at most 2 times faster with parallelization, whereas the constant-weight circuit has more than a 10x speedup in some cases."
+[^31]: Sections 4.2/5 boundary, p. 10. "The folklore circuit runs at most 2 times faster with parallelization, whereas the constant-weight circuit has more than a 10x speedup in some cases."
 
 ### Application Scenarios
 

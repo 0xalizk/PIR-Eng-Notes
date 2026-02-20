@@ -231,7 +231,7 @@ User-perceived throughput of streaming data on FTTH (100 Mbit/s), database files
 | 100,000 | ~0.00015 | ~0.002 | ~0.00013 | 0.1 |
 
 **Key observations:**
-- Trivial PIR (full download at 100 Mbit/s FTTH) is 10-200x slower than cPIR for most database sizes.[^37]
+- Trivial PIR (full download at 100 Mbit/s FTTH) is 10-200x slower than cPIR for small n values (n <= ~100); for larger n (n >= ~1000 in d=1), trivial PIR is actually faster.[^37]
 - d=1 throughput follows ~15/n Gbit/s (straight line on log-log plot).[^37]
 - d=2 with recursion: query size proportional to 2*sqrt(n), significant overhead for small n but superior for n >= ~1000.[^40]
 - 256-bit security (4096,120) is only ~10% worse than 91-bit security (2048,120) due to doubled ciphertext capacity.[^25]
@@ -288,8 +288,7 @@ n = 10,000 elements, l = 1 Mbit each, parameters (1024, 60), F ~= 6, FTTH, no re
 
 Database: 100,000 movies (static files, pre-processable with H.265/HEVC compression):[^44]
 - **720p at 30fps** (400 Kbit/s needed): User can hide choice among **35,000 movies**.
-- **720p at 60fps** (800 Kbit/s needed): Hide choice among ~8,000 movies.
-- **1024p at 60fps** (2 Mbit/s needed): Hide choice among ~8,000 movies with higher quality.
+- **1024p at 60fps** (2 Mbit/s needed): Hide choice among ~8,000 movies.
 
 #### Sniffer Use-Case (exact from text)
 
@@ -445,11 +444,11 @@ Private packet sniffer filtering traffic by source IP:[^45]
 
 [^35]: p. 9, Section 3.2.1, "Implications on cPIR performance" -- "After importation, the database is processed during the reply generation phase at roughly 20Gbits/s"; import at 5 Gbit/s.
 
-[^36]: p. 12, Figure 5 and text -- "We are able to generate a query at 700Mbits/s and decrypt an incoming reply at 5Gbits/s" (60-bit); "encryption scales well... it is possible to generate a query at 850Mbits/s, but decryption suffers... 710Mbits/s" (120-bit).
+[^36]: p. 11 (60-bit numbers), Figure 5 and text -- "We are able to generate a query at 700Mbits/s and decrypt an incoming reply at 5Gbits/s" (60-bit); p. 12 (120-bit numbers) -- "encryption scales well... it is possible to generate a query at 850Mbits/s, but decryption suffers... 710Mbits/s" (120-bit).
 
 [^37]: p. 14, Figure 6 -- "User-perceived throughput of XPIR streaming static data." Log-log plot. "this line is pretty close to the straight line defined by 15/n Gbps."
 
-[^38]: p. 13, Section 4, "Experimental setting" -- "OCZ Vertex 460 SSD (4Gbit/s access)"; databases up to 10 Gbits in RAM, larger chunked.
+[^38]: p. 15, Section 4, "Medium Access Issues" -- "OCZ Vertex 460 SSD (4Gbit/s access)"; databases up to 10 Gbits in RAM, larger chunked.
 
 [^39]: p. 14, Figure 6 caption -- "Performance on a server with a better processor (e.g. ten-core Xeon E7-4870) roughly doubles and caps at that level as RAM bandwidth is saturated."
 

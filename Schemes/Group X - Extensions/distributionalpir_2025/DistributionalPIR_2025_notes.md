@@ -34,7 +34,7 @@ The paper also contributes a new RingLWE-based encryption optimization for Simpl
 
 #### Syntax
 
-A distributional-PIR scheme on a database of N items with distribution P, message space M, and batch size B consists of six routines:[^10]
+A distributional-PIR scheme on a database of N items with distribution P, message space M, and batch size B consists of five routines:[^10]
 
 | Routine | Signature | Role |
 |---------|-----------|------|
@@ -149,7 +149,7 @@ The distributional-PIR construction is a **generic compiler** that lifts any sta
 | Preprocess (s) | 2973 | 3.3 | 16 | Offline |
 | Encrypt (s) | 0.7 | 0.008 | 0.004 | Online |
 | Multiply (s) | 0.4 | 2.2 | 0.4 | Online |
-| Decrypt (s) | 0.7 | 0.247 | 0.7 (stateless) or 0.004 (stateful)[^34] | Online |
+| Decrypt (s) | 0.7 | 0.247 | 0.7 (stateful) or 0.004 (stateless)[^34] | Online |
 
 Query latency improvement: 128-161x faster for q=2^32; 200-349x faster for q=2^64 compared to LWE-based alternatives (Figure 3).[^8]
 
@@ -290,7 +290,7 @@ Where Q and R abbreviate the full expected communication and runtime expressions
 [^7]: Section B.3, Claim B.3 (p. 21): "If P_N is a power-law distribution [...] there exists a corresponding distributional PIR scheme [...] with worst-case correctness 0 and server running time T such that lim_{N->infinity} T = O(B)."
 [^8]: Section 6 / Section 7.1 (p. 8-9): "our scheme is 128-161x faster for 32-bit ciphertext moduli and 200-349x faster for 64-bit ciphertext moduli."
 [^9]: Section 2 (p. 3): "In this section, we introduce distributional PIR, a new type of private-information-retrieval scheme for applications in which (1) some database entries are queried more often than others and (2) a relaxed correctness guarantee is acceptable."
-[^10]: Section 2.1 (p. 3): Syntax definition listing all six routines with their signatures.
+[^10]: Section 2.1 (p. 3): Syntax definition listing all five routines with their signatures.
 [^11]: Section 2.1 (p. 3): "Setting the popularity distribution P to be arbitrary recovers the syntax of a standard batch-PIR scheme."
 [^12]: Section 2.1, "Security" (p. 3): "Informally, the client's query should leak no information about their requested database indices, just as in a standard PIR scheme."
 [^13]: Experiment A.1, Section A.1.1 (p. 18): Formal security experiment defining DistAdv[A, Pi] = |Pr[Sec_Pi(A, 0) = 1] - Pr[Sec_Pi(A, 1) = 1]|.
@@ -314,7 +314,7 @@ Where Q and R abbreviate the full expected communication and runtime expressions
 [^31]: Table 12 (p. 14): CrowdSurf downloads 21 MB per request; clients use 65 MB storage.
 [^32]: Section 7.2.1 (p. 11): "our construction increases the queries-per-second by 10-195x and reduces communication by 4.8-9.7x compared to the baseline that doesn't use batch codes."
 [^33]: Table 12 (p. 14): "$0.0057 per request for CrowdSurf vs. $0.046 for batch PIR baseline."
-[^34]: Table 2 (p. 8): Comparison of encryption schemes showing Section 6 achieves 0.004 s encrypt and 0.004 s decrypt (stateful) or 0.7 s decrypt (stateless).
+[^34]: Table 2 (p. 8): Comparison of encryption schemes showing Section 6 achieves 0.004 s encrypt and 0.7 s decrypt (stateful) or 0.004 s decrypt (stateless).
 [^35]: Theorem 5.1 (p. 7): "E[T] >= max{N*(kappa_worst - W), cdf_P^{-1}(kappa_avg - W)}."
 [^36]: Section 5 (p. 7): "the runtime of our distributional-PIR construction for a single query is within ~1.4x of the lower-bound."
 [^37]: Section 7.1, "Batching requests with GPUs" (p. 10): "For a batch of 50 concurrent requests, one GPU can process roughly 3x more requests per second than the 64-core CPU cluster."

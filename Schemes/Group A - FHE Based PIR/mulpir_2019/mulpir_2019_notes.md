@@ -64,7 +64,7 @@ The paper constructs the first *compressible* fully homomorphic encryption schem
 | **Built from** | For q = p^t - 1: explicit circulant construction (Eq. 7). For general q: lattice reduction of the vector u = (1, a, a^2, ..., a^{t-1}) where a = ceil(q^{1/t}) (p. 15). |
 | **Standalone complexity** | Computing H^{-1}(0) to H^{-1}(x): reduce each entry modulo the lattice L(F'), costing O(t^2) operations per column (Lemma 3, p. 14) |
 
-[^6]: Section 4.4, pp. 13–15. The standard G gadget from [MP12] gives G^{-1}(C) with entries in {0,1}, but G has n_1 x m columns where m = n_1 * log q, so rate <= n_0/m = 1/log q. The nearly square H has dimension n_0(t-1) x n_0*t, so rate = (t-1)/t which approaches 1.
+[^6]: Section 4.4, pp. 13–15. The standard G gadget from [MP12] gives G^{-1}(C) with entries in {0,1}, but G has n_1 x m columns where m = n_1 * log q, so rate <= n_0/m = 1/log q. The nearly square H has dimension n_0 x n_2, yielding rate (t-1)/t which approaches 1. In the base case r=1, H is (t-1) x t.
 
 ### Cryptographic Foundation
 
@@ -92,7 +92,7 @@ The paper constructs the first *compressible* fully homomorphic encryption schem
 
 [^11]: Section 5.2, p. 20: "breaking each entry into 2-by-2 plaintext matrices M in R_q (recall q approximately 2^{46}). Hence each matrix holds 2 * 2 * 46 * 2^{12} approximately 2^{19.5} bits (92KB)." Server stores M' = M * H mod q in CRT representation modulo Q, entailing a ~3.5x storage blowup.
 
-[^12]: Section 5.2, p. 19: G_1 has m'_1 = n'_1 * ceil(log_4 Q) = 3 * 53 = 159 columns; G_2 has m'_2 = n'_1 * ceil(log_{2^{51}} Q) = 3 * 2 = 6 columns. Appendix A.3, p. 28 uses slightly different parameters: G_1 with m'_1 = n'_1 * floor(log_4(Q)) = 2 * 51 = 102; G_2 with m'_2 = n'_1 * ceil(log_{2^{51}} Q) = 3 * 2 = 6.
+[^12]: Section 5.2, p. 19: G_1 has m'_1 = n'_1 * ceil(log_4 Q) = 3 * 53 = 159 columns; G_2 has m'_2 = n'_1 * ceil(log_{2^{51}} Q) = 3 * 2 = 6 columns. Appendix A.3, p. 28 uses slightly different parameters: G_1 with m'_1 = n'_0 * floor(log_4(Q)) = 2 * 51 = 102 (where n'_0 = 2); G_2 with m'_2 = n'_1 * ceil(log_{2^{51}} Q) = 3 * 2 = 6.
 
 ### Database Encoding
 
@@ -119,7 +119,7 @@ The paper constructs the first *compressible* fully homomorphic encryption schem
 
 [^14]: Section 5.2, p. 20: total ring elements sent = 9 + 3381 + 6 * 72 = 3822. Each element is 106 * 2^{12} bits. Total = 106 * 2^{12} * 3822 approximately 2^{30.6} bits approximately 198 MB. This is the "bulky" query size that Appendix A aims to reduce.
 
-[^15]: The response size for a single 2x2 plaintext block is a 3x3 matrix over R_q: 9 * 46 * 2^{12} bits approximately 27 KB per block. Rate = (2*2*46*2^{12}) / (3*3*46*2^{12}) = 4/9 approximately 0.44.
+[^15]: The response size for a single 2x2 plaintext block is a 3x3 matrix over R_q: 9 * 46 * 2^{12} bits = 1,695,744 bits approximately 207 KB per block. Rate = (2*2*46*2^{12}) / (3*3*46*2^{12}) = 4/9 approximately 0.44.
 
 #### Appendix A Variant (query expansion with automorphisms)
 

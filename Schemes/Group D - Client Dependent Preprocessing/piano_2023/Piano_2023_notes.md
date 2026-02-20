@@ -21,7 +21,7 @@
 | **Concurrent work** | N/A |
 
 [^1]: Abstract (p.1): Piano achieves amortized O~(sqrt(n)) server and client computation and O(sqrt(n)) online communication per query, requiring O~_λ(sqrt(n)) client storage.
-[^2]: Section 1.1 (p.2): "the only cryptographic primitive we need is pseudorandom functions (PRFs), which can be accelerated through the AES-NI instruction sets."
+[^2]: Section 1.1 (p.3): "the only cryptographic primitive we need is pseudorandom functions (PRFs), which can be accelerated through the AES-NI instruction sets."
 
 ### Core Idea
 
@@ -55,8 +55,8 @@ Piano achieves sublinear server computation for single-server PIR by having each
 | **Standalone complexity** | Set generation: O(sqrt(n)) PRF evaluations; membership test: O(1) |
 | **Relationship to prior primitives** | Simpler than puncturable PRFs (CK20) or privately puncturable PRFs (TreePIR). No puncturing needed — the full edited set is sent to the server. |
 
-[^8]: Section 2 (p.5-6): "By sending the whole edited set, we can do puncturing or programming without need of complicated constructions."
-[^9]: Section 6 (p.16): "the only cryptographic primitive we need is pseudorandom functions (PRFs)... the streaming preprocessing avoids the need of using FHE during the offline phase."
+[^8]: Section 6 (p.16): "By sending the whole edited set, we can do puncturing or programming without need of complicated constructions."
+[^9]: Section 1.1 (p.3) and Section 6 (p.16): "the only cryptographic primitive we need is pseudorandom functions (PRFs)" (p.3); "the streaming preprocessing avoids the need of using FHE during the offline phase" (p.16).
 
 ### Cryptographic Foundation
 
@@ -81,7 +81,7 @@ Piano achieves sublinear server computation for single-server PIR by having each
 
 [^14]: Figure 1 (p.6): Primary table definition. Implementation uses 32-bit tags with master key rather than independent λ-bit keys.
 [^15]: Figure 1 (p.6): "Store replacement entries: sample and store M_2 tuples of the form (r, DB[r]) where r is a random index from the j-th chunk."
-[^16]: Figure 1 (p.6): "Update backup table: for each chunk j and k in [M_2], let p_bar_{i,k} <- p_bar_{i,k} XOR DB[Set(sk_bar_{i,k})[j]]."
+[^16]: Figure 1 (p.6): "Update backup table: for each chunk j and k in [M_2], let p_bar_{j,k} <- p_bar_{j,k} XOR DB[Set(sk_bar_{j,k})[j]]."
 
 ### Protocol Phases
 
@@ -274,7 +274,7 @@ Hardware: Two AWS m5.8xlarge instances with 128 GB RAM. Server computation is si
 - **Chunk size:** Set to 2*sqrt(n), rounded to nearest power of 2, making modulo operations efficient. Does not affect asymptotic complexity.[^49]
 - **Open source:** https://github.com/wuwuz/Piano-PIR-new
 
-[^46]: Section 4.1 (p.10): "the core implementation contains only around 800 lines of code. We also provide a reference implementation (for tutorial purposes) that contains only around 160 lines of code."
+[^46]: Section 1.1 (p.3) and Section 4.1 (p.10): "the core implementation contains only around 800 lines of code" (p.10). The 160-line reference implementation is mentioned on p.3.
 [^47]: Section 4.1, "Parallelization" (p.10): "We parallelize the preprocessing on the client side... All server-side and online computation is performed on a single thread."
 [^48]: Section 4.1 (p.10): "Our implementation uses a 64-bit integer to denote a database index and thus we can support sufficiently large database."
 [^49]: Section 4.1, "Parameters" (p.10): "we set the chunk size to be 2*sqrt(n) and round it up to the nearest power of 2, which makes the modulo operation more efficient."

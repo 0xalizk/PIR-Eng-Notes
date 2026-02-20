@@ -191,7 +191,7 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 | **Number of DB passes (server)** | 1 (single matrix multiplication A * D) |
 | **Hint refresh mechanism** | Full re-download when A is rotated or DB changes |
 
-[^ci]: This is the defining characteristic of FrodoPIR vs prior stateful schemes. Section 2.3, p. 7: "the offline phase of the protocol is performed by the server alone, completely independent of the number of clients or queries that will be made."
+[^ci]: This is the defining characteristic of FrodoPIR vs prior stateful schemes. p. 2: "the offline phase of the protocol is performed by the server alone, completely independent of the number of clients or queries that will be made."
 
 #### If-reported metrics
 
@@ -254,7 +254,7 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 - **Certificate revocation (OCSP):** Replace OCSP queries that reveal certificate identity to CAs (Section 7.1, p. 27-28).
 - **PIR for streaming:** Sharding enables chunk-based private retrieval of large data (video); FrodoPIR can serve as a building block (Section 7.1, p. 28).
 
-[^safebrowsing]: Appendix B (p. 35-36) provides a detailed analysis. Current SafeBrowsing: browser stores ~2.5 MB Bloom-filter-like structure locally, queries API on hits. With FrodoPIR: offline download of ~6 MB of public parameters, then per-query cost of a single PIR interaction with ~3.2 KB response.
+[^safebrowsing]: Appendix B (p. 35-36) provides a detailed analysis. Current SafeBrowsing: browser stores a compressed probabilistic data structure locally (described as "8x smaller" than the >90 MB blocklist), queries API on hits. With FrodoPIR: offline download of ~6 MB of public parameters, then per-query cost of a single PIR interaction with ~3.2 KB response.
 
 ### Deployment Considerations
 
@@ -353,12 +353,12 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 ### Open Problems
 
-- Can the DoublePIR optimization (running the scheme twice -- once on DB, once on M -- to reduce hint download from ~6 MB to ~16 MB for larger DBs while reducing online query size) be applied to FrodoPIR? The authors note the philosophy is applicable but do not present results (Section 7.2, p. 28).[^open1]
+- Can the DoublePIR optimization (running the scheme twice -- once on DB, once on M -- as SimplePIR does to reduce its 124 MB hint to ~16 MB) be applied to FrodoPIR to reduce online query size? FrodoPIR's hint is already ~6 MB, so the benefit would target query size rather than hint size. The authors note the philosophy is applicable but do not present results (Section 7.2, p. 28).[^open1]
 - Sub-cubic matrix multiplication algorithms (Strassen, Coppersmith-Winograd) could improve server preprocessing from O(n*m*omega) -- not explored in the paper (Section 7, p. 27).[^open2]
 - Batch query processing: multiple client queries can be batched into a matrix multiplication, enabling sublinear scaling per query (Section 7, p. 27).[^open3]
 - Can the ternary LWE dimension n = 1774 be reduced under less conservative security analyses? Appendix C discusses this possibility for smaller query counts.[^open4]
 
-[^open1]: Section 7.2, p. 28. DoublePIR effectively replaces the m-dimensional query with a sqrt(m)-dimensional one at the cost of the server performing additional computation on M itself.
+[^open1]: Section 7.2, p. 28. DoublePIR reduces SimplePIR's hint download from 124 MB to ~16 MB by running the scheme twice (once on DB, once on M). The same philosophy could apply to FrodoPIR, though FrodoPIR's hint is already ~6 MB, so the benefit would lie in reducing online query size rather than hint size.
 
 [^open2]: Section 7, p. 27. The A * D multiplication has dimensions n x m and m x omega, fitting the regime where sub-cubic methods provide speedup.
 

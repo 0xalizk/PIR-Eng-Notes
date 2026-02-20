@@ -38,7 +38,7 @@ InsPIRe addresses the fundamental tension in single-server PIR between high thro
 | **InsPIRe^(2)** | Two layers of partial ring packing with parameters gamma_0, gamma_1, gamma_2 | None (CRS) | Flexible tradeoff via gamma_i | Medium entries (64 B), balancing communication and computation |
 | **InsPIRe** | InspiRING + homomorphic polynomial evaluation; polynomial-encoded database | None (CRS) | Lowest total communication at moderate/large entries | General-purpose; 64 B to 32 KB entries |
 
-InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses and only supports small entry sizes (e.g., 1 bit).[^3] InsPIRe^(2) uses two levels of partial ring packing and is more flexible but lacks the polynomial evaluation technique.[^4] InsPIRe is the full construction that combines InspiRING with homomorphic polynomial evaluation for the best communication-computation balance.[^5]
+InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses and is useful when the entry size is small.[^3] InsPIRe^(2) uses two levels of partial ring packing and is more flexible.[^4] InsPIRe is the full construction that combines InspiRING with homomorphic polynomial evaluation for the best communication-computation balance.[^5]
 
 [^3]: Section 4 (p.12): "InsPIRe_0 is instantiated on top of DoublePIR by using InspiRING or PartialInspiRING to pack the result of the DoublePIR responses."
 
@@ -68,7 +68,7 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 [^7]: Theorem 1 (p.11): "InspiRING in the CRS model can pack d LWE ciphertexts in O(d^3 + ell * d^2 * lg(d)) offline time and O(ell * d^2) online time where ell is the dimension of the key-switching matrix."
 
-[^8]: Section 7.4, Table 5 (p.21-22): InspiRING requires 84 KB key material vs 462 KB (CDKS) and 360 KB (HintlessPIR). Online runtime is 16 ms vs 56 ms (CDKS), though offline is slower (2.4 s vs 2.0 s for HintlessPIR).
+[^8]: Section 7.4, Table 5 (p.21-22): InspiRING with log_2 d=10 has Key Material=60 KB, Offline=2.4 s, Online=16 ms. InspiRING with log_2 d=11 has Key Material=84 KB, Offline=36 s, Online=40 ms. CDKS has Key Material=462 KB, Online=56 ms. HintlessPIR has Key Material=360 KB, Offline=2.0 s.
 
 ##### Three-Stage Construction
 
@@ -248,9 +248,9 @@ The noise analysis tracks sub-Gaussian parameters through three sources, combine
 
 ### Performance Benchmarks
 
-**Hardware:** Intel Xeon CPU @ 2.6 GHz, single-threaded. All runtimes averaged over 5 runs (standard deviation < 5%).[^23]
+**Hardware:** Intel Xeon CPU @ 2.6 GHz, single-threaded. Offline runtimes measured once; online runtimes averaged over 5 runs (standard deviation < 5%).[^23]
 
-**Implementation:** ~3,000 lines of Rust (InspiRING); ~3,000 lines of Rust (InsPIRe^(2)); ~2,000 lines of Rust (InsPIRe). Built on RLWE building blocks from spiral-rs (YPIR implementation). Code: https://github.com/google/private-membership/tree/main/research/InsPIRe.[^24]
+**Implementation:** ~3,000 lines of Rust (InspiRING); ~3,000 lines of Rust (InsPIRe^(2)); ~2,000 lines of Rust (InsPIRe). Built on RLWE building blocks from spiral-rs. Code: https://github.com/google/private-membership/tree/main/research/InsPIRe.[^24]
 
 [^23]: Section 7 (p.19): "We perform all experimental evaluations on an Intel Xeon CPU @ 2.6 GHz ... single-threaded mode."
 
@@ -313,7 +313,7 @@ Security: 128-bit, based on lattice-estimator [2] with correctness parameter del
 | Offline Runtime | 2.0 s | 2.4 s | 11 s | 36 s |
 | Online Runtime | 141 ms | **16 ms** | 56 ms | **40 ms** |
 
-InspiRING achieves 84% less key material than HintlessPIR and 76% less than CDKS, with 28% faster online time than CDKS, at the cost of a slower offline phase.[^26]
+InspiRING achieves 84% less key material than HintlessPIR and 76% less than CDKS. InspiRING (d=10) achieves 71% faster online time than CDKS (16 ms vs 56 ms); InspiRING (d=11) achieves 28% faster online time than CDKS (40 ms vs 56 ms), at the cost of a slower offline phase.[^26]
 
 [^26]: Section 7.4 (p.22): "InspiRING requires significantly smaller key material compared to existing work, specifically, 84%, 76%, and over 99% less key material than CDKS and HintlessPIR, respectively."
 

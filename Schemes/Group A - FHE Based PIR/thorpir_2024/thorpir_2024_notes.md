@@ -9,7 +9,7 @@
 | **Additional assumptions** | LWR (Learning With Rounding); conjectured tighter Thorp shuffle bound (Conjecture 3.3) for best parameters[^2] |
 | **Correctness model** | Deterministic (given correct FHE decryption) |
 | **Rounds (online)** | 1 (non-interactive: client sends Q indices, server returns Q elements) |
-| **Record-size regime** | Small (360 bits per element in benchmarks) |
+| **Record-size regime** | Small (360 bytes per element in benchmarks) |
 
 [^1]: Filed in Group A but the preprocessing is client-dependent: the client generates BFV keys and encrypted PRG seeds, and the server homomorphically computes a per-client shuffled/hinted database. This makes it functionally a Group A + Group D hybrid.
 
@@ -93,7 +93,7 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 - **Client state (st)**: Hints H = (h_1,...,h_K), per-query Used dictionaries (Used_i for i in [Q]), and Thorp shuffle seeds (s_1,...,s_Q). Total storage: O(N/Q + T*Q) = 377 MB for benchmark parameters.
 - **USED dictionaries**: Track which partition indices have been queried for each permutation, enabling dummy-query resampling for privacy.
 
-[^8]: With N = 2^30 entries of 360 bits = 2880 bits each, and Q = 2^10, each of the K = 2^20 partitions contains Q = 2^10 elements. Each BFV ciphertext can hold D = 32768 slots, so 2880/3 = 960 ciphertexts per partition (3 bits per slot).
+[^8]: With N = 2^30 entries of 360 bytes = 2880 bits each, and Q = 2^10, each of the K = 2^20 partitions contains Q = 2^10 elements. Each BFV ciphertext can hold D = 32768 slots, so 2880/3 = 960 ciphertexts per partition (3 bits per slot).
 
 ---
 
@@ -112,7 +112,7 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 [^9]: The butterfly network equivalence (n rounds of butterfly = n rounds of Thorp Shuffle, per [30, Lemma 1]) is essential. In the butterfly formulation, at round l in [n], position j is swapped with position j + 2^{l-1} for all j where floor(j / 2^{l-1}) is odd. Elements at the same 2^{l-1} stride are in the same ciphertext when 2^{l-1} < D, enabling efficient SIMD swaps.
 
-[^10]: Online bandwidth is dominated by the Q = 1024 partition indices and Q returned elements. Each element is 360 bits = 45 bytes. Total: Q * 45 bytes per direction, plus small overhead for Thorp shuffle evaluations.
+[^10]: Online bandwidth is dominated by the Q = 1024 partition indices and Q returned elements. Each element is 360 bytes. Total: Q * 360 bytes per direction, plus small overhead for Thorp shuffle evaluations.
 
 ---
 
@@ -167,7 +167,7 @@ Deterministic correctness follows from: (1) BFV decryption correctness (uncondit
 
 #### Concrete Benchmarks (Table 2 from paper)
 
-**Database**: N = 2^30 entries, 360 bits each = 360 GB total. Server: 128K GPUs (RTX 3060 Ti equivalent). Client: single-thread CPU.
+**Database**: N = 2^30 entries, 360 bytes each = 360 GB total. Server: 128K GPUs (RTX 3060 Ti equivalent). Client: single-thread CPU.
 
 | Scheme | Depth | Preprocess BW | Client Time | Server Time | E2E Time | Query BW | Query Time | Client Space |
 |--------|-------|--------------|-------------|-------------|----------|----------|------------|--------------|

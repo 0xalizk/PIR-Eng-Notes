@@ -147,7 +147,7 @@ When the number of modified/deleted entries M' in a row exceeds the threshold t:
 | **Supported mutation types** | Insertion (append-only, at end of DB), modification (arbitrary entry), deletion (replaced with random) [^21] |
 
 [^19]: Section 4.1 (p. 11): Communication cost analysis — "approximately M' log p + (M' + 1) log sqrt(N) bits under the entry-level strategy and n log q + log sqrt(N) bits under the row-level strategy."
-[^20]: Section 2.3 (p. 8): "Strong deletion... is the ideal property for practical applications" but "secure deletion against malicious clients is impossible in SimplePIR." Footnote 2 (p. 12): "a malicious client may leverage the received update-related data and a copy of the original hint to iteratively query and verify entries in order to recover deleted items."
+[^20]: Section 2.3 (p. 8): "Strong deletion... is the ideal property for practical applications." Section 4.1 (p. 12): "secure deletion against malicious clients is impossible in SimplePIR." Footnote 2 (p. 12): "a malicious client may leverage the received update-related data and a copy of the original hint to iteratively query and verify entries in order to recover deleted items."
 [^21]: Section 2.3 (p. 7–8): "we focus on three types of database updates: the insertion of new entries, modification of existing entries, and deletion."
 
 ### Mutation Model

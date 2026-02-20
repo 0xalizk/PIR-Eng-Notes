@@ -29,7 +29,7 @@
 
 ### Core Idea
 
-Existing lattice-based PIR protocols have high communication overhead because RLWE ciphertexts require ring dimension d >= 2048 and modulus q >= 2^32, meaning even a single ring element is >= 8 KB. For databases with small records (e.g., 256 bytes), this is the dominant cost. Respire addresses this by working over *subrings*: the server performs most computation on the large ring R_{d1} (d1=2048) but projects the response onto a subring R_{d2} (d2=512) via dimension reduction (ring switching), achieving a 4x compression of the response.[^1] For query compression, Respire embeds the query into subring coefficients rather than sending a full ring element, reducing query size from 14 KB to ~4 KB.[^2] On a 256 MB database with 256-byte records, Respire achieves 6.1 KB total online communication -- a 5.9x reduction over Spiral -- with comparable throughput (200-400 MB/s).[^3]
+Existing lattice-based PIR protocols have high communication overhead because RLWE ciphertexts require ring dimension d >= 2048 and modulus q >= 2^32, meaning even a single ring element is >= 8 KB. For databases with small records (e.g., 256 bytes), this is the dominant cost. Respire addresses this by working over *subrings*: the server performs most computation on the large ring R_{d1} (d1=2048) but projects the response onto a subring R_{d2} (d2=512) via dimension reduction (ring switching), achieving a 4x compression of the response.[^1] For query compression, Respire embeds the query into subring coefficients rather than sending a full ring element, reducing query size from 14 KB to 4 KB.[^2] On a 256 MB database with 256-byte records, Respire achieves 6.1 KB total online communication -- a 5.9x reduction over Spiral -- with comparable throughput (200-400 MB/s).[^3]
 
 [^1]: Section 1.1 (p.2): "Since d1/d2 = 4, this yields a 4x reduction in response size."
 
@@ -58,7 +58,7 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 | **Key structure** | Two secret keys: s1 = [-s_tilde_1 | 1]^T in R_{d1,q1}^2 (query key, main ring); s2 = [-s_tilde_2 | 1]^T in R_{d2,q2}^2 (compression target key, small ring). Both uploaded as evaluation keys in the offline phase. |
 | **Correctness condition** | Subgaussian tail bound: Pr[fail] <= 1 - 2*d2*n_vec * exp(-pi*(q3/(2p) - B_final)^2 / sigma_resp^2) where sigma_resp^2 aggregates noise through all phases (Eq. D.5, p.49). Target: per-query error <= 2^{-40}.[^6] |
 
-[^4]: Section 4.1 (p.16-17): Three RLWE assumptions with different parameters. Main ring uses uniform secret in [-7,7], Gaussian error with sigma=9.9. Small ring uses Gaussian secret and error with sigma=253.6.
+[^4]: Section 4.1 (p.16-17): Three RLWE assumptions with different parameters. (1) Main ring R_{d1,q1} uses uniform secret in [-7,7], Gaussian error with sigma=9.9. (2) Main ring R_{d1,q1} for vectorization uses Gaussian secret and error with sigma'_1=9.9. (3) Small ring R_{d2,q2} uses Gaussian secret and error with sigma=253.6.
 
 [^5]: Section 2 (p.5): GSW encodings defined with decomposition base z, m = 2*(floor(log_z(q)) + 1). External product: Multiply(C_GSW, c_RLWE) = C_GSW * G_{2,z}^{-1}(c_RLWE).
 
@@ -159,7 +159,7 @@ Respire tracks noise growth via subgaussian variance parameters (sigma^2) throug
 | After vectorization (batch only) | sigma_vec^2 = sigma_pack^2 + n_vec * t_vec * d1 * z_vec^2 * (sigma'_{1,e})^2 / 4 | Additive | Vectorization adds key-switching noise |
 | After compression | sigma_resp^2 = (q3/q1)^2 * sigma_vec^2 + (q3/(4*q2^2)) * d1 * (sigma'_{1,s})^2 + (q3/q2)^2 * sigma_{2,e}^2 * B_comp^2 | Three terms: scaled, cross-term, key-switch | B_comp bounded by sqrt(t_comp * d1) * z_comp / 2 (Remark C.5 gives tighter bound) |
 
-- **Correctness condition:** Pr[fail] <= 1 - 2*d2*n_vec * exp(-pi*(q3/(2p) - B_final)^2 / sigma_resp^2) <= 2^{-40} (Eq. D.5).[^16]
+- **Correctness condition:** Pr[success] >= 1 - 2*d2*n_vec * exp(-pi*(q3/(2p) - B_final)^2 / sigma_resp^2), equivalently Pr[fail] <= 2*d2*n_vec * exp(-pi*(q3/(2p) - B_final)^2 / sigma_resp^2) <= 2^{-40} (Eq. D.5).[^16]
 - **Independence heuristic used?** Yes -- models subgaussian error terms as independent across homomorphic operations. Empirically validated: predicted error is an overestimate of actual measured noise.[^17]
 - **Dominant noise source:** GSW external products in folding steps (each contributes multiplicatively to sigma_GSW^2) and the first-dimension linear scan (scales with 2^{v1}).
 
@@ -341,13 +341,13 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 - **Small-record niche:** Respire's subring techniques only help when records fit in d2 < d1 coefficients. For records > ~2 KB, Respire reduces to Spiral with no advantage.[^33]
 - **Throughput penalty vs Spiral:** Respire is ~26% slower than Spiral on an 8 GB database (20.84 s vs 15.44 s) because the smaller plaintext modulus (p=16 vs p=256) increases the number of RLWE encodings the server must process in the first-dimension scan.[^34]
-- **Throughput gap vs SimplePIR/YPIR:** 27-50x slower than SimplePIR/YPIR, but with 21-42x less communication and no large offline hint download (SimplePIR needs 445 MB hint).[^35]
+- **Throughput gap vs SimplePIR/YPIR:** 27-50x slower than SimplePIR/YPIR, but with up to 27x smaller communication and no large offline hint download (SimplePIR needs 445 MB hint).[^35]
 - **Batch scalability limit:** For large batch sizes (T > 128), query expansion becomes the dominant cost and scales linearly with T. Schemes with SIMD support (Vectorized BatchPIR, Piranha) are better for T in the hundreds/thousands.[^36]
 - **Client-specific offline phase:** The 3.9 MB upload is tied to the client's secret keys, precluding anonymous / stateless access.
 
 [^34]: Section 4.2 (p.19): "Compared to Spiral, Respire is about 26% slower on an 8 GB database (but requires 4.5x less communication and a 2.5x smaller public parameters)."
 
-[^35]: Table 1 (p.19) and Section 4.2 (p.19): "Compared to protocols like SimplePIR, HintlessPIR, and YPIR, the Respire protocol is up to 27x smaller on the 8 GB database."
+[^35]: Table 1 (p.19) and Section 4.2 (p.19): "Compared to protocols like SimplePIR, HintlessPIR, and YPIR, the Respire protocol is up to 27x smaller [in communication] on the 8 GB database."
 
 [^36]: Section 4.3 (p.21-22) and Fig. 7 (p.23): "For large batch sizes, Respire has smaller communication, but larger computational overheads."
 

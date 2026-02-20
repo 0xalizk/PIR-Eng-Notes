@@ -28,7 +28,7 @@
 
 [^3]: Section 1 (p.2): "Our main idea to address this leakage is for the client to additionally send a dummy subset of indices. The dummy subset contains one random index from each of the sqrt(N)/2 partitions that do not appear in the query subset."
 
-[^4]: Section 5 (p.13): "A major downside of (both versions of) Piano PIR is that they have to weaken the correctness guarantee of PIR and require that the query sequence is not influenced by the adversary." The paper explicitly discusses that Piano's correctness is "partition-specific" and requires publishing the server's permutation key, enabling an adversary to force queries into the same partition and cause correctness failure.
+[^4]: Section 5 (p.13): Piano PIR weakens the correctness guarantee and requires non-adversarial query sequences; publishing the permutation key enables an adversary to force queries into the same partition and cause correctness failure (paraphrase of discussion on p.13).
 
 ---
 
@@ -53,7 +53,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 [^8]: Section 3.6 (p.9): "The amortized cost of our two-server scheme only depends on the online phase and the hint replenishment step." The offline phase runs once. Each query costs O(1) response and O(sqrt(N)) server computation.
 
-[^9]: Section 3.4 (p.7): The client retrieves λ*sqrt(N) main hints and λ*sqrt(N) backup hints. Backup hints come in pairs. The client can make approximately 0.4*λ*sqrt(N) queries before needing to re-run the offline phase (more precisely, 0.5*λ*sqrt(N)/2 pairs of backup hints, and in expectation 0.5*λ*sqrt(N) backup hints skip any given partition, so the client can make close to but fewer than 0.5*λ*sqrt(N) queries).
+[^9]: Section 3.4 (p.7): The client retrieves λ*sqrt(N) main hints and λ*sqrt(N) backup hints. Backup hints come in pairs; with pairs, the client can make up to λ*sqrt(N)/2 queries before needing to re-run the offline phase. The 0.4*λ*sqrt(N) figure used in Table 1 is a conservative estimate for the simpler non-paired strategy.
 
 ---
 
@@ -96,7 +96,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 | **Key structure** | Per-client PRF key shared between client and offline server (two-server) or held by client alone (single-server). The PRF key derives all hint structures deterministically. |
 | **Correctness condition** | Pr[fail] <= e^{-λ/2} per query, by union bound over queries (Lemma 1 + Section 3.5)[^14] |
 
-[^12]: Section 2 (p.4): "PRF is one of the most common cryptographic primitives and can be instantiated from any one-way function."
+[^12]: Section 2 (p.3-4): "PRF is one of the most common cryptographic primitives and can be instantiated from any one-way function" (quote continues with mentions of AES and SHA as practical instantiations).
 
 [^13]: Section 4.1 (p.9): "We use AES as the pseudorandom function. We use CryptoPP's implementation of AES, which leverages Intel's AES-NI instructions."
 
@@ -136,7 +136,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 [^19]: Section 3.6 (p.9): "The offline phase costs O(λ*sqrt(N)) communication and O(λ*N) computation at the offline server."
 
-[^20]: Section 3.2 (p.5-6): "The encoding using b and r costs sqrt(N) + sqrt(N) * log(sqrt(N)) = (sqrt(N)/2 + 1) * log(N) bits, slightly reducing the client's request size by half" compared to sending two explicit subsets.
+[^20]: Section 3.2 (p.5-6): The compact encoding using b and r costs (sqrt(N)/2 + 1) * log(N) bits, reducing the request size compared to sending explicit subsets at sqrt(N) * log(N) bits.
 
 #### Single-Server Scheme
 
@@ -203,7 +203,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 | Client computation | O(sqrt(N)) | < 1 ms (finding hint + subset construction) | Online |
 | Response overhead | 2x insecure baseline (two-server); 4x (single-server)[^28] | 2x (two-server); 4x (single-server) | -- |
 
-[^27]: Table 2 (p.11): At 2^28 x 32-byte entries (8 GB), the two-server scheme achieves 60.16 KB communication and 842 ms offline computation, with 34.1 KB online communication and 2.7 ms online computation.
+[^27]: Table 2 (p.11): At 2^28 x 32-byte entries (8 GB), the two-server scheme achieves 60.16 MB offline communication and 842 s offline computation, with 34.1 KB online communication and 2.7 ms online computation.
 
 [^28]: Section 3.6 (p.9): "The online response overhead is O(1), or 4x to be precise, since both the online server and the offline server both send back two parities." For two-server, only 2 parities are needed from the online server (the other 2 come from replenishment). The "2x" figure is from the abstract: "the online response overhead is only twice that of simply fetching the desired entry without privacy."
 
@@ -304,7 +304,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 [^35]: Section 3.1 (p.4): "Our techniques can be applied to the original sublinear scheme of Corrigan-Gibbs and Kogan [10] or the partition-based hints of TreePIR [22]."
 
-[^36]: Section 3.2 (p.6): The compact encoding costs (sqrt(N)/2 + 1) * log(N) bits vs. 2 * sqrt(N) * log(N) bits for explicit subsets.
+[^36]: Section 3.2 (p.6): The compact encoding costs (sqrt(N)/2 + 1) * log(N) bits vs. sqrt(N) * log(N) bits for sending explicit subsets directly.
 
 [^37]: Section 4.1 (p.10): "We can filter out elements that are too large or too small... In expectation, this filters 7/8 of the elements." The probability of filtering a median element is 6 x 10^{-5} for N = 2^20.
 
@@ -330,7 +330,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 [^41]: Section 4.1 (p.9): "We set the parameter λ to 80."
 
-[^42]: Section 4.1 (p.10): "We use 32-bit numbers for elements in V_j to save client storage and computation." The paper notes a corner case where two or more elements equal the median; such hints are discarded with very small probability.
+[^42]: Section 4.1 (p.9-10): "We use 32-bit numbers for elements in V_j to save client storage and computation." The paper notes a corner case where two or more elements equal the median; such hints are discarded with very small probability.
 
 ---
 

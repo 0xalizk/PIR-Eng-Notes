@@ -98,6 +98,9 @@ Key formatting rules:
 - MINOR issues come second, grouped by paper, one line each
 - Correct footnotes are only counted in the summary table, not listed individually
 - Papers in the summary table are ordered as they appear in the group's root README
+- When referencing repo files, use short hyperlinks — never write out raw paths as plain text:
+  - Notes file: `[SealPIR notes](Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md)`
+  - Source PDF: `[SealPIR PDF](Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/SealPIR_2018.pdf)`
 
 ## 5. Common pitfalls to watch for
 

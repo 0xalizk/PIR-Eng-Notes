@@ -21,7 +21,7 @@
 | **Concurrent work** | Tiptoe PIR [33] — concurrent independent work that similarly removes the SimplePIR hint using RLWE, but with O(sqrt(m) + n^2) online communication (roughly two orders of magnitude larger than HintlessPIR for large databases)[^2] |
 
 [^1]: Abstract (p.1): "Our first construction (HintlessPIR) eliminates the client preprocessing step from the recent LWE-based SimplePIR... by outsourcing the 'hint' related computation to the server, leveraging a new concept of homomorphic encryption with composable preprocessing."
-[^2]: Section 1, Technical Contributions (p.9): "Note that while Tiptoe PIR is similarly 'hintless', its per-query communication is asymptotically worse (O(sqrt(m) + n^2) compared to O(sqrt(m) + n)), yielding concretely worse per-query bandwidth (by two orders of magnitude)."
+[^2]: Section 1, Technical Contributions (p.9): "Note that while Tiptoe PIR is similarly 'hintless', its per-query communication is asymptotically worse (O(sqrt(m) + n^2) compared to O(sqrt(m) + n)), yielding concretely worse per-query bandwidth (by two orders of magnitude) than HintlessPIR, while also being slower by constant factors."
 
 ### Core Idea
 
@@ -87,7 +87,7 @@ HintlessPIR eliminates the database-dependent client hint from SimplePIR by repl
 | **Encryption/encoding scheme(s)** | LWE encryption: Enc_s(m; seed) where A := RO(seed), b := A * s + e + Delta * m (Definition 1, p.14); RLWE encryption: Enc_v(m) = [a, a * v + e + Delta * m] (Definition 2, p.14)[^16] |
 | **Ring / Field** | Z[X]/(X^n + 1) with n = 2^12 = 4096 (RLWE ring dimension); ciphertext modulus q approx 2^90 (product of NTT-friendly primes); plaintext moduli p_0, p_1 of 22 bits each for CRT decomposition[^17] |
 | **Key structure** | LWE secret s sampled from chi_sigma^N (ternary distribution) with N = 1408; RLWE secret v sampled from chi_sigma^n. Fresh RLWE key v per query. A expanded from short seed via random oracle.[^18] |
-| **Correctness condition** | Three conditions must simultaneously hold (Lemma 19, p.46): (1) Q > sqrt(n_cols) * p^2 * sigma * sqrt(ln(1 + n_rows/(delta/3))); (2) q > sqrt(ln(k(n_rows+n)/(delta/3))) * max_j sqrt(ell * N) * n * sigma * gamma * p_j^2; (3) product_j p_j > Q * sigma * sqrt(N) * sqrt(ln(kn * ceil(n_rows/n) / (delta/3)))[^19] |
+| **Correctness condition** | Three conditions must simultaneously hold (Lemma 19, p.46): (1) Q > sqrt(n_cols) * p^2 * sigma * sqrt(ln(1 + n_rows/(delta/3))); (2) q > sqrt(ln(1 + k(n_rows+n)/(delta/3))) * max_j sqrt(ell * N) * n * sigma * gamma * p_j^2; (3) product_j p_j > Q * sigma * sqrt(N) * sqrt(ln(1 + kn * ceil(n_rows/n) / (delta/3)))[^19] |
 
 [^15]: Lemma 18, Appendix F (p.46): "Let (N, Q, sigma) be such that LWE is hard. Let (n, q, sigma) be such that RLWE is hard, and moreover assume that RLWE is circular secure. Then HintlessPIR is a secure PIR with preprocessing scheme."
 [^16]: Definitions 1-2 (p.14): LWE and RLWE encryption definitions with seed-based public randomness.
@@ -258,7 +258,7 @@ The noise analysis uses sub-Gaussian and sub-Exponential parameter tracking unde
 - **Amortization crossover vs SimplePIR:** HintlessPIR has lower total communication until SimplePIR amortizes its hint over approximately 50-100 queries. Bandwidth advantage over Spiral holds for the first 3-5 queries.[^34]
 
 [^32]: Table 2 (p.29): Server preprocessing time for HintlessPIR at 1.07 GB is 199.15 s vs SimplePIR's 188.03 s.
-[^33]: Appendix B, after Lemma 11 (p.40): "we set kappa minimal such that the amortized cost of preprocessing disappears (asymptotically). For NTTlessPIR, one can check that this is kappa = omega(log n)."
+[^33]: Appendix E, after Lemma 11 (p.42): "we set kappa minimal such that the amortized cost of preprocessing disappears (asymptotically). For NTTlessPIR, one can check that this is kappa = omega(log n)."
 [^34]: Section 1, "Implementation" (p.11): "We find that our protocol has lower bandwidth until one is able to reuse a hint for approx 50 to 100 SimplePIR queries to the same database, and our bandwidth advantage over Spiral holds for the first 3 to 5 queries."
 
 ### Key Tradeoffs & Limitations

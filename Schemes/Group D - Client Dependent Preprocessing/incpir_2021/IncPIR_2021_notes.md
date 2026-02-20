@@ -20,15 +20,15 @@
 | **Superseded by** | IncrementalPIR (2026) [Group C] addresses single-server incremental preprocessing for SimplePIR but in a fundamentally different model (LWE-based, not XOR/set-based) |
 | **Concurrent work** | Checklist [40] (Kogan and Corrigan-Gibbs, USENIX Security 2021) addresses additions via ORAM-inspired bucket splitting; fundamentally different approach |
 
-[^1]: Section 4.1 (p.5): "We start by describing the CK protocol and then describe our approach to make its preprocessing incremental."
-[^2]: Section 6.3 (p.11): "Appendix E discusses how to make the SACM OO-PIR scheme [51] incremental."
+[^1]: Section 4.1 (p.5): "We start by describing the CK protocol and then we describe our approach to make its preprocessing incremental."
+[^2]: Section 6.3 (p.11): "Appendix E discusses how to make the SACM OO-PIR scheme [51] incremental with similar high-level ideas as those presented here, but with vastly different concrete mechanisms."
 
 ### Core Idea
 
 IncPIR addresses the problem that all existing offline/online PIR schemes require complete repreprocessing when the database changes, which defeats the benefits of preprocessing for mutable databases.[^3] The paper introduces *incremental preprocessing*: four new algorithms (DBUpd, HintReq, HintRes, HintUpd) that allow the client to update its existing hint h to reflect database additions, deletions, and in-place edits at a cost proportional to the number of mutations m rather than the database size n.[^4] The core technical mechanism is an *incremental pseudorandom set* (PRS) that extends the range of a PRF/PRP-generated set from [n] to [n+m] by probabilistically replacing existing elements with new-range elements according to a hypergeometric distribution, storing only compact auxiliary information rather than explicit indices.[^5] This enables the CK protocol's hints to remain valid after mutations without sacrificing security (every set remains a uniform random subset of the updated database range). For a batch of 10,000 updates on a 1M-item database, incremental preprocessing is 56x cheaper than preprocessing from scratch.[^6]
 
 [^3]: Abstract (p.1): "A major implicit assumption in all of the above works is that the PIR database is immutable."
-[^4]: Definition 2 (p.4): Formal definition of incremental OO-PIR with eight algorithms.
+[^4]: Definition 2 (p.3-4): Formal definition of incremental OO-PIR with eight algorithms.
 [^5]: Section 5.2 (p.8): "Our goal is then to devise a procedure to extend the range of the PRS; in other words, to obtain S' in [n+m] by modifying, in expectation, only a handful of elements in S."
 [^6]: Abstract (p.1): "the computational cost of updating the hints in our incremental CK scheme (iCK) for a batch of 10,000 updates (additions, deletions, edits) is 56x cheaper than preprocessing from scratch."
 
@@ -59,7 +59,7 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 | **Standalone complexity** | Gen: O(λ); Add: O(1) auxiliary storage update; Eval: O(s) PRP evaluations (s = set size)[^9] |
 | **Relationship to prior primitives** | Extends CK's PRS (Definition 3, p.7) with the Add operation. Cannot be made puncturable (unlike CK's PRS) because PRP-based construction precludes puncturable PRP constructions[^12] |
 
-[^9]: Definition 4 (p.8): Formal definition of incremental PRS with Gen, Add, Eval.
+[^9]: Definition 4 (p.7-8): Formal definition of incremental PRS with Gen, Add, Eval.
 [^10]: Theorem 6, Section A.3 (p.18): "Psi satisfies security."
 [^11]: Section 5.3, Figure 1 (p.9): Construction of incremental PRS Psi using KDF-derived keys and PRP evaluation.
 [^12]: Section 5.3 (p.9): "Unfortunately our construction does not preserve the puncturable property since we use a PRP instead of a PRF... there does not exist puncturable PRP constructions."
@@ -73,9 +73,9 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 | **Key structure** | Per-client: sqrt(n) * log(n) PRP keys (one per set), each derived via KDF from a master key; auxiliary information aux per set tracking subrange structure[^14] |
 | **Correctness condition** | Pr[fail] = O(1/sqrt(n)) per query due to puncturing failure; reducible to negl(λ) via Checklist's refinement (Appendix A.4.2)[^15] |
 
-[^13]: Section 8, Implementation (p.12): "We use AES to implement a PRF for small range, and then apply Patarin's proposal [49] to the PRF to build a secure PRP."
+[^13]: Section 8, Implementation (p.12): "We use AES to implement a PRF for small range, and then apply Patarin's proposal [49] to the PRF to build a secure PRP that has a small power-of-two range."
 [^14]: Section 5.3 (p.9): aux = [(r_ell, t_ell)]_{ell in [L]} tracks subrange extents and element counts.
-[^15]: Section 6.2 (p.11): "The proposed online phase does not meet our correctness definition because the client fails to puncture the set at index i with probability O(1/sqrt(n))."
+[^15]: Section 6.2 (p.11): "The proposed online phase does not meet our correctness definition because the client fails to puncture the set at index i with probability O(1/sqrt(n)) where n is the original database size."
 
 ### Key Data Structures
 
@@ -203,9 +203,9 @@ For a database of size 2^20 with sets of size 2^10:[^24]
 
 [^30]: Theorem 10 (p.19): "the total computation to the offline server is in expectation O(bm log n)."
 [^31]: Section 3.2, Non-triviality (p.4): "the size of the update summary delta, update query u_q, and update response u_r should be sublinear in n'."
-[^32]: Section 6.2 (p.11): "the client can preprocess the database from scratch when the local storage becomes too high."
+[^32]: Section 6.2 (p.14): "the client can preprocess the database from scratch when the local storage becomes too high."
 [^33]: Section 3.3, Weak deletion (p.4): "We relax the above definition to require only that new clients do not learn any deleted items."
-[^34]: Section 3.3 (p.4): "We consider three types of mutations: addition of new objects, deletion of existing objects, and in-place edits."
+[^34]: Section 3.3 (p.4): "We consider three types of mutations: addition of new objects, deletion of existing objects, and in-place edits that change the database's content but does not alter its size."
 
 ### Mutation Model
 
@@ -239,10 +239,10 @@ The paper distinguishes two deletion semantics:[^33]
 | PIR-Tor [^41] | CK-based directory server PIR | 7x throughput improvement over DPF-PIR baseline for Tor directory lookups[^42] | Requires mutable relay database; limited to 2-server non-colluding model |
 
 [^38]: Figure 9 (p.13): IncPrep takes 1.03 sec vs Prep at 58.67 sec for N=2^20 (approx 57x speedup).
-[^39]: Appendix E (p.20): "we show how to adapt the PPRS in SACM to support our notion of incrementality."
-[^40]: Section 8 (p.12): "we also have a construction for incremental SACM but find that both the original and our incremental version are not yet in practice (for a database with 2^20 items, the size of the hints in both schemes is as large as the database)."
+[^39]: Appendix E (p.20): "we show how to adapt the PPRS in SACM to support our notion of incrementality and obtain our second construction of an incremental offline/online PIR scheme."
+[^40]: Section 8 (p.12): "we also have a construction for incremental SACM but find that both the original and our incremental version are not yet useful in practice (for a database with 2^20 items, the size of the hints in both schemes is as large as the database)."
 [^41]: Section 7 (p.12): PIR-Tor application with incremental OO-PIR.
-[^42]: Section 1 (p.1): "an implementation of PIR-Tor that uses our iCK construction improves the throughput achieved by Tor directory nodes by roughly 7x."
+[^42]: Section 1 (p.1): "an implementation of PIR-Tor that uses our iCK construction improves the throughput achieved by Tor directory nodes by roughly 7x over an implementation of PIR-Tor that uses a state-of-the-art 2-server PIR scheme."
 
 ### Performance Benchmarks
 
@@ -357,7 +357,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 - **Additions must be appended:** Insertions at arbitrary positions would change all subsequent indices, requiring full repreprocessing. Items can only be added to the end of the database.[^20]
 - **Keyword PIR incompatibility:** Incremental preprocessing combined with keyword PIR (where clients query by keyword rather than index) remains an open problem because mutations may change keywords or add new keywords, disrupting the underlying search data structure.[^52]
 
-[^51]: Section 1 (p.1): "our approach is not black-box. Instead, it requires exploiting the structure of the underlying OO-PIR protocol."
+[^51]: Section 1 (p.5): "our approach is not black-box. Instead, it requires exploiting the structure of the underlying OO-PIR protocol."
 [^52]: Section 9 (p.14): "it is unclear how to support incremental preprocessing and PIR-by-keywords given that mutations that changes the keywords of existing items or add new keywords would impact the underlying search data structure."
 
 ### Comparison with Prior Work

@@ -24,11 +24,11 @@
 
 VIA addresses the high online communication cost of lattice-based PIR schemes that eliminate offline communication. Prior hintless schemes (YPIR, HintlessPIR) achieve O_lambda(sqrt(N)) online communication; VIA achieves O_lambda(1) -- specifically O(log N) online communication -- by replacing coefficient expansion with a DMux-CMux binary tree that generates the encrypted one-hot vector from only log I RGSW ciphertexts of control bits.[^1] The DMux-CMux architecture requires only logarithmically many ciphertexts to select among I rows and J columns, yielding the name "VIA" from the symmetric triangular layout of the DMux and CMux trees.[^2] VIA-C further compresses queries to O(log N) elements in Z_q via a novel LWE-to-RLWE conversion that introduces only O(n log n) noise variance, achieving 87.6x smaller queries than Respire for a 32 GB database.[^3]
 
-[^1]: Abstract (p.1): VIA achieves O_lambda(log N) online communication complexity, the first practical PIR protocol without offline communication to do so.
+[^1]: Abstract (p.1): "we propose VIA, a single-server PIR scheme that eliminates offline communication while achieving O_lambda(log N) online communication complexity."
 
 [^2]: Section 1.1 (p.3): The DMux-CMux architecture resembles a symmetric triangular configuration (a "V" shape), which inspired the name VIA.
 
-[^3]: Section 1.1 (p.4): VIA-C's LWE-to-RLWE conversion reduces queries to l*log(IJn_1/n_2) = l*log N elements in Z_{q_1}. For a 32 GB database, VIA-C's query size is only 0.659 KB vs. Respire's 57.77 KB.
+[^3]: Section 4.2 (p.13): VIA-C's LWE-to-RLWE conversion reduces queries to l*log(IJn_1/n_2) = l*log N elements in Z_{q_1}. For a 32 GB database, VIA-C's query size is only 0.659 KB vs. Respire's 57.77 KB.
 
 ### Variants
 
@@ -38,7 +38,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 | **VIA-C** | LWE-to-RLWE query compression + RLWE-to-RGSW on server + blinded extraction; p = 16 | 14.8 MB (eval keys) | 0.57--0.66 KB | 1.44 KB | Minimum communication; small-record databases |
 | **VIA-B** | Batch extension of VIA-C; homomorphic repacking packs T answers into one RLWE ciphertext | 14.8 MB (eval keys) | 17--145 KB (batch T) | 1.48--1.81 KB | Batch queries on tiny-record (1-byte) databases |
 
-[^4]: Table 1 (p.18): VIA achieves 690.25 KB total online communication for 32 GB, vs. YPIR's 2572 KB and HintlessPIR's 10578 KB.
+[^4]: Table 1 (p.18): VIA achieves 690.25 KB total online communication for 32 GB, vs. YPIR's 2572 KB and HintlessPIR's 18578 KB.
 
 [^5]: Table 1 (p.18): VIA-C achieves 2.098 KB total online communication for 32 GB (0.659 KB query + 1.439 KB response), vs. Respire's 59.77 KB.
 
@@ -196,7 +196,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 | Answer Step 8: RespComp | Server | ModSwitch + RingSwitch + truncation | 1.44 KB down | Per query |
 | Decode | Client | RespCompRecover(S_2, ans) -> record d | -- | Per query |
 
-[^22]: Figure 8 (p.14): VIA-C adds CRot (step 6) and response compression (step 7) compared to VIA. The rotation ciphertext is not sent directly; instead, encrypted rotation bits are sent and CRot is applied homomorphically.
+[^22]: Figure 8 (p.14): VIA-C adds query decompression (step 1), CRot (step 6), and response compression (step 7) compared to VIA. The rotation ciphertext is not sent directly; instead, encrypted rotation bits are sent and CRot is applied homomorphically.
 
 #### VIA-B Protocol (Figure 9, p.15)
 

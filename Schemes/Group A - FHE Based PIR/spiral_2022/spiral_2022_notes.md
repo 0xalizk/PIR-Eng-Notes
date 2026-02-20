@@ -173,9 +173,9 @@ The fundamental design tension in lattice-based PIR is:
 
 [^13]: Section 1.1 (p.3): In the BFV scheme, ciphertext noise scales *exponentially* in the multiplicative depth of computation.
 
-[^14]: Theorem 2.19 (p.11-12): For Multiply(C_GSW, C_Regev), the error is ||mu||_inf * ||E_Regev||_inf + md * ||E_GSW||_inf * z/2. The key property is that ||E_GSW||_inf is the error of a *fresh* GSW ciphertext (not the accumulated Regev error), so the noise contribution from the GSW side does not compound.
+[^14]: Theorem 2.19 (p.11-12): For Multiply(C_GSW, C_Regev), the error is d * ||mu||_inf * ||E_Regev||_inf + md * ||E_GSW||_inf * z/2. The key property is that ||E_GSW||_inf is the error of a *fresh* GSW ciphertext (not the accumulated Regev error), so the noise contribution from the GSW side does not compound.
 
-[^15]: Section 1.2 (p.4): "Gentry and Halevi estimate that the size of the queries in their construction to be 30 MB, which is more than 450x worse compared to existing schemes."
+[^15]: Section 1, p.4 (introduction, before Section 1.2): "Gentry and Halevi estimate that the size of the queries in their construction to be 30 MB, which is more than 450x worse compared to existing schemes."
 
 ---
 
@@ -207,7 +207,7 @@ where C is chosen so that epsilon_corr = 2dn^2 exp(-pi C^2) <= 2^{-40}.
 
 **Dominant noise source:** First-dimension processing (scales as 2^{v1} * n * d * (p/2)^2) when v1 is large. The first dimension size is capped at 2^9 before noise from coefficient expansion becomes too high for the lattice parameters.[^17]
 
-[^17]: Section 5.3 (p.31-32): "the first dimension can have size at most 2^9 before the noise from the coefficient expansion process is too high to ensure correctness."
+[^17]: Section 5.3 (p.31-32): "the first dimension can have size at most 2^9 before the noise from the coefficient expansion process is too high to ensure correctness." Note: This 2^9 limit applies specifically to Spiral and SpiralPack (not SpiralStream), and the paper adds the qualifier "without moving to a larger set of lattice parameters."
 
 ---
 

@@ -125,7 +125,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 | **Key structure** | Per-client puncturable pseudorandom set keys; in the computational variant, PRG seeds replace explicit shift vectors |
 | **Correctness condition** | Pr[fail per single read] <= 1/2 (from Bernoulli sampling in Query). Amplified to 2^{-λ} by running λ parallel instances. Can be further transformed to *perfect correctness* at the cost of a negligible security loss.[^21] |
 
-[^21]: Appendix C.2 (p.49-50): Failure probability analysis. Each read fails when j = bottom or i_punc != i, with combined probability at most (s-1)/n + 1/n <= 1/2 for s <= n/2.
+[^21]: Appendix C.2 (p.49-50): Failure probability analysis. Each read fails when j = bottom (probability <= 1/n) or i_punc != i (probability (s-1)/n), with combined probability at most s/n <= 1/2 for s <= n/2.
 
 ### Key Data Structures
 

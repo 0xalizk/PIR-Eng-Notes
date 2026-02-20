@@ -245,7 +245,7 @@ Database: 2^32 elements of 1 bit each.
 
 Query time amortized per client over 2000 queries.[^35]
 
-[^35]: Figure 7 (p.23): TreePIR is 3.6x faster than Checklist, uses 8,190x less client storage than Checklist, and uses 2,024x less bandwidth than PRP-PIR.
+[^35]: Figure 7 (p.23): TreePIR is 3.6x faster than Checklist (12574/3508). Storage and bandwidth ratios are approximate: roughly 8,190x less client storage than Checklist and roughly 2,024x less bandwidth than PRP-PIR (exact ratios may differ slightly from table data).
 
 #### TreePIR + SPIRAL (moderate elements, moderate DB)
 

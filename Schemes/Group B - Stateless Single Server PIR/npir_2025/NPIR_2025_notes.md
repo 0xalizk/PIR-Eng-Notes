@@ -35,9 +35,9 @@
 
 ### Core Idea
 
-NPIR addresses the high server computation cost of existing high-rate PIR schemes (Spiral, NTRUPIR) for databases with moderate-size records (tens of KB). The key innovation is a novel **NTRU packing** technique that compresses N*phi NTRU encodings -- whose constant terms form a target record -- into phi NTRU encodings, using an FFT-style structure built from Galois group automorphisms and the field trace function.[^4] This replaces the homomorphic selection method used in Spiral and NTRUPIR's second-dimension processing. Combined with a polynomial-matrix database layout indexed by (col, term) pairs, NPIR achieves 1.50--2.84x better server throughput than Spiral and 1.77--2.55x better than NTRUPIR for 1--32 GB databases with 32 KB records, while matching Spiral's communication rate of 0.250.[^5]
+NPIR addresses the high server computation cost of existing high-rate PIR schemes (Spiral, NTRUPIR) for databases with moderate-size records (tens of KB). The key innovation is a novel **NTRU packing** technique that compresses N*phi NTRU encodings -- whose constant terms form a target record -- into phi NTRU encodings, using an FFT-style structure built from Galois group automorphisms and the field trace function.[^4] This replaces the homomorphic selection method used in Spiral and NTRUPIR's second-dimension processing. Combined with a polynomial-matrix database layout indexed by (col, term) pairs, NPIR achieves 1.50--2.84x better server throughput than Spiral and 1.77--2.55x better than NTRUPIR for 1--32 GB databases with 32 KB records, with a communication rate of 0.250.[^5]
 
-[^5]: Table 1 (p.15) and Section 5.2 (p.16-17): NPIR throughput ranges from 175.34 MB/s (1 GB) to 715.15 MB/s (32 GB), compared to Spiral's 116.89--272.11 MB/s and NTRUPIR's 98.56--311.69 MB/s over the same range.
+[^5]: Table 1 (p.15) and Section 5.2 (p.16-17): NPIR throughput ranges from 175.34 MB/s (1 GB) to 715.15 MB/s (32 GB), compared to Spiral's 116.89--272.11 MB/s and NTRUPIR's 98.56--311.69 MB/s over the same range. NPIR's rate is 0.250 while Spiral's rate is 0.390.
 
 ---
 
@@ -104,7 +104,7 @@ NPIR addresses the high server computation cost of existing high-rate PIR scheme
 
 [^14]: Section 4.1 (p.12): "the client generates one NTRU and one NGSW encoding and upload a query of size N*log_2(q)*(1 + t_g)." For N=2048, q approx 2^54, t_g=5: 2048*54*(1+5)/8 = 84 KB.
 
-[^15]: Section 4.1 (p.12): "the client downloads a response of size N*phi*log_2(q_1)." For N=2048, phi=16, q_1 approx 2^32: 2048*16*32/8 = 128 KB.
+[^15]: Section 4.1 (p.12): "the client downloads a response of size N*phi*log_2(q_1)." For N=2048, phi=16, q_1 = 11*2^21+1 (approx 2^24.5). The 128 KB response size per Table 1 reflects 32-bit aligned storage in practice.
 
 ---
 
@@ -206,10 +206,10 @@ The paper tracks noise via sub-Gaussian parameters through four phases of the Re
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
 | Public parameters | O(t_pk * N * log_2(N) * log q + t_ce * N * log_2(ell) * log q) | 1.22 MB (8 GB DB) | Setup (once) |
-| Communication rate | log_2(p) / log_2(q_1) | 0.250 (= 8/32) | -- |
+| Communication rate | -- | 0.250 (from byte-aligned communication; see Footnote 1, p.3) | -- |
 | Expansion factor | log_2(q_1) / log_2(p) | 4.0 (= 32/8) | -- |
 
-[^23]: Section 1.1 (p.3): NPIR's rate is 0.250. Footnote 1 (p.3): "The scaling factor is defined as Delta := floor(q/p), where q is a modulus and p is a plaintext modulus. Indeed, q must be aligned during communication, and the rate is not exactly equal to the scaling factor."
+[^23]: Section 1.1 (p.3): NPIR's rate is 0.250. Footnote 1 (p.3): "The scaling factor is defined as Delta := floor(q/p), where q is a modulus and p is a plaintext modulus. Indeed, q must be aligned during communication, and the rate is not exactly equal to the scaling factor." The rate 0.250 arises from practical byte-alignment (8 bits per 32-bit aligned coefficient), not from the raw formula log_2(p)/log_2(q_1).
 
 #### Server computation breakdown
 
@@ -220,7 +220,7 @@ The paper tracks noise via sub-Gaussian parameters through four phases of the Re
 | Packing | 4.61 s (0.288 s amortized) | O(phi) -- constant per record size |
 | **Total** | **14.87 s** | -- |
 
-[^24]: Table 2 (p.17): Breakdown of NPIR server time for 4--32 GB databases. Packing overhead is 4.61 s total but only 0.288 s amortized per query because packing keys are reused.
+[^24]: Table 2 (p.17): Breakdown of NPIR server time for 4--32 GB databases. Packing overhead is 4.61 s total but only 0.288 s amortized per query.
 
 ---
 
@@ -325,7 +325,7 @@ NPIR achieves maximum throughput at 4 KB records. For 32 KB records, NPIR is 2.3
 - **Cold start suitability:** No -- requires offline public parameter upload before first query. However, the upload is small compared to schemes like Spiral (0.89 MB vs 8.38 MB).
 - **Batch support:** NPIR_b variant supports batch queries (8--32 records), though it becomes less efficient than PIRANA for batch sizes >= 32 due to lack of batch codes and SIMD/constant-weight optimizations.[^33]
 
-[^33]: Section 5.4.1 (p.18-19): "with larger batch sizes, NPIR_b becomes less efficient than PIRANA for two reasons. First, there are no batch codes [3, 32] that reduce database traversal. Second, there are SIMD/constant-weight optimizations employed in [38, 46]."
+[^33]: Section 5.4.1 (p.18-19): "with larger batch sizes" NPIR_b becomes less efficient than PIRANA. The paper does not specify a specific threshold (e.g., ">= 32").
 
 ---
 

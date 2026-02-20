@@ -73,7 +73,7 @@ Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage a
 | **Built from** | Array + hash map |
 | **Standalone complexity** | O(Q log m) bits total for up to Q consumed positions, using the hash map for constant-time inverse lookups. [^12] |
 
-[^12]: Construction 3.4 (p.14): Hist stores array C and hash map M. All operations are O(1). Storage is O(|C| * (log m' + log |C|)) bits.
+[^12]: Construction 3.4 (p.14-15): Hist stores array C and hash map M. All operations are O(1). Storage is O(|C| * (log m' + log |C|)) bits (storage formula on p.15).
 
 ### Cryptographic Foundation
 
@@ -129,7 +129,7 @@ Deterministic correctness -- the scheme always returns the correct answer, with 
 
 The key invariant is maintained by induction (Lemma 4.3, p.19): after every query, for every unconsumed column c in [m'] \ C, the stored hint h_c equals XOR_{j in [T]} DB_j[DS_j.Access(c)]. Initially this holds because HintConstruct computes exactly these XOR sums. After a query consuming column c, the Reconstruct phase relocates each entry in column c to a random empty position r_j in the same row (via DS_j.Relocate), and updates h_{r_j} <- h_{r_j} XOR a[j] where a[j] is the entry value returned by the server. This preserves the XOR invariant for the new column because the relocated entry is now accounted for in h_{r_j}.[^21]
 
-[^21]: Lemma 4.3 (p.19): "Initially, we can see that the hint table is correct by inspecting HintConstruct. After a query, an element is appended to Hist... for each row that an element is moved in DS, the value is added onto the parity value for the new column."
+[^21]: Lemma 4.3 (p.19): Initially the hint table is correct by inspecting HintConstruct. After a query, an element is appended to Hist; for each row where an element is moved in DS, the value is XORed onto the parity value for the new column (paraphrase of proof argument).
 
 Correctness of answer reconstruction: the client computes DB[i] = h[c] XOR (XOR_{j in [T], j != j*} a[j]). Since h[c] = XOR_{j in [T]} DB_j[DS_j.Access(c)] and a[j] = DB_j[DS_j.Access(c)] for j != j*, the XOR cancels all terms except DB_{j*}[DS_{j*}.Access(c)] = DB[i]. (Lemma 4.4, p.19).[^2]
 
@@ -166,7 +166,7 @@ Correctness of answer reconstruction: the client computes DB[i] = h[c] XOR (XOR_
 | **Number of DB passes** | 1 |
 | **Hint refresh mechanism** | Full re-download every Q = n/T queries (consumed columns are not replenished) [^17] |
 
-[^24]: Construction 4.2 (p.18): "The client streams the entire database one entry at a time." HintConstruct processes entries sequentially.
+[^24]: Construction 4.2 (p.18): "The client streams the database by each element." HintConstruct processes entries sequentially.
 
 #### Space-Time Tradeoff
 

@@ -29,7 +29,7 @@ SimplePIR exploits the structure of Regev's LWE-based encryption to shift the va
 
 [^3]: Section 4.1 (p.6): "a large part of the ciphertext — namely, the matrix A — is independent of the encrypted message. It is thus possible to generate the matrix A ahead of time."
 [^4]: Remark 4.1 (p.5): The server performs 2N operations in Z_q per query, and 2nN operations in the preprocessing phase, where n = 2^10.
-[^5]: Table 1 (p.3) and Section 1 (p.1): SimplePIR achieves 10 GB/s/core; the fastest prior single-server scheme (SpiralStreamPack) achieves 1,314 MB/s.
+[^5]: Table 1 (p.3) and Section 1 (p.1): SimplePIR achieves 10 GB/s/core; the fastest prior single-server scheme (Spiral family [76]) achieves 1,314 MB/s.
 [^6]: Section 5 (p.7): DoublePIR reduces the hint to roughly n^2 on lattice dimension n = 2^10, concretely 16 MB.
 
 ### Variants
@@ -37,7 +37,7 @@ SimplePIR exploits the structure of Regev's LWE-based encryption to shift the va
 | Variant | Hint Size | Online Upload | Online Download | Throughput | Best For |
 |---------|-----------|---------------|-----------------|------------|----------|
 | **SimplePIR** (Section 4) | n * sqrt(N) elements in Z_q (approximately 121 MB for 1 GB DB) | sqrt(N) elements in Z_q (approximately 120 KB) | sqrt(N) elements in Z_q (approximately 120 KB) | 10.0 GB/s/core | Maximum throughput; amortized over many queries |
-| **DoublePIR** (Section 5) | kappa * n^2 elements in Z_q (approximately 16 MB, independent of N) | 2 * sqrt(N) elements in Z_q (approximately 345 KB) | kappa * (2n + 1) elements in Z_q (approximately 345 KB) | 7.4 GB/s/core | Smaller hint; fewer queries to amortize |
+| **DoublePIR** (Section 5) | kappa * n^2 elements in Z_q (approximately 16 MB, independent of N) | 2 * sqrt(N) elements in Z_q (approximately 313 KB) | kappa * (2n + 1) elements in Z_q (approximately 32 KB) | 7.4 GB/s/core | Smaller hint; fewer queries to amortize |
 
 ### Cryptographic Foundation
 
@@ -49,7 +49,7 @@ SimplePIR exploits the structure of Regev's LWE-based encryption to shift the va
 | **Key structure** | Secret key s sampled uniformly from Z_q^n. Matrix A in Z_q^{sqrt(N) x n} is a public parameter (derived from a short seed via hash function in practice).[^9] Stateless client — no persistent secret across queries. |
 | **Correctness condition** | floor(q/p) >= sqrt(2) * sigma * p * N^{1/4} * sqrt(ln(2/delta)) where sigma is the Gaussian error standard deviation and delta is the correctness error probability[^10] |
 
-[^7]: Section 3.1 (p.4) and Section 2 "Plain learning with errors" (p.3): "We base our PIR schemes on the standard learning-with-errors (LWE) problem — not the ring variant."
+[^7]: Section 3.1 (p.4) and Section 1 "Plain learning with errors" (p.3): "We base our PIR schemes on the standard learning-with-errors (LWE) problem — not the ring variant."
 [^8]: Section 3.1 (p.4): Regev encryption defined with parameters (n, q, chi) and plaintext modulus p.
 [^9]: Section 4.1, point 3 (p.7): "we compress A using pseudorandomness... the server and the clients can derive A as the output of a public hash function."
 [^10]: Theorem C.1, Equation (2) (p.20): The correctness condition for SimplePIR.
@@ -116,7 +116,7 @@ as long as:
 
 floor(q/p) >= sqrt(2) * sigma * p * N^{1/4} * sqrt(ln(2/delta))
 
-This follows from ||db[i_row, :]|| <= sqrt(N) * (p/2)^2 = N^{1/4} * p/2, combined with Gaussian concentration.
+This follows from ||db[i_row, :]|| <= sqrt(sqrt(N) * (p/2)^2) = N^{1/4} * p/2, combined with Gaussian concentration.
 
 [^18]: Appendix C.2, Theorem C.1 (p.20): Formal correctness proof deriving the parameter constraint.
 
@@ -176,7 +176,7 @@ which is slightly more conservative than SimplePIR due to the union bound over k
 | Amortized offline/query (over 100 queries) | hint / Q | 1.4 MB (SimplePIR); 0.5 MB (DoublePIR)[^25] | — | — |
 
 [^23]: Figure 17 (p.30, Appendix H): Server preprocessing time on databases of increasing size. On 1 GB, both schemes take approximately 5 core-minutes for full preprocessing; 1% DB change takes a few seconds.
-[^24]: Table 8 (p.13): SimplePIR offline download = 0 MB server-to-client hint download is 121 MB; DoublePIR offline download = 16 MB.
+[^24]: Table 8 (p.13): SimplePIR offline upload = 0 MB, offline download (server-to-client hint) is 121 MB; DoublePIR offline download = 16 MB.
 [^25]: Table 16 (p.31, Appendix H): Per-query communication amortized over 100 queries.
 
 #### If-reported metrics
@@ -309,7 +309,7 @@ SimplePIR and DoublePIR achieve a novel point in the PIR design space: substanti
 
 [^38]: Appendix D.1 (p.22–23): Formal definition of linearly homomorphic encryption with preprocessing.
 [^39]: Appendix D.2 (p.23): "we construct a linear homomorphic encryption scheme with preprocessing from Regev encryption."
-[^40]: Table 11 (p.23): Comparison of linearly homomorphic encryption schemes. The LWE-based construction achieves hint size λ, ciphertext size 1 per bit, and Apply/Dec time λ — all linear or constant in the security parameter.
+[^40]: Table 11 (p.23): Comparison of linearly homomorphic encryption schemes. The LWE-based construction achieves hint size λ, ciphertext size 1 per bit, Apply time 1, and Dec time λ — all linear or constant in the security parameter.
 
 ### Application: Certificate Transparency Auditing
 
