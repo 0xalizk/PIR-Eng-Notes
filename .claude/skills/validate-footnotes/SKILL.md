@@ -44,40 +44,29 @@ Use exactly these three categories:
 
 ## 4. Output format
 
-**File naming** — append a `YYYYMMDD_HHMM` timestamp so new checkups never overwrite previous ones:
-- **Whole group**: `Checkups/Checkup_group<X>_<YYYYMMDD_HHMM>.md`
-- **Single scheme**: `Checkups/Checkup_<scheme>_<YYYYMMDD_HHMM>.md`
+**One file per scheme.** Every scheme gets its own checkup file, even when validating a whole group. This keeps files focused and makes hyperlinking from READMEs clean.
 
-Examples: `Checkup_groupA_20260219_1430.md`, `Checkup_sealpir_20260219_1430.md`
+**File naming** — one file per scheme, stored under the pass directory:
+- `Checkups/<pass>/issues/Checkup_<scheme>.md`
 
-Use this exact structure (adapt the header line for single-scheme scope):
+Examples: `Checkups/1st_pass/issues/Checkup_sealpir.md`, `Checkups/2nd_pass/issues/Checkup_sealpir.md`
+
+**When validating a whole group**, create one file per scheme in that group (e.g., 11 files for Group A).
+
+Use this exact structure for each per-scheme file:
 
 ```markdown
-## Group <X> Footnote Validation Report
-<!-- or for single scheme: ## <Scheme> Footnote Validation Report -->
+## <Scheme> (<Year>) — Footnote Validation
 
-**Date:** <YYYY-MM-DD>
-**Scope:** All <N> engineering notes in Group <X> (<Group Name>)
-<!-- or for single scheme: **Scope:** <Scheme> (<Year>), Group <X> -->
-**Method:** Each footnote's cited location was checked against the source PDF to verify correctness of the claim, quote, page number, and section reference.
+**Notes:** [<scheme>_notes.md](<relative-path-to-notes-file>)
+**PDF:** [<Paper>.pdf](<relative-path-to-pdf>)
+**Total footnotes:** <N> | **Correct:** <N> | **Minor:** <N> | **Incorrect:** <N>
 
 ---
 
-### Summary
+### INCORRECT Findings
 
-| # | Paper | Notes File | Total FN | Correct | Minor | Incorrect |
-|---|-------|-----------|----------|---------|-------|-----------|
-| 1 | <Name> (<Year>) | `<path>` | <N> | <N> | <N> | <N> |
-| ... | ... | ... | ... | ... | ... | ... |
-| | **TOTALS** | | **<N>** | **<N>** | **<N>** | **<N>** |
-
-**Accuracy rate:** <N>/<Total> = **<X>%** fully correct, <N>/<Total> = **<X>%** correct or minor, <N>/<Total> = **<X>%** incorrect
-
----
-
-### INCORRECT Findings (<N> total)
-
-#### 1. <Paper> — [^N]: <Short description>
+#### [^N]: <Short description>
 
 - **Statement in notes:** "<exact text from the notes>"
 - **Cited location:** <what the footnote claims>
@@ -86,21 +75,20 @@ Use this exact structure (adapt the header line for single-scheme scope):
 
 ---
 
-### MINOR Issues by Paper
+### MINOR Issues
 
-#### <Paper> (<Year>) — <N> minor issues
+**[^N]** — <One-line explanation of the issue.>
 
 **[^N]** — <One-line explanation of the issue.>
 ```
 
 Key formatting rules:
 - INCORRECT findings come first, with full detail (statement / cited location / actual / problem)
-- MINOR issues come second, grouped by paper, one line each
-- Correct footnotes are only counted in the summary table, not listed individually
-- Papers in the summary table are ordered as they appear in the group's root README
-- When referencing repo files, use short hyperlinks — never write out raw paths as plain text:
-  - Notes file: `[SealPIR notes](Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md)`
-  - Source PDF: `[SealPIR PDF](Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/SealPIR_2018.pdf)`
+- MINOR issues come second, one line each
+- Correct footnotes are not listed — only counted in the header stats
+- If there are no INCORRECT findings, write `None.` under the heading
+- If there are no MINOR issues, write `None.` under the heading
+- Every `[^N]` must be hyperlinked per Section 5
 
 ## 5. Always hyperlink to the body of the footnotes (i.e. the bottom of the file, not the body text where the footnote appears)
 
