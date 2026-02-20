@@ -227,89 +227,60 @@ The paper identifies three open problems, framed as intermediate steps toward LW
 
 ---
 
-<a id="fn-1"></a>
 [^1]: Section 1.2 — Technical Overview (p. 3): "Our construction resembles that of [LMW23], but instantiates it with SimplePIR [HHC+23] (Section 2.4) in place of [BV11], and employs matrix-vector multiplication preprocessing due to Williams [Wil07] (Section 2.5) instead of [KU08]."
 
-<a id="fn-2"></a>
 [^2]: Section on sk-DEPIR (p. 2): "More recent work [CIMR25] constructs sk-DEPIR from the Learning Subspace with Noise (LSN) assumption... the resulting scheme is only barely doubly-efficient, achieving server-side computation of O(N/log N)."
 
-<a id="fn-3"></a>
 [^3]: Section 1, Introduction (p. 1-2): "In particular, constructing DEPIR from plain LWE [Reg05] is still open... realizing DEPIR from alternative foundations remains an open problem."
 
-<a id="fn-4"></a>
 [^4]: Section 1.2 — Technical Overview (p. 3): "SimplePIR can be viewed as an instance of algebraic linearly homomorphic encryption (ALHE), analogous to ASHE, where the homomorphic evaluation of a linear transformation on given ciphertexts itself corresponds to some linear transformation over the ciphertexts."
 
-<a id="fn-5"></a>
 [^5]: Section 1.1 — Our Contribution (p. 2): "While our constructions are only barely doubly-efficient, with server computation of O(N/log^2 N) * polyloglog(N), it was previously unknown whether even such modest sublinear efficiency could be achieved from unstructured, plain LWE."
 
-<a id="fn-6"></a>
 [^6]: Section 1.2 — Role of the CRS (p. 3): "Without assuming CRS, the server would need to compute (D-hat * A, D-hat * v) from the LWE ciphertext (A, v)... As n = polylog(N), computing D-hat * A online would nullify the O(log^2 N)-factor savings afforded by [Wil07]."
 
-<a id="fn-7"></a>
 [^7]: Definition 2.1 — DEPIR (p. 4): formal syntax and correctness/privacy/efficiency definitions.
 
-<a id="fn-8"></a>
 [^8]: Definition 2.2 — Keyed DEPIR (p. 5): "We say that a keyed DEPIR scheme is an sk-DEPIR scheme if the adversary is given only oracle access to Query(k, .). If the adversary is also given the key k, the scheme is called a pk-DEPIR scheme."
 
-<a id="fn-9"></a>
 [^9]: Remark 2.1 (p. 6): "An unkeyed DEPIR scheme in the CRS model implies a keyed DEPIR scheme with public preprocessing in the standard model, and vice versa, with both having the same online efficiency."
 
-<a id="fn-10"></a>
 [^10]: Definition 2.4 — LWE with polynomial modulus-to-noise ratio (p. 6): "For any security parameter λ and any polynomial modulus-to-noise ratio 1/alpha = poly(λ), one can, in deterministic poly(λ, log(1/alpha)) time, find parameters n, q, chi..."
 
-<a id="fn-11"></a>
 [^11]: Footnote 1 (p. 2): "While RLWE enjoys an average-case to worst-case reduction due to [LPR10], the reduction is to lattice problems over ideal lattices... whereas plain LWE reduces to problems over general lattices."
 
-<a id="fn-12"></a>
 [^12]: Fig. 1 — SimplePIR Setup (p. 8): "Set (m, p) so that m^2 * floor(log p) >= N. Choose parameters (n, q, chi) such that LWE_{n,m,q,chi} holds, and the modulus-to-noise ratio 1/alpha is at least 2m * p^3."
 
-<a id="fn-13"></a>
 [^13]: Fig. 2 — LWE-based DEPIR Prep (p. 10): "1. Reshape DB... 2. Preprocess D-hat (mod q) into D-tilde using Lemma 3.1. 3. Compute H <- D-hat * A. 4. Output DB-tilde = (D-tilde, H)."
 
-<a id="fn-14"></a>
 [^14]: Fig. 1 — SimplePIR Query (p. 8): "Compute v <- A * s + e + floor(q/p) * u_{j-hat}, where u_j denotes the unit vector with a one in the j-hat-th position."
 
-<a id="fn-15"></a>
 [^15]: Fig. 2 — Extract (p. 10): "Compute z <- w - H * s. Output the k-hat-th bit of round(p/q * z-tilde[i-hat]) as b."
 
-<a id="fn-16"></a>
 [^16]: Section 2.4 (p. 7): "The simple yet powerful idea behind SimplePIR is to observe that D-hat * A is independent of the query index, allowing A to be fixed as a CRS and shared across all queries."
 
-<a id="fn-17"></a>
 [^17]: Theorem 2.1 (p. 7): Williams [Wil07] — "every m x m matrix over R can be processed in O(m^{2+epsilon*log|R|}) time such that every subsequent matrix-vector multiplication can be performed in O(m^2 / (epsilon * log m)^2) steps."
 
-<a id="fn-18"></a>
 [^18]: Appendix A — Proof of Lemma 3.1 (p. 14-15): "Set M := m * (q-1)^2... we can reconstruct A * v in Z_q^m from A-hat * v-hat (mod q_i) for all i in [t], as long as the product of distinct primes satisfies prod q_i > M."
 
-<a id="fn-19"></a>
 [^19]: Section 2.4 — Analysis (p. 7): "Correctness, defined similarly to Definition 2.1, holds as long as the modulus-to-noise ratio satisfies 1/alpha >= 2m * p^3."
 
-<a id="fn-20"></a>
 [^20]: Theorem 3.1 (p. 10-11): "Under the LWE with polynomial modulus-to-noise ratio assumption, there exists a DEPIR scheme in the CRS model achieving the following efficiency for any 0 < epsilon < 1/2."
 
-<a id="fn-21"></a>
 [^21]: Theorem 3.1 + footnote 4 (p. 11): "Server's Online Runtime: O(N/(epsilon * log N)^2) * polyloglog(N) * poly(λ)." Footnote 4: "More precisely, O(N/(epsilon * log N)^2) * polyloglog(N) * Õ(log λ) + Õ(sqrt(N)) * poly(λ)."
 
-<a id="fn-22"></a>
 [^22]: Section 3, below Fig. 2 (p. 10): "If we set m = ceil(sqrt(N / log N)) and p = 2^{ceil(log N)}, which implies 1/alpha = poly(N), we obtain the following theorem."
 
-<a id="fn-23"></a>
 [^23]: Section 1.1 (p. 2): The term "barely doubly-efficient" reflects that the sublinearity factor is only polylogarithmic, contrasting with the polynomial savings (polylog(N) total) of LMW23.
 
-<a id="fn-24"></a>
 [^24]: Corollary 3.1 (p. 11): "Under the LWE with polynomial modulus-to-noise ratio assumption, there exists a keyed DEPIR scheme with public preprocessing in the standard model, achieving the same efficiency stated in Theorem 3.1."
 
-<a id="fn-25"></a>
 [^25]: Section 1 (p. 2): "This remains essentially the only known construction to date, and realizing DEPIR from alternative foundations, particularly from plain LWE, has remained elusive."
 
-<a id="fn-26"></a>
 [^26]: Section 1.2 — Role of the CRS (p. 3): "As n = polylog(N), computing D-hat * A online would nullify the O(log^2 N)-factor savings afforded by [Wil07]. Therefore, we follow SimplePIR and treat A as a CRS."
 
-<a id="fn-27"></a>
 [^27]: This is inferred from the asymptotic expressions. For N = 2^30, log_2 N = 30, so log^2 N is approximately 900 (in natural log: ln(2^30) is approximately 20.8, so ln^2 N is approximately 433). The actual constant depends on the base of the logarithm in Williams' theorem.
 
-<a id="fn-28"></a>
 [^28]: Corollary 3.1 proof (p. 11): "the size of the CRS, A in Z_q^{m x n}, is O(m * n * log q) = Õ(sqrt(N)) * poly(λ)."
 
-<a id="fn-29"></a>
 [^29]: Section 4 — Open Problems (p. 11): "A significant milestone would be the construction of LWE-based (unkeyed) DEPIR scheme in the standard model with server-side computation of O(N^{1-epsilon}) for some constant epsilon > 0, ideally polylog(N)."

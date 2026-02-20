@@ -24,15 +24,10 @@
 
 iSimplePIR (Entry-level) introduces *entry-level incremental preprocessing* for SimplePIR: when individual database entries are inserted, modified, or deleted, the server computes a compact *difference* for the affected entry and sends it to the client, who locally updates the corresponding row of the hint matrix **H** via a single vector-scalar multiplication and addition.[^3] The key observation is that the hint **H** = **D** . **A**, so **H'** = **D'** . **A** = **D** . **A** + (**D'** - **D**) . **A**. For a single modified entry at position (i, j), the difference delta = d'_{i,j} - d_{i,j} is a scalar, and the hint update reduces to adding delta . **A**[j] to the i-th row of **H** — requiring only O(n) integer multiplications and additions instead of the O(n * sqrt(N)) operations needed by the row-level strategy.[^4] For scenarios with many updates in the same row, a *communication-optimized row aggregation* mechanism switches to row-level transmission when the per-entry communication exceeds the per-row cost, controlled by a threshold t = ceil((n * log q + log sqrt(N)) / (log p + log sqrt(N))).[^5] The online phase is completely unchanged from SimplePIR, preserving its throughput and communication properties.
 
-<a id="fn-1"></a>
 [^1]: Section 3.1 (p. 8): SimplePIR scheme description with H = D . A as the hint.
-<a id="fn-2"></a>
 [^2]: Section 1 (p. 2): "Ma et al. [33] propose the concept of incremental preprocessing."
-<a id="fn-3"></a>
 [^3]: Figure 2 (p. 10): Construction 1, entry-level real-time updates step 2 and StateUpdate step 2.
-<a id="fn-4"></a>
 [^4]: Table 1 (p. 14): Before combination SimplePIR requires n*sqrt(N) multiplications and additions; after combination with iSimplePIR (Entry-level), it requires only n multiplications and n additions.
-<a id="fn-5"></a>
 [^5]: Section 4.1 (p. 11): "Let t = ceil((n log q + log sqrt(N)) / (log p + log sqrt(N))). When M' > t, the server computes the differences... and sums the results into an intermediate vector."
 
 ### Cryptographic Foundation
@@ -45,11 +40,8 @@ iSimplePIR (Entry-level) introduces *entry-level incremental preprocessing* for 
 | **Key structure** | Public matrix **A** sampled uniformly from Z_q^{sqrt(N) x n}; client secret **s** sampled from Z_q^n; error vector **e** from discrete Gaussian chi |
 | **Correctness condition** | Noise from LWE error must remain small enough that rounding by Delta recovers the correct plaintext in Z_p. Incremental updates are exact (no additional noise introduced). [^8] |
 
-<a id="fn-6"></a>
 [^6]: Appendix A.1 (p. 23): "The security of SimplePIR scheme is based on the decisional version of the Learning with Errors (LWE) problem [42]."
-<a id="fn-7"></a>
 [^7]: Section 3.1 (p. 8): SimplePIR construction parameters and algorithms.
-<a id="fn-8"></a>
 [^8]: Section 4.1, Theorem 3 (p. 12): "Under the LWE assumption... our single-server iSimplePIR (Entry-level) scheme satisfies correctness, query privacy, and non-triviality."
 
 ### Key Data Structures
@@ -61,7 +53,6 @@ iSimplePIR (Entry-level) introduces *entry-level incremental preprocessing* for 
 | **H** (hint) | Matrix in Z_q^{sqrt(N) x n} | sqrt(N) * n elements in Z_q | Client-side preprocessed hint; H = D . A. Client stores locally. [^7] |
 | **beta** (update summary) | Tuple (beta_edit, beta_del, beta_add) | Variable per update | Server-to-client update package containing entry-level differences or aggregated row vectors, plus version number v [^3] |
 
-<a id="fn-9"></a>
 [^9]: Section 4.2 (p. 14): "the server and client can communicate and store only a small seed to generate matrix A."
 
 ### Protocol Phases
@@ -97,11 +88,8 @@ When the number of modified/deleted entries M' in a row exceeds the threshold t:
 1. Server aggregates all differences in the row, multiplies by the relevant rows of A, and sums into an intermediate vector d'_i or g'_i in Z_q^n
 2. Server sends (i, d'_i, v) to client; client adds d'_i to the i-th row of H [^5]
 
-<a id="fn-10"></a>
 [^10]: Figure 2 (p. 10): Construction 1, step 2 (modification) and StateUpdate step 2 (entry-level).
-<a id="fn-11"></a>
 [^11]: Figure 2 (p. 10): Construction 1, step 3 (deletion). The deleted entry is replaced with a random value to prevent the client from learning the deleted content.
-<a id="fn-12"></a>
 [^12]: Figure 2 (p. 10): Construction 1, step 1 (insertion) and StateUpdate step 1.
 
 ### Correctness Analysis
@@ -114,11 +102,8 @@ When the number of modified/deleted entries M' in a row exceeds the threshold t:
 
 **Query privacy:** The incremental update does not involve the query index i, so the update process is independent of future queries. The distributions P_i (setup from scratch on D') and P'_i (setup on D then incrementally updated) produce computationally indistinguishable queries. The proof uses the triangle inequality and the fact that SimplePIR reuses A across clients (Corollary C.3 in [26]). [^15]
 
-<a id="fn-13"></a>
 [^13]: Theorem 3, proof sketch (p. 12): "the computational cost of iSimplePIR (Entry-level) is O(nM). When M new entries are inserted across M'_r rows, the cost becomes O(nM'_r * sqrt(N))."
-<a id="fn-14"></a>
 [^14]: Section 4.1 (p. 13): "H' = D . A + (D' - D) . A... it is evident that H' equals the product of the updated database D' and A."
-<a id="fn-15"></a>
 [^15]: Section 4.1 (p. 13): Query privacy proof using P_i and P'_i distributions.
 
 ### Complexity
@@ -145,11 +130,8 @@ When the number of modified/deleted entries M' in a row exceeds the threshold t:
 | **Hint size (client storage)** | sqrt(N) * n * log q bits | 241 MB (for 4GB password DB) [^18] | Stored |
 | **Amortization window** | Per-entry (real-time) or per-row (when M' > t in a row) | t = ceil((n log q + log sqrt(N)) / (log p + log sqrt(N))) | -- |
 
-<a id="fn-16"></a>
 [^16]: Table 2 (p. 18): Row-major scenario, iSimplePIR (Entry-level) column. Online comm. 240 KB, server comp. 94.62 ms (row-major) / 95.63 ms (col-major), throughput 10.6 / 10.5 GB/s.
-<a id="fn-17"></a>
 [^17]: Table 2 (p. 18): Column-major scenario. Entry-level offline comp. 0.77s vs Row-level 172.45s (224x reduction). Entry-level offline comm. 28.50 MB vs Row-level 120.75 MB (4.2x reduction).
-<a id="fn-18"></a>
 [^18]: Section 6.2 (p. 20): "the underlying SimplePIR scheme requires clients to store a 241MB hint locally."
 
 ### Update Metrics
@@ -164,11 +146,8 @@ When the number of modified/deleted entries M' in a row exceeds the threshold t:
 | **Deletion semantics** | Weak deletion only. Deleted entry replaced with random r; new clients cannot retrieve. Existing clients who retained prior hints or difference values can potentially recover deleted entries. Strong deletion is impossible in SimplePIR's preprocessing model. [^20] |
 | **Supported mutation types** | Insertion (append-only, at end of DB), modification (arbitrary entry), deletion (replaced with random) [^21] |
 
-<a id="fn-19"></a>
 [^19]: Section 4.1 (p. 11): Communication cost analysis — "approximately M' log p + (M' + 1) log sqrt(N) bits under the entry-level strategy and n log q + log sqrt(N) bits under the row-level strategy."
-<a id="fn-20"></a>
 [^20]: Section 2.3 (p. 8): "Strong deletion... is the ideal property for practical applications." Section 4.1 (p. 12): "secure deletion against malicious clients is impossible in SimplePIR." Footnote 2 (p. 12): "a malicious client may leverage the received update-related data and a copy of the original hint to iteratively query and verify entries in order to recover deleted items."
-<a id="fn-21"></a>
 [^21]: Section 2.3 (p. 7–8): "we focus on three types of database updates: the insertion of new entries, modification of existing entries, and deletion."
 
 ### Mutation Model
@@ -182,9 +161,7 @@ When the number of modified/deleted entries M' in a row exceeds the threshold t:
 | **Re-preprocessing trigger** | None — incremental updates avoid full re-preprocessing for any number of updates. The scheme degrades gracefully: as more entries are updated, communication may trigger row aggregation, but never requires re-running Setup from scratch. [^13] |
 | **Insertion constraint** | Insertions must be at the end of the database. Arbitrary-position insertion would shift all subsequent indices, requiring full re-preprocessing. [^23] |
 
-<a id="fn-22"></a>
 [^22]: Figure 2 (p. 10): "attach version number v" in DBUpdate; "verify the v" in StateUpdate.
-<a id="fn-23"></a>
 [^23]: Section 2.3 (p. 7–8): "we also only support the insertion of new entries at the end of the database. This is because if new entries are added at arbitrary positions, the insertion of a single entry would affect the indices of all subsequent entries."
 
 ### Composability
@@ -197,9 +174,7 @@ When the number of modified/deleted entries M' in a row exceeds the threshold t:
 | **Compatible schemes** | DoublePIR [26] (nm -> n operations), APIR [16] (n*sqrt(N) -> n), VeriSimplePIR [14] ((n+λ)(m+λ) -> (n+λ)), YPIR [38] (d_1 * l_1 -> d_1) [^24] |
 | **Limitations** | Only applicable to schemes whose hint is a matrix product of DB and a public matrix. Schemes using fundamentally different preprocessing (e.g., FHE-based, PRF-based) are not compatible. The technique is specific to the SimplePIR family. [^25] |
 
-<a id="fn-24"></a>
 [^24]: Table 1 (p. 14): Operation counts before and after combination with iSimplePIR (Entry-level) for five schemes.
-<a id="fn-25"></a>
 [^25]: Section 5 (p. 14): "Due to space limitations, we only present the setup phase of the four case study schemes based on SimplePIR."
 
 ### Performance Benchmarks
@@ -210,9 +185,7 @@ Hardware: Intel i7 processor at 3.3 GHz, 16 GB RAM. Ubuntu 24.04. Single-threade
 
 Parameters: Lattice dimension n = 2^10, modulus q = 2^32, plaintext modulus p chosen to minimize online communication. [^27]
 
-<a id="fn-26"></a>
 [^26]: Section 6 (p. 16–17): Experimental setup description.
-<a id="fn-27"></a>
 [^27]: Section 6 (p. 17): "Both row-level and entry-level incremental SimplePIR schemes are benchmarked with lattice dimension n = 2^10, modulus q = 2^32."
 
 #### Microbenchmarks (Table 2, p. 18) — 1GB database, 1% update, 1-bit entries
@@ -238,9 +211,7 @@ Parameters: Lattice dimension n = 2^10, modulus q = 2^32, plaintext modulus p ch
 2. **Column-major (best case for entry-level):** 224x reduction in preprocessing computation (172.45s vs 0.77s), 4.2x reduction in communication (120.75 MB vs 28.50 MB), 4.2x reduction in monetary cost ($0.010635 vs $0.002527).[^28]
 3. **Online phase unchanged:** Both schemes achieve ~95 ms server computation and ~10.5 GB/s throughput for a 1GB database, consistent with original SimplePIR.[^29]
 
-<a id="fn-28"></a>
 [^28]: Section 6.1 (p. 17): "under conditions unfavorable to entry-level incremental preprocessing, iSimplePIR (Entry-level) incurs no additional overhead compared to the row-level scheme" and "it achieves 224x less computation, 4.2x smaller communication."
-<a id="fn-29"></a>
 [^29]: Section 6.1 (p. 17): "the online server computation time of iSimplePIR(Entry-level) is approximately 95ms, which is comparable to that of SimplePIR [26, Table 8]."
 
 #### Scaling behavior (Figures 3 & 4, p. 18–19)
@@ -248,7 +219,6 @@ Parameters: Lattice dimension n = 2^10, modulus q = 2^32, plaintext modulus p ch
 - **Varying update ratio (1%–8%, 1GB DB):** In the column-major setting, iSimplePIR (Entry-level) consistently outperforms row-level. At 8% updates, row aggregation begins to trigger more frequently, narrowing the communication gap. [^30]
 - **Varying database size (1GB–4GB, 1% update):** The communication advantage diminishes from 4.2x at 1GB to 2.1x at 4GB in the column-major case, because the number of modified entries grows faster than the number of rows. [^30]
 
-<a id="fn-30"></a>
 [^30]: Section 6.1 (p. 19): "the communication advantage of iSimplePIR (Entry-level) diminishes with increasing database size — from a 4.2x reduction at 1GB to a 2.1x reduction at 4GB."
 
 #### Password breach detection benchmark (Section 6.2, Figure 5, p. 19–20)
@@ -264,9 +234,7 @@ Database: ~4GB of SHA256 hashes from the Blyss implementation [7, 35], ~1.3 mill
 - **Online throughput:** 8–29x higher than the Spiral family and 133x higher than MulPIR. Online communication is 1.4x lower than DoublePIR but 7x higher than Spiral.[^32]
 - **Client storage:** 241 MB for the hint (applies to all SimplePIR-based schemes).[^18]
 
-<a id="fn-31"></a>
 [^31]: Section 6.2 (p. 20): "iSimplePIR (Entry-level) achieves 86x lower computation and 2.1x smaller communication for offline hint preprocessing compared to iSimplePIR (Row-level)."
-<a id="fn-32"></a>
 [^32]: Section 6.2 (p. 20): "the throughput of iSimplePIR (Entry-level) is 8–29x higher than the Spiral family and 133x higher than MulPIR."
 
 ### Comparison with Prior Work
@@ -280,7 +248,6 @@ Database: ~4GB of SHA256 hashes from the Blyss implementation [7, 35], ~1.3 mill
 | Online overhead | None (identical to SimplePIR) | None | Loses efficient online operations (sends plaintext indices) [^33] | Must query all log N buckets |
 | Composable with SimplePIR family | Yes (DoublePIR, APIR, VeriSimplePIR, YPIR) | Yes (SimplePIR only) | No (multi-server) | No |
 
-<a id="fn-33"></a>
 [^33]: Section 1.2 (p. 5): "in [33], the number of modified or deleted entries M is strictly limited (the product of M and the number of update sets must remain sublinear in N)."
 
 ### Key Tradeoffs & Limitations
@@ -297,7 +264,6 @@ Database: ~4GB of SHA256 hashes from the Blyss implementation [7, 35], ~1.3 mill
 
 - **Computational advantage diminishes with database size:** At 4GB (column-major, 1% update), the communication reduction is 2.1x (down from 4.2x at 1GB), because the number of affected entries grows with sqrt(N) while row count grows with sqrt(N). [^30]
 
-<a id="fn-34"></a>
 [^34]: Section 4.1 (p. 13–14): "the client computation in our incremental preprocessing is independent of N. This contrasts with PIANO [48] which also performs client-side offline computation, but incurs N-related overhead."
 
 ### Open Problems
@@ -308,9 +274,7 @@ Database: ~4GB of SHA256 hashes from the Blyss implementation [7, 35], ~1.3 mill
 
 3. **Single-round incremental updates:** Section 4.2 mentions extending to a single-round setting [9, 46] where the client's queries remain unchanged before and after database updates, with the server incrementally computing new responses at the cost of additional server storage. [^36]
 
-<a id="fn-35"></a>
 [^35]: Section 7 (p. 21): "Future research directions include constructing entry-level incremental preprocessing for sublinear server-side computation schemes [17, 18, 48]."
-<a id="fn-36"></a>
 [^36]: Section 4.2 (p. 14): "We also consider an extension to a single-round [9, 46] setting where the client's queries remain unchanged before and after database updates."
 
 ### Uncertainties

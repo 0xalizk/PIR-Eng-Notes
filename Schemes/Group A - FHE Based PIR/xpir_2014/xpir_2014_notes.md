@@ -188,53 +188,28 @@ Security is parameterized via the Hermite factor gamma. The feasibility boundary
 
 ### Footnotes
 
-<a id="fn-1"></a>
 [^1]: Section 4.1, p. 7 — "we can express the correctness condition as ||c^{2^d} f^{2^d}||\_inf < q\_d/2"
-<a id="fn-2"></a>
 [^2]: Section 3, p. 5, footnote 3 — "we restricted the database entries D\_i to be bits but a w-bit entry can also easily be handled by considering w parallel and independent function evaluations"
-<a id="fn-3"></a>
 [^3]: Abstract, p. 1 — "our implementation achieves a significantly lower bandwidth cost (more than 1000 times smaller)"
-<a id="fn-4"></a>
 [^4]: Section 4, p. 5 — "We make use of the modified NTRU scheme introduced by Stehle and Steinfeld [12]... Stehle and Steinfeld formalized the security setting and reduced the security of their NTRU variant to the ring learning with error (RLWE) problem"
-<a id="fn-5"></a>
 [^5]: Section 4, p. 6 — "we do not use relinearizations as proposed in [11] since we are in a single user setting and we have a shallow well structured circuit (a perfect binary tree) to evaluate"
-<a id="fn-6"></a>
 [^6]: Section 4, p. 6 — "We use a decreasing sequence of odd prime moduli q\_0 > q\_1 > ... > q\_d... we specialize the prime moduli q\_i by requiring q\_i | q\_{i+1} as was proposed in [16]. This allows us to eliminate the need for key switching"
-<a id="fn-7"></a>
 [^7]: Section 4, p. 6 — KeyGen description: "We choose a decreasing sequence of primes q\_0 > q\_1 > ... > q\_d and a polynomial Phi\_m(x)... set f^(i) = 2u^(i) + 1 and h^(i) = 2g^(i)(f^(i))^{-1}"
-<a id="fn-8"></a>
 [^8]: Section 4.1, p. 7 — "With modulus reduction rate of kappa ≈ q\_{i+1}/q\_i the following equation holds c^{2^d} f^{2^d} = (...((c^2 kappa + p\_1)^2 kappa + p\_2)^2... + p\_{2^i})f^{2^d}"
-<a id="fn-9"></a>
 [^9]: Section 2.1, p. 3 — "Bob stores D in a matrix M of size 2^{h/2} x 2^{h/2}"
-<a id="fn-10"></a>
 [^10]: Section 5, p. 8 — "The query Q = [xi\_i(x),...,xi\_{l-1}(x)] is then send to the PIR server"
-<a id="fn-11"></a>
 [^11]: Section 5, p. 9 — "the response (a single ciphertext) R = r([xi\_0(x),...,xi\_{l-1}(x)]) is sent back to the PIR client"
-<a id="fn-12"></a>
 [^12]: Section 5, p. 8 — "Batching was introduced by Smart and Vercauteren [8,9]... The encoding is achieved using the Chinese Remainder Theorem"
-<a id="fn-13"></a>
 [^13]: Section 5, p. 9 — "Single Query: In the single query mode we will also perform batching... we batch the row bits of y\_i and D\_y as well"
-<a id="fn-14"></a>
 [^14]: Table 2, p. 10 — "Polynomial parameters and Query/Response sizes necessary to support various database sizes N"
-<a id="fn-15"></a>
 [^15]: Inferred from Table 2: for d=5, query = 32 MB total / epsilon = 1024 retrievals = ~32 KB per retrieval; response = 784 KB / 1024 = ~0.77 KB per retrieval
-<a id="fn-16"></a>
 [^16]: Table 3, p. 10 — "Index comparison and data aggregation times per entry in the database for (d, epsilon) choices of (5, 1024), (4, 630) and (3, 256) on Intel Pentium @ 3.5 Ghz"
-<a id="fn-17"></a>
 [^17]: Section 4, p. 5 — "a depth 5 or 6 circuit will suffice since that will give us an ability to construct a PIR for a database of size 2^32 and 2^64, respectively"
-<a id="fn-18"></a>
 [^18]: Section 6, p. 9 — "We implemented the proposed PIR protocol with both the Single and Bundled Querying modes in C++ where we relied on Shoup's NTL library version 6.0"
-<a id="fn-19"></a>
 [^19]: Table 1, p. 7 — "Hermite factor and supported circuit depth (gamma, d) for various q and n"
-<a id="fn-20"></a>
 [^20]: Section 4.1, p. 7 — "for larger dimensional lattices, a factor delta^n <= 1.01^n would be the feasibility limit for current lattice reduction algorithms"
-<a id="fn-21"></a>
 [^21]: Table 4, p. 11 — "Comparison of query sizes for databases upto 2^32, 2^16 and 2^8 entries"
-<a id="fn-22"></a>
 [^22]: Section 6, p. 10 — "The query size of our scheme is smaller by a factor of 1024, 1200, and 3072 when compared to BGN, Melchor-Gaborit and Kushilevitz-Ostrovsky, respectively." The bundled query is 3072x smaller than K-O, not 1000x as stated in the notes body text.
-<a id="fn-23"></a>
 [^23]: Section 6, p. 11 — "when the table size is grown from 256 entries to 2^16 entries, the ciphertext size grows only about by 1.26 times in the bundled case"
-<a id="fn-24"></a>
 [^24]: Section 6, p. 10 — "in a Bundled Query with d = 4 and 1 GBytes of data in a row, the processing time will be about 8 times slower than a Kushilevitz and Ostrovsky implementation"
-<a id="fn-25"></a>
 [^25]: Section 3, p. 4-5 — "f(x) = SUM\_{y in [2^l]} (x = y) D\_y (mod 2), where the bitwise comparison (x = y) may be computed as PROD\_{i in [l]} (x\_i + y\_i + 1)"
