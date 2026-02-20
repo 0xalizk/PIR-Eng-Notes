@@ -1,4 +1,4 @@
-## PIR Visualization System
+## Plots of benchmarks/complexity
 
 Visual comparison of 35 PIR schemes across 5 groups, covering both concrete benchmarks and asymptotic complexity.
 
