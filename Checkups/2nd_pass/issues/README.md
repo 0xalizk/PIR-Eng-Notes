@@ -2,8 +2,8 @@
 
 Each footnoted citation across all 34 engineering notes files was re-validated against its source PDF. One subagent per scheme read the notes file, extracted every `[^N]` footnote, checked it against the PDF (page numbers, section refs, quoted text, numerical values, units, arithmetic, attribution), and classified it as Correct, Minor, or Incorrect. The process was guided by the [validate-footnotes](../../../.claude/skills/validate-footnotes/SKILL.md) skill.
 
-| Group | Footnotes | Correct | Minor | Incorrect | Papers | Checkup Reports |
-|-------|-----------|---------|-------|-----------|--------|-----------------|
+| Group | Footnotes | 🟢 Correct | 🟠 Minor | 🔴 Incorrect | Papers | Checkup Reports |
+|-------|-----------|------------|----------|--------------|--------|-----------------|
 | [A](Group%20A#group-a--fhe-based-pir) | 450 | 421 | 27 | 2 | 11 | [SealPIR](Group%20A/Checkup_sealpir.md), [XPIR-2014](Group%20A/Checkup_xpir_2014.md), [XPIR-2016](Group%20A/Checkup_xpir_2016.md), [MulPIR](Group%20A/Checkup_mulpir.md), [Addra](Group%20A/Checkup_addra.md), [OnionPIR](Group%20A/Checkup_onionpir.md), [OnionPIRv2](Group%20A/Checkup_onionpirv2.md), [CwPIR](Group%20A/Checkup_cwpir.md), [Spiral](Group%20A/Checkup_spiral.md), [FrodoPIR](Group%20A/Checkup_frodopir.md), [ThorPIR](Group%20A/Checkup_thorpir.md) |
 | [B](Group%20B#group-b--stateless-single-server-pir) | 345 | 330 | 14 | 1 | 8 | [HintlessPIR](Group%20B/Checkup_hintlesspir.md), [YPIR](Group%20B/Checkup_ypir.md), [WhisPIR](Group%20B/Checkup_whispir.md), [Respire](Group%20B/Checkup_respire.md), [InsPIRe](Group%20B/Checkup_inspire.md), [Pirouette](Group%20B/Checkup_pirouette.md), [VIA](Group%20B/Checkup_via.md), [NPIR](Group%20B/Checkup_npir.md) |
 | [C](Group%20C#group-c--client-independent-preprocessing) | 157 | 157 | 0 | 0 | 4 | [SimplePIR/DoublePIR](Group%20C/Checkup_simplepir_doublepir_2022.md), [VeriSimplePIR](Group%20C/Checkup_verisimplepir_2024.md), [BarelyDoublyEfficient](Group%20C/Checkup_barelydoublyefficient_2025.md), [IncrementalPIR](Group%20C/Checkup_incrementalpir_2026.md) |

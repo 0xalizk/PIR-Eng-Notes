@@ -1,7 +1,7 @@
 ### Group A — FHE Based PIR
 
-| Scheme | Year | Footnotes | Correct | Minor | Incorrect | Checkup |
-|--------|------|-----------|---------|-------|-----------|---------|
+| Scheme | Year | Footnotes | 🟢 Correct | 🟠 Minor | 🔴 Incorrect | Checkup |
+|--------|------|-----------|------------|----------|--------------|---------|
 | SealPIR | 2018 | 41 | 38 | 3 | 0 | [Report](Checkup_sealpir.md) |
 | XPIR | 2014 | 25 | 24 | 1 | 0 | [Report](Checkup_xpir_2014.md) |
 | XPIR Computational | 2016 | 57 | 56 | 1 | 0 | [Report](Checkup_xpir_2016.md) |
