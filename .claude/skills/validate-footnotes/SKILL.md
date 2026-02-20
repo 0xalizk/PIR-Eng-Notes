@@ -102,9 +102,9 @@ Key formatting rules:
   - Notes file: `[SealPIR notes](Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md)`
   - Source PDF: `[SealPIR PDF](Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/SealPIR_2018.pdf)`
 
-## 5. Always hyperlink footnotes
+## 5. Always hyperlink to the body of the footnotes (i.e. the bottom of the file, not the body text where the footnote appears)
 
-**Every mention of a footnote** (`[^N]`) in any output file (checkup reports, fix reports, or any other file that references a footnote) **must** be a clickable hyperlink that goes directly to the **footnote body** at the bottom of the rendered GitHub page — not to the in-text reference in the middle. Never leave a bare `[^N]` reference unhyperlinked.
+**Every mention of a footnote** (`[^N]`) in any output file (checkup reports, fix reports, or any other file that references a footnote) **must** be a clickable hyperlink that goes directly to the **footnote definition** rendered at the bottom of the GitHub page — not to the in-text superscript where the footnote is cited in the body. Never leave a bare `[^N]` reference unhyperlinked.
 
 GitHub renders footnote bodies with anchors in the format:
 
