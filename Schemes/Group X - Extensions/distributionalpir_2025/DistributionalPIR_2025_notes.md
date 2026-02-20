@@ -281,50 +281,97 @@ Where Q and R abbreviate the full expected communication and runtime expressions
 - **Correctness validation scope:** The empirical validation of average-case correctness (Figure 7) uses a specific parameterization (kappa_avg=0.8, kappa_worst=0.01) on a 2014 Twitter dataset. Whether the achieved correctness matches predictions under other distributions or parameter settings is not tested.
 - **CrowdSurf tweet frequency model:** The end-to-end evaluation assumes every followed user has tweeted since last retrieval (Section 9.1). In practice, tweet frequency varies and affects whether CrowdSurf's gains are higher or lower than reported.
 
+<a id="fn-1"></a>
 [^1]: Abstract (p. 1): "We introduce distributional PIR, a new type of PIR that can run faster than classic PIR — both asymptotically and concretely — when the popularity distribution is skewed."
+<a id="fn-2"></a>
 [^2]: Section 10, "PIR with popularity distributions" (p. 14): "Recent work by Lam et al. [63], explored how to improve the cost of batch PIR in the two-server setting. [...] their scheme satisfies a much stronger notion of correctness."
+<a id="fn-3"></a>
 [^3]: Section 10, "PIR with popularity distributions" (p. 14): "Several works in the information-theory community have studied PIR in a similar setting to ours [...] they focus only on communication."
+<a id="fn-4"></a>
 [^4]: Section 1 (p. 1): "the top 1% of Twitter users have the vast majority of followers on the platform [34], the top 1% of web domains account for more than 95% of all web-browsing activity [67, 92]."
+<a id="fn-5"></a>
 [^5]: Section 1 (p. 2): "Our technique is to copy the 'popular' database entries into a separate, small database [...] Since the client's choice of which database to query is independent of the record it wants to fetch, we guarantee exactly the same notion of cryptographic privacy as classical PIR."
+<a id="fn-6"></a>
 [^6]: Theorem 3.3 (p. 5): "Let k = cdf_P^{-1}((kappa_avg - kappa_worst)/(1 - kappa_worst)). There exists a 2*delta-secure distributional-PIR scheme Pi with explicit correctness 1, average-case correctness kappa_avg, worst-case correctness kappa_worst."
+<a id="fn-7"></a>
 [^7]: Section B.3, Claim B.3 (p. 21): "If P_N is a power-law distribution [...] there exists a corresponding distributional PIR scheme [...] with worst-case correctness 0 and server running time T such that lim_{N->infinity} T = O(B)."
+<a id="fn-8"></a>
 [^8]: Section 6 / Section 7.1 (p. 8-9): "our scheme is 128-161x faster for 32-bit ciphertext moduli and 200-349x faster for 64-bit ciphertext moduli."
+<a id="fn-9"></a>
 [^9]: Section 2 (p. 3): "In this section, we introduce distributional PIR, a new type of private-information-retrieval scheme for applications in which (1) some database entries are queried more often than others and (2) a relaxed correctness guarantee is acceptable."
+<a id="fn-10"></a>
 [^10]: Section 2.1 (p. 3): Syntax definition listing all five routines with their signatures.
+<a id="fn-11"></a>
 [^11]: Section 2.1 (p. 3): "Setting the popularity distribution P to be arbitrary recovers the syntax of a standard batch-PIR scheme."
+<a id="fn-12"></a>
 [^12]: Section 2.1, "Security" (p. 3): "Informally, the client's query should leak no information about their requested database indices, just as in a standard PIR scheme."
+<a id="fn-13"></a>
 [^13]: Experiment A.1, Section A.1.1 (p. 18): Formal security experiment defining DistAdv[A, Pi] = |Pr[Sec_Pi(A, 0) = 1] - Pr[Sec_Pi(A, 1) = 1]|.
+<a id="fn-14"></a>
 [^14]: Construction 3.1 / Construction B.7, Dist.Query (p. 5, 23): The routing bit b is sampled as Bernoulli(kappa_worst), independent of the requested index I.
+<a id="fn-15"></a>
 [^15]: Section 2.1, "Correctness" (p. 3-4): "We define three correctness notions for distributional PIR, capturing three types of correctness failure."
+<a id="fn-16"></a>
 [^16]: Section 2.1 (p. 4): "We always have that kappa_worst <= kappa_avg <= kappa_exp since an explicit correctness failure is also an average-case correctness failure, and an average-case correctness failure is also a worst-case correctness failure."
+<a id="fn-17"></a>
 [^17]: Section 2.1, "Efficiency" (p. 4) and Section A.1.3 (p. 19): Formal definitions of expected server time and expected communication cost.
+<a id="fn-18"></a>
 [^18]: Section 2.1 (p. 4): "We can interpret any standard PIR scheme with correctness kappa as a distributional-PIR scheme in which all three correctness parameters are kappa."
+<a id="fn-19"></a>
 [^19]: Section 1 (p. 2): "a generic compiler that lifts a standard PIR scheme into a distributional-PIR scheme." Also Theorem 3.3 (p. 5).
+<a id="fn-20"></a>
 [^20]: Theorem 3.3 (p. 5): Expected server runtime is Õ(k*(1-kappa_worst) + N*kappa_worst).
+<a id="fn-21"></a>
 [^21]: Theorem 3.3 (p. 5): Expected communication is k*log N + C(k)*(1-kappa_worst) + C(N)*kappa_worst.
+<a id="fn-22"></a>
 [^22]: Section 9.1, Table 12 (p. 14): CrowdSurf total cost $0.0057 vs. baseline $0.046, an 8x reduction.
+<a id="fn-23"></a>
 [^23]: Section 7.2.1 (p. 11): "When using Respire, our construction increases the queries-per-second by 6.7-12.8x and reduces communication by 2.3-117x."
+<a id="fn-24"></a>
 [^24]: Section 8, Table 11 (p. 12): Distributional PIR achieves 91 core-ms server CPU and 561 KB communication vs. PIR's 1130 core-ms and 1534 KB.
+<a id="fn-25"></a>
 [^25]: Section 6 (p. 8): "our scheme performs preprocessing and encryption using a RingLWE-based encryption scheme, then converts the preprocessed state and ciphertext into forms that are compatible with SimplePIR."
+<a id="fn-26"></a>
 [^26]: Section 7.1 (p. 9): "we use ciphertext moduli q = 2^32 and q = 2^64 with respective lattice security parameters n = 2048 and n = 4096."
+<a id="fn-27"></a>
 [^27]: Section 6 (p. 8): "the client encrypts their input under a RingLWE-based scheme using prime modulus q_1, reinterprets the RingLWE-type ciphertext as an LWE-type ciphertext [...] and modulus switches the ciphertext to a new modulus q_2."
+<a id="fn-28"></a>
 [^28]: Construction B.7, Dist.Query (p. 23): Full pseudocode showing the Bernoulli routing and index remapping.
+<a id="fn-29"></a>
 [^29]: Section 9, "PIR optimizations" (p. 13): "CrowdSurf uses our linearly homomorphic encryption scheme from Section 6 with hint-compression [...] we use two different clusters: a cluster of CPUs for hint-compression, and a cluster of GPUs for everything else."
+<a id="fn-30"></a>
 [^30]: Table 12 (p. 14): CrowdSurf PIR GPU time = 0.004 s per request.
+<a id="fn-31"></a>
 [^31]: Table 12 (p. 14): CrowdSurf downloads 21 MB per request; clients use 65 MB storage.
+<a id="fn-32"></a>
 [^32]: Section 7.2.1 (p. 11): "our construction increases the queries-per-second by 10-195x and reduces communication by 4.8-9.7x compared to the baseline that doesn't use batch codes."
+<a id="fn-33"></a>
 [^33]: Table 12 (p. 14): "$0.0057 per request for CrowdSurf vs. $0.046 for batch PIR baseline."
+<a id="fn-34"></a>
 [^34]: Table 2 (p. 8): Comparison of encryption schemes showing Section 6 achieves 0.004 s encrypt and 0.7 s decrypt (stateful) or 0.004 s decrypt (stateless).
+<a id="fn-35"></a>
 [^35]: Theorem 5.1 (p. 7): "E[T] >= max{N*(kappa_worst - W), cdf_P^{-1}(kappa_avg - W)}."
+<a id="fn-36"></a>
 [^36]: Section 5 (p. 7): "the runtime of our distributional-PIR construction for a single query is within ~1.4x of the lower-bound."
+<a id="fn-37"></a>
 [^37]: Section 7.1, "Batching requests with GPUs" (p. 10): "For a batch of 50 concurrent requests, one GPU can process roughly 3x more requests per second than the 64-core CPU cluster."
+<a id="fn-38"></a>
 [^38]: Section 3 / Section 4.1 (p. 3, 6): "the PIR server must have a good approximation of the popularity distribution P." Section 4.1 discusses external information, private measurement, and their tradeoffs.
+<a id="fn-39"></a>
 [^39]: Section 1, "Limitations" (p. 3): "this weakened correctness notion more notably affects users with 'out-of-distribution' query patterns, potentially raising fairness concerns."
+<a id="fn-40"></a>
 [^40]: Proposition 2.1 (p. 4): "If a distributional-PIR scheme [...] has average-case correctness kappa_avg under [...] P, then it has average-case correctness at least kappa_avg_hat = kappa_avg - B*Delta(P, P-hat) under query distribution P-hat."
+<a id="fn-41"></a>
 [^41]: Table 1 (p. 7): Big-O asymptotic costs for four public-parameter deployment strategies.
+<a id="fn-42"></a>
 [^42]: Section 9.1 (p. 14): "the cost of hint-compression greatly diminishes the gains from our techniques. Thus, improvements to hint-compression performance will immediately increase the relative improvement of CrowdSurf compared to the baseline."
+<a id="fn-43"></a>
 [^43]: Section 5 (p. 7): "Pre-processing PIR schemes [...] can subvert our lower bound, though these schemes are, as of now, very far from practical [86]."
+<a id="fn-44"></a>
 [^44]: Section 11 (p. 15): "An exciting direction of future work would be to explore whether we can gain analogous speedups in other cryptographic protocols — secure multiparty computation, fully homomorphic encryption, etc."
+<a id="fn-45"></a>
 [^45]: Appendix E, Theorem E.1 (p. 27): "for any linear utility function and batch size 1, average-case utility reduces to average-case correctness."
+<a id="fn-46"></a>
 [^46]: Section 7 (p. 9): "We implemented our distributional-PIR construction, PIR optimizations, and system for private Twitter feeds, CrowdSurf, in approximately 3000 lines of Go and 1000 lines of C++."
+<a id="fn-47"></a>
 [^47]: Section 7.1 (p. 9): "We parameterize our linearly homomorphic encryption with preprocessing to satisfy 128-bits of computational security and 40-bits of statistical correctness [...] sigma = 3.2."

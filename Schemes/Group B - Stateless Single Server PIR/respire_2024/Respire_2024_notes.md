@@ -31,10 +31,13 @@
 
 Existing lattice-based PIR protocols have high communication overhead because RLWE ciphertexts require ring dimension d >= 2048 and modulus q >= 2^32, meaning even a single ring element is >= 8 KB. For databases with small records (e.g., 256 bytes), this is the dominant cost. Respire addresses this by working over *subrings*: the server performs most computation on the large ring R_{d1} (d1=2048) but projects the response onto a subring R_{d2} (d2=512) via dimension reduction (ring switching), achieving a 4x compression of the response.[^1] For query compression, Respire embeds the query into subring coefficients rather than sending a full ring element, reducing query size from 14 KB to 4 KB.[^2] On a 256 MB database with 256-byte records, Respire achieves 6.1 KB total online communication -- a 5.9x reduction over Spiral -- with comparable throughput (200-400 MB/s).[^3]
 
+<a id="fn-1"></a>
 [^1]: Section 1.1 (p.2): "Since d1/d2 = 4, this yields a 4x reduction in response size."
 
+<a id="fn-2"></a>
 [^2]: Section 1.1 (p.2): "This allows us to reduce the query size from 14 KB to 4 KB. Notably, the query is now smaller than even a single element in the big ring R1."
 
+<a id="fn-3"></a>
 [^3]: Abstract (p.1): "To retrieve a single record from a database with over a million 256-byte records, the Respire protocol requires just 6.1 KB of online communication; this is a 5.9x reduction compared to the best previous lattice-based scheme."
 
 ---
@@ -58,10 +61,13 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 | **Key structure** | Two secret keys: s1 = [-s_tilde_1 | 1]^T in R_{d1,q1}^2 (query key, main ring); s2 = [-s_tilde_2 | 1]^T in R_{d2,q2}^2 (compression target key, small ring). Both uploaded as evaluation keys in the offline phase. |
 | **Correctness condition** | Subgaussian tail bound: Pr[fail] <= 1 - 2*d2*n_vec * exp(-pi*(q3/(2p) - B_final)^2 / sigma_resp^2) where sigma_resp^2 aggregates noise through all phases (Eq. D.5, p.49). Target: per-query error <= 2^{-40}.[^6] |
 
+<a id="fn-4"></a>
 [^4]: Section 4.1 (p.16-17): Three RLWE assumptions with different parameters. (1) Main ring R_{d1,q1} uses uniform secret in [-7,7], Gaussian error with sigma=9.9. (2) Main ring R_{d1,q1} for vectorization uses Gaussian secret and error with sigma'_1=9.9. (3) Small ring R_{d2,q2} uses Gaussian secret and error with sigma=253.6.
 
+<a id="fn-5"></a>
 [^5]: Section 2 (p.5): GSW encodings defined with decomposition base z, m = 2*(floor(log_z(q)) + 1). External product: Multiply(C_GSW, c_RLWE) = C_GSW * G_{2,z}^{-1}(c_RLWE).
 
+<a id="fn-6"></a>
 [^6]: Appendix D.1 (p.46-50) and Section 4.1 (p.16): "We choose the scheme parameters to tolerate a correctness error of at most 2^{-40}."
 
 ---
@@ -78,6 +84,7 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 
 **Split modulus switching:** The response compression (Box 1 / Construction C.3) interleaves modulus switching with dimension reduction. The "random" component c1' lives in R_{d2,q2} while the "message-embedding" component c2' lives in R_{d2,q3} where q3 <= q2. This achieves better compression than uniform modulus switching.[^7]
 
+<a id="fn-7"></a>
 [^7]: Section 3 (p.8): "To achieve better compression, we use the 'split' modulus switching approach from Spiral [MW22a], where the message-embedding component of an RLWE encoding is further scaled to a smaller modulus q3 < q2."
 
 ---
@@ -90,12 +97,16 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 - **Query key (qk):** (s1, s2) -- the two secret keys. Retained by the client.
 - **Query (q):** A packed encoding enc = (enc_RLWE, enc_GSW) in R_{d1,q1}^2 containing both RLWE encodings of scaled first-dimension indicator values and GSW encodings of index bits. Total ~4.1 KB (single-query, 256 MB DB).[^11]
 
+<a id="fn-8"></a>
 [^8]: Section 3.1 (p.10): "We view the database as a hypercube with 1 + v2 + v3 dimensions where the first dimension has size 2^{v1}, the remaining v2 + v3 dimensions each have size 2, and v3 = delta1 - delta2."
 
+<a id="fn-9"></a>
 [^9]: Eq. 3.4 (p.11): SetupDB packs records r_{alpha,beta,1},...,r_{alpha,beta,2^{v3}} into r_tilde_{alpha,beta} = Pi(r_{alpha,beta,1},...,r_{alpha,beta,2^{v3}}) in R_{d1,p}.
 
+<a id="fn-10"></a>
 [^10]: Table 1 (p.19): Offline communication for Respire is 3.9 MB across all database sizes (256 MB to 8 GB).
 
+<a id="fn-11"></a>
 [^11]: Table 1 (p.19): Query size is 4.1 KB for 256 MB database (2^20 x 256B), rising to 14.8 KB for 8 GB (2^25 x 256B).
 
 ---
@@ -107,6 +118,7 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 - **Preprocessing required:** Server packs k = d1/d2 = 4 records into each element of R_{d1,p} via the ring packing function Pi (Eq. 3.3), then applies NTT transformation. Preprocessing time: 16.8 s for 256 MB DB, 569 s for 8 GB DB.[^12]
 - **Record size equation:** Each record maps to one element of Z_p[x]/(x^{d3} + 1), encoding d3 * log2(p) bits. With d3 = 512 and p = 16: 512 * 4 = 2048 bits = 256 bytes.
 
+<a id="fn-12"></a>
 [^12]: Section 4.2 (p.20): "This precomputation takes 16.8 s for a 256 MB database, and 569 s for an 8 GB database."
 
 ---
@@ -137,8 +149,10 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 
 **Total online:** 6.1 KB (256 MB DB, single query). For comparison, Spiral requires 36 KB online on the same configuration.[^14]
 
+<a id="fn-13"></a>
 [^13]: Section 4.1 (p.17): "We use a standard optimization...wherein the client sends a PRG seed in place of the random component of the RLWE encodings in the query. We instantiate the PRG using ChaCha20."
 
+<a id="fn-14"></a>
 [^14]: Table 1 (p.19) and Section 4.2 (p.18): "Notably, in Respire, the total communication is smaller than the size of even a single RLWE ciphertext in previous schemes."
 
 ---
@@ -163,10 +177,13 @@ Respire tracks noise growth via subgaussian variance parameters (sigma^2) throug
 - **Independence heuristic used?** Yes -- models subgaussian error terms as independent across homomorphic operations. Empirically validated: predicted error is an overestimate of actual measured noise.[^17]
 - **Dominant noise source:** GSW external products in folding steps (each contributes multiplicatively to sigma_GSW^2) and the first-dimension linear scan (scales with 2^{v1}).
 
+<a id="fn-15"></a>
 [^15]: Appendix A (p.29): "Similar to previous lattice-based PIR schemes based on polynomial rings, we rely on the independence heuristic...we model the (subgaussian) error terms arising in the homomorphic operations as being independent."
 
+<a id="fn-16"></a>
 [^16]: Appendix D.1, Eq. D.5 (p.49): Full correctness bound combining all noise phases via union bound over d2*n_vec coefficients.
 
+<a id="fn-17"></a>
 [^17]: Appendix A (p.29): "We stress that the use of the independence heuristic only impacts the correctness error in the protocol (and not the security of the protocol). Empirically, we observe that there is still slack between the magnitude of the error predicted based on our analysis...and the actual measured noise magnitude."
 
 ---
@@ -183,6 +200,7 @@ Respire tracks noise growth via subgaussian variance parameters (sigma^2) throug
 | Throughput | 204 MB/s | 295 MB/s | 393 MB/s | Online |
 | Offline communication ↑ | 3.9 MB | 3.9 MB | 3.9 MB | Offline (per client) |
 
+<a id="fn-18"></a>
 [^18]: Table 1 (p.19): All values from the single-query Respire row.
 
 #### Preprocessing metrics
@@ -195,6 +213,7 @@ Respire tracks noise growth via subgaussian variance parameters (sigma^2) throug
 | Client response decoding | <= 7 ms | Per query |
 | Client offline upload ↑ | 3.9 MB | Offline (per client, reusable) |
 
+<a id="fn-19"></a>
 [^19]: Section 4.2 (p.20): "The client-side costs in Respire are minimal. In our experiments, the setup time takes a maximum of 80 ms, the query-generation time takes at most 148 ms, and response decoding takes at most 7 ms."
 
 #### FHE-specific metrics
@@ -219,6 +238,7 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 - **Failure probability:** Cuckoo hashing failure <= 2^{-40} with B ~ 3T/2 buckets
 - **Approach:** Server hashes each DB element into B buckets. Client uses Cuckoo hashing to map each of T desired indices to a distinct bucket. Client runs 3T/2 independent single-query Respire instances, one per bucket of size K.
 
+<a id="fn-20"></a>
 [^20]: Section 4.3 (p.20): "Concretely, the work of [ACLS18] shows that when h = 3 and the number of buckets is roughly B ~ 3T/2, the probability of a cuckoo hashing failure...is at most 2^{-40}."
 
 #### Batch-specific building blocks
@@ -226,6 +246,7 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 1. **Homomorphic repacking (Section 3.2):** Takes k = d2/d3 responses and packs them into a single RLWE encoding via rotation, coefficient projection (Box 3), and aggregation. This is the key technique enabling small-record batch efficiency.
 2. **Vectorization (Box 4 / Construction C.1):** When T > k = d2/d3, packs multiple RLWE encodings into a single *vector* RLWE encoding sharing a common random component, reducing response size by ~2.7x at T=32.[^21]
 
+<a id="fn-21"></a>
 [^21]: Section 3.2 (p.13-14): "Concretely, our use of vectorization reduces the response size by a factor of approximately 2.7x when the batch size is 32."
 
 #### Batch benchmarks (Table 2)
@@ -243,6 +264,7 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 | | | Response Size | 128 KB | 31.8 KB |
 | | | Computation | 32.54 s | 28.12 s |
 
+<a id="fn-22"></a>
 [^22]: Table 2 (p.21): Batch Respire vs Vectorized BatchPIR. Respire achieves 3.4-8.5x query reduction, 3.4-4.4x response reduction, and 3.4-7.1x total communication reduction.
 
 ---
@@ -251,6 +273,7 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 **Hardware:** AWS EC2 r7i.8xlarge (Intel Xeon Platinum 8488C @ 2.4GHz), 32 vCPUs, 256 GB RAM, Ubuntu 22.04.4. Single-threaded execution. rustc 1.77.0, gcc 11.4.0. AVX2 enabled (not AVX-512).[^23]
 
+<a id="fn-23"></a>
 [^23]: Section 4.2 (p.18): "We use an AWS EC2 r7i.8xlarge instance with 32 vCPUs...Our implementation of Respire only uses AVX2, and not AVX-512."
 
 #### Single-query comparison (Table 1)
@@ -273,6 +296,7 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 | | Computation | 15.44 s | 0.772 s | 3.698 s | 1.71 s | 20.84 s |
 | | Throughput | 530 MB/s | 10.4 GB/s | 2.16 GB/s | 4.69 GB/s | 393 MB/s |
 
+<a id="fn-24"></a>
 [^24]: Table 1 (p.19): Full comparison data. Throughput defined as database_size / server_computation_time.
 
 ---
@@ -287,12 +311,16 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 4. **Homomorphic repacking for batch PIR:** Combine rotation, projection, and aggregation to pack k separate RLWE-encoded responses into a single packed RLWE encoding. This enables efficient batch PIR without SIMD/BFV, using only external products and automorphisms.[^28]
 
+<a id="fn-25"></a>
 [^25]: Section 1.1 (p.2) and Appendix B (p.35): "When h << d, the client can instead embed h into the coefficients of a polynomial that lives in a subring of R_{d,q}."
 
+<a id="fn-26"></a>
 [^26]: Section 3 (p.6-8) and Remark 3.1 (p.9): Dimension reduction loses information -- only works because records are small and packed into the initial position of the large-ring element.
 
+<a id="fn-27"></a>
 [^27]: Section 3.2 (p.12-13) and Appendix A.1 (p.30-32): Coefficient projection is the key primitive for homomorphic repacking. Builds on automorphism evaluation techniques from [ACLS18, CCR19, CDKS21].
 
+<a id="fn-28"></a>
 [^28]: Section 3.2 (p.12-13) and Remark 3.5 (p.16): "Our response packing approach...may seem similar to Vectorized BatchPIR [MR23] and Piranha [LLWR24]. However, there is a critical difference: both Vectorized BatchPIR and Piranha leverage SIMD support in FHE...Moreover, SIMD packing is not compatible with the query compression techniques [ACLS18, CCR19]."
 
 ---
@@ -307,8 +335,10 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 - **PRG:** ChaCha20 for compressing the random component of query RLWE encodings.[^13]
 - **Open source:** https://github.com/AMACB/respire/
 
+<a id="fn-29"></a>
 [^29]: Section 4.2 (p.18): "Our implementation of Respire contains roughly 8,000 lines of Rust."
 
+<a id="fn-30"></a>
 [^30]: Section 4.1 (p.17): "We implement arithmetic modulo q1 using 64-bit native integer arithmetic modulo q_{1,1} and q_{1,2} (with deferred modular reductions), and combine the results using the Chinese remainder theorem."
 
 ---
@@ -319,6 +349,7 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 - **Password breach checking:** Databases of hash prefixes, each a few hundred bytes. Communication-sensitive setting where low query/response overhead matters more than throughput.
 - **Private certificate transparency:** Retrieving certificate status (small records) from a log with millions of entries.
 
+<a id="fn-31"></a>
 [^31]: Section 1 (p.1) and Remark 2.2 (p.4): "Respire is well-suited for applications where the client is making a handful of queries simultaneously (e.g., blocklist lookup or DNS queries)."
 
 ---
@@ -331,8 +362,10 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 - **Cold start suitability:** No -- requires offline communication. First query requires setup (<=80 ms client-side) plus parameter upload.
 - **Large-record crossover:** When records exceed a few KB, the subring compression techniques provide no benefit, and Respire converges to Spiral (or SpiralPack) performance.[^33]
 
+<a id="fn-32"></a>
 [^32]: Appendix D.2, Theorem D.4 (p.51): Security holds "for all adversaries making at most Q queries."
 
+<a id="fn-33"></a>
 [^33]: Section 1.1 (p.3): "Note that the Respire query compression and response compression techniques are tailored for the setting of small database elements. When the database elements are sufficiently large (concretely, on the order of a few KB), then our compression techniques no longer provide any savings and the Respire protocol is equivalent to Spiral."
 
 ---
@@ -345,10 +378,13 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 - **Batch scalability limit:** For large batch sizes (T > 128), query expansion becomes the dominant cost and scales linearly with T. Schemes with SIMD support (Vectorized BatchPIR, Piranha) are better for T in the hundreds/thousands.[^36]
 - **Client-specific offline phase:** The 3.9 MB upload is tied to the client's secret keys, precluding anonymous / stateless access.
 
+<a id="fn-34"></a>
 [^34]: Section 4.2 (p.19): "Compared to Spiral, Respire is about 26% slower on an 8 GB database (but requires 4.5x less communication and a 2.5x smaller public parameters)."
 
+<a id="fn-35"></a>
 [^35]: Table 1 (p.19) and Section 4.2 (p.19): "Compared to protocols like SimplePIR, HintlessPIR, and YPIR, the Respire protocol is up to 27x smaller [in communication] on the 8 GB database."
 
+<a id="fn-36"></a>
 [^36]: Section 4.3 (p.21-22) and Fig. 7 (p.23): "For large batch sizes, Respire has smaller communication, but larger computational overheads."
 
 ---
@@ -367,6 +403,7 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 **Key takeaway:** Respire should be preferred over other lattice-based PIR schemes when (a) database records are small (<=1 KB), (b) communication bandwidth is the bottleneck (not server computation), and (c) a modest offline parameter upload is acceptable. It achieves total online communication comparable to number-theoretic schemes (ElGamal, Gentry-Ramzan) but with >1000x higher server throughput.[^37]
 
+<a id="fn-37"></a>
 [^37]: Section 4.2 (p.18-19): "The advantage of these traditional number-theoretic schemes has been small communication...For example, the Gentry-Ramzan scheme can have communication as low as 1.8 KB...but at the price of a server throughput of roughly 20 KB/s."
 
 ---

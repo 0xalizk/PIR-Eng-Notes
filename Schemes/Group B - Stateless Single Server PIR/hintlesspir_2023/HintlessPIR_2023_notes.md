@@ -20,15 +20,20 @@
 | **Superseded by** | YPIR [Group B] (2024, eliminates offline communication via CDKS ring packing and GPU acceleration); later Group B schemes (WhisPIR, InsPIRe, VIA) build on similar stateless paradigms |
 | **Concurrent work** | Tiptoe PIR [33] — concurrent independent work that similarly removes the SimplePIR hint using RLWE, but with O(sqrt(m) + n^2) online communication (roughly two orders of magnitude larger than HintlessPIR for large databases)[^2] |
 
+<a id="fn-1"></a>
 [^1]: Abstract (p.1): "Our first construction (HintlessPIR) eliminates the client preprocessing step from the recent LWE-based SimplePIR... by outsourcing the 'hint' related computation to the server, leveraging a new concept of homomorphic encryption with composable preprocessing."
+<a id="fn-2"></a>
 [^2]: Section 1, Technical Contributions (p.9): "Note that while Tiptoe PIR is similarly 'hintless', its per-query communication is asymptotically worse (O(sqrt(m) + n^2) compared to O(sqrt(m) + n)), yielding concretely worse per-query bandwidth (by two orders of magnitude) than HintlessPIR, while also being slower by constant factors."
 
 ### Core Idea
 
 HintlessPIR eliminates the database-dependent client hint from SimplePIR by replacing the local client computation c_0 = H * s (which requires the hint H = DB * A) with a secure server-side computation via a new Linear PIR (LinPIR) sub-protocol called NTTlessPIR.[^3] The key technical innovation is *homomorphic encryption with composable preprocessing*: RLWE-based ciphertexts consist of a public-randomness part alpha(ct) (depending only on the random seed) and a secret-dependent part beta(ct). Since alpha is known in advance, the server can preprocess the expensive parts of all homomorphic operations (gadget products, key-switching, rotations) offline, leaving only cheap linear operations online.[^4] This yields an O(log n) asymptotic speedup in the homomorphic computation. Combined with CRT decomposition to handle arbitrary moduli and RLWE slot packing, the scheme achieves throughput up to 60% of SimplePIR while requiring no offline communication, no client-side database-dependent state, and no server-side client-dependent state.[^5]
 
+<a id="fn-3"></a>
 [^3]: Section 1, "HintlessPIR" (p.5): "The starting point for our first construction is the SimplePIR construction. This arranges the database as a square matrix... One can therefore encrypt the selection vector u_i, and homomorphically multiply by the database to obtain a PIR scheme."
+<a id="fn-4"></a>
 [^4]: Section 3 (p.18): "The main idea is that RLWE-based ciphertexts consists of two parts (a, b) where a is some public randomness that does not depend on the encrypted message, and is often available in advance... the public randomness of the ciphertexts output by homomorphic operations often depends only on the public randomness of the input."
+<a id="fn-5"></a>
 [^5]: Section 8, Conclusion (p.31): "we were able to achieve concretely fast server processing time in our first construction, HintlessPIR, namely up to 60% of the throughput of Simple PIR, and up to 9.4x higher throughput than Spiral PIR."
 
 ### Variants
@@ -54,10 +59,15 @@ HintlessPIR eliminates the database-dependent client hint from SimplePIR by repl
 | **Standalone complexity** | NTTlessPIR: Server preprocessing O(k * ell * n * n_cols * log n); Server response time kn_cols(n_rows + n + (ell+2)n); Client upload kn + ell*n; Client download 2k * ceil(n_rows/n) * n (Lemma 6, p.23)[^9] |
 | **Relationship to prior primitives** | Strictly generalizes standard PIR. LWEPIR (the SimplePIR/FrodoPIR family) is a special case. Tiptoe PIR's LinPIR scheme uses column-major matrix-vector multiplication; NTTlessPIR uses diagonally-dominant decomposition.[^10] |
 
+<a id="fn-6"></a>
 [^6]: Definition 5 (p.16): "A Single-Server LinPIR Scheme with Preprocessing is a tuple of four algorithms..."
+<a id="fn-7"></a>
 [^7]: Definition 7 (p.16): "A Single-Server LinPIR scheme with Preprocessing is said to be secure if for all (i, j) in [m]^2, the distributions of query(i) and query(j) are computationally indistinguishable."
+<a id="fn-8"></a>
 [^8]: Definition 6 (p.16): "A Single-Server LinPIR scheme with Preprocessing Scheme is said to be (1 - delta)-correct if for any database DB..."
+<a id="fn-9"></a>
 [^9]: Lemma 6 (p.23): Complexity analysis of NTTlessPIR.
+<a id="fn-10"></a>
 [^10]: Section 2.5, "Tiptoe PIR" (p.17): "The main difference between this LinPIR scheme and the scheme we develop in Section 4 (NTTlessPIR) is that Tiptoe PIR utilizes the column-major (rather than diagonally-dominant) matrix-vector multiplication algorithm."
 
 #### Composable Preprocessing (alpha/beta Decomposition)
@@ -74,9 +84,13 @@ HintlessPIR eliminates the database-dependent client hint from SimplePIR by repl
 | **Standalone complexity** | Preproc_diamond: O(ell * n * log n) Z_q ops, output size (ell+1)n; Apply_diamond: (ell+1)n Z_q ops (Lemma 2, p.20). Preproc_ks: O(ell * n * log n); Apply_ks: (ell+2)n (Lemma 3, p.20). Preproc_rot^oR: O(ell * n * R * log n); Apply_rot^oR: (R-1)(ell+2)n (Lemma 4, p.21).[^13] |
 | **Relationship to prior primitives** | Analogous to SimplePIR's hint precomputation (server precomputes DB * A), but generalized to the RLWE setting and applicable to arbitrary composable circuits of HE operations, not just matrix-vector multiplication.[^14] |
 
+<a id="fn-11"></a>
 [^11]: Section 3 (p.18): "Eval_F(ek, ct) = Apply_F(Preproc_F(alpha(ek), alpha(ct)), ek, ct)" and "alpha(Apply_F(g, ek, ct)) = Apply^alpha_F(g)."
+<a id="fn-12"></a>
 [^12]: Section 3, Equation 3 (p.18): "the public randomness component of the output... depends only on the result of the preprocessing g, and in particular, it can be computed in advance."
+<a id="fn-13"></a>
 [^13]: Lemmas 2, 3, 4 (pp.20-21): Preprocessing complexities for diamond-product, key-switching, and batched rotations respectively.
+<a id="fn-14"></a>
 [^14]: Section 1, "Homomorphic Encryption with Composable Preprocessing" (p.7): "The high-level idea behind homomorphic encryption with composable preprocessing is similar to SimplePIR, albeit in the setting of RLWE-based encryption, and for a wider class of computations."
 
 ### Cryptographic Foundation
@@ -89,10 +103,15 @@ HintlessPIR eliminates the database-dependent client hint from SimplePIR by repl
 | **Key structure** | LWE secret s sampled from chi_sigma^N (ternary distribution) with N = 1408; RLWE secret v sampled from chi_sigma^n. Fresh RLWE key v per query. A expanded from short seed via random oracle.[^18] |
 | **Correctness condition** | Three conditions must simultaneously hold (Lemma 19, p.46): (1) Q > sqrt(n_cols) * p^2 * sigma * sqrt(ln(1 + n_rows/(delta/3))); (2) q > sqrt(ln(1 + k(n_rows+n)/(delta/3))) * max_j sqrt(ell * N) * n * sigma * gamma * p_j^2; (3) product_j p_j > Q * sigma * sqrt(N) * sqrt(ln(1 + kn * ceil(n_rows/n) / (delta/3)))[^19] |
 
+<a id="fn-15"></a>
 [^15]: Lemma 18, Appendix F (p.46): "Let (N, Q, sigma) be such that LWE is hard. Let (n, q, sigma) be such that RLWE is hard, and moreover assume that RLWE is circular secure. Then HintlessPIR is a secure PIR with preprocessing scheme."
+<a id="fn-16"></a>
 [^16]: Definitions 1-2 (p.14): LWE and RLWE encryption definitions with seed-based public randomness.
+<a id="fn-17"></a>
 [^17]: Section 7.1 (pp.26-27): "We set N = 1408, ciphertext modulus Q = 2^32... We set our RLWE parameters as n = 2^12, ciphertext modulus q approx 2^90, and error standard deviation 3.2... we choose two NTT-friendly plaintext moduli p_0, p_1 of 22 bits each for CRT decomposing H and s."
+<a id="fn-18"></a>
 [^18]: Section 7.1 (pp.26-27): "sample the LWE secret key from the uniform ternary distribution."
+<a id="fn-19"></a>
 [^19]: Lemma 19, Appendix F (p.46): Correctness conditions for HintlessPIR combining LWEPIR, NTTlessPIR decryption, and CRT interpolation failure probabilities.
 
 ### Key Data Structures
@@ -102,8 +121,11 @@ HintlessPIR eliminates the database-dependent client hint from SimplePIR by repl
 - **Preprocessed data g_j:** Server stores Preproc_{A_i}_i output for each CRT modulus p_j: size kn * n_cols * (ell + 1) elements of Z_q per modulus. This is computed once and reused across all queries.[^21]
 - **RLWE ciphertexts (query):** Two compressed RLWE ciphertexts (encoding s mod p_j) plus a compressed rotation key, totaling approximately 323 KB.[^22]
 
+<a id="fn-20"></a>
 [^20]: Section 7.2 (p.27): "For large database records, we follow the suggestion in [34] to encode each record using d > 1 LWE plaintext elements and vertically stack them in a column of the database matrix DB."
+<a id="fn-21"></a>
 [^21]: Lemma 7 (p.24): "Server Long-term Storage: knN(ell + 1) elements of Z_q and sqrt(m) * N elements of Z_Q."
+<a id="fn-22"></a>
 [^22]: Section 7.2 (p.27): "a NTTlessPIR query is 323KB (which includes two RLWE ciphertexts and a compressed rotation key)."
 
 ### Database Encoding
@@ -113,6 +135,7 @@ HintlessPIR eliminates the database-dependent client hint from SimplePIR by repl
 - **Preprocessing required:** Server computes DB * A (one-time, client-independent) and Preproc for NTTlessPIR (one-time per seed). Both are reusable across all queries.
 - **Record size equation:** Each record maps to d = ceil(record_bits / log_2(p)) elements in Z_p. The LWE plaintext space is approximately 8-10 bits for databases up to 2^38 records.[^23]
 
+<a id="fn-23"></a>
 [^23]: Section 7.2 (p.27): "The LWE plaintext space is about 8 to 10 bits for databases up to 2^38 records."
 
 ### Protocol Phases
@@ -155,7 +178,9 @@ The noise analysis uses sub-Gaussian and sub-Exponential parameter tracking unde
 - **Independence heuristic used?** Yes. The paper assumes intermediate values in homomorphic computations are independent, then validates empirically in Section 7.[^25]
 - **Dominant noise source:** NTTlessPIR matrix-vector multiplication (the sum of n_cols plaintext-ciphertext products after rotation).
 
+<a id="fn-24"></a>
 [^24]: Appendix A (p.37-38): "We will use the independence heuristic, or the heuristic assumption that intermediate values within homomorphic computations are independent, and therefore one may apply pythagorean additivity in all situations."
+<a id="fn-25"></a>
 [^25]: Appendix A (p.38): "the noise bounds we derive will be heuristic -- we will validate them against our implementation in Section 7."
 
 ### Complexity
@@ -171,6 +196,7 @@ The noise analysis uses sub-Gaussian and sub-Exponential parameter tracking unde
 | Throughput | -- | 1750 MB/s (single-thread) | Online |
 | Response overhead | O(1) constant factor > SimplePIR | ~33x (current impl); ~9x with optimizations[^26] | -- |
 
+<a id="fn-26"></a>
 [^26]: Section 1, footnote 10 (p.9): "In our current implementation, this constant factor is somewhat large -- approx 33x larger. We discuss several optimizations that would reduce this to approx 9x larger in Appendix E.1."
 
 #### Preprocessing metrics
@@ -190,12 +216,14 @@ The noise analysis uses sub-Gaussian and sub-Exponential parameter tracking unde
 | CRT moduli count k | O(1) | 2 (two 22-bit NTT-friendly primes) | -- |
 | Gadget size ell | ceil(log_z(q)) | ~3 (for q approx 2^90 with z-base decomposition)[^27] | -- |
 
+<a id="fn-27"></a>
 [^27]: Section 7.1 (p.27): RLWE parameters n = 2^12, q approx 2^90, implying ell = ceil(90/30) = 3 with 30-bit gadget decomposition base.
 
 ### Performance Benchmarks
 
 **Hardware:** AWS r7iz.4xlarge, Intel Sapphire Rapids CPUs at 3.00 GHz, 128 GB RAM, single-threaded (except Table 3). Compiled with clang 16, AVX-512.[^28]
 
+<a id="fn-28"></a>
 [^28]: Section 7.2 (p.27): "We ran our server program on an AWS r7iz.4xlarge instance with Intel Sapphire Rapids CPUs running at 3.00GHz and with 128GB RAM. We took advantage of the SIMD instruction sets such as AVX-512, and compiled our test program using clang 16."
 
 #### Table 1: Communication costs (exact, from Table 1 p.28)
@@ -244,8 +272,11 @@ The noise analysis uses sub-Gaussian and sub-Exponential parameter tracking unde
 - **Anonymous queries:** The absence of client-dependent server state means the server cannot link queries to clients, enabling anonymous access patterns.[^30]
 - **Dynamic databases:** No client hints to invalidate when the database changes; only the server-side preprocessing must be updated.[^31]
 
+<a id="fn-29"></a>
 [^29]: Section 7.2 (p.28-29): "One of the advantages of HintlessPIR is the absence of offline interaction between the client and the server, which makes it very appealing for situations where the client only makes a few queries before the database is updated."
+<a id="fn-30"></a>
 [^30]: Section 1, "The problem with preprocessing" (p.4): "if the server requires client-dependent state, the server must have knowledge of this information for correct protocol execution... does not provide anonymity regarding which client is querying the database at which time."
+<a id="fn-31"></a>
 [^31]: Section 1, "The problem with preprocessing" (p.3): "When the database is updated, all hints need to be recomputed to maintain correctness across all clients."
 
 ### Deployment Considerations
@@ -257,8 +288,11 @@ The noise analysis uses sub-Gaussian and sub-Exponential parameter tracking unde
 - **Cold start suitability:** Excellent — no offline communication required; a new client can immediately issue a query.
 - **Amortization crossover vs SimplePIR:** HintlessPIR has lower total communication until SimplePIR amortizes its hint over approximately 50-100 queries. Bandwidth advantage over Spiral holds for the first 3-5 queries.[^34]
 
+<a id="fn-32"></a>
 [^32]: Table 2 (p.29): Server preprocessing time for HintlessPIR at 1.07 GB is 199.15 s vs SimplePIR's 188.03 s.
+<a id="fn-33"></a>
 [^33]: Appendix E, after Lemma 11 (p.42): "we set kappa minimal such that the amortized cost of preprocessing disappears (asymptotically). For NTTlessPIR, one can check that this is kappa = omega(log n)."
+<a id="fn-34"></a>
 [^34]: Section 1, "Implementation" (p.11): "We find that our protocol has lower bandwidth until one is able to reuse a hint for approx 50 to 100 SimplePIR queries to the same database, and our bandwidth advantage over Spiral holds for the first 3 to 5 queries."
 
 ### Key Tradeoffs & Limitations
@@ -269,9 +303,13 @@ The noise analysis uses sub-Gaussian and sub-Exponential parameter tracking unde
 - **Small databases:** For very small databases (8 MB), HintlessPIR is slower than both SimplePIR and trivial download. The overhead of NTTlessPIR preprocessing and homomorphic computation dominates.
 - **TensorPIR not practical for typical sizes:** TensorPIR has better asymptotic communication O(m^{1/3} + n) but requires larger RLWE parameters (n >= 2^13, q >= 2^150) due to depth-2 computation, making it only competitive for databases >= 1 TB.[^38]
 
+<a id="fn-35"></a>
 [^35]: Section 8 (p.31): "up to 60% of the throughput of Simple PIR, and up to 9.4x higher throughput than Spiral PIR."
+<a id="fn-36"></a>
 [^36]: Appendix E.1 (pp.43-45): Three optimizations are discussed: packing (implemented, gives constant-factor speedup), reducing response size by half (sending only beta component), and lossily compressing RLWE ciphertexts.
+<a id="fn-37"></a>
 [^37]: Lemma 18, Appendix F (p.46): "moreover assume that RLWE is circular secure."
+<a id="fn-38"></a>
 [^38]: Section 7.3 (p.31): "We estimate that for databases of size 2^40 with 1 byte records that TensorPIR has server running time close to HintlessPIR and with smaller communication cost."
 
 ### Comparison with Prior Work
@@ -296,7 +334,9 @@ The noise analysis uses sub-Gaussian and sub-Exponential parameter tracking unde
 - **CRT decomposition for arbitrary-modulus LinPIR:** Running LinPIR mod several NTT-friendly primes p_j and using CRT reconstruction lets the scheme handle moduli Q that are not NTT-friendly. Applicable to any RLWE-based scheme that needs to operate over non-NTT moduli.
 - **RLWE slot packing for matrix-vector multiplication:** Packing two copies of s in the 4096 RLWE slots reduces the number of rotations from n_cols - 1 to 511 and halves the ciphertext-plaintext multiplications.[^40]
 
+<a id="fn-39"></a>
 [^39]: Section 8, Conclusion (p.32): "It seems very interesting to extend such technique to additional homomorphic operations and constructions."
+<a id="fn-40"></a>
 [^40]: Section 7.1 (p.27): "Our RLWE parameters provide 4096 slots in each plaintext polynomial, so we pack two copies of s in the query ciphertexts... this packing strategy reduces the number of rotations to 511, and reduces the number of ciphertext-plaintext multiplications by half."
 
 ### Implementation Notes
@@ -308,9 +348,13 @@ The noise analysis uses sub-Gaussian and sub-Exponential parameter tracking unde
 - **Parallelism:** Single-threaded for main benchmarks; 4-thread results in Table 3. NTTlessPIR's first step (rotations) parallelized to 2 threads (one per plaintext modulus p_j); second step (matrix-vector multiply) parallelized to 4 threads.[^43]
 - **Open source:** https://github.com/google/hintless_pir[^44]
 
+<a id="fn-41"></a>
 [^41]: Section 7.1 (p.27): "Our NTTlessPIR scheme implementation is based on the Residue Number System (RNS) variant of Brakerski/Fan-Vercauteren (BFV) FHE scheme that supports linear homomorphic operations."
+<a id="fn-42"></a>
 [^42]: Section 7.2 (p.27): "We took advantage of the SIMD instruction sets such as AVX-512."
+<a id="fn-43"></a>
 [^43]: Section 7.2 (p.30): "the first step of NTTlessPIR's online algorithm is distributed to two threads, one per plaintext modulus, and the second step to four threads."
+<a id="fn-44"></a>
 [^44]: Section 7.1, footnote 16 (p.26): "https://github.com/google/hintless_pir"
 
 ### Open Problems
@@ -319,6 +363,7 @@ The noise analysis uses sub-Gaussian and sub-Exponential parameter tracking unde
 - Applying composable preprocessing to other protocols beyond PIR (e.g., FHE-based general computation).
 - Reducing the response size overhead from approximately 33x (current) toward the approximately 9x theoretical minimum identified in Appendix E.1.
 
+<a id="fn-45"></a>
 [^45]: Section 8, Conclusion (p.32): "It seems nontrivial to apply this technique to the GHS variant of key-switching."
 
 ### Related Papers in Collection

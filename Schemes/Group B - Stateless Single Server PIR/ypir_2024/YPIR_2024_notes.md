@@ -24,7 +24,9 @@
 
 YPIR eliminates the offline hint download required by SimplePIR/DoublePIR by compressing the DoublePIR response into a small number of RLWE encodings using the Chen-Dai-Kim-Song (CDKS) packing transformation.[^1] Unlike Tiptoe and HintlessPIR which use bootstrapping to homomorphically evaluate the hint-decryption function (requiring the RLWE plaintext modulus to be as large as the LWE encoding modulus), YPIR uses key-switching-based packing that keeps the LWE and RLWE encodings under the same modulus, yielding much smaller RLWE ciphertexts and near-SimplePIR throughput (97% at 32 GB) with zero offline communication.[^2]
 
+<a id="fn-1"></a>
 [^1]: Section 1.1 (p.2): "Instead of using bootstrapping, we take a packing approach... and 'pack' the DoublePIR response into a more compact representation using polynomial rings."
+<a id="fn-2"></a>
 [^2]: Abstract (p.1): "YPIR achieves 12.1 GB/s/core server throughput and requires 2.5 MB of total communication... On the same setup, the state-of-the-art SimplePIR protocol achieves 12.5 GB/s/core."
 
 ### Variants
@@ -36,7 +38,9 @@ YPIR eliminates the offline hint download required by SimplePIR/DoublePIR by com
 
 YPIR+SP applies the CDKS packing to the SimplePIR output (an entire column of the database) rather than the DoublePIR output, naturally encoding large records.[^3] For large records (32--64 KB), YPIR+SP achieves 7--14x smaller responses than HintlessPIR with similar query size and only 5% less throughput.[^4]
 
+<a id="fn-3"></a>
 [^3]: Section 4.6 (p.28): "We consider a variant of YPIR where we apply the LWE-to-RLWE packing procedure to the SimplePIR output rather than the DoublePIR output."
+<a id="fn-4"></a>
 [^4]: Table 7 (p.28): YPIR+SP achieves 444 KB download vs. 724 KB for HintlessPIR at 32 GB x 64 KB records.
 
 ### Cryptographic Foundation
@@ -58,6 +62,7 @@ YPIR+SP applies the CDKS packing to the SimplePIR output (an entire column of th
 | R_{d2,q-hat_{2,1}} | d2 = 2048 | 28-bit | Modulus-switched response component 1 |
 | R_{d2,q-hat_{2,2}} | d2 = 2048 | 20-bit | Modulus-switched response component 2 |
 
+<a id="fn-5"></a>
 [^5]: Table 1 (p.14): Full parameter table showing SimplePIR parameters (d1=2^{10}, sigma1=11*sqrt(2pi), N=2^8, q1=2^{32}, q-hat1=2^{28}) and DoublePIR parameters (d2=2^{11}, sigma2=6.4*sqrt(2pi), p=2^{15}, q2~2^{56}, q-hat_{2,1}=2^{28}, q-hat_{2,2}=2^{20}, z=2^{19}).
 
 ### Key Data Structures
@@ -67,8 +72,11 @@ YPIR+SP applies the CDKS packing to the SimplePIR output (an entire column of th
 - **Packing key:** pk = (W1, ..., W_ell) consisting of ell = log d2 key-switching matrices, each W_i in R_{q2}^{2 x t}. Total size: 462 KB (fixed, independent of database size).[^8]
 - **Negacyclic matrices:** A_j = NCyclicMat(a_j^T) in Z_{q_j}^{d_j x d_j} -- structured matrices enabling NTT-based preprocessing.
 
+<a id="fn-6"></a>
 [^6]: Section 3 (p.11): "We model the database as a matrix D in Z_N^{l1 x l2}."
+<a id="fn-7"></a>
 [^7]: Equation 3.1 (p.11): "H1 = G^{-1}_{d1,p}(A1*D|_{q1,q-hat1}) and H2 = A2 * H1^T."
+<a id="fn-8"></a>
 [^8]: Table 4 (p.22): Packing key |pk| = 462 KB across all database sizes.
 
 ### Database Encoding
@@ -78,7 +86,9 @@ YPIR+SP applies the CDKS packing to the SimplePIR output (an entire column of th
 - **Preprocessing required:** Negacyclic matrix A1 = NCyclicMat(a1^T) enables NTT-based hint computation. Vectors a1, a2 in public parameters are derived from a PRG seed (ChaCha20 in counter mode).[^9]
 - **Dimension selection:** For a database of t one-bit records, set t' = ceil(t / log N), l1 = 2^{ceil(log t'/2)}, l2 = 2^{floor(log t'/2)}. The database is arranged as a square (or near-square) matrix.[^10]
 
+<a id="fn-9"></a>
 [^9]: Remark 3.2 (p.12): "The vectors a1 and a2 are uniformly random, and could be derived from a random oracle."
+<a id="fn-10"></a>
 [^10]: Section 4 (p.15): "When the database consists of t one-bit records, we let t' = ceil(t/log N), and set l1 = 2^{ceil(log t'/2)} and l2 = 2^{floor(log t'/2)}."
 
 ### Protocol Phases
@@ -93,6 +103,7 @@ YPIR+SP applies the CDKS packing to the SimplePIR output (an entire column of th
 | Answer (Modulus switch) | Server | Apply ModReduce to packed RLWE encodings | resp = rho pairs (c_{i,1}, c_{i,2}): 12 KB -- 32 MB | Per query |
 | Extract | Client | Decrypt RLWE encodings using s2, recover coefficient vector, apply gadget expansion with s1, round to recover mu in Z_N | -- | Per query |
 
+<a id="fn-11"></a>
 [^11]: Construction 3.1 (p.11-12): Full protocol specification with four Answer steps and Extract procedure.
 
 ### Correctness Analysis
@@ -110,7 +121,9 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 - **Independence heuristic used?** Yes -- models intermediate error terms as independent sub-Gaussian random variables. Standard in lattice-based PIR.[^13]
 - **Dominant noise source:** SimplePIR step dominates for large databases (96% of server time at 32 GB). The packing noise is fixed (independent of database size).
 
+<a id="fn-12"></a>
 [^12]: Section 2 (p.7): "Like many lattice-based PIR constructions, we use the independence heuristic that models the error terms arising in intermediate homomorphic computations to be independent."
+<a id="fn-13"></a>
 [^13]: Theorem 3.4 (p.13-14): Full correctness bound with tau_double and tau_simple margin expressions.
 
 ### Complexity
@@ -126,6 +139,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | Throughput | O(M) where M = memory bandwidth | 12.1 GB/s/core | Online |
 | Response overhead | -- | 32 MB / 32 GB = 0.001x (response independent of DB size) | -- |
 
+<a id="fn-14"></a>
 [^14]: Table 2 (p.20): At 32 GB, YPIR achieves 2.5 MB upload, 12 KB download, 2.64 s server time, 12.1 GB/s throughput.
 
 #### Preprocessing metrics
@@ -137,7 +151,9 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | Client offline upload | 0 | 0 | -- |
 | Server per-client storage | 0 | 0 (stateless) | -- |
 
+<a id="fn-15"></a>
 [^15]: Section 4.4 (p.21-22): "For a 32 GB database, the offline precomputation of YPIR would take about 11 CPU-minutes."
+<a id="fn-16"></a>
 [^16]: Section 4.1 (p.15): NTT-based preprocessing is d/log d faster than naive: "asymptotically reduces the offline preprocessing cost by a factor of d/log d."
 
 #### FHE-specific metrics
@@ -148,6 +164,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | Expansion factor (RLWE) | 2*log q / log p | Response uses RLWE: (d+1)/2 compression | -- |
 | Communication rate | -- | Response size independent of DB size (only depends on lattice parameters) | -- |
 
+<a id="fn-17"></a>
 [^17]: Section 1.2 (p.5): "RLWE decreases the expansion factor from (n+1)*log q/log p to 2*log q/log p. For concrete values of n ~ 2^{10}, this is a 1000x reduction."
 
 #### If-reported metrics
@@ -158,7 +175,9 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | Financial server cost (SCT auditing) | $228/week per 1M clients | 8x cheaper than DoublePIR ($1822), 84x cheaper than Tiptoe |
 | Financial server cost (with batching) | $183/week per 1M clients | With cross-client batching, batch size k=4 |
 
+<a id="fn-18"></a>
 [^18]: Abstract (p.1): "up to 83% of the memory bandwidth of the machine."
+<a id="fn-19"></a>
 [^19]: Table 6 (p.26): Weekly server costs for private SCT auditing. YPIR total cost $0.000228, DoublePIR weekly $0.001822, Tiptoe $0.019139.
 
 ### Optimization Catalog
@@ -174,8 +193,11 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | NTT representation for key-switching / automorphisms | Known (reorganized) | NTT standard practice | Eliminates per-query NTT for packing; permutation on NTT representation replaces automorphism | Any CDKS-based packing |
 | CRT decomposition with native 64-bit arithmetic | Known (adapted) | This paper's implementation | Avoids modular reduction after every operation; reduces Eq 3.2 cost by 60x vs. naive | Any NTT-friendly multi-prime scheme |
 
+<a id="fn-20"></a>
 [^20]: Section 4.1 (p.15): "By using structured matrices, the YPIR approach is asymptotically faster (by a factor of d/log d)... concretely faster (10-15x)."
+<a id="fn-21"></a>
 [^21]: Section 4.2 (p.16-17): "Our approach reduces the number of NTTs the Answer algorithm has to compute from O(kappa*d1 + log d2) to O(kappa + log d2). Concretely, this reduces the online cost of the packing transformation by 9x."
+<a id="fn-22"></a>
 [^22]: Footnote 8 (p.14): "We use 64-bit integer arithmetic to implement arithmetic operations with respect to a 28-bit modulus... the computation of Eq. (3.2) is 60x slower if we perform a modulus reduction after every arithmetic operation."
 
 ### Performance Benchmarks
@@ -207,7 +229,9 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | | Server Time | 3.08 s | 3.22 s | 21.00 s | 5.00 s | 2.64 s |
 | | Throughput | 10.4 GB/s | 9.9 GB/s | 1.5 GB/s | 6.4 GB/s | 12.1 GB/s |
 
+<a id="fn-23"></a>
 [^23]: Section 4.4 (p.19): "We use an Amazon EC2 r6i.16xlarge instance running Ubuntu 22.04, with 64 vCPUs (Intel Xeon Platinum 8375C CPU @ 2.9 GHz) and 512 GB of RAM."
+<a id="fn-24"></a>
 [^24]: Footnote 9 (p.19): "Our code is available at https://github.com/menonsamir/ypir."
 
 #### Table 3 (reproduced): Server computation breakdown
@@ -219,6 +243,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | 16 GB | 1.21 s (93%) | 57 ms (4%) | 39 ms (3%) | 1.31 s |
 | 32 GB | 2.56 s (96%) | 58 ms (2%) | 39 ms (1%) | 2.66 s |
 
+<a id="fn-25"></a>
 [^25]: Table 3 (p.22): Packing is a fixed cost (~39 ms), independent of database size. At 32 GB, SimplePIR dominates at 96%.
 
 #### Table 4 (reproduced): Query size breakdown
@@ -229,6 +254,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | 4 GB | 256 KB (21%) | 512 KB (42%) | 462 KB (38%) | 1.2 MB |
 | 16 GB | 512 KB (26%) | 1.0 MB (51%) | 462 KB (23%) | 2.0 MB |
 
+<a id="fn-26"></a>
 [^26]: Table 4 (p.22): The packing key pk is fixed at 462 KB. The c2 encoding is roughly 2x larger than c1 because log q2 / log q1 ~ 2.
 
 #### Table 5: LWE-to-RLWE packing microbenchmarks (packing 2^{12} LWE encodings)
@@ -242,6 +268,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | Offline Compute | -- | 2012 ms | -- | 1029 ms |
 | Online Compute | 594 ms | 141 ms | 340 ms | 52 ms |
 
+<a id="fn-27"></a>
 [^27]: Table 5 (p.25): CDKS approach with preprocessing achieves 7.5x smaller output than HintlessPIR, 15x higher rate, and 2.7x faster total computation.
 
 ### Application Scenarios
@@ -253,7 +280,9 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 - **Key advantage:** YPIR supports *daily* database updates at no extra client communication cost (no hint to re-download), whereas DoublePIR requires weekly hint re-download compromising real-time auditing.[^28]
 - **Cost comparison (Table 6):** YPIR: $228/week per 1M clients. DoublePIR weekly: $1,822. DoublePIR daily: $10,863. Tiptoe: $19,139. HintlessPIR: $3,708.[^29]
 
+<a id="fn-28"></a>
 [^28]: Section 1 (p.1): "Since there is no offline communication in YPIR, our approach allows clients to always audit the most recent Certificate Transparency logs."
+<a id="fn-29"></a>
 [^29]: Table 6 (p.26): Full cost breakdown. YPIR total cost is 8x lower than DoublePIR-weekly and 48x lower than DoublePIR-daily.
 
 #### Password Breach Checking (Section 4.6)
@@ -262,6 +291,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 - **Approach:** Bucket retrieval -- hash password, retrieve bucket by prefix, search locally.
 - **Result:** Single breach check requires 2.6 MB total communication and 5.2 seconds computation. 2.2x less total communication than HintlessPIR, but 5% more computation.[^30]
 
+<a id="fn-30"></a>
 [^30]: Section 4.6 (p.29): "Using YPIR+SP, performing a single password breach check against 1 billion compromised passwords requires just 2.6 MB of total communication and 5.2 seconds of computation."
 
 ### Portable Optimizations
@@ -272,8 +302,11 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 
 3. **Cross-client batching:** Process k concurrent queries from independent, non-coordinating clients via a single database scan (matrix-matrix product Q*D instead of k separate q_i^T*D). Effective throughput = k*l/T. With k=4, exceeds memory bandwidth barrier (16+ GB/s effective throughput). Applicable to any memory-bandwidth-limited PIR scheme. Transparent to clients.[^33]
 
+<a id="fn-31"></a>
 [^31]: Section 4.1 (p.15) + Appendix B (p.36-37): Full derivation showing A1*d computed via NCyclicMat multiplication in O(d1*log d1) per column.
+<a id="fn-32"></a>
 [^32]: Section 4.2 (p.16-17): Preprocessing reduces online NTTs from O(kappa*d1 + log d2) to O(kappa + log d2).
+<a id="fn-33"></a>
 [^33]: Section 4.3 (p.17-18): "Cross-client batching can increase the effective server throughput of many PIR schemes by 1.5--1.7x."
 
 ### Implementation Notes
@@ -286,6 +319,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 - **PRG:** ChaCha20 in counter mode for generating pseudorandom public parameters a1, a2 and packing key random components.
 - **Open source:** https://github.com/menonsamir/ypir
 
+<a id="fn-34"></a>
 [^34]: Footnote 8 (p.14): "Since we use 64-bit integer arithmetic to implement arithmetic operations with respect to a 28-bit modulus, we do not need to perform a modulus reduction after every arithmetic operation."
 
 ### Comparison with Prior Work
@@ -302,10 +336,12 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | Throughput | 12.1 GB/s | 10.4 GB/s | 9.9 GB/s | 6.4 GB/s | 1.5 GB/s |
 | Prep. throughput | 48 MB/s | 3.3 MB/s | 3.3 MB/s | 5.7 MB/s | 1.4 MB/s |
 
+<a id="fn-35"></a>
 [^35]: Table 2 (p.20): All measurements from official reference implementations on the same hardware.
 
 **Key takeaway:** YPIR is the preferred scheme when offline communication must be eliminated (dynamic databases, cold-start clients, multi-database access) while maintaining near-maximal throughput. It achieves 97% of SimplePIR's throughput and 83% of the machine's memory bandwidth at 32 GB, with zero offline communication. The main tradeoff is 1.8--3.6x larger total online communication compared to SimplePIR/DoublePIR (which additionally require offline downloads of 16--724 MB).[^36]
 
+<a id="fn-36"></a>
 [^36]: Section 1.1 (p.3): "YPIR achieves 97% of the throughput of one of the fastest single-server PIR schemes while fully eliminating all offline communication and only incurring a modest increase in query size."
 
 ### Deployment Considerations
@@ -317,8 +353,11 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 - **Cold start suitability:** Excellent -- no offline communication, no hint download. First query works immediately.
 - **Communication floor:** Cannot achieve <1 MB total communication for a 32 GB database (minimum query size ~1.1 MB due to packing key). For settings with tight communication budgets, DoublePIR with its 16 MB offline hint may be preferable.[^39]
 
+<a id="fn-37"></a>
 [^37]: Section 4.4 (p.21): "The offline precomputation of YPIR would take about 11 CPU-minutes, whereas for SimplePIR/DoublePIR, it would take roughly 144 CPU-minutes."
+<a id="fn-38"></a>
 [^38]: Section 4.4 (p.22-23): Communication-computation tradeoff via sharding/rebalancing discussed with Figure 3.
+<a id="fn-39"></a>
 [^39]: Section 1.1 (p.4): "The minimum YPIR query size is 1.1 MB... YPIR may not be appropriate" for small fixed communication budgets.
 
 ### Key Tradeoffs & Limitations
@@ -329,9 +368,13 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 - **Circular security assumption:** Requires key-dependent pseudorandomness for RLWE encodings (Definition A.1), standard in lattice-based schemes but non-trivial.[^42]
 - **Memory bandwidth bound:** Like all SimplePIR-family schemes, YPIR cannot exceed the memory bandwidth of the machine. At 32 GB, YPIR achieves 83% of the theoretical memory bandwidth ceiling (~14.6 GB/s).[^43]
 
+<a id="fn-40"></a>
 [^40]: Section 1.1 (p.4): "A YPIR query is 1.8-3x larger than a DoublePIR query... and 3-7x larger than a SimplePIR query."
+<a id="fn-41"></a>
 [^41]: Table 3 (p.22): Packing is 30% of total at 1 GB, 1% at 32 GB.
+<a id="fn-42"></a>
 [^42]: Section 3 (p.10): "Pseudorandomness thus relies on a 'circular security' assumption."
+<a id="fn-43"></a>
 [^43]: Remark 4.1 (p.15-16): A ring-based SimplePIR incurs a 3.6x throughput reduction (11.5 GB/s to 3.2 GB/s) due to log q/log N representation blowup.
 
 ### Open Problems
@@ -339,7 +382,9 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 - Can we design PIR schemes with silent preprocessing that achieve significantly smaller communication than YPIR while retaining comparable throughput?[^44]
 - Can faster matrix multiplication algorithms (e.g., Strassen) improve the concrete efficiency of cross-client batching in SimplePIR-based protocols?[^45]
 
+<a id="fn-44"></a>
 [^44]: Section 4.4 (p.23): "An important open question is to design PIR schemes that require significantly smaller communication while retaining comparable server throughput (and silent preprocessing)."
+<a id="fn-45"></a>
 [^45]: Section 4.3 (p.18): "It is interesting to see whether faster matrix multiplication algorithms can be used to further improve concrete efficiency in SimplePIR-based protocols."
 
 ### Related Papers in Collection

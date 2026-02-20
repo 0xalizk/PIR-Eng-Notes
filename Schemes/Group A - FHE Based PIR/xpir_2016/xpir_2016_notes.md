@@ -374,116 +374,173 @@ Private packet sniffer filtering traffic by source IP:[^45]
 
 ### Footnotes
 
+<a id="fn-1"></a>
 [^1]: p. 1, Abstract and Section 1 -- "Sion and Carbunar showed that cPIR schemes were not practical"; p. 2, Section 1.1 -- "a multiplication over a large modulus... restricts both the database size and the throughput."
 
+<a id="fn-2"></a>
 [^2]: p. 1, Abstract -- "the paradigm shift introduced by lattice-based cryptography... cPIR is of practical value"; p. 13, Section 4 -- multi-gigabit processing throughput demonstrated.
 
+<a id="fn-3"></a>
 [^3]: p. 7, Section 3.1 -- Protocol overview with optimization steps 1-5; pp. 23-24, Appendix A -- Full optimization algorithm pseudocode.
 
+<a id="fn-4"></a>
 [^4]: pp. 12-19, Section 4 -- Four use-cases: Netflix (p. 15), IPTV (p. 15-16), Match.com (pp. 18-19), NYSE (p. 19).
 
+<a id="fn-5"></a>
 [^5]: p. 2, Section 1.1, "Focused issue" -- "The main performance metric we use is the time needed for a client to retrieve an element privately."
 
+<a id="fn-6"></a>
 [^6]: pp. 12-13, Section 4, "Experimental setting" -- MSI GT60 laptop, Core i7-3630QM 2.67 GHz, 8 GB DDR3. FTTH and ADSL simulated via timers.
 
+<a id="fn-7"></a>
 [^7]: p. 1, NOTE box -- "XPIR is free (GPLv3) software and available at https://github.com/XPIR-team/XPIR."
 
+<a id="fn-8"></a>
 [^8]: p. 5, Section 2.1 -- "Based on the analysis of [28], this scheme ensures indistinguishability if the standard lattice problem Ring-LWE is hard."
 
+<a id="fn-9"></a>
 [^9]: pp. 4-5, Section 2.1 -- SKE scheme with Add (ciphertext addition) and Absorb (plaintext * ciphertext multiplication). No ciphertext-ciphertext multiply defined.
 
+<a id="fn-10"></a>
 [^10]: p. 5, Section 2.1 -- R_q = Z_q[X] / <X^N + 1>; ParamGen forces N in {1024, 2048, 4096} and q to be a multiple of 60-bit or 30-bit primes congruent to 1 mod 2N.
 
+<a id="fn-11"></a>
 [^11]: p. 13, Section 4, "Security" -- "To generate randomness for our scheme, we use Salsa20/20 (Salsa20/20 is able to provide up to 256 bits of security)."
 
+<a id="fn-12"></a>
 [^12]: pp. 4-5, Section 2.1 -- SKE.ParamGen takes security parameter k and maximum additions h_a.
 
+<a id="fn-13"></a>
 [^13]: p. 6, Section 2.2 -- Recursion: "an integer d called dimension... the client only needs to send d x n^{1/d} query elements."
 
+<a id="fn-14"></a>
 [^14]: p. 6, Section 2.2, "Query Generation" -- "generate the i-th query element q_i as: A random encryption of zero if i != i_0; A random encryption of one if i = i_0."
 
+<a id="fn-15"></a>
 [^15]: p. 6, Section 2.2, "Reply Generation" -- "For j from 1 to ceil(l/l_0): Compute R_j := Sum_{i=1}^n Absorb(m_{i,j}, q_i)."
 
+<a id="fn-16"></a>
 [^16]: pp. 8-9, Section 3.2.1 -- "In XPIR we use a mixed NTT-CRT representation to reduce computational costs."
 
+<a id="fn-17"></a>
 [^17]: p. 6, Section 2.2 -- "aggregate them by groups of size alpha and obtain a database with ceil(n/alpha) elements of size l x alpha."
 
+<a id="fn-18"></a>
 [^18]: p. 24, Appendix A, "Query generation" -- "Define (i_1, ..., i_d) the decomposition in base ceil(n^{1/d}) of i."
 
+<a id="fn-19"></a>
 [^19]: p. 9, Figure 2 -- Pre-processing throughput: 4.8 Gbit/s (1024,60), 5.2 Gbit/s (2048,120), 5 Gbit/s (4096,120).
 
+<a id="fn-20"></a>
 [^20]: p. 6, Section 2.2 -- "To reduce query size it is possible to aggregate them by groups of size alpha."
 
+<a id="fn-21"></a>
 [^21]: pp. 23-24, Appendix A -- "Optimization (Client and Server)" algorithm pseudocode.
 
+<a id="fn-22"></a>
 [^22]: p. 8, Section 3.1 -- "the round-trip time of the retrieval... is given by the function MAX(queryGenerationTime, querySendingTime) + MAX(replyGenerationTime, replySendingTime, replyDecryptionTime)."
 
+<a id="fn-23"></a>
 [^23]: p. 24, Appendix A, "Remark (convexity)" -- "the optimizer always returned very reasonable results and was able to run in a few milliseconds for any database."
 
+<a id="fn-24"></a>
 [^24]: p. 5, Figure 1 -- Parameter sets table with N, q, max sums, plaintext, ciphertext, and F values.
 
+<a id="fn-25"></a>
 [^25]: p. 13, Section 4, "Security" -- "security (in attacker operations) increases exponentially... computational costs increase only (almost) linearly"; (4096,120) theoretical security 335 bits, capped at 256.
 
+<a id="fn-26"></a>
 [^26]: p. 9, Section 3.2.1, "Comparison with [40]" -- "we have built our library without using any external library (Double-CRT is built over NTL which in turn is built over GMP) which results in a big performance improvement."
 
+<a id="fn-27"></a>
 [^27]: p. 9, Section 3.2.1 -- "we use Harvey's NTT algorithm [42] which is very fast but only works for some polynomial degrees (powers of two)."
 
+<a id="fn-28"></a>
 [^28]: p. 8, Section 3.2.1 -- "The CRT representation ensures that the multiplication cost is also linear in log p, instead of quadratic for a trivial algorithm."
 
+<a id="fn-29"></a>
 [^29]: p. 11, Section 3.2.3 -- "encryption requires only the computation of three NTT-CRT transformations and some basic operations."
 
+<a id="fn-30"></a>
 [^30]: p. 10, Section 3.2.2 -- Pre-computing Newton coefficients algorithm: "q = xy'/2^64; r = xy - qp mod 2^64; if r > p: r = r - p." "This algorithm requires just two integer multiplications a shift and a conditional subtraction."
 
+<a id="fn-31"></a>
 [^31]: p. 10, Figure 3 -- NTTTools vs Double-CRT pre-processing and processing times. "Tests are on a single-core."
 
+<a id="fn-32"></a>
 [^32]: p. 11, Figure 4 -- Multiplication times for NTTTools vs Double-CRT.
 
+<a id="fn-33"></a>
 [^33]: p. 10, Section 3.2.1 -- "the memory footprint in NTTTools is of 8 Kbytes by default and twice that with pre-computed quotients... Double-CRT objects memory usage increases linearly at 40Kbytes per object."
 
+<a id="fn-34"></a>
 [^34]: p. 9, Figure 2 -- PIR pre-processing and processing throughput table.
 
+<a id="fn-35"></a>
 [^35]: p. 9, Section 3.2.1, "Implications on cPIR performance" -- "After importation, the database is processed during the reply generation phase at roughly 20Gbits/s"; import at 5 Gbit/s.
 
+<a id="fn-36"></a>
 [^36]: p. 11 (60-bit numbers), Figure 5 and text -- "We are able to generate a query at 700Mbits/s and decrypt an incoming reply at 5Gbits/s" (60-bit); p. 12 (120-bit numbers) -- "encryption scales well... it is possible to generate a query at 850Mbits/s, but decryption suffers... 710Mbits/s" (120-bit).
 
+<a id="fn-37"></a>
 [^37]: p. 14, Figure 6 -- "User-perceived throughput of XPIR streaming static data." Log-log plot. "this line is pretty close to the straight line defined by 15/n Gbps."
 
+<a id="fn-38"></a>
 [^38]: p. 15, Section 4, "Medium Access Issues" -- "OCZ Vertex 460 SSD (4Gbit/s access)"; databases up to 10 Gbits in RAM, larger chunked.
 
+<a id="fn-39"></a>
 [^39]: p. 14, Figure 6 caption -- "Performance on a server with a better processor (e.g. ten-core Xeon E7-4870) roughly doubles and caps at that level as RAM bandwidth is saturated."
 
+<a id="fn-40"></a>
 [^40]: p. 14, Figure 7 -- "Initial latency before the user starts to receive streaming data." "latency grows linearly in n in dimension 1 and in sqrt(n) in dimension 2, and that the main bottleneck is the available upload bandwidth."
 
+<a id="fn-41"></a>
 [^41]: p. 16, Figure 8 and text -- "user-perceived throughput is roughly divided by six" vs static. "For an IPTV like application, a single processor can handle one hundred 720p-30fps streams for 50 simultaneous clients."
 
+<a id="fn-42"></a>
 [^42]: p. 18, Figure 10 -- "Round-trip (RTT) and request processing (RP) times... Trivial PIR (from top to bottom the second filled line) is faster than cPIR for databases with less than ten elements."
 
+<a id="fn-43"></a>
 [^43]: p. 18, text -- Worked example: n=10,000, l=1Mb, (1024,60), F~=6. "sending the query over the FTTH link takes 12.8 seconds... Using recursion divides query sending time by a factor 50."
 
+<a id="fn-44"></a>
 [^44]: p. 15, Section 4.1, "The Netflix Use-case" -- "If the user is willing to receive a 720p-30fps video stream he can hide his choice among 35K movies."
 
+<a id="fn-45"></a>
 [^45]: pp. 16-17, Section 4.2, "The Private Sniffer Use-Case" -- Query sizes for Class B network range.
 
+<a id="fn-46"></a>
 [^46]: p. 17, Section 4.2 and Figure 9 -- "the sniffer is able process a link at 600Mbps (purple line)."
 
+<a id="fn-47"></a>
 [^47]: p. 17, Section 4.2 -- "we can process a link at roughly 3Gbps (blue line), for parameters (2048,120)."
 
+<a id="fn-48"></a>
 [^48]: p. 15, Section 4.1, "Multiple Users" -- "if data is accessed synchronously for concurrent users, disk access costs do not increase, so scalability is not an issue."
 
+<a id="fn-49"></a>
 [^49]: pp. 18-19, Section 4.3, "Match.com Use-Case" -- "Using the public keyword pre-filtering... we can hope to divide the size of the database by a factor 10 to 100... which would lower the waiting time to 6-60 seconds."
 
+<a id="fn-50"></a>
 [^50]: p. 19, Section 4.3, "NYSE Use-Case" -- "the user should get the information in roughly 100ms, which is a reasonable waiting time for information that is already 100ms old."
 
+<a id="fn-51"></a>
 [^51]: p. 19, Section 4.4 -- "the Paillier based cPIR will be chosen for extremely small bandwidths"; "Ring-LWE based cPIR is chosen by the optimizer... in almost all situations."
 
+<a id="fn-52"></a>
 [^52]: p. 19-20, Section 4.4 -- "trivial PIR will be the natural choice when available bandwidth is higher than our database processing throughput"; "for database with two to four elements."
 
+<a id="fn-53"></a>
 [^53]: p. 14-15, text -- "The strange behaviour of the FTTH lines for a small number of elements comes from the fact that we use TCP sockets."
 
+<a id="fn-54"></a>
 [^54]: p. 20, Section 5 -- "using a high end server in a multi-core setting can only increase this difference further."
 
+<a id="fn-55"></a>
 [^55]: p. 15, Section 4.1 -- "Replacing it with XPIR would bring security and a x100 performance boost on the cPIR subroutine."
 
+<a id="fn-56"></a>
 [^56]: p. 4, Section 2.1, "Notations" -- "we use uppercase N for the polynomial degree (which is an unusual notation) to distinguish the polynomial degree from the number of elements."
 
+<a id="fn-57"></a>
 [^57]: p. 13, Section 4, "Security" -- Parameters generated "following the approach of [32]" (Lindner-Peikert, 2011).

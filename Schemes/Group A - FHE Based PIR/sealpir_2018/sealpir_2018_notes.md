@@ -24,8 +24,11 @@
 
 SealPIR's central contribution is *oblivious query expansion* (Expand): a server-side procedure that takes a single BFV ciphertext encoding the client's desired index as a monomial x^i and produces N ciphertexts where the i-th encrypts 1 and all others encrypt 0 — without learning i.[^1] This eliminates the O(N) query cost of XPIR, compressing queries from d * N^{1/d} ciphertexts down to d * ceil(N^{1/d}/N_ring) ciphertexts, where N_ring is the ring dimension.[^2] The expansion uses only substitution operations (automorphisms) and additions — no homomorphic multiplications — keeping noise growth additive and enabling smaller parameters.[^3] A secondary contribution is *probabilistic batch codes* (PBCs) for amortized multi-query PIR.
 
+<a id="fn-1"></a>
 [^1]: Section 3.3, Figure 3. The server never sees the plaintext index; it only applies algebraic operations (substitution + addition) on ciphertexts.
+<a id="fn-2"></a>
 [^2]: Section 3.4–3.5. Query communication goes from O(N * d * N^{1/d}) in XPIR to O(N * d * ceil(sqrt_d(n)/N)) in SealPIR, where N_ring = 2048 or 4096.
+<a id="fn-3"></a>
 [^3]: Figure 2 (p. 3). Substitution has additive noise growth (cost 0.279 ms), compared to ciphertext multiplication's multiplicative noise growth (cost 1.514 ms).
 
 ### Novel Primitives / Abstractions
@@ -42,7 +45,9 @@ SealPIR's central contribution is *oblivious query expansion* (Expand): a server
 | **Standalone complexity** | O(n) substitutions + O(n) additions for n-element expansion. Each substitution costs 0.279 ms (Figure 2). Total: O(n) time with additive noise growth. |
 | **Relationship to prior primitives** | Generalizes the "slot permutation" technique from Gentry et al. [44, Section 4.2]. Called "automorphisms" in later literature (Spiral, OnionPIR). Foundation for the entire selection-vector branch of FHE-based PIR. |
 
+<a id="fn-4"></a>
 [^4]: The substitution keys (analogous to Galois keys / automorphism keys) must be sent from client to server. This is 2.9 MB of auxiliary material, reusable across all queries (Section 6, p. 10).
+<a id="fn-5"></a>
 [^5]: Appendix A.1. SealPIR implements the Galois group actions algorithm from Gentry et al. in SEAL, requiring only a subset of the arbitrary permutations Gentry et al. describe.
 
 ### Cryptographic Foundation
@@ -55,7 +60,9 @@ SealPIR's central contribution is *oblivious query expansion* (Expand): a server
 | **Key structure** | Standard BFV secret key (polynomial in R_q); additional substitution keys (Galois keys) for Expand — 2.9 MB per client, reusable across queries |
 | **Correctness condition** | Noise must remain below q/(2t) after all homomorphic operations. Managed by choosing N, q, t to support the depth of Expand + Answer.[^7] |
 
+<a id="fn-6"></a>
 [^6]: Section 7, "Parameters" paragraph (p. 10). N = 2048, coefficients 60 bits, SEAL uses q = 2^60 - 2^18 + 1. XPIR uses q = 2^61 - i * 2^14 + 1 for various i.
+<a id="fn-7"></a>
 [^7]: Section 3.3, p. 4; noise growth analysis in Appendix A.3.
 
 ### Key Operations in BFV (Figure 2)
@@ -67,6 +74,7 @@ SealPIR's central contribution is *oblivious query expansion* (Expand): a server
 | Ciphertext multiplication | 1.514 | Multiplicative | Not used in Expand; used only in Answer phase |
 | Substitution (automorphism) | 0.279 | Additive | Core operation of Expand. Sub(c, k): Enc(p(x)) -> Enc(p(x^k)) |
 
+<a id="fn-8"></a>
 [^8]: Figure 2 footnote: "While plaintext multiplication yields a multiplicative increase in the noise, the factor is always 1 in EXPAND (i.e., no noise growth) because it is based on the number of non-zero coefficients in the plaintext [28, Section 6.2]."
 
 ### Expansion Factor
@@ -76,7 +84,9 @@ The expansion factor F = 2 * log(q) / log(t) determines the ratio between cipher
 - With N = 2048, q = 60-bit, t = 2^23: F approximately 2 * 60 / 23 approximately 5.2
 - The Expand optimization (Section 6) changes the effective plaintext modulus from t = 2^y to t' = 2^{y-l} where l = ceil(log_2(m)), reducing packing efficiency but eliminating the inverse-multiplication step in Expand.[^10]
 
+<a id="fn-9"></a>
 [^9]: Section 3 (FV background preamble), p. 4. F = 2 * log(q) / log(t).
+<a id="fn-10"></a>
 [^10]: Section 6, Equation 1 (p. 10). The optimization avoids n plaintext multiplications and one inversion, reducing noise, but requires the server to use t' < t for database representation.
 
 ### Database Encoding
@@ -86,8 +96,11 @@ The expansion factor F = 2 * log(q) / log(t) determines the ratio between cipher
 - **Preprocessing required:** Elements encoded as FV plaintext polynomials. Each element e in DB is encoded by storing log(t) bits of e per coefficient of the polynomial p(x). For small elements, multiple elements can be packed into a single FV plaintext.[^12]
 - **Record size equation:** alpha = floor(N * log(t') / beta) elements per FV plaintext, where beta is element size in bits. For 288-byte elements with the Expand optimization: alpha approximately 14 (comparable to XPIR's alpha = 14 at these parameters).[^13]
 
+<a id="fn-11"></a>
 [^11]: Section 3.4, p. 5. Generalizes to d dimensions.
+<a id="fn-12"></a>
 [^12]: Section 6, "Encoding elements as FV plaintexts" (p. 10).
+<a id="fn-13"></a>
 [^13]: Section 6, p. 10, and Section 7 parameters discussion.
 
 ### Protocol Phases
@@ -102,6 +115,7 @@ The expansion factor F = 2 * log(q) / log(t) determines the ratio between cipher
 | Response | Server | Send F^{d-1} ciphertexts to client | F^{d-1} ciphertexts downward | Per query |
 | Extract | Client | Decrypt response, combine chunks | -- | Per query |
 
+<a id="fn-14"></a>
 [^14]: Section 3.4–3.5, p. 5. For databases larger than N (ring dimension), client sends ceil(N^{1/d}/N) ciphertexts per dimension, which are expanded and concatenated.
 
 ### The Expand Algorithm (Figure 3)
@@ -148,8 +162,11 @@ Given query = Enc(x^i) with i in {0, 1}:
 
 Each iteration of the outer loop involves one substitution (additive noise growth) and one addition. Over l = log_2(n) iterations, total noise growth is O(l) additive terms.[^17] This is crucial: unlike approaches that use homomorphic multiplications (which would give multiplicative/exponential noise growth), Expand's exclusive use of substitution + addition keeps noise manageable with moderate parameters.
 
+<a id="fn-15"></a>
 [^15]: Figure 3, p. 5. Each outer loop iteration doubles the ciphertext count.
+<a id="fn-16"></a>
 [^16]: Footnote 2, p. 4: x^{N+1} = -x (mod x^N + 1).
+<a id="fn-17"></a>
 [^17]: Appendix A.3 bounds the noise growth of Expand. Substitution has additive noise growth (Figure 2).
 
 #### Expand optimization (Section 6, p. 10)
@@ -166,6 +183,7 @@ log(t') + ceil(log(ceil(d-root(n_fv)))) <= log(t)
 where n_fv = ceil(n / alpha), alpha = floor(N * log(t') / beta)
 ```
 
+<a id="fn-18"></a>
 [^18]: Section 6, "Optimization to Expand" (p. 10).
 
 ### Reducing Expansion Cost: d-Dimensional Hypercube (Section 3.4)
@@ -189,10 +207,15 @@ Structure the database as a d-dimensional hypercube of side N^{1/d}. The client 
 
 The query communication complexity goes from O(N * d * N^{1/d}) in XPIR to O(N * d * ceil(N^{1/d}/N_ring)) in SealPIR.[^23]
 
+<a id="fn-19"></a>
 [^19]: Section 3.4, p. 4. "One issue with Expand is that despite each operation being inexpensive, O(n) operations are needed to extract the n-entry query vector."
+<a id="fn-20"></a>
 [^20]: Section 3.4, p. 5. Each Expand call costs O(N^{1/d}) rather than O(N).
+<a id="fn-21"></a>
 [^21]: Figure 9 and Section 7.1 benchmarks. d = 2 gives the best overall balance for databases up to 2^20 entries.
+<a id="fn-22"></a>
 [^22]: Section 3, p. 3: "values of d > 3 in XPIR lead to responses that are so large that they outweigh any reduction in query size."
+<a id="fn-23"></a>
 [^23]: Section 3.5, p. 5: "the query communication complexity goes from O(Nd * d-root(n)) in XPIR to O(Nd * ceil(d-root(n)/N)) in SealPIR."
 
 ### Handling Larger Databases (Section 3.5)
@@ -202,6 +225,7 @@ When the database has more than N (ring dimension) elements, a single ciphertext
 1. **Multiple ciphertexts per dimension:** Client sends ceil(N^{1/d}/N) ciphertexts per dimension; server expands each to N elements and concatenates.
 2. **Higher d combined with multiple ciphertexts:** For 2^30 entries with d = 2, the database is a 2^15 x 2^15 matrix. With N = 4096, each dimension needs ceil(2^15 / 4096) = 8 ciphertexts. Total query: 16 ciphertexts.
 
+<a id="fn-24"></a>
 [^24]: Section 3.5, p. 5. Examples computed for 2^30-entry database.
 
 ### Correctness Analysis
@@ -214,6 +238,7 @@ When the database has more than N (ring dimension) elements, a single ciphertext
 - **Depth constraint:** Effectively depth-1 for the Answer phase (one round of plaintext-ciphertext multiply + summation). Expand adds only additive noise.[^25]
 - **The Expand optimization** further reduces noise by eliminating the Phase 2 normalization multiplications.
 
+<a id="fn-25"></a>
 [^25]: Figure 2 and Appendix A.3. The Answer phase (Figure 1, lines 10-12) performs plaintext-ciphertext multiplication followed by addition — both low-noise operations.
 
 ### Complexity
@@ -231,6 +256,7 @@ When the database has more than N (ring dimension) elements, a single ciphertext
 | Client computation (Extract) | O(F^{d-1}) decryptions | 1.39 ms[^26] | Online |
 | Response overhead | F^{d-1} | F = approximately 5-12 depending on t'; for d=2, 1 ciphertext response | -- |
 
+<a id="fn-26"></a>
 [^26]: Figure 9 (p. 11), column "SealPIR (d=2)", row n = 1,048,576: Query 3.37 ms, Extract 1.69 ms, Setup 4.26 s, Expand 0.11 s, Answer 2.01 s. Total server time = 4.26 + 0.11 + 2.01 = 6.38 s. For n = 262,144: Extract 1.39 ms, Setup 1.04 s, Answer 0.5 s.
 
 #### FHE-specific metrics
@@ -284,7 +310,9 @@ Hardware: Microsoft Azure H16 instances (16-core 3.6 GHz Intel Xeon E5-2667, 112
 4. **Query size is constant** for d=2 at all database sizes tested (64 KB), because all indices fit in ceil(sqrt(n)/N) = 1 ciphertext per dimension up to n = 2^20 with N = 2048.
 5. **Answer size is constant** at 256 KB (= F ciphertexts for d=2).
 
+<a id="fn-27"></a>
 [^27]: Section 1, p. 1: "SealPIR results in queries that are 274x smaller and are 16.4x less expensive for the client to construct."
+<a id="fn-28"></a>
 [^28]: Section 1, p. 1: "SealPIR introduces between 11% and 24% CPU overhead to the server."
 
 #### Response time experiments (Figure 10, p. 12)
@@ -298,6 +326,7 @@ Deployment scenarios tested with 288-byte elements:
 | home | 20 Mbps | SealPIR achieves up to 42% lower response time[^29] |
 | mobile | 10 Mbps | SealPIR significantly better than XPIR; lowest response time among PIR schemes |
 
+<a id="fn-29"></a>
 [^29]: Section 7.2.1, p. 11: "SealPIR's lower network consumption and competitive CPU costs yield up to a 42% reduction in response time."
 
 #### Throughput (Figure 11, p. 12)
@@ -309,6 +338,7 @@ Database: 2^20 elements, 288-byte entries. Measured with concurrent clients from
 - SealPIR achieves 50% higher throughput than XPIR (d=3)
 - Both SealPIR and XPIR achieve over 20x higher throughput than naive PIR (scp), since network bandwidth is the bottleneck for scp
 
+<a id="fn-30"></a>
 [^30]: Section 7.2.2, p. 12: "SealPIR achieves a 50% higher throughput than XPIR with d = 3, but a 23% lower throughput than XPIR with d = 2."
 
 ### Multi-Query PIR with Probabilistic Batch Codes (Sections 4-5)
@@ -337,8 +367,11 @@ Database: 2^20 elements, 288 bytes, using SealPIR with t = 2^20.
 
 Per-request amortized server CPU cost with mPIR at k=256 is 40.5x lower than running k parallel single-query PIR instances.[^33]
 
+<a id="fn-31"></a>
 [^31]: Section 4.2, p. 6. PBC differs from traditional batch codes in that it fails to be complete with probability p.
+<a id="fn-32"></a>
 [^32]: Section 4.5, p. 8: "the failure probability is estimated to be p approximately 2^{-40} for k > 200."
+<a id="fn-33"></a>
 [^33]: Section 7.3, p. 12.
 
 ### Case Study: Pung Integration (Section 7.4)
@@ -352,7 +385,9 @@ SealPIR + mPIR integrated into the Pung private communication system:
 | Pung+M (mPIR) | higher | reduced |
 | Pung+MS (both) | 3.1x higher[^34] | 7.7 MB per round (36x reduction)[^35] |
 
+<a id="fn-34"></a>
 [^34]: Section 7.4, p. 13: "the throughput of Pung+MS is 3.1x higher than that of Pung."
+<a id="fn-35"></a>
 [^35]: Section 7.4, p. 13: "per-client communication costs are cut down to 7.7 MB per round (versus 279 MB in the original Pung implementation)."
 
 ### Comparison with Prior Work
@@ -376,6 +411,7 @@ SealPIR + mPIR integrated into the Pung private communication system:
 3. **Probabilistic batch codes via reverse hashing:** Application-independent multi-query amortization technique. Applicable to any CPIR scheme, not just SealPIR.
 4. **d-dimensional hypercube structuring:** Predates SealPIR (from Stern), but SealPIR's combination with compressed queries makes it practical. The d=2 sweet spot is widely adopted.
 
+<a id="fn-36"></a>
 [^36]: Editorial note: Oblivious query expansion (Expand) was introduced by SealPIR (Section 3.3) and subsequently adopted by OnionPIR, Spiral, and other FHE-based PIR schemes. The adoption claim is based on the cited papers in this collection, not on a specific section of the SealPIR paper itself.
 
 ### Implementation Notes
@@ -389,7 +425,9 @@ SealPIR + mPIR integrated into the Pung private communication system:
 - **Open source:** Built on SEAL (https://sealcrypto.org) and XPIR (https://github.com/xpir-team/xpir/)
 - **mPIR library:** 1,700 lines of Rust, implements 5 PBC constructions using SHA-256 for hash functions
 
+<a id="fn-37"></a>
 [^37]: Section 6, p. 10: "This is around 2,000 lines of C++ and Rust."
+<a id="fn-38"></a>
 [^38]: Section 1, p. 1: "XPIR's protocol is embarrassingly parallel and one can regain the lost throughput by employing additional servers."
 
 ### Deployment Considerations
@@ -410,7 +448,9 @@ SealPIR + mPIR integrated into the Pung private communication system:
 - **No ciphertext multiplication compression:** Unlike later schemes (MulPIR, OnionPIR), SealPIR does not use GSW/RGSW to compress the response. The response is always F^{d-1} BFV ciphertexts.
 - **Substitution key size:** 2.9 MB per client is manageable but non-trivial for mobile deployments. Later schemes (OnionPIR) address this.
 
+<a id="fn-39"></a>
 [^39]: Section 7.1, p. 11.
+<a id="fn-40"></a>
 [^40]: Section 7.2.1, p. 11.
 
 ### Open Problems (Section 8, p. 14)
@@ -418,6 +458,7 @@ SealPIR + mPIR integrated into the Pung private communication system:
 1. **Reduce Expand CPU cost:** "Observe that in Expand and Stern's protocol, when the database dimension (d) is greater than 1, the computation consists of several matrix-vector products. We can therefore implement the optimization described by Beimel et al. [16] where multiple queries (from potentially different users) are aggregated to form a matrix; the server can then use a subcubic matrix multiplication algorithm."[^41]
 2. **Improve PBC allocation strategies:** "We could also consider strategies that optimize for the offline setting in which all balls are available at the same time."[^41]
 
+<a id="fn-41"></a>
 [^41]: Section 8, p. 14.
 
 ### Uncertainties
