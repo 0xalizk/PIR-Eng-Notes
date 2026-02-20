@@ -2,9 +2,9 @@
 
 | Group | INCORRECT | MINOR | Papers | Fix Report |
 |-------|-----------|-------|--------|------------|
-| [A](Fixes_groupA.md) | 5 | 43 | 11 | SealPIR, XPIR-2014, XPIR-2016, MulPIR, OnionPIR, OnionPIRv2, Addra, CwPIR, Spiral, FrodoPIR, ThorPIR |
-| [B](Fixes_groupB.md) | 15 | 43 | 8 | HintlessPIR, YPIR, WhisPIR, Respire, NPIR, InsPIRe, Pirouette, VIA |
-| [C](Fixes_groupC.md) | 10 | 0 | 3 | SimplePIR/DoublePIR, VeriSimplePIR, IncrementalPIR |
-| [D](Fixes_groupD.md) | 39 | 0 | 9 | CK20, IncPIR, IshaiShiWichs, Piano, Plinko, RMS24, SinglePass, TreePIR, WangRen |
-| [X](Fixes_groupX.md) | 4 | 0 | 2 | KeywordPIR, DistributionalPIR |
+| [A](Fixes_groupA.md) | 5 | 43 | 11 | [SealPIR](Fixes_groupA.md#sealpir-notes-2018), [XPIR-2014](Fixes_groupA.md#xpir-2014-notes-2014), [XPIR-2016](Fixes_groupA.md#xpir-2016-notes-2016), [MulPIR](Fixes_groupA.md#mulpir-notes-2019), [OnionPIR](Fixes_groupA.md#onionpir-notes-2021), [OnionPIRv2](Fixes_groupA.md#onionpirv2-notes-2025), [Addra](Fixes_groupA.md#addrafastpir-notes-2021), [CwPIR](Fixes_groupA.md#cwpir-notes-2022), [Spiral](Fixes_groupA.md#spiral-notes-2022), [FrodoPIR](Fixes_groupA.md#frodopir-notes-2022), [ThorPIR](Fixes_groupA.md#thorpir-notes-2024) |
+| [B](Fixes_groupB.md) | 15 | 43 | 8 | [HintlessPIR](Fixes_groupB.md#hintlesspir-notes-2023), [YPIR](Fixes_groupB.md#ypir-notes-2024), [WhisPIR](Fixes_groupB.md#whispir-notes-2024), [Respire](Fixes_groupB.md#respire-notes-2024), [NPIR](Fixes_groupB.md#npir-notes-2025), [InsPIRe](Fixes_groupB.md#inspire-notes-2025), [Pirouette](Fixes_groupB.md#pirouette-notes----2), [VIA](Fixes_groupB.md#via-notes-2025) |
+| [C](Fixes_groupC.md) | 10 | 0 | 3 | [SimplePIR/DoublePIR](Fixes_groupC.md#simplepir--doublepir-2022--5), [VeriSimplePIR](Fixes_groupC.md#verisimplepir-2024--7), [IncrementalPIR](Fixes_groupC.md#incrementalpir-2026--20) |
+| [D](Fixes_groupD.md) | 39 | 0 | 9 | [CK20](Fixes_groupD.md#ck20-notes--21), [IncPIR](Fixes_groupD.md#incpir-notes--1), [IshaiShiWichs](Fixes_groupD.md#ishaishiwichs-notes--16), [Piano](Fixes_groupD.md#piano-notes--2), [Plinko](Fixes_groupD.md#plinko-notes--17), [RMS24](Fixes_groupD.md#rms24-notes--4), [SinglePass](Fixes_groupD.md#singlepass-notes--7), [TreePIR](Fixes_groupD.md#treepir-notes--35), [WangRen](Fixes_groupD.md#wangren-notes--12) |
+| [X](Fixes_groupX.md) | 4 | 0 | 2 | [KeywordPIR](Fixes_groupX.md#keywordpir-notes--31), [DistributionalPIR](Fixes_groupX.md#distributionalpir-notes--10) |
 | **Total** | **73** | **86** | **33** | |
