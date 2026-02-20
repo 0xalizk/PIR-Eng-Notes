@@ -65,17 +65,17 @@
 - **Before:** `Section 1 (p.1)`
 - **After:** `Section 1 (p.5)`
 
-#### [IshaiShiWichs notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md) — [\[^16\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md#user-content-fn-16-a379b55486b29af46ec0b4402515e460)
+#### [IshaiShiWichs notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md) — [\[^16\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md#user-content-fn-16-a379b55486b29af46ec0b4402515e460)
 - **Issue:** O(n^{2/3}) preprocessing bandwidth not explicitly stated in the theorem
 - **Before:** `yielding O(n^{2/3}) preprocessing bandwidth and O(n^{1/3}) online bandwidth.`
 - **After:** `yielding O(n^{1/3}) online bandwidth per Table 1 (p.3).`
 
-#### [IshaiShiWichs notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md) — [\[^25\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md#user-content-fn-25-a379b55486b29af46ec0b4402515e460)
+#### [IshaiShiWichs notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md) — [\[^25\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md#user-content-fn-25-a379b55486b29af46ec0b4402515e460)
 - **Issue:** O_tilde(n^{1/6}) offline bandwidth claim not explicitly visible in theorem or Table 1
 - **Before:** `reducing offline bandwidth from O_tilde(n^{1/2}) to O_tilde(n^{1/6}) per query while maintaining O_tilde(n^{1/3}) online bandwidth.`
 - **After:** `maintaining O_tilde(n^{1/3}) online bandwidth.`
 
-#### [IshaiShiWichs notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md) — [\[^36\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md#user-content-fn-36-a379b55486b29af46ec0b4402515e460)
+#### [IshaiShiWichs notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md) — [\[^36\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md#user-content-fn-36-a379b55486b29af46ec0b4402515e460)
 - **Issue:** Content straddles Sections 1.2/1.3 at p.7-8 boundary, not squarely in Section 1.3
 - **Before:** `Section 1.3 (p.8)`
 - **After:** `Section 1.2-1.3 (p.7-8)`
@@ -120,37 +120,37 @@
 - **Before:** `"Recent lower bounds for traditional PIR have shown that any PIR with pre-processing scheme with client storage r and query time t must obey r * t = Omega(n) [CK20, CHK22, Yeo23]."`
 - **After:** `Recent lower bounds show that any PIR with preprocessing scheme with client storage r and query time t must obey r * t = Omega(n) [CK20, CHK22, Yeo23] (paraphrase; exact phrasing varies slightly).`
 
-#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md) — [\[^4\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md#user-content-fn-4-de4f67c36ce93404f11d60ade740011b)
+#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md) — [\[^4\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#user-content-fn-4-de4f67c36ce93404f11d60ade740011b)
 - **Issue:** Close paraphrase labeled as quote; marked as paraphrase
 - **Before:** `(verbatim quote attribution with editorial additions)`
 - **After:** `(marked as paraphrase of discussion on p.13)`
 
-#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md) — [\[^9\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md#user-content-fn-9-de4f67c36ce93404f11d60ade740011b)
+#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md) — [\[^9\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#user-content-fn-9-de4f67c36ce93404f11d60ade740011b)
 - **Issue:** The 0.4 figure is from the simpler non-paired strategy; with pairs, bound is lambda*sqrt(N)/2
 - **Before:** `The client can make approximately 0.4*λ*sqrt(N) queries before needing to re-run the offline phase`
 - **After:** `with pairs, the client can make up to λ*sqrt(N)/2 queries before needing to re-run the offline phase. The 0.4*λ*sqrt(N) figure used in Table 1 is a conservative estimate for the simpler non-paired strategy.`
 
-#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md) — [\[^12\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md#user-content-fn-12-de4f67c36ce93404f11d60ade740011b)
+#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md) — [\[^12\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#user-content-fn-12-de4f67c36ce93404f11d60ade740011b)
 - **Issue:** Quote truncated (continues with AES/SHA mentions); location spans p.3-4 boundary
 - **Before:** `Section 2 (p.4)`
 - **After:** `Section 2 (p.3-4)` (with note about continuation)
 
-#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md) — [\[^20\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md#user-content-fn-20-de4f67c36ce93404f11d60ade740011b)
+#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md) — [\[^20\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#user-content-fn-20-de4f67c36ce93404f11d60ade740011b)
 - **Issue:** Paper says sending directly costs sqrt(N)*log(N) bits, not 2*sqrt(N)*log(N)
 - **Before:** `vs. 2 * sqrt(N) * log(N) bits for explicit subsets`
 - **After:** `vs. sqrt(N) * log(N) bits for sending explicit subsets directly`
 
-#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md) — [\[^27\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md#user-content-fn-27-de4f67c36ce93404f11d60ade740011b)
+#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md) — [\[^27\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#user-content-fn-27-de4f67c36ce93404f11d60ade740011b)
 - **Issue:** Unit errors: KB should be MB for offline comm, ms should be s for offline compute
 - **Before:** `60.16 KB communication and 842 ms offline computation`
 - **After:** `60.16 MB offline communication and 842 s offline computation`
 
-#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md) — [\[^36\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md#user-content-fn-36-de4f67c36ce93404f11d60ade740011b)
+#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md) — [\[^36\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#user-content-fn-36-de4f67c36ce93404f11d60ade740011b)
 - **Issue:** Paper says naive cost is sqrt(N)*log(N), not 2*sqrt(N)*log(N) as footnote implies
 - **Before:** `vs. 2 * sqrt(N) * log(N) bits for explicit subsets`
 - **After:** `vs. sqrt(N) * log(N) bits for sending explicit subsets directly`
 
-#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md) — [\[^42\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md#user-content-fn-42-de4f67c36ce93404f11d60ade740011b)
+#### [RMS24 notes](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md) — [\[^42\]](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#user-content-fn-42-de4f67c36ce93404f11d60ade740011b)
 - **Issue:** Content spans p.9-10 boundary, not solely p.10
 - **Before:** `Section 4.1 (p.10)`
 - **After:** `Section 4.1 (p.9-10)`

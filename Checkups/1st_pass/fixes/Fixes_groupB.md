@@ -32,17 +32,17 @@
 - **Before:** `27-50x slower than SimplePIR/YPIR, but with 21-42x less communication and no large offline hint download`
 - **After:** `27-50x slower than SimplePIR/YPIR, but with up to 27x smaller communication and no large offline hint download`
 
-#### [NPIR notes](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md) -- [\[^5\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-5-9cba6fe66addfc31fcdb287ec20aa96b)
+#### [NPIR notes](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md) -- [\[^5\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-5-9cba6fe66addfc31fcdb287ec20aa96b)
 - **Issue:** Claims NPIR matches Spiral's rate of 0.250; Spiral's actual rate is 0.390
 - **Before:** `while matching Spiral's communication rate of 0.250`
 - **After:** `with a communication rate of 0.250` (footnote updated to note Spiral's rate is 0.390)
 
-#### [NPIR notes](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md) -- [\[^15\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-15-9cba6fe66addfc31fcdb287ec20aa96b)
+#### [NPIR notes](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md) -- [\[^15\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-15-9cba6fe66addfc31fcdb287ec20aa96b)
 - **Issue:** Claims q_1 ~ 2^32; actual q_1 = 11*2^21+1 ~ 2^24.5
 - **Before:** `For N=2048, phi=16, q_1 approx 2^32: 2048*16*32/8 = 128 KB.`
 - **After:** `For N=2048, phi=16, q_1 = 11*2^21+1 (approx 2^24.5). The 128 KB response size per Table 1 reflects 32-bit aligned storage in practice.`
 
-#### [NPIR notes](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md) -- [\[^23\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-23-9cba6fe66addfc31fcdb287ec20aa96b)
+#### [NPIR notes](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md) -- [\[^23\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-23-9cba6fe66addfc31fcdb287ec20aa96b)
 - **Issue:** Formula log_2(p)/log_2(q_1) = 8/32 is wrong; log_2(q_1) ~ 24.5, not 32
 - **Before:** `Communication rate | log_2(p) / log_2(q_1) | 0.250 (= 8/32)`
 - **After:** `Communication rate | -- | 0.250 (from byte-aligned communication; see Footnote 1, p.3)` (footnote updated to explain byte-alignment origin)
@@ -152,14 +152,14 @@
 - **Before:** `reducing query size from 14 KB to ~4 KB`
 - **After:** `reducing query size from 14 KB to 4 KB`
 
-#### [NPIR notes](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md) (2025)
+#### [NPIR notes](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md) (2025)
 
-**[\[^24\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-24-9cba6fe66addfc31fcdb287ec20aa96b)**
+**[\[^24\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-24-9cba6fe66addfc31fcdb287ec20aa96b)**
 - **Issue:** Explanation "because packing keys are reused" is inaccurate interpretation of amortization
 - **Before:** `0.288 s amortized per query because packing keys are reused`
 - **After:** `0.288 s amortized per query`
 
-**[\[^33\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-33-9cba6fe66addfc31fcdb287ec20aa96b)**
+**[\[^33\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-33-9cba6fe66addfc31fcdb287ec20aa96b)**
 - **Issue:** Notes add a specific threshold of ">= 32" not stated in the paper
 - **Before:** Footnote included specific batch code details
 - **After:** `"with larger batch sizes" NPIR_b becomes less efficient than PIRANA. The paper does not specify a specific threshold (e.g., ">= 32").`

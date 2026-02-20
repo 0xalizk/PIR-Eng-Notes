@@ -12,11 +12,11 @@
 
 1. **IncPIR** — Figure 9, Figure 10 in [IncPIR_2021_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/incpir_2021/IncPIR_2021_notes.md#performance-benchmarks)
 2. **WangRen** — Theorem 4.1 in [WangRen_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/wangren_2024/WangRen_2024_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
-3. **RMS24** — Table 2, Table 3 in [RMS24_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md#performance-benchmarks)
+3. **RMS24** — Table 2, Table 3 in [RMS24_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#performance-benchmarks)
 4. **Plinko** — Figure 1, Figure 6 in [Plinko_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/plinko_2024/Plinko_2024_notes.md#performance-benchmarks) *[estimated, confidence: low]*
 5. **Piano** — Table 1 in [Piano_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/piano_2023/Piano_2023_notes.md#performance-benchmarks)
 6. **TreePIR** — Figure 7, Figure 8, Figure 9 in [TreePIR_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/treepir_2023/TreePIR_2023_notes.md#performance-benchmarks)
-7. **IshaiShiWichs** — Table 1, Theorem 4.4 in [IshaiShiWichs_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md#performance-benchmarks) *[estimated, confidence: low]*
+7. **IshaiShiWichs** — Table 1, Theorem 4.4 in [IshaiShiWichs_2025_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md#performance-benchmarks) *[estimated, confidence: low]*
 8. **CK20** — Theorem 14 in [CK20_2019_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ck20_2019/CK20_2019_notes.md#performance-benchmarks) *[estimated, confidence: low]*
 
 </details>
@@ -34,7 +34,7 @@
 1. **IncPIR** — Figure 9, Figure 10 in [IncPIR_2021_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/incpir_2021/IncPIR_2021_notes.md#performance-benchmarks)
 2. **Piano** — Table 1 in [Piano_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/piano_2023/Piano_2023_notes.md#performance-benchmarks)
 3. **TreePIR** — Figure 7, Figure 8, Figure 9 in [TreePIR_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/treepir_2023/TreePIR_2023_notes.md#performance-benchmarks)
-4. **RMS24** — Table 2, Table 3 in [RMS24_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md#performance-benchmarks)
+4. **RMS24** — Table 2, Table 3 in [RMS24_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#performance-benchmarks)
 
 </details>
 
@@ -65,7 +65,7 @@
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>
 
 1. **CK20** — Theorem 14 in [CK20_2019_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ck20_2019/CK20_2019_notes.md#performance-benchmarks) *[estimated, confidence: low]*
-2. **IshaiShiWichs** — Table 1, Theorem 4.4 in [IshaiShiWichs_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md#performance-benchmarks) *[estimated, confidence: low]*
+2. **IshaiShiWichs** — Table 1, Theorem 4.4 in [IshaiShiWichs_2025_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md#performance-benchmarks) *[estimated, confidence: low]*
 3. **Plinko** — Figure 1, Figure 6 in [Plinko_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/plinko_2024/Plinko_2024_notes.md#performance-benchmarks) *[estimated, confidence: low]*
 4. **WangRen** — Theorem 4.1 in [WangRen_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/wangren_2024/WangRen_2024_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
 

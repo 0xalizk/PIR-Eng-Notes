@@ -14,7 +14,7 @@
 | 2 | YPIR (2024) | `ypir_2024/YPIR_2024_notes.md` | 45 | 38 | 5 | 2 |
 | 3 | WhisPIR (2024) | `whispir_2024/WhisPIR_2024_notes.md` | 62 | 55 | 6 | 1 |
 | 4 | Respire (2024) | `respire_2024/Respire_2024_notes.md` | 37 | 29 | 5 | 3 |
-| 5 | NPIR (2025) | `npir_2025/NPIR_2025_notes.md` | 35 | 27 | 5 | 3 |
+| 5 | NPIR (2025) | `npir_2026/NPIR_2026_notes.md` | 35 | 27 | 5 | 3 |
 | 6 | InsPIRe (2025) | `inspire_2025/InsPIRe_2025_notes.md` | 35 | 28 | 6 | 1 |
 | 7 | Pirouette (2025) | `pirouette_2025/Pirouette_2025_notes.md` | 45 | 36 | 6 | 3 |
 | 8 | VIA (2025) | `via_2025/VIA_2025_notes.md` | 41 | 32 | 7 | 2 |
@@ -153,25 +153,25 @@ None.
 
 ### 5. NPIR (2025)
 
-**Notes file:** `npir_2025/NPIR_2025_notes.md`
-**PDF:** `NPIR_2025_2257.pdf`
+**Notes file:** `npir_2026/NPIR_2026_notes.md`
+**PDF:** `NPIR_2026_2257.pdf`
 **Total footnotes:** 35 | **Correct:** 27 | **Minor:** 5 | **Incorrect:** 3
 
 #### Incorrect findings
 
-- **[\[^5\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-5-9cba6fe66addfc31fcdb287ec20aa96b):**
+- **[\[^5\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-5-9cba6fe66addfc31fcdb287ec20aa96b):**
   - **Statement in notes:** "NPIR achieves 1.50--2.84x better server throughput than Spiral and 1.77--2.55x better than NTRUPIR for 1--32 GB databases with 32 KB records, while matching Spiral's communication rate of 0.250."
   - **Cited location:** Table 1 (p.15) and Section 5.2 (p.16-17)
   - **What the PDF actually says:** Table 1 shows Spiral's rate is **0.390** and NPIR's rate is **0.250**. The throughput improvement ranges are correct, but the rates do not match.
   - **Problem:** The claim that NPIR matches "Spiral's communication rate of 0.250" is factually wrong. Spiral's rate is 0.390. NPIR's rate of 0.250 is lower (worse). The notes' own benchmark table correctly shows Spiral's rate as 0.390, contradicting this claim.
 
-- **[\[^15\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-15-9cba6fe66addfc31fcdb287ec20aa96b):**
+- **[\[^15\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-15-9cba6fe66addfc31fcdb287ec20aa96b):**
   - **Statement in notes:** "the client downloads a response of size N*phi*log_2(q_1). For N=2048, phi=16, q_1 approx 2^32: 2048*16*32/8 = 128 KB."
   - **Cited location:** Section 4.1 (p.12)
   - **What the PDF actually says:** The formula is correct per Section 4.1, but Section 5.1 (p.16) defines q_1 = 11 * 2^21 + 1, which is approximately 2^24.5. The notes claim "q_1 approx 2^32" which is off by a factor of ~2^7.5.
   - **Problem:** The notes fabricate q_1 ~ 2^32 to force the arithmetic to yield 128 KB. The actual q_1 ~ 2^24.5. The 128 KB result is correct per Table 1 (likely due to 32-bit aligned storage), but the derivation uses a wrong value for q_1.
 
-- **[\[^23\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-23-9cba6fe66addfc31fcdb287ec20aa96b):**
+- **[\[^23\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-23-9cba6fe66addfc31fcdb287ec20aa96b):**
   - **Statement in notes:** "Communication rate: log_2(p) / log_2(q_1) = 0.250 (= 8/32)"
   - **Cited location:** Section 1.1 (p.3) and Footnote 1 (p.3)
   - **What the PDF actually says:** The rate 0.250 is stated in the paper. Footnote 1 explicitly warns: "q must be aligned during communication, and the rate is not exactly equal to the scaling factor." The mathematical log_2(q_1) is ~24.5, so 8/24.5 ~ 0.327, not 0.250.
@@ -179,15 +179,15 @@ None.
 
 #### Minor issues
 
-- **[\[^2\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-2-9cba6fe66addfc31fcdb287ec20aa96b):** Quote is accurate; location "Section 5.1 (p.16)" is correct but could be more precisely attributed to the "Parameter selection" paragraph.
+- **[\[^2\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-2-9cba6fe66addfc31fcdb287ec20aa96b):** Quote is accurate; location "Section 5.1 (p.16)" is correct but could be more precisely attributed to the "Parameter selection" paragraph.
 
-- **[\[^14\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-14-9cba6fe66addfc31fcdb287ec20aa96b):** The shown arithmetic 2048*54*6/8 yields ~81 KB, not the claimed 84 KB. The table value of 84 KB is correct; the discrepancy is due to byte-alignment.
+- **[\[^14\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-14-9cba6fe66addfc31fcdb287ec20aa96b):** The shown arithmetic 2048*54*6/8 yields ~81 KB, not the claimed 84 KB. The table value of 84 KB is correct; the discrepancy is due to byte-alignment.
 
-- **[\[^17\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-17-9cba6fe66addfc31fcdb287ec20aa96b):** Faithfully reproduces the paper's slightly imprecise language about record size ("multiplied by the modulus").
+- **[\[^17\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-17-9cba6fe66addfc31fcdb287ec20aa96b):** Faithfully reproduces the paper's slightly imprecise language about record size ("multiplied by the modulus").
 
-- **[\[^24\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-24-9cba6fe66addfc31fcdb287ec20aa96b):** Table 2 values (4.61 s total, 0.288 s amortized) are confirmed, but the notes' explanation "because packing keys are reused" is an inaccurate interpretation of why the cost is amortized.
+- **[\[^24\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-24-9cba6fe66addfc31fcdb287ec20aa96b):** Table 2 values (4.61 s total, 0.288 s amortized) are confirmed, but the notes' explanation "because packing keys are reused" is an inaccurate interpretation of why the cost is amortized.
 
-- **[\[^33\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-33-9cba6fe66addfc31fcdb287ec20aa96b):** The paper says "with larger batch sizes" NPIR_b becomes less efficient than PIRANA. The notes add a specific threshold of ">= 32" not explicitly stated in the paper.
+- **[\[^33\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-33-9cba6fe66addfc31fcdb287ec20aa96b):** The paper says "with larger batch sizes" NPIR_b becomes less efficient than PIRANA. The notes add a specific threshold of ">= 32" not explicitly stated in the paper.
 
 ---
 
@@ -313,9 +313,9 @@ These are factual errors that misrepresent what the cited paper says.
 | 4 | Respire | [\[^4\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#user-content-fn-4-1cbec9417da89c3cbf0fb558d3b63c52) | Omits one of three RLWE assumptions while claiming to summarize all three |
 | 5 | Respire | [\[^16\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#user-content-fn-16-1cbec9417da89c3cbf0fb558d3b63c52) | Correctness bound inequality direction inverted (success lower bound presented as failure upper bound) |
 | 6 | Respire | [\[^35\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#user-content-fn-35-1cbec9417da89c3cbf0fb558d3b63c52) | Citation about communication size ("27x smaller") used to support computation speed claim ("27--50x slower") |
-| 7 | NPIR | [\[^5\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-5-9cba6fe66addfc31fcdb287ec20aa96b) | Claims NPIR matches Spiral's rate of 0.250; Spiral's actual rate is 0.390 |
-| 8 | NPIR | [\[^15\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-15-9cba6fe66addfc31fcdb287ec20aa96b) | Claims q_1 ~ 2^32; actual q_1 = 11*2^21+1 ~ 2^24.5 |
-| 9 | NPIR | [\[^23\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#user-content-fn-23-9cba6fe66addfc31fcdb287ec20aa96b) | Formula log_2(p)/log_2(q_1) = 8/32 is wrong; log_2(q_1) ~ 24.5, not 32 |
+| 7 | NPIR | [\[^5\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-5-9cba6fe66addfc31fcdb287ec20aa96b) | Claims NPIR matches Spiral's rate of 0.250; Spiral's actual rate is 0.390 |
+| 8 | NPIR | [\[^15\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-15-9cba6fe66addfc31fcdb287ec20aa96b) | Claims q_1 ~ 2^32; actual q_1 = 11*2^21+1 ~ 2^24.5 |
+| 9 | NPIR | [\[^23\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#user-content-fn-23-9cba6fe66addfc31fcdb287ec20aa96b) | Formula log_2(p)/log_2(q_1) = 8/32 is wrong; log_2(q_1) ~ 24.5, not 32 |
 | 10 | InsPIRe | [\[^8\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md#user-content-fn-8-1aaa1ac75204571b31d9a1802ce1dfd8) | Conflates two InspiRING parameter sets (d=10 and d=11), mixing favorable numbers |
 | 11 | Pirouette | [\[^2\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#user-content-fn-2-8107ded82fd68762768e920e1ddc3923) | Footnote quotes "LWE ciphertexts" but body text claims these are "RGSW ciphertexts" |
 | 12 | Pirouette | [\[^10\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#user-content-fn-10-8107ded82fd68762768e920e1ddc3923) | Cites Table 3 for the q=2N claim; Table 3 does not contain this -- it is in Section 3.1 |

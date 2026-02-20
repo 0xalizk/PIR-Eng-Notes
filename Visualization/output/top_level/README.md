@@ -26,7 +26,7 @@
 14. **WhisPIR** — Figure 1, Figure 2, Figure 4 in [WhisPIR_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/whispir_2024/WhisPIR_2024_notes.md#performance-benchmarks)
 15. **Pirouette** — Table 7 in [Pirouette_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#performance-benchmarks)
 16. **InsPIRe** — Table 2, Table 3 in [InsPIRe_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md#performance-benchmarks)
-17. **NPIR** — Table 1 in [NPIR_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#performance-benchmarks)
+17. **NPIR** — Table 1 in [NPIR_2026_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#performance-benchmarks)
 18. **VIA** — Table 1, Table 2 in [VIA_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md#performance-benchmarks)
 19. **SimplePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 20. **DoublePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
@@ -36,8 +36,8 @@
 24. **IncPIR** — Figure 9, Figure 10 in [IncPIR_2021_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/incpir_2021/IncPIR_2021_notes.md#performance-benchmarks)
 25. **Piano** — Table 1 in [Piano_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/piano_2023/Piano_2023_notes.md#performance-benchmarks)
 26. **TreePIR** — Figure 7, Figure 8, Figure 9 in [TreePIR_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/treepir_2023/TreePIR_2023_notes.md#performance-benchmarks)
-27. **RMS24** — Table 2, Table 3 in [RMS24_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md#performance-benchmarks)
-28. **IshaiShiWichs** — Table 1, Theorem 4.4 in [IshaiShiWichs_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md#performance-benchmarks) *[estimated, confidence: low]*
+27. **RMS24** — Table 2, Table 3 in [RMS24_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#performance-benchmarks)
+28. **IshaiShiWichs** — Table 1, Theorem 4.4 in [IshaiShiWichs_2025_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md#performance-benchmarks) *[estimated, confidence: low]*
 29. **Plinko** — Figure 1, Figure 6 in [Plinko_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/plinko_2024/Plinko_2024_notes.md#performance-benchmarks) *[estimated, confidence: low]*
 30. **SinglePass** — Table 2 in [SinglePass_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/singlepass_2024/SinglePass_2024_notes.md#performance-benchmarks)
 31. **WangRen** — Theorem 4.1 in [WangRen_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/wangren_2024/WangRen_2024_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
@@ -61,7 +61,7 @@
 4. **XPIR (2016)** — Figure 6, Figure 7, Figure 8 in [xpir_2016_notes.md](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2016/xpir_2016_notes.md#performance-benchmarks)
 5. **Pirouette** — Table 7 in [Pirouette_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#performance-benchmarks)
 6. **Respire** — Table 1, Table 2 in [Respire_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#performance-benchmarks)
-7. **NPIR** — Table 1 in [NPIR_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#performance-benchmarks)
+7. **NPIR** — Table 1 in [NPIR_2026_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#performance-benchmarks)
 8. **InsPIRe** — Table 2, Table 3 in [InsPIRe_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md#performance-benchmarks)
 9. **HintlessPIR** — Table 1, Table 2 in [HintlessPIR_2023_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/hintlesspir_2023/HintlessPIR_2023_notes.md#performance-benchmarks)
 10. **VIA** — Table 1, Table 2 in [VIA_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md#performance-benchmarks)
@@ -97,7 +97,7 @@
 13. **WhisPIR** — Figure 1, Figure 2, Figure 4 in [WhisPIR_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/whispir_2024/WhisPIR_2024_notes.md#performance-benchmarks)
 14. **Pirouette** — Table 7 in [Pirouette_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#performance-benchmarks)
 15. **InsPIRe** — Table 2, Table 3 in [InsPIRe_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md#performance-benchmarks)
-16. **NPIR** — Table 1 in [NPIR_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#performance-benchmarks)
+16. **NPIR** — Table 1 in [NPIR_2026_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#performance-benchmarks)
 17. **VIA** — Table 1, Table 2 in [VIA_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md#performance-benchmarks)
 18. **BarelyDoublyEfficient** — Theorem 3.1 in [BarelyDoublyEfficient_2025_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/barelydoublyefficient_2025/BarelyDoublyEfficient_2025_notes.md#performance-benchmarks) *[estimated, confidence: low]*
 19. **IncrementalPIR** — Table 2 in [IncrementalPIR_2026_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md#performance-benchmarks)
@@ -105,8 +105,8 @@
 21. **IncPIR** — Figure 9, Figure 10 in [IncPIR_2021_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/incpir_2021/IncPIR_2021_notes.md#performance-benchmarks)
 22. **Piano** — Table 1 in [Piano_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/piano_2023/Piano_2023_notes.md#performance-benchmarks)
 23. **TreePIR** — Figure 7, Figure 8, Figure 9 in [TreePIR_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/treepir_2023/TreePIR_2023_notes.md#performance-benchmarks)
-24. **RMS24** — Table 2, Table 3 in [RMS24_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md#performance-benchmarks)
-25. **IshaiShiWichs** — Table 1, Theorem 4.4 in [IshaiShiWichs_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md#performance-benchmarks) *[estimated, confidence: low]*
+24. **RMS24** — Table 2, Table 3 in [RMS24_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#performance-benchmarks)
+25. **IshaiShiWichs** — Table 1, Theorem 4.4 in [IshaiShiWichs_2025_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md#performance-benchmarks) *[estimated, confidence: low]*
 26. **Plinko** — Figure 1, Figure 6 in [Plinko_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/plinko_2024/Plinko_2024_notes.md#performance-benchmarks) *[estimated, confidence: low]*
 27. **WangRen** — Theorem 4.1 in [WangRen_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/wangren_2024/WangRen_2024_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
 28. **KeywordPIR** — Table 3, Table 4 in [KeywordPIR_2019_notes.md](../../../Schemes/Group%20X%20-%20Extensions/keywordpir_2019/KeywordPIR_2019_notes.md#performance-benchmarks)
@@ -141,7 +141,7 @@
 15. **WhisPIR** — Figure 1, Figure 2, Figure 4 in [WhisPIR_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/whispir_2024/WhisPIR_2024_notes.md#performance-benchmarks)
 16. **Pirouette** — Table 7 in [Pirouette_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#performance-benchmarks)
 17. **InsPIRe** — Table 2, Table 3 in [InsPIRe_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md#performance-benchmarks)
-18. **NPIR** — Table 1 in [NPIR_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#performance-benchmarks)
+18. **NPIR** — Table 1 in [NPIR_2026_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#performance-benchmarks)
 19. **VIA** — Table 1, Table 2 in [VIA_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md#performance-benchmarks)
 20. **SimplePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 21. **DoublePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
@@ -152,8 +152,8 @@
 26. **IncPIR** — Figure 9, Figure 10 in [IncPIR_2021_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/incpir_2021/IncPIR_2021_notes.md#performance-benchmarks)
 27. **Piano** — Table 1 in [Piano_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/piano_2023/Piano_2023_notes.md#performance-benchmarks)
 28. **TreePIR** — Figure 7, Figure 8, Figure 9 in [TreePIR_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/treepir_2023/TreePIR_2023_notes.md#performance-benchmarks)
-29. **RMS24** — Table 2, Table 3 in [RMS24_2023_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md#performance-benchmarks)
-30. **IshaiShiWichs** — Table 1, Theorem 4.4 in [IshaiShiWichs_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md#performance-benchmarks) *[estimated, confidence: low]*
+29. **RMS24** — Table 2, Table 3 in [RMS24_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#performance-benchmarks)
+30. **IshaiShiWichs** — Table 1, Theorem 4.4 in [IshaiShiWichs_2025_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md#performance-benchmarks) *[estimated, confidence: low]*
 31. **Plinko** — Figure 1, Figure 6 in [Plinko_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/plinko_2024/Plinko_2024_notes.md#performance-benchmarks) *[estimated, confidence: low]*
 32. **SinglePass** — Table 2 in [SinglePass_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/singlepass_2024/SinglePass_2024_notes.md#performance-benchmarks)
 33. **WangRen** — Theorem 4.1 in [WangRen_2024_notes.md](../../../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/wangren_2024/WangRen_2024_notes.md#performance-benchmarks) *[estimated, confidence: moderate]*
@@ -200,7 +200,7 @@
 7. **Respire** — Table 1, Table 2 in [Respire_2024_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#performance-benchmarks)
 8. **Pirouette** — Table 7 in [Pirouette_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#performance-benchmarks)
 9. **InsPIRe** — Table 2, Table 3 in [InsPIRe_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md#performance-benchmarks)
-10. **NPIR** — Table 1 in [NPIR_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md#performance-benchmarks)
+10. **NPIR** — Table 1 in [NPIR_2026_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#performance-benchmarks)
 11. **VIA** — Table 1, Table 2 in [VIA_2025_notes.md](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md#performance-benchmarks)
 12. **SimplePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)
 13. **DoublePIR** — Table 1, Table 8 in [SimplePIR_DoublePIR_2022_notes.md](../../../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#performance-benchmarks)

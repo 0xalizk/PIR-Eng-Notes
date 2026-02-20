@@ -5,7 +5,7 @@
 - Multi-server schemes are excluded
 - Structured engineering notes ([eg](/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md)) for 34 Private Information Retrieval (PIR) research papers: scheme design, complexity analysis, cryptographic assumptions, and reported benchmarks. 
 - Per-scheme notes are produced by reading the source PDF (incl. tables/figures which Claude can do to some extent) using a [standardized methodology](.claude/skills/pir-paper-analyzer/SKILL.md). 
-- Footnotesd used ([eg](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-2-5ed4c8df6d0cf7056920fa3002fe1a3a)) to support statements and reference pages/sections of the paper.
+- Footnotes used ([eg](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-2-5ed4c8df6d0cf7056920fa3002fe1a3a)) to support statements and reference pages/sections of the paper.
 
 | [![T1: Communication Scatter](Visualization/output/top_level/T1_communication_scatter.png)](Visualization/output/top_level#communication-design-space--query-vs-response-size) | [![T2: Throughput Bar](Visualization/output/top_level/T2_throughput_bar.png)](Visualization/output/top_level#server-throughput-comparison) | [![T3: Pareto Frontier](Visualization/output/top_level/T3_pareto_frontier.png)](Visualization/output/top_level#pareto-frontier--communication-vs-server-time) |
 |:---:|:---:|:---:|
@@ -30,7 +30,7 @@
 
 | Paper | Key Contribution |
 |-------|-----------------|
-| 2026 [NPIR](Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2025/NPIR_2025_notes.md) | NTRU packing for high communication rate |
+| 2026 [NPIR](Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md) | NTRU packing for high communication rate |
 | 2025 [VIA](Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md) | DMux-CMux architecture, 3 variants (VIA/VIA-C/VIA-B) |
 | 2025 [InsPIRe](Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md) | InspiRING ring packing, polynomial evaluation |
 | 2025 [Pirouette](Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md) | 36-byte queries via blind rotation |
@@ -53,11 +53,11 @@
 
 | Paper | Key Contribution |
 |-------|-----------------|
-| 2025 [IshaiShiWichs](Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2024/IshaiShiWichs_2024_notes.md) | IT-PIR constructions + OWF/SZK lower bounds |
+| 2025 [IshaiShiWichs](Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md) | IT-PIR constructions + OWF/SZK lower bounds |
 | 2024 [WangRen](Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/wangren_2024/WangRen_2024_notes.md) | Tight ST = O(nw) tradeoff (theory) |
 | 2024 [SinglePass](Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/singlepass_2024/SinglePass_2024_notes.md) | Streaming single-pass preprocessing, deterministic |
 | 2024 [Plinko](Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/plinko_2024/Plinko_2024_notes.md) | Invertible PRFs, Õ(1) updates (theory) |
-| 2024 [RMS24](Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2023/RMS24_2023_notes.md) | Dummy subsets, standard correctness |
+| 2024 [RMS24](Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md) | Dummy subsets, standard correctness |
 | 2023 [TreePIR](Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/treepir_2023/TreePIR_2023_notes.md) | 2-server sublinear via wpPRF primitive |
 | 2023 [Piano](Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/piano_2023/Piano_2023_notes.md) | First practical sublinear-server, PRF-only |
 | 2021 [IncPIR](Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/incpir_2021/IncPIR_2021_notes.md) | Incremental hint updates, mutation model |
