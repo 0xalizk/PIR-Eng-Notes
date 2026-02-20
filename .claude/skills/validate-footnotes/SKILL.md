@@ -102,7 +102,40 @@ Key formatting rules:
   - Notes file: `[SealPIR notes](Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md)`
   - Source PDF: `[SealPIR PDF](Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/SealPIR_2018.pdf)`
 
-## 5. Common pitfalls to watch for
+## 5. Footnote hyperlinks in fix/checkup files
+
+When a fix or checkup file refers to a specific footnote (e.g., `[^36]`), it **must** be a clickable hyperlink that goes directly to the **footnote body** at the bottom of the rendered GitHub page — not to the in-text reference in the middle.
+
+GitHub renders footnote bodies with anchors in the format:
+
+```
+#user-content-fn-NAME-HASH
+```
+
+where `HASH` is a 32-character hex string unique to each file (same hash for all footnotes within one file, but different across files). This hash is **not deterministic from local data** — it must be scraped from the rendered GitHub page. It is stable across page loads but changes when file content changes.
+
+**To create a footnote hyperlink:**
+
+1. Get the per-file hash by curling the file's GitHub page and extracting it:
+   ```
+   curl -s https://github.com/<REPO>/blob/main/<PATH> | grep -oP 'user-content-fn-\w+-\K[a-f0-9]{32}' | head -1
+   ```
+2. Build the link: `[\[^N\]](../../../<URL-encoded-path>#user-content-fn-N-HASH)`
+   - Escape the brackets (`\[^N\]`) so GitHub doesn't treat it as footnote syntax
+   - URL-encode spaces as `%20` in the path
+   - Use the correct relative path prefix for the fix file's location
+
+**Example:**
+```markdown
+[\[^36\]](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md#user-content-fn-36-e88a300f49f79b7b67cb031ed32aaa68)
+```
+
+**Important caveats:**
+- Hashes change when file content changes, so after any edit to a notes file, re-scrape its hash and update all fix file links that reference it
+- GitHub strips `<a>` tags from inside `[^N]:` footnote definitions, so custom anchors cannot be injected
+- The hash differs between the GitHub API and the web view — always scrape from the web view
+
+## 6. Common pitfalls to watch for
 
 These are the most frequent error patterns found across 1300+ validated footnotes in this repo:
 
