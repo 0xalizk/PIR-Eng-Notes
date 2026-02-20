@@ -24,12 +24,9 @@
 
 SealPIR's central contribution is *oblivious query expansion* (Expand): a server-side procedure that takes a single BFV ciphertext encoding the client's desired index as a monomial x^i and produces N ciphertexts where the i-th encrypts 1 and all others encrypt 0 — without learning i.[^1] This eliminates the O(N) query cost of XPIR, compressing queries from d * N^{1/d} ciphertexts down to d * ceil(N^{1/d}/N_ring) ciphertexts, where N_ring is the ring dimension.[^2] The expansion uses only substitution operations (automorphisms) and additions — no homomorphic multiplications — keeping noise growth additive and enabling smaller parameters.[^3] A secondary contribution is *probabilistic batch codes* (PBCs) for amortized multi-query PIR.
 
-<a id="fn-1"></a>
-[^1]: Section 3.3, Figure 3. The server never sees the plaintext index; it only applies algebraic operations (substitution + addition) on ciphertexts.
-<a id="fn-2"></a>
-[^2]: Section 3.4–3.5. Query communication goes from O(N * d * N^{1/d}) in XPIR to O(N * d * ceil(sqrt_d(n)/N)) in SealPIR, where N_ring = 2048 or 4096.
-<a id="fn-3"></a>
-[^3]: Figure 2 (p. 3). Substitution has additive noise growth (cost 0.279 ms), compared to ciphertext multiplication's multiplicative noise growth (cost 1.514 ms).
+[^1]: <a id="fn-1"></a>Section 3.3, Figure 3. The server never sees the plaintext index; it only applies algebraic operations (substitution + addition) on ciphertexts.
+[^2]: <a id="fn-2"></a>Section 3.4–3.5. Query communication goes from O(N * d * N^{1/d}) in XPIR to O(N * d * ceil(sqrt_d(n)/N)) in SealPIR, where N_ring = 2048 or 4096.
+[^3]: <a id="fn-3"></a>Figure 2 (p. 3). Substitution has additive noise growth (cost 0.279 ms), compared to ciphertext multiplication's multiplicative noise growth (cost 1.514 ms).
 
 ### Novel Primitives / Abstractions
 
