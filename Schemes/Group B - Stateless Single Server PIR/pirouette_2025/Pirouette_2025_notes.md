@@ -190,7 +190,7 @@ Pirouette's correctness relies on bounding the noise variance through a cascade 
 
 [^19]: Section 4.1 (p.8): "the overall correctness of any algorithm that outputs a (R)LWE ciphertext c will be characterized by the soundness of the approach ... and the failure probability epsilon." Appendix A.1 (p.16): "we rely on the independence heuristic, which assumes that ciphertexts are independent."
 
-[^20]: Section 5.1 (p.9): "in order to provide a failure probability of at most 2^{-40} and a standard security parameter of lambda = 128 bits."
+[^20]: Section 5.1 (p.9): "in order to provide a failure probability of at most 2^{-40} and a standard security parameter of λ = 128 bits."
 
 [^21]: Appendix A.1 (p.16): "Similar to previous works, we rely on the independence heuristic, which assumes that ciphertexts are independent."
 

@@ -29,7 +29,7 @@
 
 | Metric | Asymptotic | Concrete (CrowdSurf: 38 GB Twitter DB, B=24, kappa_avg=0.8, kappa_worst=0.01) | Phase |
 |--------|-----------|---------------------------------------|-------|
-| Expected server time | O-tilde(k*(1-kappa_worst) + N*kappa_worst) | 0.004 s GPU + negligible CPU (PIR portion) | Online |
+| Expected server time | Õ(k*(1-kappa_worst) + N*kappa_worst) | 0.004 s GPU + negligible CPU (PIR portion) | Online |
 | Expected communication | k*log N + C(k)*(1-kappa_worst) + C(N)*kappa_worst | 21 MB total per request | Online |
 | Client storage | O(popular DB indices + hint) | 65 MB (hint) per client | Setup (reusable) |
 | Server storage | O(N + k) (two encoded databases) | 38 GB + 15 MB popular bucket | Setup |

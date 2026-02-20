@@ -142,7 +142,7 @@
     "asymptotic": {
       "query_size": "O(N_1 * n'_1 * m'_1 * d * log Q)",
       "response_size": "O(L * n'_1 * n'_2 * d * log q)",
-      "server_computation": "O-tilde(log log lambda + log log log N) per bit",
+      "server_computation": "Õ(log log λ + log log log N) per bit",
       "client_computation": "encryption + decryption"
     },
     "group_specific": {
@@ -369,7 +369,7 @@
       "query_size": "O(N^{1/3})",
       "response_size": "O(N^{1/3})",
       "server_computation": "O(Q) per query",
-      "client_computation": "O_lambda(Q)"
+      "client_computation": "O_λ(Q)"
     },
     "group_specific": {
       "expansion_factor": null,
@@ -698,9 +698,9 @@
       "threading": null
     },
     "asymptotic": {
-      "query_size": "O_lambda(log N)",
-      "response_size": "O_lambda(1)",
-      "server_computation": "O_lambda(N)",
+      "query_size": "O_λ(log N)",
+      "response_size": "O_λ(1)",
+      "server_computation": "O_λ(N)",
       "client_computation": null
     },
     "group_specific": {
@@ -830,8 +830,8 @@
     "source_ref": "Theorem 3.1",
     "estimation_meta": {
       "confidence": "low",
-      "method": "Asymptotic formulas from Theorem 3.1 with N=2^33 bits (1 GB). Server O(N/log^2 N) gives ~900x improvement over O(N), but poly(lambda) and Williams' technique constants are unknown and potentially large.",
-      "reference_db_note": "1 GB reference; poly(lambda) factors make concrete estimates highly uncertain"
+      "method": "Asymptotic formulas from Theorem 3.1 with N=2^33 bits (1 GB). Server O(N/log^2 N) gives ~900x improvement over O(N), but poly(λ) and Williams' technique constants are unknown and potentially large.",
+      "reference_db_note": "1 GB reference; poly(λ) factors make concrete estimates highly uncertain"
     },
     "concrete": {
       "reference_db": "1 GB (estimated, theoretical)",
@@ -850,10 +850,10 @@
       "threading": null
     },
     "asymptotic": {
-      "query_size": "O-tilde(sqrt(N)) * poly(lambda)",
-      "response_size": "O-tilde(sqrt(N)) * poly(lambda)",
-      "server_computation": "O(N / (epsilon * log N)^2) * polyloglog(N) * poly(lambda)",
-      "client_computation": "O-tilde(sqrt(N)) * poly(lambda)"
+      "query_size": "Õ(sqrt(N)) * poly(λ)",
+      "response_size": "Õ(sqrt(N)) * poly(λ)",
+      "server_computation": "O(N / (epsilon * log N)^2) * polyloglog(N) * poly(λ)",
+      "client_computation": "Õ(sqrt(N)) * poly(λ)"
     },
     "group_specific": {
       "offline_hint_mb": null,
@@ -906,8 +906,8 @@
     "source_ref": "Theorem 14",
     "estimation_meta": {
       "confidence": "low",
-      "method": "Theorem 14 (two-server computational) with s=sqrt(n), lambda=128, n=2^28 bits. Online comm O(lambda^2 * log n) = ~56 KB. Server time includes unknown poly(lambda, log n) factor.",
-      "reference_db_note": "N=2^20 x 32B; poly(lambda) factors make server time estimate highly uncertain"
+      "method": "Theorem 14 (two-server computational) with s=sqrt(n), λ=128, n=2^28 bits. Online comm O(λ^2 * log n) = ~56 KB. Server time includes unknown poly(λ, log n) factor.",
+      "reference_db_note": "N=2^20 x 32B; poly(λ) factors make server time estimate highly uncertain"
     },
     "concrete": {
       "reference_db": "N=2^20 x 32B (estimated)",
@@ -926,10 +926,10 @@
       "threading": null
     },
     "asymptotic": {
-      "query_size": "O(lambda * kappa_p)",
-      "response_size": "O(lambda)",
-      "server_computation": "O-tilde_lambda(sqrt(n))",
-      "client_computation": "O-tilde_lambda(sqrt(n))"
+      "query_size": "O(λ * kappa_p)",
+      "response_size": "O(λ)",
+      "server_computation": "Õ_λ(sqrt(n))",
+      "client_computation": "Õ_λ(sqrt(n))"
     },
     "group_specific": {
       "setup_model": "client-dependent",
@@ -1003,12 +1003,12 @@
       "query_size": "O(sqrt(n))",
       "response_size": "O(1)",
       "server_computation": "O(sqrt(n))",
-      "client_computation": "O_lambda(sqrt(n))"
+      "client_computation": "O_λ(sqrt(n))"
     },
     "group_specific": {
       "setup_model": "client-dependent (streaming)",
       "query_budget": "sqrt(n) * ln(kappa) * alpha(kappa)",
-      "client_storage_asymptotic": "O_lambda(sqrt(n) * log kappa * alpha(kappa))"
+      "client_storage_asymptotic": "O_λ(sqrt(n) * log kappa * alpha(kappa))"
     }
   },
   {
@@ -1037,7 +1037,7 @@
       "threading": "per server (amortized)"
     },
     "asymptotic": {
-      "query_size": "O(lambda * log N)",
+      "query_size": "O(λ * log N)",
       "response_size": "O(sqrt(N) * w)",
       "server_computation": "O(sqrt(N) * log N)",
       "client_computation": "O(sqrt(N))"
@@ -1096,7 +1096,7 @@
     "source_ref": "Table 1, Theorem 4.4",
     "estimation_meta": {
       "confidence": "low",
-      "method": "Construction 2 (Theorem 4.4): server O-tilde(n^{2/3}), comm O-tilde(n^{1/3}) at n=2^28 bits. Information-theoretic scheme; O-tilde hides omega(log n) repetition factors.",
+      "method": "Construction 2 (Theorem 4.4): server Õ(n^{2/3}), comm Õ(n^{1/3}) at n=2^28 bits. Information-theoretic scheme; Õ hides omega(log n) repetition factors.",
       "reference_db_note": "N=2^20 x 32B; super-logarithmic hidden factors from omega(log n) parallel repetition"
     },
     "concrete": {
@@ -1116,15 +1116,15 @@
       "threading": null
     },
     "asymptotic": {
-      "query_size": "O-tilde(n^{1/3})",
-      "response_size": "O-tilde(n^{1/3})",
-      "server_computation": "O-tilde(n^{2/3})",
-      "client_computation": "O-tilde(n^{1/2})"
+      "query_size": "Õ(n^{1/3})",
+      "response_size": "Õ(n^{1/3})",
+      "server_computation": "Õ(n^{2/3})",
+      "client_computation": "Õ(n^{1/2})"
     },
     "group_specific": {
       "setup_model": "client-dependent",
       "query_budget": null,
-      "client_storage_asymptotic": "O-tilde(n^{2/3})"
+      "client_storage_asymptotic": "Õ(n^{2/3})"
     }
   },
   {
@@ -1137,8 +1137,8 @@
     "source_ref": "Figure 1, Figure 6",
     "estimation_meta": {
       "confidence": "low",
-      "method": "Asymptotic O-tilde(n/r) scaling at r=sqrt(n) for N=2^20 entries x 32B. Query comm n/r entries; response is single entry. Server does n/r probes (XOR + iPRF). No implementation benchmarks exist.",
-      "reference_db_note": "N=2^20 x 32B; O-tilde hides polylog factors from iPRF inversion"
+      "method": "Asymptotic Õ(n/r) scaling at r=sqrt(n) for N=2^20 entries x 32B. Query comm n/r entries; response is single entry. Server does n/r probes (XOR + iPRF). No implementation benchmarks exist.",
+      "reference_db_note": "N=2^20 x 32B; Õ hides polylog factors from iPRF inversion"
     },
     "concrete": {
       "reference_db": "N=2^20 x 32B (estimated, r=sqrt(n))",
@@ -1157,10 +1157,10 @@
       "threading": null
     },
     "asymptotic": {
-      "query_size": "O-tilde(n/r)",
-      "response_size": "O-tilde(n/r)",
-      "server_computation": "O-tilde(n/r)",
-      "client_computation": "O-tilde(n/r)"
+      "query_size": "Õ(n/r)",
+      "response_size": "Õ(n/r)",
+      "server_computation": "Õ(n/r)",
+      "client_computation": "Õ(n/r)"
     },
     "group_specific": {
       "setup_model": "client-dependent",
@@ -1309,9 +1309,9 @@
       "threading": null
     },
     "asymptotic": {
-      "query_size": "O-tilde(k*(1-kappa_worst) + N*kappa_worst)",
+      "query_size": "Õ(k*(1-kappa_worst) + N*kappa_worst)",
       "response_size": null,
-      "server_computation": "O-tilde(k*(1-kappa_worst) + N*kappa_worst)",
+      "server_computation": "Õ(k*(1-kappa_worst) + N*kappa_worst)",
       "client_computation": null
     },
     "group_specific": {

@@ -28,7 +28,7 @@
 
 ### Core Idea
 
-Prior client preprocessing PIR schemes achieve S = O(lambda * sqrt(n) * w) storage and T = O(sqrt(n)) server probes, yielding ST = O(lambda * n * w) — a factor lambda away from the Omega(nw) lower bound. The extra lambda comes from the coupon-collector duplication inherent in independently sampled hint sets. This paper adapts the permutation-based hint table of [LP24] to work with a single server by introducing a novel relocation data structure. Each query consumes one column of the hint table; entries in that column are relocated to random empty positions in the same row, maintaining the invariant that each DB entry appears exactly once per row. A small-domain PRP compresses the permutation state, reducing client storage from O(n) to O(n/T * (log n + w)). The resulting scheme achieves ST = O(nw) when w = Omega(log n), matching the lower bound up to constant factors.[^4]
+Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage and T = O(sqrt(n)) server probes, yielding ST = O(λ * n * w) — a factor λ away from the Omega(nw) lower bound. The extra λ comes from the coupon-collector duplication inherent in independently sampled hint sets. This paper adapts the permutation-based hint table of [LP24] to work with a single server by introducing a novel relocation data structure. Each query consumes one column of the hint table; entries in that column are relocated to random empty positions in the same row, maintaining the invariant that each DB entry appears exactly once per row. A small-domain PRP compresses the permutation state, reducing client storage from O(n) to O(n/T * (log n + w)). The resulting scheme achieves ST = O(nw) when w = Omega(log n), matching the lower bound up to constant factors.[^4]
 
 [^4]: Theorem 1.1 (p.2): Client storage O(Qw + Q log n) bits, amortized communication O(Tw + T log n) bits, amortized server computation O(T) accesses, amortized client computation O(T) XORs and O(T) small-domain PRP calls, over Q = n/T queries.
 
@@ -48,13 +48,13 @@ Prior client preprocessing PIR schemes achieve S = O(lambda * sqrt(n) * w) stora
 | **Standalone complexity** | Access: O(1) expected PRP calls for random input. Locate: O(1) expected PRP calls for random input. Relocate(c) then Locate(e): O(1) expected + O(1) amortized PRP calls (Theorem 3.3). [^10] |
 | **Relationship to prior primitives** | Novel. Conceptually similar to cuckoo hashing's eviction chains but with a different invariant (every element appears exactly once, positions are uniformly random). The helper graph G (Definition 3.6) of disjoint chains and cycles provides the key structural insight. [^11] |
 
-[^5]: Section 3.1 (p.12): Formal interface definition. DS is parameterized by security parameter lambda, size parameters m, m' in N with m' > m.
+[^5]: Section 3.1 (p.12): Formal interface definition. DS is parameterized by security parameter λ, size parameters m, m' in N with m' > m.
 
 [^6]: Section 3.1 (p.13): Perfect security formalized via Experiments 3.1 and 3.2. Lemma 3.16 (p.16) proves identical distributions by induction on the number of Relocate operations.
 
 [^7]: Lemma 3.13 (p.15): elements appear once and only once. Lemma 3.14 (p.16): Access and Locate are inverses. Lemma 3.15 (p.16): Relocate moves elements to empty, unconsumed positions.
 
-[^8]: Section 1.2 (p.7): "the total client storage needed to reconstruct the entire hint table is O(lambda + m log m), avoiding the linear client storage."
+[^8]: Section 1.2 (p.7): "the total client storage needed to reconstruct the entire hint table is O(λ + m log m), avoiding the linear client storage."
 
 [^9]: Section 1.2 (p.7): "Each DS instance uses a separate small-domain PRP. The keys to the PRPs can be derived pseudorandomly via a PRF from a single master key. The T DS instances will share a global array C."
 
@@ -81,7 +81,7 @@ Prior client preprocessing PIR schemes achieve S = O(lambda * sqrt(n) * w) stora
 |-------|--------|
 | **Hardness assumption** | OWF (one-way functions). PRF and small-domain PRP are both constructed from OWF. [^1] |
 | **Encryption/encoding scheme(s)** | None — purely symmetric-key. PRF used to derive per-row PRP keys: ck_j = PRF(ck_hat, j). Small-domain PRP P_{ck_j} provides the permutation for each DS instance. [^13] |
-| **Key structure** | Client key ck = (ck_hat, Hist) where ck_hat is a lambda-bit PRF master key and Hist is the shared relocation history. [^14] |
+| **Key structure** | Client key ck = (ck_hat, Hist) where ck_hat is a λ-bit PRF master key and Hist is the shared relocation history. [^14] |
 | **Correctness condition** | Deterministic: every DB entry appears in exactly one column per row of the hint table, so the XOR-parity hint always enables correct reconstruction. [^2] |
 
 [^13]: Construction 4.2 (p.18): "For each row j, an instance of DS_j in Construction 3.5 is instantiated with pseudorandom permutation PRP(ck_j, .) where ck_j = PRF(ck_hat, j) and the globally shared Hist."
@@ -115,7 +115,7 @@ Prior client preprocessing PIR schemes achieve S = O(lambda * sqrt(n) * w) stora
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
-| KeyGen | Client | Sample lambda-bit PRF key ck_hat, initialize Hist | — | Once |
+| KeyGen | Client | Sample λ-bit PRF key ck_hat, initialize Hist | — | Once |
 | HintConstruct | Client | Stream entire DB; for each entry DB_j[e] in row j, compute c = DS_j.Locate(e) and update h_c = h_c XOR DB_j[e] | O(nw) bits (DB download) | Every Q = n/T queries [^20] |
 | Query | Client | Find target column c via DS_{j*}.Locate(i mod m); build request q = (DS_0.Access(c), ..., DS_{T-1}.Access(c)) replacing j*-th entry with a random element; call Hist.Append(c) | T * log(n) bits upload | Per query |
 | Answer | Server | Parse (i_0, ..., i_{T-1}) from q; return (DB_0[i_0], ..., DB_{T-1}[i_{T-1}]) | T * w bits download | Per query |
@@ -155,7 +155,7 @@ Correctness of answer reconstruction: the client computes DB[i] = h[c] XOR (XOR_
 | Client persistent storage | O(Qw + Q log n) = O((n/T)(w + log n)) bits | N/A (no implementation) | — [^23] |
 | Amortized offline/query | O(Tw + T log n) bits communication | N/A (no implementation) | Amortized over Q = n/T queries |
 
-[^23]: Section 4.3 (p.21): "h contains m' XOR sums of size w each and has size m'w = O(Qw). ck contains lambda bits of PRF key and the state for Hist. From Construction 3.4, we know that Hist stores an array of size no more than Q and a hash map containing no more than Q elements. Therefore, the size of ck is O(Q log n) bits and the total client storage is O(Qw + Q log n) bits."
+[^23]: Section 4.3 (p.21): "h contains m' XOR sums of size w each and has size m'w = O(Qw). ck contains λ bits of PRF key and the state for Hist. From Construction 3.4, we know that Hist stores an array of size no more than Q and a hash map containing no more than Q elements. Therefore, the size of ck is O(Q log n) bits and the total client storage is O(Qw + Q log n) bits."
 
 #### Preprocessing Characterization
 
@@ -268,15 +268,15 @@ Server performs no computation beyond retrieving the T requested entries, distin
 
 | Metric | WangRen (this) | State-of-art [LP23b, ZPZS24, GZS24, HPPY24] | CGK20/CGHK22 |
 |--------|---------------|----------------------------------------------|--------------|
-| ST product | O(nw) (tight) | O(lambda * sqrt(n) * w * sqrt(n)) = O(lambda * nw) | O(n * poly(log n, lambda)) |
-| Client storage S | O((n/T)(w + log n)) | O(lambda * sqrt(n) * w) | O(n * poly(log n, lambda)) |
-| Server probes T | O(T) (tunable) | O(sqrt(n)) | O(sqrt(n) * poly(log n, lambda)) |
-| lambda factor in ST | None (constant) | lambda (from coupon collector) | poly(log n, lambda) |
+| ST product | O(nw) (tight) | O(λ * sqrt(n) * w * sqrt(n)) = O(λ * nw) | O(n * poly(log n, λ)) |
+| Client storage S | O((n/T)(w + log n)) | O(λ * sqrt(n) * w) | O(n * poly(log n, λ)) |
+| Server probes T | O(T) (tunable) | O(sqrt(n)) | O(sqrt(n) * poly(log n, λ)) |
+| λ factor in ST | None (constant) | λ (from coupon collector) | poly(log n, λ) |
 | Number of servers | 1 | 1 (some require 2) | 1 (CGHK22), 2 (CGK20) |
 | Correctness | Deterministic | Probabilistic (most) or deterministic | Probabilistic |
 | Hardness assumption | OWF | OWF | OWF |
 
-**Key takeaway:** WangRen is the first single-server client preprocessing PIR scheme achieving a tight space-time tradeoff ST = O(nw), eliminating the lambda factor present in all prior constructions. It does so via a deterministic permutation-based approach with a novel relocation data structure. The absence of an implementation means practical competitiveness with schemes like Piano remains an open question.
+**Key takeaway:** WangRen is the first single-server client preprocessing PIR scheme achieving a tight space-time tradeoff ST = O(nw), eliminating the λ factor present in all prior constructions. It does so via a deterministic permutation-based approach with a novel relocation data structure. The absence of an implementation means practical competitiveness with schemes like Piano remains an open question.
 
 ### Portable Optimizations
 
@@ -294,10 +294,10 @@ Server performs no computation beyond retrieving the T requested entries, distin
 
 ### Related Papers in Collection
 
-- **Piano [Group D]:** Practical single-server preprocessing PIR with O(sqrt(n)) server probes and O(lambda * sqrt(n) * w) client storage. Has lambda factor in ST product. Probabilistic correctness.
+- **Piano [Group D]:** Practical single-server preprocessing PIR with O(sqrt(n)) server probes and O(λ * sqrt(n) * w) client storage. Has λ factor in ST product. Probabilistic correctness.
 - **Plinko [Group D]:** Theory-only construction using invertible PRFs for O(1) amortized updates. Different technique (puncturable/invertible PRFs vs. relocation).
-- **CK20 [Group D]:** First sublinear-server client preprocessing PIR. Puncturable PRF-based. ST product has poly(log n, lambda) factors.
-- **RMS24 [Group D]:** Practical scheme with dummy subsets. Achieves standard correctness. Has lambda factor in storage.
+- **CK20 [Group D]:** First sublinear-server client preprocessing PIR. Puncturable PRF-based. ST product has poly(log n, λ) factors.
+- **RMS24 [Group D]:** Practical scheme with dummy subsets. Achieves standard correctness. Has λ factor in storage.
 - **SinglePass [Group D]:** Two-server scheme with single-pass streaming preprocessing using Fisher-Yates shuffle. Different model (2-server).
 - **IshaiShiWichs [Group D]:** Information-theoretic PIR constructions and lower bounds. Communication barrier [ISW24] is extended by this paper's Appendix B.2.
 

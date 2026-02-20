@@ -119,7 +119,7 @@ Total upload size = (w+1) * n * ceil(log_2(q)) / 8 bytes, where w = ceil(log_B(q
 
 | Component | Direction | Size | Reusable? | Notes |
 |-----------|-----------|------|-----------|-------|
-| Public parameters (pp) | ↓ | O(lambda) bits (~few hundred bits) | Yes (global) | PRG seed + basic parameters |
+| Public parameters (pp) | ↓ | O(λ) bits (~few hundred bits) | Yes (global) | PRG seed + basic parameters |
 | Switching key + index ciphertext | ↑ | (w+1) ring elements over R_q | No (per query) | w = ceil(log_B(q)); dominates upload |
 | Response (non-compact ciphertext) | ↓ | (k+1) ring elements over R_{p*n} (post-modswitch) | No (per query) | Dominates download; modulus switched to near-minimal |
 
@@ -189,7 +189,7 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 
 | Metric | Value | Phase |
 |--------|-------|-------|
-| Public parameters | O(lambda) bits (~few hundred bits) | Setup (once) |
+| Public parameters | O(λ) bits (~few hundred bits) | Setup (once) |
 | Multiplicative depth | k (= number of hypercube dimensions, typically 3--4)[^27] | -- |
 | Ring dimension n | 2^12 = 4096 or 2^13 = 8192 | -- |
 | Ciphertext modulus q | Fits in two 64-bit machine words (~110 bits)[^28] | -- |

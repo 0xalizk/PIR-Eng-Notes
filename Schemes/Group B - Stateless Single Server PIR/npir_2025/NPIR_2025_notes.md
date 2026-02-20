@@ -58,7 +58,7 @@ NPIR addresses the high server computation cost of existing high-rate PIR scheme
 |-------|--------|
 | **Name** | NTRU packing |
 | **Type** | Cryptographic primitive (ciphertext compression) |
-| **Interface / Operations** | NPSetup(1^lambda, f, B_pk) -> pk: generates packing key (set of automorphism keys W_i for i in [kappa]). NPacking(pk, C) -> c_hat: takes N NTRU encodings and outputs a single packed NTRU encoding. |
+| **Interface / Operations** | NPSetup(1^λ, f, B_pk) -> pk: generates packing key (set of automorphism keys W_i for i in [kappa]). NPacking(pk, C) -> c_hat: takes N NTRU encodings and outputs a single packed NTRU encoding. |
 | **Security definition** | Pseudorandomness given the public key, based on key-dependent pseudorandomness for NTRU encodings (Definition 5, p.27) |
 | **Correctness definition** | c_hat * f approx N * SUM_{i in [N]} v_{i,0} * X^i, where v_{i,0} is the constant term of the i-th input encoding's plaintext. Error is sub-Gaussian with parameter sigma_hat <= sqrt((N^2-1)*t_pk*N*B_pk^2*sigma_chi^2/36 + N^2*sigma_chi^2). |
 | **Purpose** | Compresses N NTRU encodings into one encoding that preserves only the constant terms of the underlying plaintexts, enabling extraction of a full database record from matrix-vector product results |

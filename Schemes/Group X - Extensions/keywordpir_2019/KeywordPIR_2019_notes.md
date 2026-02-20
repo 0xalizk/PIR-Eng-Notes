@@ -28,7 +28,7 @@ For **SealPIR**, the paper achieves "for free" (near-zero computational overhead
 
 For **MulPIR**, the paper introduces a PIR construction that uses both additive and multiplicative homomorphism of the FV scheme during recursion. Instead of the response growing exponentially in F (the ciphertext expansion factor) with each recursion level as in SealPIR, MulPIR performs one homomorphic multiplication per recursion step, yielding response size O(c(n)) where c(d) is the size of a ciphertext supporting d successive multiplications — trading higher server computation for dramatically smaller communication for databases with large entries.[^5]
 
-For **Gentry-Ramzan PIR**, the paper provides the first practically efficient implementation by employing fast modular interpolation (O-tilde(n log^2 n) via Borodin-Moenck) for server setup and a novel client-aided variant where the client precomputes powers of the generator, enabling a tunable trade-off between communication and server computation that can reduce computation by up to 85%.[^6]
+For **Gentry-Ramzan PIR**, the paper provides the first practically efficient implementation by employing fast modular interpolation (Õ(n log^2 n) via Borodin-Moenck) for server setup and a novel client-aided variant where the client precomputes powers of the generator, enabling a tunable trade-off between communication and server computation that can reduce computation by up to 85%.[^6]
 
 Finally, the paper introduces **keyword PIR** for sparse databases via two hashing-based constructions (simple hashing and cuckoo hashing), enabling PIR with server computation proportional to actual database size rather than the index domain size.[^7]
 
@@ -103,8 +103,8 @@ All values from Table 5 (p. 13) for the 1MB database (5,000 elements of 288B) wi
 
 | Phase | Actor | Operation | Communication | Notes |
 |-------|-------|-----------|---------------|-------|
-| Setup (offline) | Server | Encode database D via CRT: compute E such that E = D_i mod pi_i; use fast modular interpolation (Borodin-Moenck, O-tilde(n log^2 n))[^21] | -- | One-time; reusable across queries if DB unchanged |
-| Query | Client | Generate safe primes Q_1, Q_2; compute m = Q_1 * Q_2; sample generator g of appropriate subgroup | (m, g) sent to server: 3 * lambda_GR bits[^22] | Client must generate large primes (expensive) |
+| Setup (offline) | Server | Encode database D via CRT: compute E such that E = D_i mod pi_i; use fast modular interpolation (Borodin-Moenck, Õ(n log^2 n))[^21] | -- | One-time; reusable across queries if DB unchanged |
+| Query | Client | Generate safe primes Q_1, Q_2; compute m = Q_1 * Q_2; sample generator g of appropriate subgroup | (m, g) sent to server: 3 * λ_GR bits[^22] | Client must generate large primes (expensive) |
 | Response | Server | Compute g' = g^E mod m (modular exponentiation with exponent E) | g' in Z_m*: single group element | Server computation dominates |
 | Extract | Client | Compute h = g'^{q_2}, h' = g'^{q_1*q_2}; solve for d via Pohlig-Hellman in Z_{pi_k} | -- | DLP in small subgroup is efficient |
 
@@ -170,7 +170,7 @@ Values from Table 5 (p. 13), 1MB database row.[^27]
 | Additive HE | O(d*n^{1/d} + F^{d-1}) ciphertexts | O(log n + F^{log n - 1}) | n(A + S) to n^{1/d} * F^{d-1} * (A + S) |
 | Somewhat HE (MulPIR) | O(d*n^{1/d}) ciphertexts | O(log n) | n(A + S) + n^{(d-1)/d} * M |
 | Fully HE | -- | O(log n) | n * log(n) * M + n(A + S + M) |
-| Gentry-Ramzan | O(lambda_GR) (constant!) | N/A | 2 * n * pt multiplications of lambda_GR-bit numbers |
+| Gentry-Ramzan | O(λ_GR) (constant!) | N/A | 2 * n * pt multiplications of λ_GR-bit numbers |
 
 Where A = addition, S = scalar multiplication, M = ciphertext multiplication.[^28]
 
@@ -267,7 +267,7 @@ MulPIR replaces the additive-HE-based recursion in SealPIR with *ciphertext-ciph
 
 #### 3. Fast Modular Interpolation for Gentry-Ramzan (Section 4.2)
 
-The CRT encoding E = sum(D_k * a_k * M_k) naively requires Omega(n^2) time because each M_k = M / pi_k has size Omega(n). The paper applies Borodin-Moenck's divide-and-conquer modular interpolation: split the set of moduli in half, factor out the product of each half, and recurse. Using Schonhage-Strassen integer multiplication, total time is O-tilde(n * log^2(n) * log(log(n))).[^37] The supermoduli M_1, M_2 and inverses a_k can be precomputed and reused across queries when the moduli set remains the same.
+The CRT encoding E = sum(D_k * a_k * M_k) naively requires Omega(n^2) time because each M_k = M / pi_k has size Omega(n). The paper applies Borodin-Moenck's divide-and-conquer modular interpolation: split the set of moduli in half, factor out the product of each half, and recurse. Using Schonhage-Strassen integer multiplication, total time is Õ(n * log^2(n) * log(log(n))).[^37] The supermoduli M_1, M_2 and inverses a_k can be precomputed and reused across queries when the moduli set remains the same.
 
 #### 4. Client-Aided Gentry-Ramzan (Section 4.3)
 
@@ -315,7 +315,7 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 
 1. **MulPIR computation vs communication**: MulPIR achieves dramatically better communication for large entries but requires larger parameters (N=8192 vs 2048) and costlier ciphertext multiplication, yielding approximately 2x higher server computation than SealPIR for 288B entries.[^44]
 
-2. **Gentry-Ramzan prime generation bottleneck**: Each query requires generating fresh safe primes (Q_1, Q_2) of lambda_GR bits, which takes 10-50 seconds on the client — impractical for latency-sensitive applications.[^45]
+2. **Gentry-Ramzan prime generation bottleneck**: Each query requires generating fresh safe primes (Q_1, Q_2) of λ_GR bits, which takes 10-50 seconds on the client — impractical for latency-sensitive applications.[^45]
 
 3. **Recursion depth d=2 is optimal in practice**: For both SealPIR and MulPIR, d=3 does not improve communication or computation over d=2, because the upload already consists of a single ciphertext at d=2.[^46]
 
@@ -354,7 +354,7 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 
 - **Exact parameter selection for MulPIR**: The paper states "polynomial of dimension 8192 with 50 + 2 * 55 bit modulus, modulus switching to 50 bits, and plaintext modulus t = 2^20 + 2^19 + 2^17 + 2^16 + 2^14 + 1" (Table 1 footnote, p. 7) but does not fully justify why this specific plaintext modulus was chosen or how it was determined to support exactly the required multiplicative depth.
 
-- **Gentry-Ramzan security level**: The paper uses lambda_GR-bit primes but does not specify the exact security level achieved for the benchmarked parameter sets. The 2048-bit modulus and block size of 500 are mentioned (Section 6.2, p. 11) but the concrete security guarantee is not stated.
+- **Gentry-Ramzan security level**: The paper uses λ_GR-bit primes but does not specify the exact security level achieved for the benchmarked parameter sets. The 2048-bit modulus and block size of 500 are mentioned (Section 6.2, p. 11) but the concrete security guarantee is not stated.
 
 - **Remark 1 cost estimation**: The paper notes that the Remark 1 optimization (modulus switching at each recursion level) is "computation-expensive" and omits it from fair comparisons (footnote 4, p. 11). The exact computational overhead is not quantified.
 
@@ -367,7 +367,7 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 [^3]: Section 1 (p. 2): "We analyze the communication-computation trade-offs that different PIR construction approaches offer and the hurdles towards achieving the optimal asymptotic communication costs in practice."
 [^4]: Section 1.1 (p. 2): "Our first contribution reduces the communication of SealPIR by (1) using symmetric key encryption to reduce the upload size, (2) using modulus switching reduction techniques... to reduce the value of F down to F approximately 4, and (3) introducing a new oblivious expansion algorithm which can further halve the upload communication."
 [^5]: Section 1.1 (p. 2): "We then present MulPIR, a PIR protocol additionally leveraging multiplicative homomorphism to implement the recursion steps in PIR... it introduces a meaningful tradeoff by significantly reducing communication, at the cost of an increased computational cost for the server."
-[^6]: Section 1.1 (p. 2-3): "We leverage a divide-and-conquer modular interpolation algorithm [7] that enables us to achieve computation complexity O-tilde(n log^2 n)... This enables a client-aided technique that allows us to improve the server's computation at the price of (small) additional work at the client."
+[^6]: Section 1.1 (p. 2-3): "We leverage a divide-and-conquer modular interpolation algorithm [7] that enables us to achieve computation complexity Õ(n log^2 n)... This enables a client-aided technique that allows us to improve the server's computation at the price of (small) additional work at the client."
 [^7]: Section 1.1 (p. 3): "we introduce new ways to handle PIR over sparse databases (keyword PIR), based on different hashing techniques."
 [^8]: Table 3 (p. 12): MulPIR (d=2) for n=262,144 shows upload 122 kB, download 122 kB — perfectly balanced communication.
 [^9]: Table 5 (p. 13): Gentry-Ramzan (1 generator) achieves 0.5 kB upload / 1.3 kB download for 5,000-element database — orders of magnitude less communication than any HE scheme.
@@ -376,14 +376,14 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 [^12]: Table 1 footnote (p. 7): "For MulPIR, we use a polynomial of dimension 8192 with 50 + 2 * 55 bit modulus, modulus switching to 50 bits, and plaintext modulus t = 2^20 + 2^19 + 2^17 + 2^16 + 2^14 + 1."
 [^13]: Section 3.1 (p. 6): "reduces the download size by approximately log_2(q)/(2 * log_2(t)); using SealPIR parameters and using modulus switching to a prime p approximately 2^25, this technique enables to reduce the download by a factor 60/25 = 2.4x."
 [^14]: Section 4.1 (p. 8), Equation (2): "E <= product(pi_i), and E = D_i mod pi_i for all i in [n]."
-[^15]: Procedure 8 (p. 9): "Q_1 := 2q_1 + 1 s.t. Q_1 and q_1 are prime and log_2(Q_1) >= lambda. Q_2 := 2q_2*pi_k + 1 s.t. Q_2 and q_2 are prime and log_2(Q_2) >= lambda."
-[^16]: Table 7 / Appendix D (p. 19): ElGamal plaintext size is "pt small", expansion >= 2, decryption requires 2^{pt} multiplications of lambda_EG-bit numbers.
+[^15]: Procedure 8 (p. 9): "Q_1 := 2q_1 + 1 s.t. Q_1 and q_1 are prime and log_2(Q_1) >= λ. Q_2 := 2q_2*pi_k + 1 s.t. Q_2 and q_2 are prime and log_2(Q_2) >= λ."
+[^16]: Table 7 / Appendix D (p. 19): ElGamal plaintext size is "pt small", expansion >= 2, decryption requires 2^{pt} multiplications of λ_EG-bit numbers.
 [^17]: Appendix D (p. 19): "The ciphertext expansion F can be made as small as desired and F > 1. This unusual property enables to simplify the recursion in PIR."
 [^18]: Algorithm 6, line 4 (p. 7): "m_j <- sum_{i in [2^c]} (2^{-c} mod t) * s'_j[i] * x^i in R/tR" — normalization folded into query.
 [^19]: Section 3.2 (p. 7): "The key insight behind our new algorithms is that oblivious expansion (Algorithm 5) is linear over the plaintext space."
 [^20]: Section 3.4 (p. 7-8): "We introduce MulPIR, a variant of SealPIR with the optimizations above, which further replaces the emulated multiplications with homomorphic multiplications during recursion."
 [^21]: Section 4.2 (p. 9): "we rely on the modular interpolation algorithm by Borodin and Moenck [7]... Repeating the above transformation recursively leads to a divide-and-conquer algorithm for modular interpolation, which, using the Schonhage-Strassen integer multiplication [59], has a total running time of O(n log^2 n log log n) [7]."
-[^22]: Procedure 8 (p. 9): Query output is (m, g) in Z x Z_m*, where m = Q_1 * Q_2 with each Q_i of lambda bits.
+[^22]: Procedure 8 (p. 9): Query output is (m, g) in Z x Z_m*, where m = Q_1 * Q_2 with each Q_i of λ bits.
 [^23]: Section 4.3 (p. 9): "the client can use Eq. (3)... these l exponentiations may be efficiently computed by the client using the prime factorization of m."
 [^24]: Section 4.3 (p. 9): "For our implementation, we choose Straus's algorithm [62], a description of which can be found in [39, Alg. 14.88]."
 [^25]: Section 5, Construction 1 (p. 10): "The server generates cuckoo hash functions using the data dependent key generation Cuckoo.KeyGen(D) and builds a cuckoo hash table for its sparse database."

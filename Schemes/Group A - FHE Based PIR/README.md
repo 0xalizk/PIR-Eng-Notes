@@ -42,7 +42,7 @@
 |--------|-----------|---------------------------|-------|
 | Query size | O(N_1 * n'_1 * m'_1 * d * log Q) | Section 5: ~198 MB; Appendix A (online): ~26 MB; Appendix A (with key-switching gadgets): ~209 MB total | Online (upload) |
 | Response size | O(L * n'_1 * n'_2 * d * log q) | ~(9/4) * plaintext size (rate 4/9 approximately 0.44) | Online (download) |
-| Server computation | O-tilde(log log lambda + log log log N) per bit of DB | Section 5: ~2.3 mod-q multiplications per byte; Appendix A: ~1.8 mod-q multiplications per byte | Online |
+| Server computation | Õ(log log λ + log log log N) per bit of DB | Section 5: ~2.3 mod-q multiplications per byte; Appendix A: ~1.8 mod-q multiplications per byte | Online |
 | Client computation | Encryption + decryption | N/A (no implementation) | Online |
 | Communication rate | 1 - epsilon for any epsilon > 0 (asymptotic, requiring bootstrapping) | 4/9 approximately 0.44 (concrete, without bootstrapping) | -- |
 | Response overhead | O(1) | 2.25x vs non-private (i.e., rate 0.44 means 1/0.44 approximately 2.27x expansion) | -- |
@@ -107,16 +107,16 @@
 
 | Metric | Asymptotic | Phase |
 |--------|-----------|-------|
-| Preprocessing depth | O_lambda(1) | Offline |
+| Preprocessing depth | O_λ(1) | Offline |
 | Offline bandwidth | O(N^{2/3}) | Offline |
-| Preprocessing time (client) | O_lambda(N) (decryption) | Offline |
-| Preprocessing time (server) | O_lambda(N) (FHE computation) | Offline |
-| Online query + answer time (client) | O_lambda(Q) | Online |
+| Preprocessing time (client) | O_λ(N) (decryption) | Offline |
+| Preprocessing time (server) | O_λ(N) (FHE computation) | Offline |
+| Online query + answer time (client) | O_λ(Q) | Online |
 | Online bandwidth | O(N^{1/3}) per query | Online |
 | Online server time | O(Q) per query | Online |
 | # queries per epoch | N^{1/3} (for Q = T = N^{1/3}) | -- |
 | Client storage | O(N^{2/3}) | Persistent |
-| Update time | O_lambda(1) per element update | Online |
+| Update time | O_λ(1) per element update | Online |
 
 #### OnionPIRv2 (2025)
 

@@ -43,7 +43,7 @@ The paper constructs the first *compressible* fully homomorphic encryption schem
 | **Name** | Compressible (Fully) Homomorphic Encryption |
 | **Type** | Cryptographic primitive (new FHE variant) |
 | **Interface / Operations** | (KeyGen, Encrypt, Evaluate, **Compress**, Decrypt) — standard FHE plus a public Compress operation [^5] |
-| **Security definition** | Semantic security under decision-LWE with gap poly(lambda)^{1/epsilon} (Theorem 1, p. 10) |
+| **Security definition** | Semantic security under decision-LWE with gap poly(λ)^{1/epsilon} (Theorem 1, p. 10) |
 | **Correctness definition** | Decrypt(s, Compress(pk, Evaluate(pk, Pi, Encrypt(pk, b)))) recovers Pi(b) with probability 1 (Definition 1, p. 6) |
 | **Purpose** | Compress bloated evaluated FHE ciphertexts to near-plaintext size, enabling high communication rate in PIR |
 | **Built from** | GSW encryption (low-rate, for homomorphic evaluation) + PVW batched encryption (high-rate, as compression target). Both share the same LWE matrix secret key S = [S'|I]. |
@@ -181,12 +181,12 @@ The paper tracks noise variance through each phase under a heuristic independenc
 |--------|-----------|---------------------------|-------|
 | Query size | O(N_1 * n'_1 * m'_1 * d * log Q) [^14] | Section 5: ~198 MB; Appendix A (online): ~26 MB; Appendix A (with key-switching gadgets): ~209 MB total | Online (upload) |
 | Response size | O(L * n'_1 * n'_2 * d * log q) | ~(9/4) * plaintext size (rate 4/9 approximately 0.44) [^15] | Online (download) |
-| Server computation | O-tilde(log log lambda + log log log N) per bit of DB [^18] | Section 5: ~2.3 mod-q multiplications per byte; Appendix A: ~1.8 mod-q multiplications per byte | Online |
+| Server computation | Õ(log log λ + log log log N) per bit of DB [^18] | Section 5: ~2.3 mod-q multiplications per byte; Appendix A: ~1.8 mod-q multiplications per byte | Online |
 | Client computation | Encryption + decryption | N/A (no implementation) | Online |
 | Communication rate | 1 - epsilon for any epsilon > 0 (asymptotic, requiring bootstrapping) | 4/9 approximately 0.44 (concrete, without bootstrapping) | -- |
 | Response overhead | O(1) | 2.25x vs non-private (i.e., rate 0.44 means 1/0.44 approximately 2.27x expansion) | -- |
 
-[^18]: Section 1.1, p. 2: "the computational overhead of our PIR scheme is O-tilde(log log lambda + log log log N)." This counts the overhead factor beyond the inherent omega(N) work. The log log terms arise because q = O-tilde(log N + lambda) and mod-q multiplication costs O-tilde(log log q).
+[^18]: Section 1.1, p. 2: "the computational overhead of our PIR scheme is Õ(log log λ + log log log N)." This counts the overhead factor beyond the inherent omega(N) work. The log log terms arise because q = Õ(log N + λ) and mod-q multiplication costs Õ(log log q).
 
 #### FHE-specific metrics
 
@@ -195,7 +195,7 @@ The paper tracks noise variance through each phase under a heuristic independenc
 | Communication rate | 1 - epsilon | 4/9 approximately 0.44 | -- |
 | Expansion factor (F) | 1/(1 - epsilon) | 9/4 = 2.25 | -- |
 | Multiplicative depth | O(log N_1) for first dim; O(1) per additional dim | 8 (first dim) + 12 (remaining dims, at 1 per fold) | -- |
-| Modulus Q (bits) | O(log N + lambda) | ~106 bits (46 + 60) | -- |
+| Modulus Q (bits) | O(log N + λ) | ~106 bits (46 + 60) | -- |
 
 ### Estimation Methodology
 

@@ -153,10 +153,10 @@ Security is parameterized via the Hermite factor gamma. The feasibility boundary
 ### Implementation Notes
 
 - **Language / Library:** C++ with Shoup's NTL library version 6.0 [17] for lattice/polynomial operations.[^18]
-- **Polynomial arithmetic:** Cyclotomic polynomial ring arithmetic via NTL. The paper uses Phi\_m(x) (not necessarily x^n + 1), requiring m to satisfy m \| (2^lambda - 1) for CRT batching to produce enough slots.[^12]
+- **Polynomial arithmetic:** Cyclotomic polynomial ring arithmetic via NTL. The paper uses Phi\_m(x) (not necessarily x^n + 1), requiring m to satisfy m \| (2^λ - 1) for CRT batching to produce enough slots.[^12]
 - **Modulus chain:** Specialized: q\_i \| q\_{i+1}, which eliminates the need for key switching and public evaluation keys. This reduces key size significantly but constrains the modulus chain to a divisibility tower.[^6]
 - **No relinearization:** The circuit is a perfect binary tree (depth d), so secret key grows as f^{2^d}. This avoids the expensive relinearization step but means the secret key power grows exponentially, constraining achievable depth.[^5]
-- **Batching:** CRT-based SIMD using the factorization of Phi\_m(x) mod 2 into epsilon irreducible factors of degree lambda. Requires m such that 2 has multiplicative order lambda mod m (i.e., lambda is the smallest integer with m \| (2^lambda - 1)).[^12]
+- **Batching:** CRT-based SIMD using the factorization of Phi\_m(x) mod 2 into epsilon irreducible factors of degree λ. Requires m such that 2 has multiplicative order λ mod m (i.e., λ is the smallest integer with m \| (2^λ - 1)).[^12]
 - **SIMD / vectorization:** Not mentioned. Single-threaded implementation on Intel Pentium.
 - **Parallelism:** The server computation (iterating over each database row) is embarrassingly parallel but no multi-threading was implemented.[^18]
 

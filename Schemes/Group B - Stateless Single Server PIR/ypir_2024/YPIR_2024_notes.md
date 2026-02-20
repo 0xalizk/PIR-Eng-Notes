@@ -86,7 +86,7 @@ YPIR+SP applies the CDKS packing to the SimplePIR output (an entire column of th
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
 | DB Setup | Server | Compute H1, H2 from D using structured matrices A1, A2. Precompute random components of CDKS.Pack output. | -- | Once per DB update |
-| Query Gen | Client | Sample s1, s2, compute packing key pk via CDKS.Setup(1^lambda, s2, z). Construct LWE encodings c1 (row indicator), c2 (column indicator). | q = (pk, c1, c2) uploaded: 724 KB -- 2.5 MB | Per query |
+| Query Gen | Client | Sample s1, s2, compute packing key pk via CDKS.Setup(1^λ, s2, z). Construct LWE encodings c1 (row indicator), c2 (column indicator). | q = (pk, c1, c2) uploaded: 724 KB -- 2.5 MB | Per query |
 | Answer (SimplePIR) | Server | Compute T = g_p^{-1}(c1^T * D |_{q1,q-hat1}) -- linear scan over database | -- | Per query |
 | Answer (DoublePIR) | Server | Compute C = delta * [H2, A2*T^T; c2^T*H1^T, c2^T*T^T] | -- | Per query |
 | Answer (Packing) | Server | Apply CDKS.Pack(pk, C_i) for each block C_i; only O(kappa + log d2) NTTs needed online (rest precomputed) | -- | Per query |

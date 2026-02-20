@@ -4,10 +4,10 @@
 
 | Metric | Asymptotic | Concrete | Phase |
 |--------|-----------|---------|-------|
-| Online query size | O(lambda * kappa_p) where kappa_p = O(lambda log n) for PRF-based construction | N/A (no implementation) | Online |
-| Online response size | lambda bits (lambda parallel instances, 1 bit each) | N/A (no implementation) | Online |
-| Online server computation | O-tilde_lambda(sqrt(n)) | N/A (no implementation) | Online |
-| Client online computation | O-tilde(s(n) + n/s(n)) * poly(lambda) = O-tilde_lambda(sqrt(n)) | N/A (no implementation) | Online |
+| Online query size | O(λ * kappa_p) where kappa_p = O(λ log n) for PRF-based construction | N/A (no implementation) | Online |
+| Online response size | λ bits (λ parallel instances, 1 bit each) | N/A (no implementation) | Online |
+| Online server computation | Õ_λ(sqrt(n)) | N/A (no implementation) | Online |
+| Client online computation | Õ(s(n) + n/s(n)) * poly(λ) = Õ_λ(sqrt(n)) | N/A (no implementation) | Online |
 
 #### IncPIR (2021)
 
@@ -26,14 +26,14 @@
 | Query size (upload) | O(sqrt(n)) | 100 KB | Online |
 | Response size (download) | O(1) | 64 bytes (one entry) | Online |
 | Server computation | O(sqrt(n)) | 11.9 ms | Online |
-| Client computation | O_lambda(sqrt(n)) expected | 11.9 ms (dominated by hint search: O(sqrt(n)) PRF evaluations) | Online |
-| Client storage | O_lambda(sqrt(n) log kappa alpha(kappa)) | 839 MB | Persistent |
+| Client computation | O_λ(sqrt(n)) expected | 11.9 ms (dominated by hint search: O(sqrt(n)) PRF evaluations) | Online |
+| Client storage | O_λ(sqrt(n) log kappa alpha(kappa)) | 839 MB | Persistent |
 
 #### TreePIR (2023)
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
-| Query size (to each server) | O(lambda * log N) | ~2 KB (at N = 2^32) | Online |
+| Query size (to each server) | O(λ * log N) | ~2 KB (at N = 2^32) | Online |
 | Response size (per server) | O(sqrt(N) * w) | 16.6 KB (N=2^32, w=1 bit) | Online |
 | Server computation (each server) | O(sqrt(N) * log N) | ~1754 ms per server (amortized, N=2^32, w=1 bit) | Online |
 | Client computation | O(sqrt(N)) probabilistic; O(sqrt(N)) deterministic with shift | <1 ms | Online |
@@ -66,11 +66,11 @@ Construction 2: Sublinear Server Computation (Theorem 4.4/A.3)
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
-| Query upload (communication) | O-tilde(n/r) bits | N/A (no implementation) | Online |
-| Response (communication) | O-tilde(n/r) bits | N/A (no implementation) | Online |
-| Server computation | O-tilde(n/r) | N/A (no implementation) | Online |
-| Client computation (query) | O-tilde(n/r) | N/A (no implementation) | Online |
-| Total query time (client + server) | O-tilde(n/r) | N/A (no implementation) | Online |
+| Query upload (communication) | Õ(n/r) bits | N/A (no implementation) | Online |
+| Response (communication) | Õ(n/r) bits | N/A (no implementation) | Online |
+| Server computation | Õ(n/r) | N/A (no implementation) | Online |
+| Client computation (query) | Õ(n/r) | N/A (no implementation) | Online |
+| Total query time (client + server) | Õ(n/r) | N/A (no implementation) | Online |
 
 #### SinglePass (2024)
 

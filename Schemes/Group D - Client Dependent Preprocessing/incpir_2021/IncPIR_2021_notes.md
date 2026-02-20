@@ -36,12 +36,12 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 
 - **Model name:** Incremental Offline/Online PIR (Definition 2, p.3-4)
 - **Syntax:** Eight algorithms: four inherited from OO-PIR (Prep, Query, Resp, Recov) and four new (DBUpd, HintReq, HintRes, HintUpd)[^4]
-- **Security notion:** For all PPT adversaries A, max_{i,j in [n']} |Pr[A(P'(i))=1] - Pr[A(P'(j))=1]| <= negl(lambda), where P'(i) includes IncPrep followed by Query (Definition 2, p.4)[^7]
-- **Correctness notion:** After applying IncPrep, the client recovers the correct item from the updated database D' with probability >= 1 - negl(lambda) (Definition 2, p.4)[^8]
+- **Security notion:** For all PPT adversaries A, max_{i,j in [n']} |Pr[A(P'(i))=1] - Pr[A(P'(j))=1]| <= negl(λ), where P'(i) includes IncPrep followed by Query (Definition 2, p.4)[^7]
+- **Correctness notion:** After applying IncPrep, the client recovers the correct item from the updated database D' with probability >= 1 - negl(λ) (Definition 2, p.4)[^8]
 - **Relationship to standard PIR:** Strict generalization of OO-PIR (Definition 1); an OO-PIR scheme is an incremental OO-PIR where IncPrep simply re-runs Prep from scratch
 
 [^7]: Section 3.2, Security (p.4): Security definition for incremental OO-PIR.
-[^8]: Section 3.2, Correctness (p.4): Correctness definition requires probability >= 1-negl(lambda) after IncPrep + standard Query/Resp/Recov.
+[^8]: Section 3.2, Correctness (p.4): Correctness definition requires probability >= 1-negl(λ) after IncPrep + standard Query/Resp/Recov.
 
 ### Novel Primitives / Abstractions
 
@@ -51,12 +51,12 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 |-------|--------|
 | **Name** | Incremental Pseudorandom Set (Incremental PRS) |
 | **Type** | Cryptographic primitive |
-| **Interface / Operations** | Gen(1^lambda, n) -> (k, aux): outputs set key and auxiliary info; Add(aux, m) -> aux': extends range by m; Eval(k, aux) -> S: outputs the set (Definition 4, p.8)[^9] |
+| **Interface / Operations** | Gen(1^λ, n) -> (k, aux): outputs set key and auxiliary info; Add(aux, m) -> aux': extends range by m; Eval(k, aux) -> S: outputs the set (Definition 4, p.8)[^9] |
 | **Security definition** | PPT adversary cannot distinguish S from a random size-s subset of [n] (or [n+m] after Add); security from PRP security[^10] |
 | **Correctness definition** | Eval(k, aux) outputs a set S in [n] of size s; after Add(aux, m), Eval(k, aux') outputs S' in [n+m] of size s[^9] |
 | **Purpose** | Compactly represent pseudorandom subsets whose range can be incrementally extended without re-sampling from scratch |
 | **Built from** | PRP (pseudorandom permutation) over arbitrary domains; KDF (key derivation function) for deriving per-subrange keys[^11] |
-| **Standalone complexity** | Gen: O(lambda); Add: O(1) auxiliary storage update; Eval: O(s) PRP evaluations (s = set size)[^9] |
+| **Standalone complexity** | Gen: O(λ); Add: O(1) auxiliary storage update; Eval: O(s) PRP evaluations (s = set size)[^9] |
 | **Relationship to prior primitives** | Extends CK's PRS (Definition 3, p.7) with the Add operation. Cannot be made puncturable (unlike CK's PRS) because PRP-based construction precludes puncturable PRP constructions[^12] |
 
 [^9]: Definition 4 (p.8): Formal definition of incremental PRS with Gen, Add, Eval.
@@ -71,7 +71,7 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 | **Hardness assumption** | OWF (for PRF, PRP, and KDF instantiation)[^13] |
 | **Encryption/encoding scheme** | None — no FHE; uses XOR-based parity computation on plaintext database entries |
 | **Key structure** | Per-client: sqrt(n) * log(n) PRP keys (one per set), each derived via KDF from a master key; auxiliary information aux per set tracking subrange structure[^14] |
-| **Correctness condition** | Pr[fail] = O(1/sqrt(n)) per query due to puncturing failure; reducible to negl(lambda) via Checklist's refinement (Appendix A.4.2)[^15] |
+| **Correctness condition** | Pr[fail] = O(1/sqrt(n)) per query due to puncturing failure; reducible to negl(λ) via Checklist's refinement (Appendix A.4.2)[^15] |
 
 [^13]: Section 8, Implementation (p.12): "We use AES to implement a PRF for small range, and then apply Patarin's proposal [49] to the PRF to build a secure PRP."
 [^14]: Section 5.3 (p.9): aux = [(r_ell, t_ell)]_{ell in [L]} tracks subrange extents and element counts.
@@ -139,14 +139,14 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 | **Probability grows over DB mutations?** | Yes — as the database grows from n to n+m, the probability that target index i appears in any set decreases because each set still has size s = sqrt(n) but the range expands to [n+m][^24] |
 | **Key parameters affecting correctness** | Set size s = sqrt(n); number of sets J = (n/s)*log(n) = sqrt(n)*log(n); database growth ratio m/n |
 | **Proof technique** | Hypergeometric tail bounds (HG(n+m, m, sqrt(n))) for the number of elements replaced per set during Add; union bound over sets for coverage[^26] |
-| **Amplification** | Checklist's refinement (Appendix A.4.2) doubles online query/refresh size but reduces puncturing error from O(1/sqrt(n)) to negl(lambda)[^27] |
+| **Amplification** | Checklist's refinement (Appendix A.4.2) doubles online query/refresh size but reduces puncturing error from O(1/sqrt(n)) to negl(λ)[^27] |
 | **Adaptive vs non-adaptive** | Non-adaptive (single-query definition; multiple queries discussed in Section 4.1 via refresh) |
 | **Query model restrictions** | Each set used for at most one query, then refreshed; unlimited queries via refresh mechanism |
 
 [^24]: Section 6.2, Failure probability (p.11): Concrete failure probability analysis with set size s = n^{1/2}.
 [^25]: Section 4.1, Supporting multiple queries (p.5): Fresh set sampling via refresh ensures per-query independence.
 [^26]: Section 4.2.1, batched additions (p.6): "the client samples a number w from the hypergeometric distribution HG(n+m, m, sqrt(n))."
-[^27]: Section 6.2, Appendix A.4.2 (p.18): Checklist's modification doubles online communication but achieves negl(lambda) correctness error.
+[^27]: Section 6.2, Appendix A.4.2 (p.18): Checklist's modification doubles online communication but achieves negl(λ) correctness error.
 
 #### Concrete failure probability examples
 
@@ -364,7 +364,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 
 | Metric | Incremental CK (this paper) | CK [23] (non-incremental) | DPF-PIR [30,1] |
 |--------|------------|----------------|----------------|
-| Online query size | O(sqrt(n) * log(n')) — indices in clear | O(polylog(n)) — punctured PRF key | O(lambda) — DPF key |
+| Online query size | O(sqrt(n) * log(n')) — indices in clear | O(polylog(n)) — punctured PRF key | O(λ) — DPF key |
 | Online response size | O(b) — optimal | O(b) — optimal | O(b) — optimal |
 | Online server computation | O(sqrt(n)) XORs | O(sqrt(n)) XORs | O(n) — full DB scan |
 | Preprocessing server computation | O(b * n * log(n)) | O(b * n * log(n)) | None |

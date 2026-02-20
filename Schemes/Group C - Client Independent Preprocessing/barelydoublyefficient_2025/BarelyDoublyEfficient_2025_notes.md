@@ -36,8 +36,8 @@ The CRS is essential for sublinear online computation. Without it, the server wo
 
 A DEPIR scheme consists of a tuple of probabilistic algorithms (Setup, Prep, Query, Answer, Extract):[^7]
 
-- **pp <- Setup(1^lambda, 1^N):** Takes security parameter lambda and database size N; outputs public parameter pp. All subsequent algorithms take pp as implicit input.
-- **DB-tilde <- Prep(DB):** Preprocessing algorithm. Takes a database DB in {0,1}^N and outputs a preprocessed database DB-tilde. Runs in poly(lambda, N) time.
+- **pp <- Setup(1^λ, 1^N):** Takes security parameter λ and database size N; outputs public parameter pp. All subsequent algorithms take pp as implicit input.
+- **DB-tilde <- Prep(DB):** Preprocessing algorithm. Takes a database DB in {0,1}^N and outputs a preprocessed database DB-tilde. Runs in poly(λ, N) time.
 - **(q, st) <- Query(i):** Takes a query index i in [N] and outputs a query q along with a secret state st.
 - **a <- Answer(DB-tilde, q):** Takes preprocessed database (stored in RAM) and a query q; outputs an answer a.
 - **b <- Extract(st, a):** Takes secret state st and answer a; outputs a bit b in {0,1}.
@@ -46,7 +46,7 @@ A DEPIR scheme consists of a tuple of probabilistic algorithms (Setup, Prep, Que
 
 **Privacy:** For any i_0, i_1 in [N], no PPT adversary can distinguish between Query(i_0) and Query(i_1) with non-negligible advantage, for an overwhelming fraction of pp <- Setup.
 
-**Efficiency:** Prep runs in poly(lambda, N) time. Query, Answer, and Extract each run in o(N) * poly(lambda) time — i.e., the online phase is sublinear in N.
+**Efficiency:** Prep runs in poly(λ, N) time. Query, Answer, and Extract each run in o(N) * poly(λ) time — i.e., the online phase is sublinear in N.
 
 #### Definition 2.2 — Keyed DEPIR
 
@@ -67,8 +67,8 @@ Keyed DEPIR with public preprocessing => pk-DEPIR => sk-DEPIR. The construction 
 | Layer | Detail |
 |-------|--------|
 | **Hardness assumption** | Plain LWE (Learning with Errors) over Z_q — no ring structure required |
-| **Specific variant** | LWE with polynomial modulus-to-noise ratio (Definition 2.4): for any polynomial 1/alpha = poly(lambda), parameters (n, m, q, chi) can be found in deterministic poly(lambda, log(1/alpha)) time such that alpha * q > B and LWE_{n,m,q,chi} holds for any m = poly(lambda)[^10] |
-| **Parameters** | n = poly(lambda, log(1/alpha)), q = poly(lambda, 1/alpha), chi is B-bounded |
+| **Specific variant** | LWE with polynomial modulus-to-noise ratio (Definition 2.4): for any polynomial 1/alpha = poly(λ), parameters (n, m, q, chi) can be found in deterministic poly(λ, log(1/alpha)) time such that alpha * q > B and LWE_{n,m,q,chi} holds for any m = poly(λ)[^10] |
+| **Parameters** | n = poly(λ, log(1/alpha)), q = poly(λ, 1/alpha), chi is B-bounded |
 | **Trust model** | Common Random String (CRS) model: A <- Z_q^{m x n} sampled uniformly as public parameter; alternatively, standard model with keyed DEPIR |
 | **Why plain LWE matters** | RLWE enjoys worst-case to average-case reduction to ideal lattice problems; plain LWE reduces to general lattice problems. Some community members express reservations about RLWE's long-term security due to its additional algebraic structure. Constructing DEPIR from plain LWE was an explicit open problem.[^11] |
 
@@ -76,7 +76,7 @@ Keyed DEPIR with public preprocessing => pk-DEPIR => sk-DEPIR. The construction 
 
 | Structure | Description | Size |
 |-----------|-------------|------|
-| **A** (CRS) | Uniformly random matrix in Z_q^{m x n}, serves as the LWE public parameter; shared across all clients and queries | O(m * n * log q) = O-tilde(sqrt(N)) * poly(lambda) |
+| **A** (CRS) | Uniformly random matrix in Z_q^{m x n}, serves as the LWE public parameter; shared across all clients and queries | O(m * n * log q) = Õ(sqrt(N)) * poly(λ) |
 | **D** | Database reshaped as a matrix in Z_p^{m x m}, where m^2 * floor(log p) >= N. Each entry DB[i] maps to the k-hat-th bit of D[i-hat, j-hat] via i = i-hat + j-hat * m + k-hat * m^2 | m x m matrix over Z_p |
 | **D-hat** | Natural lifting of D to Z^{m x m} (interpreting Z_p elements as {0, 1, ..., p-1} in Z); then preprocessed (mod q) via Lemma 3.1 for fast evaluation | m x m matrix, preprocessed |
 | **H** | Hint matrix H = D-hat * A in Z_q^{m x n}; in SimplePIR this is sent offline to client; in DEPIR construction it is sent as part of the online answer | m x n matrix over Z_q |
@@ -105,12 +105,12 @@ The construction builds directly on SimplePIR. In SimplePIR, the server computes
 
 **Theorem 2.1 (Williams, SODA 2007):** For any finite (semi-)ring R, any m x m matrix over R can be preprocessed in O(m^{2+epsilon} * |R|) time so that subsequent matrix-vector multiplications take O(m^2 / (epsilon * log m)^2) steps.[^17]
 
-**Corollary 2.1:** Over Z_q, preprocessing takes O(m^{2+epsilon}) * polylog(q) time and evaluation takes O(m^2 / (epsilon * log m)^2) * O-tilde(log m + log q) + O-tilde(m) * polylog(q) time.
+**Corollary 2.1:** Over Z_q, preprocessing takes O(m^{2+epsilon}) * polylog(q) time and evaluation takes O(m^2 / (epsilon * log m)^2) * Õ(log m + log q) + Õ(m) * polylog(q) time.
 
 **Lemma 3.1 (CRT refinement):** The direct application of Williams' theorem over Z_q has evaluation time depending on log q, which is too large. The paper uses the Chinese Remainder Theorem to decompose the computation into small primes: reduce D-hat modulo each of t = O(log M) small primes q_i = O(log M) (where M = m * (q-1)^2), preprocess each reduced matrix independently via Corollary 2.1, then reconstruct via CRT. This yields:[^18]
 
-- Preprocessing time: O-tilde(m^{2+epsilon}) * polylog(q)
-- Evaluation time: O(m^2 / (epsilon * log m)^2) * O-tilde(log m + log q) + O-tilde(m) * polylog(q)
+- Preprocessing time: Õ(m^{2+epsilon}) * polylog(q)
+- Evaluation time: O(m^2 / (epsilon * log m)^2) * Õ(log m + log q) + Õ(m) * polylog(q)
 
 ### Correctness Analysis
 
@@ -134,48 +134,48 @@ Under the LWE with polynomial modulus-to-noise ratio assumption, for any 0 < eps
 
 | Metric | Asymptotic | Concrete | Phase | Source |
 |--------|-----------|----------|-------|--------|
-| Preprocessing runtime | O-tilde(N^{1+epsilon}) * poly(lambda) | N/A (no implementation) | Offline | Theorem 3.1 (author-stated) |
-| Server's online runtime | O(N / (epsilon * log N)^2) * polyloglog(N) * poly(lambda) | N/A (no implementation) | Online | Theorem 3.1 + footnote 4 (author-stated)[^21] |
-| Client's online runtime | O-tilde(sqrt(N)) * poly(lambda) | N/A (no implementation) | Online | Theorem 3.1 (author-stated) |
-| Online communication | O-tilde(sqrt(N)) * poly(lambda) | N/A (no implementation) | Online | Theorem 3.1 (author-stated) |
-| CRS size | O(m * n * log q) = O-tilde(sqrt(N)) * poly(lambda) | N/A (no implementation) | Setup | Corollary 3.1 proof (inferred) |
+| Preprocessing runtime | Õ(N^{1+epsilon}) * poly(λ) | N/A (no implementation) | Offline | Theorem 3.1 (author-stated) |
+| Server's online runtime | O(N / (epsilon * log N)^2) * polyloglog(N) * poly(λ) | N/A (no implementation) | Online | Theorem 3.1 + footnote 4 (author-stated)[^21] |
+| Client's online runtime | Õ(sqrt(N)) * poly(λ) | N/A (no implementation) | Online | Theorem 3.1 (author-stated) |
+| Online communication | Õ(sqrt(N)) * poly(λ) | N/A (no implementation) | Online | Theorem 3.1 (author-stated) |
+| CRS size | O(m * n * log q) = Õ(sqrt(N)) * poly(λ) | N/A (no implementation) | Setup | Corollary 3.1 proof (inferred) |
 
 #### Derivation of Parameters
 
-Setting m = ceil(sqrt(N / log N)) and p = 2^{ceil(log N)}, which implies 1/alpha = poly(N) = poly(lambda) (since N = poly(lambda)):[^22]
+Setting m = ceil(sqrt(N / log N)) and p = 2^{ceil(log N)}, which implies 1/alpha = poly(N) = poly(λ) (since N = poly(λ)):[^22]
 
 - **m** = Theta(sqrt(N / log N)) — the side length of the database matrix
-- **n** = poly(lambda, log(1/alpha)) = polylog(N) — the LWE dimension (number of columns of A)
-- **q** = poly(lambda, 1/alpha) = poly(N) — the LWE modulus
+- **n** = poly(λ, log(1/alpha)) = polylog(N) — the LWE dimension (number of columns of A)
+- **q** = poly(λ, 1/alpha) = poly(N) — the LWE modulus
 - **p** = poly(N) — the plaintext modulus (number of bits packed per matrix entry)
 
 #### Detailed Efficiency Breakdown (from Section 3 analysis)
 
 | Component | Runtime | Notes |
 |-----------|---------|-------|
-| Prep Step 2: Preprocess D-hat | O-tilde(m^{2+epsilon}) * polylog(q) | Williams + CRT (Lemma 3.1) |
-| Prep Step 3: Compute H = D-hat * A | m^2 * n * polylog(q) | Textbook matrix multiplication; O-tilde(m^2) * poly(lambda) |
-| Overall Prep | O-tilde(N^{1+epsilon}) * poly(lambda) | Dominated by Step 2 (author-estimated) |
-| Answer Step 2: Fast D-hat * v | O(m^2/(epsilon * log m)^2) * O-tilde(log m + log q) + O-tilde(m) * polylog(q) | Lemma 3.1 evaluation |
-| Answer: output H | O(m * n * log q) | Simply reading H; O-tilde(sqrt(N)) * poly(lambda) |
-| Overall Answer (server online) | O(N/(epsilon * log N)^2) * polyloglog(N) * poly(lambda) | Dominated by fast multiplication (author-estimated) |
+| Prep Step 2: Preprocess D-hat | Õ(m^{2+epsilon}) * polylog(q) | Williams + CRT (Lemma 3.1) |
+| Prep Step 3: Compute H = D-hat * A | m^2 * n * polylog(q) | Textbook matrix multiplication; Õ(m^2) * poly(λ) |
+| Overall Prep | Õ(N^{1+epsilon}) * poly(λ) | Dominated by Step 2 (author-estimated) |
+| Answer Step 2: Fast D-hat * v | O(m^2/(epsilon * log m)^2) * Õ(log m + log q) + Õ(m) * polylog(q) | Lemma 3.1 evaluation |
+| Answer: output H | O(m * n * log q) | Simply reading H; Õ(sqrt(N)) * poly(λ) |
+| Overall Answer (server online) | O(N/(epsilon * log N)^2) * polyloglog(N) * poly(λ) | Dominated by fast multiplication (author-estimated) |
 | Query Step 3: Compute A * s | m * n * polylog(q) | Matrix-vector product |
-| Overall Query (client online) | O-tilde(sqrt(N)) * poly(lambda) | Dominated by A * s (author-estimated) |
+| Overall Query (client online) | Õ(sqrt(N)) * poly(λ) | Dominated by A * s (author-estimated) |
 | Extract Steps 2-3 | O(m * n) + O(1) | H * s multiplication + rounding |
-| Overall Extract (client online) | O-tilde(sqrt(N)) * poly(lambda) | Dominated by H * s (author-estimated) |
+| Overall Extract (client online) | Õ(sqrt(N)) * poly(λ) | Dominated by H * s (author-estimated) |
 
 #### Comparison: Sublinearity Factor
 
-The server's online runtime is O(N / log^2 N) (ignoring polyloglog and poly(lambda) factors). Compared to the Omega(N) lower bound for standard (non-preprocessed) PIR, the savings factor is only log^2 N — hence "barely" doubly-efficient.[^23]
+The server's online runtime is O(N / log^2 N) (ignoring polyloglog and poly(λ) factors). Compared to the Omega(N) lower bound for standard (non-preprocessed) PIR, the savings factor is only log^2 N — hence "barely" doubly-efficient.[^23]
 
-No implementation. Analytical estimates: Server online computation is O(N / (epsilon * log N)^2) * polyloglog(N) * poly(lambda), which for epsilon = 1/4 and ignoring lower-order terms gives roughly O(N / log^2 N) work. The preprocessing cost is O-tilde(N^{1+epsilon}) * poly(lambda), which for epsilon = 1/4 is O-tilde(N^{5/4}). Communication is O-tilde(sqrt(N)) per query. All estimates are asymptotic with no concrete instantiation provided by the authors.
+No implementation. Analytical estimates: Server online computation is O(N / (epsilon * log N)^2) * polyloglog(N) * poly(λ), which for epsilon = 1/4 and ignoring lower-order terms gives roughly O(N / log^2 N) work. The preprocessing cost is Õ(N^{1+epsilon}) * poly(λ), which for epsilon = 1/4 is Õ(N^{5/4}). Communication is Õ(sqrt(N)) per query. All estimates are asymptotic with no concrete instantiation provided by the authors.
 
 ### Comparison with Prior Work
 
 | Scheme | Assumption | Model | Server Online | Preprocessing | Communication | Privacy Level |
 |--------|-----------|-------|---------------|---------------|---------------|---------------|
-| **This work** | Plain LWE (poly mod-to-noise) | CRS | O(N/log^2 N) * polyloglog * poly(lambda) | O-tilde(N^{1+epsilon}) * poly(lambda) | O-tilde(sqrt(N)) * poly(lambda) | Unkeyed DEPIR / pk-DEPIR / sk-DEPIR[^24] |
-| LMW23 | Ring-LWE (quasi-poly approx factor) | Standard | polylog(N) * poly(lambda) | poly(N, lambda) | polylog(N) * poly(lambda) | Unkeyed DEPIR |
+| **This work** | Plain LWE (poly mod-to-noise) | CRS | O(N/log^2 N) * polyloglog * poly(λ) | Õ(N^{1+epsilon}) * poly(λ) | Õ(sqrt(N)) * poly(λ) | Unkeyed DEPIR / pk-DEPIR / sk-DEPIR[^24] |
+| LMW23 | Ring-LWE (quasi-poly approx factor) | Standard | polylog(N) * poly(λ) | poly(N, λ) | polylog(N) * poly(λ) | Unkeyed DEPIR |
 | BIPW17, CHR17 | Ad hoc (secretly permuted Reed-Muller codes) | Standard | polylog(N) | poly(N) | polylog(N) | sk-DEPIR |
 | CIMR25 | Learning Subspace with Noise (LSN) | Standard | O(N/log N) | poly(N) | -- | sk-DEPIR |
 | DMZ23, OPPW24, OPPW25 | Ring-LWE | Standard | Optimizations of LMW23 | -- | -- | Unkeyed DEPIR |
@@ -191,17 +191,17 @@ No implementation. Analytical estimates: Server online computation is O(N / (eps
 
 1. **Barely sublinear server computation:** The O(N/log^2 N) online server cost is only a polylogarithmic improvement over O(N). For practical database sizes (say N = 2^30), log^2 N = 900, giving roughly a 900x speedup — meaningful but far from the polylog(N) achieved by Ring-LWE-based DEPIR.[^27]
 
-2. **CRS model dependency:** The CRS A in Z_q^{m x n} must be available to both server and client before the protocol begins. In practice, this could be generated from a short seed via a PRF, but the paper does not explore this. The CRS size is O-tilde(sqrt(N)) * poly(lambda), which is non-trivial.[^28]
+2. **CRS model dependency:** The CRS A in Z_q^{m x n} must be available to both server and client before the protocol begins. In practice, this could be generated from a short seed via a PRF, but the paper does not explore this. The CRS size is Õ(sqrt(N)) * poly(λ), which is non-trivial.[^28]
 
-3. **Large preprocessing cost:** Preprocessing time is O-tilde(N^{1+epsilon}), superlinear in the database size. For epsilon = 1/4, this is O-tilde(N^{5/4}). This must be repeated whenever the database changes.
+3. **Large preprocessing cost:** Preprocessing time is Õ(N^{1+epsilon}), superlinear in the database size. For epsilon = 1/4, this is Õ(N^{5/4}). This must be repeated whenever the database changes.
 
-4. **Large online communication:** Communication per query is O-tilde(sqrt(N)) * poly(lambda), dominated by the server sending H = D-hat * A (an m x n matrix). This is much larger than the polylog(N) communication of LMW23.
+4. **Large online communication:** Communication per query is Õ(sqrt(N)) * poly(λ), dominated by the server sending H = D-hat * A (an m x n matrix). This is much larger than the polylog(N) communication of LMW23.
 
 5. **Single-bit retrieval:** The scheme retrieves individual bits from {0,1}^N. Retrieving larger records would require multiple queries or packing techniques not discussed in the paper.
 
 6. **Polynomial modulus-to-noise ratio assumption:** While this is a standard variant of LWE, it requires 1/alpha = poly(N), meaning the noise rate alpha = 1/poly(N) is inverse-polynomial. This is weaker than the more common exponential modulus-to-noise ratio but still considered a standard assumption.
 
-7. **No concrete parameter instantiation:** The paper provides no concrete parameter choices, making it impossible to estimate real-world performance. The poly(lambda) and polylog factors hidden in asymptotic notation could be substantial.
+7. **No concrete parameter instantiation:** The paper provides no concrete parameter choices, making it impossible to estimate real-world performance. The poly(λ) and polylog factors hidden in asymptotic notation could be substantial.
 
 ### Open Problems (Section 4)
 
@@ -215,15 +215,15 @@ The paper identifies three open problems, framed as intermediate steps toward LW
 
 ### Uncertainties
 
-- **Tightness of poly(lambda) factors:** The analysis hides potentially large polynomial factors in lambda throughout (in preprocessing, communication, and server online time). Since n = poly(lambda, log(1/alpha)) and q = poly(lambda, 1/alpha), the concrete overhead from the security parameter could dominate for practical database sizes. No guidance is given on what lambda values would be needed.
+- **Tightness of poly(λ) factors:** The analysis hides potentially large polynomial factors in λ throughout (in preprocessing, communication, and server online time). Since n = poly(λ, log(1/alpha)) and q = poly(λ, 1/alpha), the concrete overhead from the security parameter could dominate for practical database sizes. No guidance is given on what λ values would be needed.
 
 - **Practical feasibility of Williams' preprocessing:** Williams' fast matrix-vector multiplication (Theorem 2.1) is a theoretical result; its constant factors and practical efficiency are unknown. The technique involves nontrivial combinatorial preprocessing (rectangular matrix multiplication scheduling) that may have very large hidden constants, potentially making the O(N/log^2 N) bound worse than naive O(N) for any practically relevant N.
 
-- **CRT decomposition overhead:** Lemma 3.1 introduces t = O(log M) = O(log(m * q^2)) CRT components. Each requires independent Williams preprocessing. The additive O-tilde(m) * polylog(q) term in the evaluation time could be significant for moderate m.
+- **CRT decomposition overhead:** Lemma 3.1 introduces t = O(log M) = O(log(m * q^2)) CRT components. Each requires independent Williams preprocessing. The additive Õ(m) * polylog(q) term in the evaluation time could be significant for moderate m.
 
 - **Comparison with CIMR25:** The concurrent work of Chen-Ishai-Mour-Rosen (CIMR25) achieves sk-DEPIR with O(N/log N) server computation from the Learning Subspace with Noise assumption. The paper notes LSN "can be viewed as a less structured variant of the earlier assumptions" (BIPW17, CHR17). The relative security of plain LWE vs. LSN is not fully resolved.
 
-- **Database update model:** No discussion of how database updates interact with the O-tilde(N^{1+epsilon}) preprocessing. Any modification to DB requires full re-preprocessing, which is superlinear.
+- **Database update model:** No discussion of how database updates interact with the Õ(N^{1+epsilon}) preprocessing. Any modification to DB requires full re-preprocessing, which is superlinear.
 
 ---
 
@@ -245,7 +245,7 @@ The paper identifies three open problems, framed as intermediate steps toward LW
 
 [^9]: Remark 2.1 (p. 6): "An unkeyed DEPIR scheme in the CRS model implies a keyed DEPIR scheme with public preprocessing in the standard model, and vice versa, with both having the same online efficiency."
 
-[^10]: Definition 2.4 — LWE with polynomial modulus-to-noise ratio (p. 6): "For any security parameter lambda and any polynomial modulus-to-noise ratio 1/alpha = poly(lambda), one can, in deterministic poly(lambda, log(1/alpha)) time, find parameters n, q, chi..."
+[^10]: Definition 2.4 — LWE with polynomial modulus-to-noise ratio (p. 6): "For any security parameter λ and any polynomial modulus-to-noise ratio 1/alpha = poly(λ), one can, in deterministic poly(λ, log(1/alpha)) time, find parameters n, q, chi..."
 
 [^11]: Footnote 1 (p. 2): "While RLWE enjoys an average-case to worst-case reduction due to [LPR10], the reduction is to lattice problems over ideal lattices... whereas plain LWE reduces to problems over general lattices."
 
@@ -267,7 +267,7 @@ The paper identifies three open problems, framed as intermediate steps toward LW
 
 [^20]: Theorem 3.1 (p. 10-11): "Under the LWE with polynomial modulus-to-noise ratio assumption, there exists a DEPIR scheme in the CRS model achieving the following efficiency for any 0 < epsilon < 1/2."
 
-[^21]: Theorem 3.1 + footnote 4 (p. 11): "Server's Online Runtime: O(N/(epsilon * log N)^2) * polyloglog(N) * poly(lambda)." Footnote 4: "More precisely, O(N/(epsilon * log N)^2) * polyloglog(N) * O-tilde(log lambda) + O-tilde(sqrt(N)) * poly(lambda)."
+[^21]: Theorem 3.1 + footnote 4 (p. 11): "Server's Online Runtime: O(N/(epsilon * log N)^2) * polyloglog(N) * poly(λ)." Footnote 4: "More precisely, O(N/(epsilon * log N)^2) * polyloglog(N) * Õ(log λ) + Õ(sqrt(N)) * poly(λ)."
 
 [^22]: Section 3, below Fig. 2 (p. 10): "If we set m = ceil(sqrt(N / log N)) and p = 2^{ceil(log N)}, which implies 1/alpha = poly(N), we obtain the following theorem."
 
@@ -281,6 +281,6 @@ The paper identifies three open problems, framed as intermediate steps toward LW
 
 [^27]: This is inferred from the asymptotic expressions. For N = 2^30, log_2 N = 30, so log^2 N is approximately 900 (in natural log: ln(2^30) is approximately 20.8, so ln^2 N is approximately 433). The actual constant depends on the base of the logarithm in Williams' theorem.
 
-[^28]: Corollary 3.1 proof (p. 11): "the size of the CRS, A in Z_q^{m x n}, is O(m * n * log q) = O-tilde(sqrt(N)) * poly(lambda)."
+[^28]: Corollary 3.1 proof (p. 11): "the size of the CRS, A in Z_q^{m x n}, is O(m * n * log q) = Õ(sqrt(N)) * poly(λ)."
 
 [^29]: Section 4 — Open Problems (p. 11): "A significant milestone would be the construction of LWE-based (unkeyed) DEPIR scheme in the standard model with server-side computation of O(N^{1-epsilon}) for some constant epsilon > 0, ideally polylog(N)."

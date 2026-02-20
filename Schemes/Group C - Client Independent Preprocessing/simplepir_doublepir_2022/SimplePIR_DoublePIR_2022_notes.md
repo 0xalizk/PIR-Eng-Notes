@@ -305,11 +305,11 @@ SimplePIR and DoublePIR achieve a novel point in the PIR design space: substanti
 | **Purpose** | Abstracts the key property of Regev encryption exploited by SimplePIR: the ability to preprocess a linear function f into a hint, then evaluate f on encrypted data using only the hint and a lightweight online computation |
 | **Built from** | Regev encryption with reused public matrix A[^39] |
 | **Standalone complexity** | Hint size: n elements of Z_q (one row of A^T dotted with f's matrix); Apply: m additions and m multiplications in Z_q; Dec: 1 inner product + rounding. All independent of security parameter n. |
-| **Relationship to prior primitives** | Generalizes standard linearly homomorphic encryption by adding a preprocessing phase. Compared to Paillier or ElGamal-based LHE, this construction has hint/ciphertext/evaluation costs that scale with lambda rather than lambda^2 or lambda^3 (Table 11, p.23).[^40] |
+| **Relationship to prior primitives** | Generalizes standard linearly homomorphic encryption by adding a preprocessing phase. Compared to Paillier or ElGamal-based LHE, this construction has hint/ciphertext/evaluation costs that scale with λ rather than λ^2 or λ^3 (Table 11, p.23).[^40] |
 
 [^38]: Appendix D.1 (p.22–23): Formal definition of linearly homomorphic encryption with preprocessing.
 [^39]: Appendix D.2 (p.23): "we construct a linear homomorphic encryption scheme with preprocessing from Regev encryption."
-[^40]: Table 11 (p.23): Comparison of linearly homomorphic encryption schemes. The LWE-based construction achieves hint size lambda, ciphertext size 1 per bit, and Apply/Dec time lambda — all linear or constant in the security parameter.
+[^40]: Table 11 (p.23): Comparison of linearly homomorphic encryption schemes. The LWE-based construction achieves hint size λ, ciphertext size 1 per bit, and Apply/Dec time λ — all linear or constant in the security parameter.
 
 ### Application: Certificate Transparency Auditing
 

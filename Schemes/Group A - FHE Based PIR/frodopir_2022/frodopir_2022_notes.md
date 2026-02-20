@@ -67,11 +67,11 @@ FrodoPIR constructs a stateful single-server PIR scheme built entirely on plain 
 
 [^ds1]: Section 4.2, p. 12. For w = 8192 bits (1 KB elements) and rho = 2^10, omega = 8192/10 = 820 (approximately). For rho = 2^9, omega = 8192/9 = 911 (approximately).
 
-[^ds2]: Section 4.1, p. 12. The seed mu is lambda bits. The PRG expansion is the dominant client offline cost, taking 0.58-9.25 seconds depending on m (Table 6, p. 19).
+[^ds2]: Section 4.1, p. 12. The seed mu is λ bits. The PRG expansion is the dominant client offline cost, taking 0.58-9.25 seconds depending on m (Table 6, p. 19).
 
-[^ds3]: Section 4.2, p. 12. M is n x omega over Z_q, so its size is n * omega * 32 bits. For n = 1774, omega = 820, this is approximately 5682 KB (Table 6, p. 19). This is the client's offline download (excluding the lambda-bit seed).
+[^ds3]: Section 4.2, p. 12. M is n x omega over Z_q, so its size is n * omega * 32 bits. For n = 1774, omega = 820, this is approximately 5682 KB (Table 6, p. 19). This is the client's offline download (excluding the λ-bit seed).
 
-[^ds4]: Section 4.2, p. 12. Each pair occupies (m + omega) * log(q) bits. For c = 500 preprocessed queries with m = 2^20, client storage reaches approximately 2 GB (Figure 4, p. 22). Without preprocessing (log(m) mode), client stores only (mu, M) totaling lambda + n*omega*log(q) bits.
+[^ds4]: Section 4.2, p. 12. Each pair occupies (m + omega) * log(q) bits. For c = 500 preprocessed queries with m = 2^20, client storage reaches approximately 2 GB (Figure 4, p. 22). Without preprocessing (log(m) mode), client stores only (mu, M) totaling λ + n*omega*log(q) bits.
 
 ### Database Encoding
 
@@ -89,13 +89,13 @@ FrodoPIR constructs a stateful single-server PIR scheme built entirely on plain 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
 | Server Setup (ssetup) | Server | Sample seed mu; derive A = PRG(mu, n, m, q); parse DB into D; compute M = A * D | -- | Once (global) |
-| Publish Parameters | Server | Publish (mu, M) to public repository | n*omega*log(q) + lambda bits download (~5.5--6.3 MB) | Once (global)[^phase1] |
+| Publish Parameters | Server | Publish (mu, M) to public repository | n*omega*log(q) + λ bits download (~5.5--6.3 MB) | Once (global)[^phase1] |
 | Client Preprocessing (cpreproc) | Client | Download (mu, M); derive A from mu; sample c pairs of (s_j, e_j) from chi; compute b_j = s_j^T*A + e_j^T and c_j = s_j^T*M; store X = {(b_j, c_j)} | -- (local computation) | Once per client[^phase2] |
 | Query Generation (query) | Client | Pop (b, c) from state; set f_i[i] = q/rho; compute b_tilde = b + f_i | m*log(q) bits upload | Per query[^phase3] |
 | Server Response (respond) | Server | Compute c_tilde = b_tilde^T * D | omega*log(q) bits download | Per query[^phase4] |
 | Client Output (process) | Client | Compute x = round(c_tilde - c, rho) | -- (local) | Per query |
 
-[^phase1]: Table 2, p. 14. Offline client download: lambda + n*omega*log(q) bits. For the standard parameters, this is approximately 5682 KB (m <= 2^18) or 6313 KB (m >= 2^19) per Table 6, p. 19.
+[^phase1]: Table 2, p. 14. Offline client download: λ + n*omega*log(q) bits. For the standard parameters, this is approximately 5682 KB (m <= 2^18) or 6313 KB (m >= 2^19) per Table 6, p. 19.
 
 [^phase2]: Table 3, p. 14. Client preprocessing involves n*(m + omega) modular multiplications per query plus nm PRG operations for deriving A. The PRG derivation cost is amortized over c queries: 0.58s for m = 2^16 up to 9.25s for m = 2^20 (Table 6, p. 19). Per-query preprocessing takes 0.15-2.34 seconds.
 
@@ -115,7 +115,7 @@ FrodoPIR constructs a stateful single-server PIR scheme built entirely on plain 
 
 | Component | Direction | Size | Reusable? | Notes |
 |-----------|-----------|------|-----------|-------|
-| Seed mu | Server -> Client (download) | lambda bits (128 bits) | Yes, until A is rotated | Part of global public parameters; offline[^comm1] |
+| Seed mu | Server -> Client (download) | λ bits (128 bits) | Yes, until A is rotated | Part of global public parameters; offline[^comm1] |
 | Hint matrix M | Server -> Client (download) | n*omega*log(q) bits (~5.5--6.3 MB) | Yes, until A is rotated | Part of global public parameters; offline |
 | Query b_tilde | Client -> Server (upload) | m*log(q) bits (256 KB -- 4 MB) | No | Per query; online |
 | Response c_tilde | Server -> Client (download) | omega*log(q) bits (3.2--3.6 KB) | No | Per query; online |
@@ -144,7 +144,7 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 **Parameter check:** For m = 2^20, rho = 2^9, q = 2^32: 8 * 2^18 * 2^10 = 2^31. Since q = 2^32 >= 2^31, the condition holds.[^paramcheck]
 
-[^noise]: Appendix A.1, p. 33-34. The argument uses Corollary 2 (p. 10), which applies the central limit theorem to ternary sums: for sufficiently large m = poly(lambda), the sum of m samples from {-1, 0, 1} is bounded by 4*sqrt(m) with all but negligible probability.
+[^noise]: Appendix A.1, p. 33-34. The argument uses Corollary 2 (p. 10), which applies the central limit theorem to ternary sums: for sufficiently large m = poly(λ), the sum of m samples from {-1, 0, 1} is bounded by 4*sqrt(m) with all but negligible probability.
 
 [^paramcheck]: Table 5 (p. 16) shows the parameter settings. For m = 2^20, rho = 2^9 (not 2^10), which is needed to satisfy the correctness bound. For m <= 2^18, rho = 2^10 can be used since 8 * 2^20 * 2^9 = 2^32 = q.
 
@@ -172,15 +172,15 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 | Client hint download | O(n * omega * log(q)) | 6313.07 KB (~6.2 MB) | Offline (per client, but same data for all)[^hintdl] |
 | Client derive matrix A | O(n * m) PRG ops | 9.25 s | Offline (per client, amortized over c queries) |
 | Client per-query preprocessing | O(n * (m + omega)) mults | 2.343 s | Offline (per query) |
-| Server storage | O(lambda + m * omega * log(rho)) | ~3x original DB | Persistent[^servstor] |
-| Client storage (with preproc) | O(lambda + c * (m + omega) * log(q)) | ~2 GB for c = 500 | Persistent |
-| Client storage (without preproc) | O(lambda + n * omega * log(q)) | ~6.3 MB | Persistent (log(m) mode) |
+| Server storage | O(λ + m * omega * log(rho)) | ~3x original DB | Persistent[^servstor] |
+| Client storage (with preproc) | O(λ + c * (m + omega) * log(q)) | ~2 GB for c = 500 | Persistent |
+| Client storage (without preproc) | O(λ + n * omega * log(q)) | ~6.3 MB | Persistent (log(m) mode) |
 
 [^servpreproc]: Table 6, p. 19. For m = 2^20, the server database preprocessing takes 1895.2 seconds. This is a one-time cost amortized globally over all clients and all queries. The amortized per-query cost drops to < 0.002s for 1M queries (Figure 2, p. 20).
 
 [^hintdl]: Table 6, p. 19. The download is the same for ALL clients (mu, M). For m <= 2^18, it is 5682.47 KB; for m >= 2^19, it is 6313.07 KB (the increase is because rho drops from 2^10 to 2^9, increasing omega).
 
-[^servstor]: Table 4, p. 15. Server stores lambda + m*omega*log(rho) bits. The ~3x factor comes from each log(rho)-bit chunk being stored in a full 32-bit integer, plus the overhead of the omega dimension.
+[^servstor]: Table 4, p. 15. Server stores λ + m*omega*log(rho) bits. The ~3x factor comes from each log(rho)-bit chunk being stored in a full 32-bit integer, plus the overhead of the omega dimension.
 
 #### Preprocessing Characterization
 
@@ -260,7 +260,7 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 - **Database updates:** Require re-running spreproc (server preprocessing) and all clients re-downloading (mu, M). Sharding mitigates this: if updates are confined to one shard, only that shard's parameters need refreshing, costing 1/(kappa * s) of the full database.[^update]
 - **Sharding:** Explicitly recommended for large databases (Section 5.4, p. 16-17). Database is split into s parallel instances of size m/s each. Each instance processes the same query. Reduces online query size from m to m/s but increases client download by factor s. Also enables parallelism.[^shard]
-- **Key rotation / query limits:** Security holds conservatively for up to 2^52 global queries observed by the server before requiring rotation of A. Security parameter: lambda = nu - 52 where nu is the base LWE security. When reached, the server resamples mu, recomputes M, and clients re-download.[^rotation]
+- **Key rotation / query limits:** Security holds conservatively for up to 2^52 global queries observed by the server before requiring rotation of A. Security parameter: λ = nu - 52 where nu is the base LWE security. When reached, the server resamples mu, recomputes M, and clients re-download.[^rotation]
 - **Anonymous query support:** Yes -- queries are statistically indistinguishable from uniform (Theorem 3, p. 13). The server cannot link queries to clients. However, the client state (b, c) pairs create a form of identity if compromised.
 - **Session model:** Persistent client (must maintain state of preprocessed pairs). Can operate in ephemeral mode with log(m) storage by re-deriving A online, but this costs 0.5--9.25 seconds per query (Figure 4, p. 22).
 - **Cold start suitability:** Moderate -- requires downloading ~6 MB hint. Once downloaded, deriving A and computing one (b, c) pair takes 0.7--11.6 seconds depending on m.
@@ -270,7 +270,7 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^shard]: Section 5.4, p. 16-17. Sharding also addresses RAM constraints: the t2.2xlarge instance cannot process m = 2^24 in a single instance, but 16 shards of 2^20 elements each would work.
 
-[^rotation]: Section 5.2, p. 15. The bound ell = 2^52 queries is set conservatively. The concrete security is lambda = nu - log(ell) via Corollary 1 (p. 10). Less conservative analyses (Appendix C) suggest the number of queries may not significantly impact security.
+[^rotation]: Section 5.2, p. 15. The bound ell = 2^52 queries is set conservatively. The concrete security is λ = nu - log(ell) via Corollary 1 (p. 10). Less conservative analyses (Appendix C) suggest the number of queries may not significantly impact security.
 
 [^crossover]: Figure 7, p. 25. FrodoPIR is compared against an online-free PIR scheme with zero online costs and SOnionPIR offline costs. FrodoPIR is cheaper for DB sizes <= 2^18 at any C, and approximately equal at 2^20.
 
@@ -298,7 +298,7 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 | Security level | 128 bits | <= 115 bits | <= 111 bits | <= 115 bits |
 | Offline: client-independent? | **Yes** | No | No (downloads DB) | No |
 | Offline: server computation | O(m*n*omega) (once) | O(k*m) per client | -- | O(m) per client |
-| Client offline download | lambda + n*omega*log(q) (~6 MB) | O(sqrt(m)) per client | |DB| (entire DB) | O(sqrt(m)) per client |
+| Client offline download | λ + n*omega*log(q) (~6 MB) | O(sqrt(m)) per client | |DB| (entire DB) | O(sqrt(m)) per client |
 | Online: query size | m*log(q) (4 MB for 2^20) | 1 query | 1 query | 1 query |
 | Online: response size | omega*log(q) (~3.6 KB) | O(sqrt(m)) | O(sqrt(m)) | O(sqrt(m)) |
 | Online: response blowup | < 3.6x | 128x | 320x | ~128x |

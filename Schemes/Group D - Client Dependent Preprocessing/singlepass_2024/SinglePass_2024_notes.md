@@ -16,16 +16,16 @@
 | Field | Value |
 |-------|--------|
 | **Builds on** | Checklist [Group D] (Kogan & Corrigan-Gibbs, USENIX Security 2021); CK20 [Group D] (Corrigan-Gibbs & Kogan, EUROCRYPT 2020) for the client-preprocessing PIR model; Fisher-Yates shuffle (Durstenfeld 1964, Fisher & Yates 1963, Knuth 1969) |
-| **What changed** | Prior client-preprocessing schemes (Checklist, TreePIR, MIR, Piano) require preprocessing proportional to lambda * N database accesses because they sample lambda * sqrt(N) independent pseudorandom subsets. SinglePass replaces pseudorandom subsets with random permutations via Fisher-Yates shuffle, achieving preprocessing in O(N) time with a single linear pass over the database, eliminating the lambda factor.[^1] |
+| **What changed** | Prior client-preprocessing schemes (Checklist, TreePIR, MIR, Piano) require preprocessing proportional to λ * N database accesses because they sample λ * sqrt(N) independent pseudorandom subsets. SinglePass replaces pseudorandom subsets with random permutations via Fisher-Yates shuffle, achieving preprocessing in O(N) time with a single linear pass over the database, eliminating the λ factor.[^1] |
 | **Superseded by** | N/A |
 | **Concurrent work** | MIR (Mughees, Ren; 2023) — also a 2-server client-preprocessing scheme, benchmarked against[^2] |
 
-[^1]: Abstract (p.1): "we propose the first client-preprocessing PIR scheme with 'single pass' client-preprocessing... it requires exactly one linear pass over the database. This is in stark contrast with existing works, whose preprocessing is proportional to lambda * N."
+[^1]: Abstract (p.1): "we propose the first client-preprocessing PIR scheme with 'single pass' client-preprocessing... it requires exactly one linear pass over the database. This is in stark contrast with existing works, whose preprocessing is proportional to λ * N."
 [^2]: Section 4 (p.10): MIR [30] is listed as one of three novel state-of-the-art client preprocessing PIR schemes benchmarked against.
 
 ### Core Idea
 
-SinglePass addresses the fundamental bottleneck of client-preprocessing PIR: existing schemes require lambda * N database accesses during preprocessing (where lambda = 128 is the security parameter), making the offline phase roughly 128x slower than necessary. The paper replaces the standard approach of sampling lambda * sqrt(N) independent pseudorandom subsets with Q random permutations over chunks of size m = N/Q, generated via Fisher-Yates shuffle from a single PRG seed.[^3] Each column j of the permutation matrix yields a hint h_j = XOR of DB_i[p_i(j)] for i in [Q], and the client stores these hints alongside the permutations. Because the permutations are generated from a compact seed, the preprocessing is a single linear pass over the database in O(N * w) time.[^4] The "Show and Shuffle" lemma (Lemma 3.1) proves that after each query, performing a random swap on each permutation produces a distribution identical to freshly sampled permutations, enabling unlimited queries with deterministic correctness and perfect security against each server individually.[^5]
+SinglePass addresses the fundamental bottleneck of client-preprocessing PIR: existing schemes require λ * N database accesses during preprocessing (where λ = 128 is the security parameter), making the offline phase roughly 128x slower than necessary. The paper replaces the standard approach of sampling λ * sqrt(N) independent pseudorandom subsets with Q random permutations over chunks of size m = N/Q, generated via Fisher-Yates shuffle from a single PRG seed.[^3] Each column j of the permutation matrix yields a hint h_j = XOR of DB_i[p_i(j)] for i in [Q], and the client stores these hints alongside the permutations. Because the permutations are generated from a compact seed, the preprocessing is a single linear pass over the database in O(N * w) time.[^4] The "Show and Shuffle" lemma (Lemma 3.1) proves that after each query, performing a random swap on each permutation produces a distribution identical to freshly sampled permutations, enabling unlimited queries with deterministic correctness and perfect security against each server individually.[^5]
 
 [^3]: Section 1 (p.2): "Our contribution: PIR preprocessing in a single pass... the preprocessing performs one linear pass over the database, operating on each element exactly once."
 [^4]: Theorem 3.1 (p.8–9): Hint runs in O(N * w) time and outputs a hint of size (N/Q) * w bits.
@@ -225,23 +225,23 @@ The key invariant maintained across queries is that after the swap operations in
 - **Key rotation / query limits:** Unlimited queries per session. The Show-and-Shuffle mechanism maintains security for any number T of adaptive queries.[^46]
 - **Anonymous query support:** No — client state is personalized (client-dependent preprocessing). Client identity is revealed by the preprocessing relationship.
 - **Session model:** Session-based. Client preprocesses, issues queries, and can discard state. Also supports persistent sessions for updatable databases.
-- **Cold start suitability:** Excellent — preprocessing is O(N) (single DB pass), roughly the cost of one non-preprocessing PIR query. Other schemes require O(lambda * N) preprocessing.[^47]
+- **Cold start suitability:** Excellent — preprocessing is O(N) (single DB pass), roughly the cost of one non-preprocessing PIR query. Other schemes require O(λ * N) preprocessing.[^47]
 - **Keyword PIR support:** Not native (index-based only). Can be reduced to keyword PIR via cuckoo hashing with approximately 2x overhead.[^48]
 
 [^45]: Section 5 (p.11): Edit and Add algorithms run in O(1) time.
-[^46]: Theorem 3.1 (p.8): Security holds "for any N(lambda), T(lambda) in N" (any polynomial number of queries).
+[^46]: Theorem 3.1 (p.8): Security holds "for any N(λ), T(λ) in N" (any polynomial number of queries).
 [^47]: Section 1 (p.1): "the preprocessing roughly equals the cost of a single PIR query for a non-preprocessing PIR scheme."
 [^48]: Footnote 6 (p.13): "our single pass scheme is a pure PIR scheme that only supports index queries. However, using cuckoo hashing it could be translated to a keyword PIR scheme with a 2x overhead."
 
 ### Key Tradeoffs & Limitations
 
-- **Client storage scales linearly with N:** Client storage is O(N log N + (N/Q) * w), which is linear in N. However, the lambda factor is eliminated, so for practical parameters (w = 1024 bytes, Q = sqrt(N), lambda = 128), SinglePass storage is smaller than Checklist's O(N log N + lambda * sqrt(N) * w) for N greater than approximately 1 billion.[^49]
-- **Query bandwidth grows with Q:** Query bandwidth is O(Q * w), higher than Checklist's O(log(N) * (lambda * log(N) + w)). This is the main cost paid for faster preprocessing.[^50]
+- **Client storage scales linearly with N:** Client storage is O(N log N + (N/Q) * w), which is linear in N. However, the λ factor is eliminated, so for practical parameters (w = 1024 bytes, Q = sqrt(N), λ = 128), SinglePass storage is smaller than Checklist's O(N log N + λ * sqrt(N) * w) for N greater than approximately 1 billion.[^49]
+- **Query bandwidth grows with Q:** Query bandwidth is O(Q * w), higher than Checklist's O(log(N) * (λ * log(N) + w)). This is the main cost paid for faster preprocessing.[^50]
 - **Two-server model required:** Unlike Piano (single-server), SinglePass requires two non-colluding servers.[^51]
 - **Permutation storage:** The expanded permutations require N * log(N) bits. This can be reduced by storing only the PRG seed, but then Query time increases from O(Q) to O(N) since the permutations must be re-expanded for each query.[^52]
 
-[^49]: Section 1 (p.2): "for a word size of 1024 bytes, Q = sqrt(N), lambda = 128 our storage is only worse than the client storage for previous schemes for N greater than one billion elements."
-[^50]: Table 1 (p.2): SinglePass query bandwidth is O(Q * w) vs Checklist's O(log(N) * (lambda * log(N) + w)).
+[^49]: Section 1 (p.2): "for a word size of 1024 bytes, Q = sqrt(N), λ = 128 our storage is only worse than the client storage for previous schemes for N greater than one billion elements."
+[^50]: Table 1 (p.2): SinglePass query bandwidth is O(Q * w) vs Checklist's O(log(N) * (λ * log(N) + w)).
 [^51]: Section 2.1 (p.4): "Throughout this work, we will operate entirely over the two server model."
 [^52]: Appendix A, Footnote 7 (p.16): "We can store the inverse along with the permutation with constant overhead. In practice, for some scenarios, it might be beneficial to not store the inverse in order to save space."
 
@@ -251,10 +251,10 @@ The key invariant maintained across queries is that after the swap operations in
 
 | Metric | SinglePass | Checklist |
 |--------|-----------|-----------|
-| Preprocessing time | O(N) | O(lambda * N) |
+| Preprocessing time | O(N) | O(λ * N) |
 | Query time | O(Q) | O(sqrt(N)) |
-| Query BW | O(Q * w) | O(log(N) * (lambda * log(N) + w)) |
-| Client storage | O(N log N + (N/Q) * w) | O(N log N + lambda * sqrt(N) * w) |
+| Query BW | O(Q * w) | O(log(N) * (λ * log(N) + w)) |
+| Client storage | O(N log N + (N/Q) * w) | O(N log N + λ * sqrt(N) * w) |
 | Update time | O(1) | O(log N) |
 
 Q is a tunable parameter in [N] controlling the tradeoff between query time and storage.[^53]
@@ -275,7 +275,7 @@ Q is a tunable parameter in [N] controlling the tradeoff between query time and 
 
 ### Portable Optimizations
 
-- **Permutation-based hint construction:** Replacing independent pseudorandom subsets with random permutations over database chunks eliminates the lambda factor from preprocessing. This technique could apply to any client-preprocessing PIR scheme that currently uses pseudorandom sets.[^54]
+- **Permutation-based hint construction:** Replacing independent pseudorandom subsets with random permutations over database chunks eliminates the λ factor from preprocessing. This technique could apply to any client-preprocessing PIR scheme that currently uses pseudorandom sets.[^54]
 - **Show-and-Shuffle state refresh:** The swap-based hint refresh mechanism (replace one permutation entry with a random swap after each query) is a general technique for maintaining uniform permutation distributions across adaptive queries. It avoids the need for re-sampling or puncturable PRFs.[^55]
 - **O(1) update via permutation inverse:** Since each database element appears in exactly one hint (determined by the permutation inverse), edits require updating exactly one hint entry. This is inherently cheaper than schemes where each element appears in sqrt(N) independent sets.[^56]
 
@@ -301,7 +301,7 @@ Q is a tunable parameter in [N] controlling the tradeoff between query time and 
 - Can single-pass preprocessing be achieved in the **single-server** setting (removing the two-server requirement)?[^60]
 - Can the **linear dependency** of client storage on N be eliminated (achieving sublinear client storage with single-pass preprocessing)?[^60]
 
-[^60]: Section 7 (p.13): "Some natural next questions for this line of work are whether we can have a client-preprocessing PIR scheme whose efficiency is independent of lambda, and that operates in the single server setting; and whether we can get rid of the linear dependency of our scheme's client state and the database size."
+[^60]: Section 7 (p.13): "Some natural next questions for this line of work are whether we can have a client-preprocessing PIR scheme whose efficiency is independent of λ, and that operates in the single server setting; and whether we can get rid of the linear dependency of our scheme's client state and the database size."
 
 ### Uncertainties
 
@@ -311,7 +311,7 @@ Q is a tunable parameter in [N] controlling the tradeoff between query time and 
 
 ### Related Papers in Collection
 
-- **Checklist [Group D]** — Primary comparator. SinglePass eliminates the lambda factor from Checklist's preprocessing.
+- **Checklist [Group D]** — Primary comparator. SinglePass eliminates the λ factor from Checklist's preprocessing.
 - **TreePIR [Group D]** — 2-server client-preprocessing scheme by the same authors. Benchmarked against in Section 4.
 - **CK20 [Group D]** — Foundational client-preprocessing PIR model paper (2-server + single-server). SinglePass follows the same model (Definition 2.1).
 - **Piano [Group D]** — Single-server client-preprocessing scheme. Different model (single-server, probabilistic correctness) but addresses the same preprocessing bottleneck.

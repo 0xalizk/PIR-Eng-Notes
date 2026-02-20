@@ -81,11 +81,11 @@ The distributional-PIR construction is a **generic compiler** that lifts any sta
 
 | Field | Detail |
 |-------|--------|
-| **Input** | Any delta-secure, errorless batch-PIR scheme Pi_batch with message space M, batch size B, server runtime O-tilde(K) on a database of size K, and communication cost C(K) |
+| **Input** | Any delta-secure, errorless batch-PIR scheme Pi_batch with message space M, batch size B, server runtime Õ(K) on a database of size K, and communication cost C(K) |
 | **Additional input** | Popularity distribution P over [N]; correctness parameters kappa_avg, kappa_worst in [0,1] |
 | **Output** | A 2*delta-secure distributional-PIR scheme Pi with explicit correctness 1, average-case correctness kappa_avg, worst-case correctness kappa_worst |
 | **Preserved properties** | Security (composable — delta_dist + delta_batch); batch-PIR interface; black-box use of underlying scheme |
-| **Expected server runtime** | O-tilde(k * (1 - kappa_worst) + N * kappa_worst) where k = cdf_P^{-1}((kappa_avg - kappa_worst) / (1 - kappa_worst))[^20] |
+| **Expected server runtime** | Õ(k * (1 - kappa_worst) + N * kappa_worst) where k = cdf_P^{-1}((kappa_avg - kappa_worst) / (1 - kappa_worst))[^20] |
 | **Expected communication** | k * log N + C(k) * (1 - kappa_worst) + C(N) * kappa_worst[^21] |
 
 #### Instantiations Evaluated
@@ -134,7 +134,7 @@ The distributional-PIR construction is a **generic compiler** that lifts any sta
 
 | Metric | Asymptotic | Concrete (CrowdSurf: 38 GB Twitter DB, B=24, kappa_avg=0.8, kappa_worst=0.01) | Phase |
 |--------|-----------|---------------------------------------|-------|
-| Expected server time | O-tilde(k*(1-kappa_worst) + N*kappa_worst) | 0.004 s GPU + negligible CPU (PIR portion)[^30] | Online |
+| Expected server time | Õ(k*(1-kappa_worst) + N*kappa_worst) | 0.004 s GPU + negligible CPU (PIR portion)[^30] | Online |
 | Expected communication | k*log N + C(k)*(1-kappa_worst) + C(N)*kappa_worst | 21 MB total per request[^31] | Online |
 | Client storage | O(popular DB indices + hint) | 65 MB (hint) per client[^31] | Setup (reusable) |
 | Server storage | O(N + k) (two encoded databases) | 38 GB + 15 MB popular bucket | Setup |
@@ -226,7 +226,7 @@ Distributional PIR reduces computation by 12x and communication by 3x compared t
 |-----------|-------------------|----------------------------------|-----------------------------------|----------------|
 | Security guarantee | Standard PIR (identical) | Standard PIR | Weaker (security degrades if distribution estimate is wrong) | Relaxed (differential privacy, leaks bounded info) |
 | Correctness | Relaxed (probabilistic) | Full (deterministic) | Full | Full |
-| Server runtime scaling | Sub-linear (expected) for skewed P | O-tilde(N) | O-tilde(N) with dummy queries | Sub-linear (probes subset) |
+| Server runtime scaling | Sub-linear (expected) for skewed P | Õ(N) | Õ(N) with dummy queries | Sub-linear (probes subset) |
 | Approach to distribution | Exploits skew openly | Ignores distribution | Hides skew via dummy accesses | Server's probed subset depends on query (leaks info) |
 | Composability | Yes (with DP-PIR for further relaxation) | N/A | No (security depends on accuracy of P) | Yes (with distributional PIR) |
 | Black-box use of PIR | Yes | N/A | No | No |
@@ -300,7 +300,7 @@ Where Q and R abbreviate the full expected communication and runtime expressions
 [^17]: Section 2.1, "Efficiency" (p. 4) and Section A.1.3 (p. 19): Formal definitions of expected server time and expected communication cost.
 [^18]: Section 2.1 (p. 4): "We can interpret any standard PIR scheme with correctness kappa as a distributional-PIR scheme in which all three correctness parameters are kappa."
 [^19]: Section 1 (p. 2): "a generic compiler that lifts a standard PIR scheme into a distributional-PIR scheme." Also Theorem 3.3 (p. 5).
-[^20]: Theorem 3.3 (p. 5): Expected server runtime is O-tilde(k*(1-kappa_worst) + N*kappa_worst).
+[^20]: Theorem 3.3 (p. 5): Expected server runtime is Õ(k*(1-kappa_worst) + N*kappa_worst).
 [^21]: Theorem 3.3 (p. 5): Expected communication is k*log N + C(k)*(1-kappa_worst) + C(N)*kappa_worst.
 [^22]: Section 9.1, Table 12 (p. 14): CrowdSurf total cost $0.0057 vs. baseline $0.046, an 8x reduction.
 [^23]: Section 7.2.1 (p. 11): "When using Respire, our construction increases the queries-per-second by 6.7-12.8x and reduces communication by 2.3-117x."

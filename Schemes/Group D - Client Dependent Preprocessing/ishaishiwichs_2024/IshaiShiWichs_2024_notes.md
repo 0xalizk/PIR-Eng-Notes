@@ -52,7 +52,7 @@ A k-server preprocessing PIR scheme consists of:
 
 #### (n,t)-PIR (Definition 1, p.20)
 
-A relaxed model used in lower-bound proofs. Allows arbitrary preprocessing (DB_tilde, hint) <- Prep(1^lambda, DB), a PIR protocol Pi between server (holding DB_tilde) and client (holding hint and t indices), and requires only computational security for the protocol transcript.[^5]
+A relaxed model used in lower-bound proofs. Allows arbitrary preprocessing (DB_tilde, hint) <- Prep(1^λ, DB), a PIR protocol Pi between server (holding DB_tilde) and client (holding hint and t indices), and requires only computational security for the protocol transcript.[^5]
 
 [^5]: Definition 1 (p.20-21): The (n,t)-PIR model relaxes standard preprocessing PIR in five ways: trusted preprocessing may produce an encoded database correlated with the hint; both parties may be arbitrarily stateful; queries are bounded by t; indices are chosen upfront; and security is only against outsiders seeing the protocol transcript.
 
@@ -70,7 +70,7 @@ A database-oblivious scheme restricts Definition 1 so that: (1) the database is 
 |-------|--------|
 | **Name** | Mutual Information Amplification (MIA) |
 | **Type** | Cryptographic primitive (key agreement variant) |
-| **Interface / Operations** | (KeyGen, Pi): KeyGen(1^lambda) -> (sk_A, sk_B); Pi(sk_A; sk_B) -> (k_A, k_B) where k_A = k_B with overwhelming probability |
+| **Interface / Operations** | (KeyGen, Pi): KeyGen(1^λ) -> (sk_A, sk_B); Pi(sk_A; sk_B) -> (k_A, k_B) where k_A = k_B with overwhelming probability |
 | **Security definition** | Amplification: the shared key k is computationally indistinguishable from having Shannon entropy >= l conditioned on the protocol transcript, where l > m = I(sk_A; sk_B) (Definition 2, p.22) |
 | **Correctness definition** | k_A = k_B with overwhelming probability |
 | **Purpose** | Intermediate primitive for proving the OWF lower bound; PIR implies non-trivial MIA, and non-trivial MIA implies OWFs |
@@ -99,8 +99,8 @@ A database-oblivious scheme restricts Definition 1 so that: (1) the database is 
 |-------|--------|
 | **Name** | Vanilla SSB hash function |
 | **Type** | Cryptographic primitive |
-| **Interface / Operations** | (Gen, Hash): Gen(1^lambda, j) -> hk; Hash(hk, x) -> y where |y| < |x| |
-| **Security definition** | Weak local binding: a computationally unbounded decoder Dec can recover x_j from Hash(hk, x) with probability 1 - negl(lambda). Hiding: Gen(1^lambda, j) ~=_c Gen(1^lambda, j') (Definition 5, p.26) |
+| **Interface / Operations** | (Gen, Hash): Gen(1^λ, j) -> hk; Hash(hk, x) -> y where |y| < |x| |
+| **Security definition** | Weak local binding: a computationally unbounded decoder Dec can recover x_j from Hash(hk, x) with probability 1 - negl(λ). Hiding: Gen(1^λ, j) ~=_c Gen(1^λ, j') (Definition 5, p.26) |
 | **Purpose** | Intermediate primitive in the SZK barrier proof chain: single-record (n,t)-PIR implies vanilla SSB hash (Theorem 5.5), and vanilla SSB hash implies a hard SZK problem (Theorem 5.7) |
 | **Built from** | Constructed from single-record (n,t)-PIR by replacing the hint with pairwise-independent hash of each database record |
 | **Relationship to prior primitives** | Relaxation of SSB hash from [HW15, OPWW15]: does not require efficient local decommitment; binding is weakened to assume hk is chosen independently of x |
@@ -314,7 +314,7 @@ The key property: for distinct points v, v', if (x,y,z) = pi_r(v) and (x',y',z')
 
 The lower bound extends along several dimensions:
 - **Hint size vs mutual information:** The condition |hint| is small can be replaced by the more general condition that the mutual information I((DB, DB_tilde); hint) is small.[^30]
-- **Index-dependent preprocessing:** The result holds even if preprocessing (DB_tilde, hint) <- Prep(1^lambda, DB, (i_1,...,i_t)) depends on the query indices.[^30]
+- **Index-dependent preprocessing:** The result holds even if preprocessing (DB_tilde, hint) <- Prep(1^λ, DB, (i_1,...,i_t)) depends on the query indices.[^30]
 - **Retrieving a single chunk:** The bound applies even to schemes that only retrieve t consecutive locations.[^31]
 - **Download vs communication:** The bound can be stated in terms of download complexity d alone: |hint|(1 - t/n) <= t(1 - dt/n) - 1.[^31]
 
@@ -328,7 +328,7 @@ The lower bound extends along several dimensions:
 |-------|--------|
 | **Bound type** | Complexity-theoretic barrier |
 | **Bound statement** | Any (1-roundtrip) database-oblivious preprocessing PIR scheme with client space < t/3 and t queries consuming total bandwidth < n/3 implies an average-case hard promise problem in SZK. In particular, it implies a separation of (promise) SZK from BPP. |
-| **Variables** | t = omega(log lambda) number of queries; n = database size; client space and total bandwidth are the space/communication measures |
+| **Variables** | t = omega(log λ) number of queries; n = database size; client space and total bandwidth are the space/communication measures |
 | **Model assumptions** | Database-oblivious: client's questions depend only on its randomness and the index sequence (not on server's responses). All known constructions satisfy this. |
 | **Proof technique** | Three-step chain: (1) database-oblivious (n,t)-PIR => single-record (n,t)-PIR (Claim 5.4); (2) single-record (n,t)-PIR => vanilla SSB hash (Theorem 5.5); (3) vanilla SSB hash => hard problem in SZK (Theorem 5.7 via Conditional Entropy Approximation [Vad06]) |
 | **Tightness** | Shows Piano [ZPSZ24] and subsequent improvements [MIR23, GZS24a] have (nearly) optimal client space/bandwidth tradeoff in Minicrypt |

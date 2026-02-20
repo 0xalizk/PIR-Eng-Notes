@@ -171,7 +171,7 @@ When the number of modified/deleted entries M' in a row exceeds the threshold t:
 | **Base scheme** | SimplePIR (Henzinger et al., USENIX Security 2023) [^1] |
 | **Integration point** | The hint H = D . A is a matrix product. Any scheme whose offline phase computes a product of the database matrix with a public matrix can use entry-level incremental updates. [^24] |
 | **Improvement** | Reduces preprocessing from O(n * sqrt(N)) to O(n) per single-entry update. Table 1 shows reductions across all compatible schemes. [^4] |
-| **Compatible schemes** | DoublePIR [26] (nm -> n operations), APIR [16] (n*sqrt(N) -> n), VeriSimplePIR [14] ((n+lambda)(m+lambda) -> (n+lambda)), YPIR [38] (d_1 * l_1 -> d_1) [^24] |
+| **Compatible schemes** | DoublePIR [26] (nm -> n operations), APIR [16] (n*sqrt(N) -> n), VeriSimplePIR [14] ((n+λ)(m+λ) -> (n+λ)), YPIR [38] (d_1 * l_1 -> d_1) [^24] |
 | **Limitations** | Only applicable to schemes whose hint is a matrix product of DB and a public matrix. Schemes using fundamentally different preprocessing (e.g., FHE-based, PRF-based) are not compatible. The technique is specific to the SimplePIR family. [^25] |
 
 [^24]: Table 1 (p. 14): Operation counts before and after combination with iSimplePIR (Entry-level) for five schemes.

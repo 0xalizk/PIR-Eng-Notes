@@ -18,20 +18,20 @@
 | Online answer size | O(ell * log(q)) = O(sqrt(N) * log(q)) | 1.1-1.5x SimplePIR | Online |
 | Online server computation | O(N) (matrix-vector multiply D*u) | Essentially identical to SimplePIR | Online |
 | Online client computation | O(sqrt(N)) for Query + O(sqrt(N)) for Verify (PreVerify is Zu = Cv check) + O(sqrt(N)) for Recover | 12-40% overhead vs SimplePIR (Verify step) | Online |
-| Offline communication (digest) | O(ell * n * log(q)) for H_1 + O(lambda * m * log(q)) for Z matrices | Dominated by H_1; ~95% of total offline storage. ~2-14 GiB for 4-256 GiB databases (Figure 8) | Offline (once) |
-| Offline server computation (preprocessing) | O(N * lambda) (D^T * U, lambda encryptions evaluated) | ~100s for 4 GiB DB, ~200s for 8 GiB DB (single core, dishonest digest) | Offline (once per client) |
-| Offline client computation (preprocessing) | O(lambda * n) (lambda LWE encryptions) | Small relative to server | Offline (once per client) |
-| Client persistent storage | O(ell * n * log(q) + lambda * ell + lambda * m) for (H_1, C, Z) | ~800 MiB for password-leak application (400M entries) | Throughout |
+| Offline communication (digest) | O(ell * n * log(q)) for H_1 + O(λ * m * log(q)) for Z matrices | Dominated by H_1; ~95% of total offline storage. ~2-14 GiB for 4-256 GiB databases (Figure 8) | Offline (once) |
+| Offline server computation (preprocessing) | O(N * λ) (D^T * U, λ encryptions evaluated) | ~100s for 4 GiB DB, ~200s for 8 GiB DB (single core, dishonest digest) | Offline (once per client) |
+| Offline client computation (preprocessing) | O(λ * n) (λ LWE encryptions) | Small relative to server | Offline (once per client) |
+| Client persistent storage | O(ell * n * log(q) + λ * ell + λ * m) for (H_1, C, Z) | ~800 MiB for password-leak application (400M entries) | Throughout |
 
 #### BarelyDoublyEfficient (2025)
 
 | Metric | Asymptotic | Concrete | Phase | Source |
 |--------|-----------|----------|-------|--------|
-| Preprocessing runtime | O-tilde(N^{1+epsilon}) * poly(lambda) | N/A (no implementation) | Offline | Theorem 3.1 (author-stated) |
-| Server's online runtime | O(N / (epsilon * log N)^2) * polyloglog(N) * poly(lambda) | N/A (no implementation) | Online | Theorem 3.1 + footnote 4 (author-stated) |
-| Client's online runtime | O-tilde(sqrt(N)) * poly(lambda) | N/A (no implementation) | Online | Theorem 3.1 (author-stated) |
-| Online communication | O-tilde(sqrt(N)) * poly(lambda) | N/A (no implementation) | Online | Theorem 3.1 (author-stated) |
-| CRS size | O(m * n * log q) = O-tilde(sqrt(N)) * poly(lambda) | N/A (no implementation) | Setup | Corollary 3.1 proof (inferred) |
+| Preprocessing runtime | Õ(N^{1+epsilon}) * poly(λ) | N/A (no implementation) | Offline | Theorem 3.1 (author-stated) |
+| Server's online runtime | O(N / (epsilon * log N)^2) * polyloglog(N) * poly(λ) | N/A (no implementation) | Online | Theorem 3.1 + footnote 4 (author-stated) |
+| Client's online runtime | Õ(sqrt(N)) * poly(λ) | N/A (no implementation) | Online | Theorem 3.1 (author-stated) |
+| Online communication | Õ(sqrt(N)) * poly(λ) | N/A (no implementation) | Online | Theorem 3.1 (author-stated) |
+| CRS size | O(m * n * log q) = Õ(sqrt(N)) * poly(λ) | N/A (no implementation) | Setup | Corollary 3.1 proof (inferred) |
 
 #### IncrementalPIR (2026)
 

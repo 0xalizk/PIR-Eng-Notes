@@ -42,8 +42,8 @@ Most issues are minor (section/page misattributions, naming errors). One non-tri
 - **Paper says:** Table 8 shows SimplePIR Offline: Upload = 0 MB, Download = 121 MB. The footnote says "offline download = 0 MB" then immediately says "hint download is 121 MB" — the "0 MB" refers to the offline **upload**, not download. The word "download" is used incorrectly for the 0 MB figure. The actual numbers (0 upload, 121 download, 16 MB for DoublePIR) are all correct.
 
 **[^40] — Minor inaccuracy in characterization**
-- **Notes claim:** "The LWE-based construction achieves hint size lambda, ciphertext size 1 per bit, and Apply/Dec time lambda — all linear or constant in the security parameter."
-- **Paper says (Table 11, p.23):** For "This work (LWE)": Hint = λ, Key = λ, Ct/bit = 1, Preproc = n/a, Enc = λ, **Apply = 1**, Dec = λ. The Apply time is 1 (constant), not λ. The footnote's phrasing "Apply/Dec time lambda" incorrectly attributes λ cost to Apply. The broader claim "all linear or constant" is technically true (Apply is constant, Dec is linear), but the specific "Apply/Dec time lambda" is inaccurate.
+- **Notes claim:** "The LWE-based construction achieves hint size λ, ciphertext size 1 per bit, and Apply/Dec time λ — all linear or constant in the security parameter."
+- **Paper says (Table 11, p.23):** For "This work (LWE)": Hint = λ, Key = λ, Ct/bit = 1, Preproc = n/a, Enc = λ, **Apply = 1**, Dec = λ. The Apply time is 1 (constant), not λ. The footnote's phrasing "Apply/Dec time λ" incorrectly attributes λ cost to Apply. The broader claim "all linear or constant" is technically true (Apply is constant, Dec is linear), but the specific "Apply/Dec time λ" is inaccurate.
 
 #### Additional Body Text Issue (not a footnote, but noticed during review)
 
