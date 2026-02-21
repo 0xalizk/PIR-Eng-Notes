@@ -879,6 +879,7 @@
     // filter pills
     var filterEl = document.getElementById('catalog-filters');
     if (filterEl) {
+      filterEl.innerHTML = '';
       var activeGroups = new Set(Object.keys(GROUP_COLORS));
       var activeTiers = new Set([1, 2, 3]);
       var implFilter = null; // null = all, true = yes, false = no
@@ -888,7 +889,19 @@
           return activeGroups.has(s.group) && activeTiers.has(s.data_tier) &&
             (implFilter === null || s.has_implementation === implFilter);
         });
-        filtered.sort(function (a, b) { return a._composite - b._composite; });
+        if (sortCol) {
+          var col = columns.filter(function (c) { return c.key === sortCol; })[0];
+          filtered.sort(function (a, b) {
+            var va = col && col.metric ? getVal(a, sortCol) : a[sortCol];
+            var vb = col && col.metric ? getVal(b, sortCol) : b[sortCol];
+            if (va === null || va === undefined) return 1;
+            if (vb === null || vb === undefined) return -1;
+            if (typeof va === 'string') return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+            return sortAsc ? va - vb : vb - va;
+          });
+        } else {
+          filtered.sort(function (a, b) { return a._composite - b._composite; });
+        }
         sorted = filtered;
         renderRows(sorted);
       }
