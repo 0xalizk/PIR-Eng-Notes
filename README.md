@@ -76,7 +76,7 @@
 
 | Scheme | Why |
 |--------|-----|
-| [FrodoPIR](Schemes/Group%20A%20-%20FHE%20Based%20PIR/frodopir_2022/frodopir_2022_notes.md) | Filed A (LWE-based) but functionally Group C — server computes a single client-independent global hint matrix; no per-client preprocessing |
-| [ThorPIR](Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md) | Group A + D hybrid — FHE-based construction, but client sends encrypted PRG seeds and server performs per-client homomorphic preprocessing |
-| [VIA](Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md) | Base VIA is Group B (hintless); VIA-C straddles B/C — its offline evaluation-key upload is client-independent preprocessing |
-| [CwPIR](Schemes/Group%20A%20-%20FHE%20Based%20PIR/cwpir_2022/cwpir_2022_notes.md) | Filed A (FHE-based) but its core innovation — constant-weight equality operators — enables native single-round keyword PIR (a Group X extension model) |
+| 2025 [VIA](Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md) | Base VIA is Group B (hintless); VIA-C straddles B/C — its offline evaluation-key upload is client-independent preprocessing |
+| 2024 [ThorPIR](Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md) | Group A + D hybrid — FHE-based construction, but client sends encrypted PRG seeds and server performs per-client homomorphic preprocessing |
+| 2022 [FrodoPIR](Schemes/Group%20A%20-%20FHE%20Based%20PIR/frodopir_2022/frodopir_2022_notes.md) | Filed A (LWE-based) but functionally Group C — server computes a single client-independent global hint matrix; no per-client preprocessing |
+| 2022 [CwPIR](Schemes/Group%20A%20-%20FHE%20Based%20PIR/cwpir_2022/cwpir_2022_notes.md) | Filed A (FHE-based) but its core innovation — constant-weight equality operators — enables native single-round keyword PIR (a Group X extension model) |
