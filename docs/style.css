@@ -380,6 +380,19 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   margin-right: 3px;
 }
 
+.tier-legend-stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 8px 0 20px;
+}
+.tier-legend-stacked strong {
+  color: var(--text);
+  margin-right: 3px;
+}
+
 .tier-defs {
   display: flex;
   flex-direction: column;
