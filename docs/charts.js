@@ -351,10 +351,11 @@
       var qk = getVal(s, 'query_size_kb');
       var rk = getVal(s, 'response_size_kb');
       if (qk === null || rk === null) return;
-      if (!groups[s.group]) groups[s.group] = { x: [], y: [], text: [], marker: { color: [], opacity: [], size: [], symbol: [] } };
+      if (!groups[s.group]) groups[s.group] = { x: [], y: [], text: [], names: [], marker: { color: [], opacity: [], size: [], symbol: [] } };
       var g = groups[s.group];
       g.x.push(qk);
       g.y.push(rk);
+      g.names.push(s.display_name);
       g.text.push(s.display_name + '<br>Query: ' + formatNum(qk) + ' KB<br>Response: ' + formatNum(rk) + ' KB<br>Tier: ' + TIER_LABELS[s.data_tier]);
       g.marker.color.push(GROUP_COLORS[s.group]);
       g.marker.opacity.push(TIER_OPACITY[s.data_tier]);
@@ -366,9 +367,12 @@
     Object.keys(groups).forEach(function (g) {
       traces.push({
         x: groups[g].x, y: groups[g].y,
-        mode: 'markers',
+        mode: 'markers+text',
         type: 'scatter',
         name: 'Group ' + g,
+        text: groups[g].names,
+        textposition: 'top right',
+        textfont: { size: 9, color: t.muted },
         hovertext: groups[g].text,
         hoverinfo: 'text',
         marker: {
