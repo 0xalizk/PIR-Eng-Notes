@@ -35,7 +35,7 @@
 
 ### Core Idea
 
-NPIR addresses the high server computation cost of existing high-rate PIR schemes (Spiral, NTRUPIR) for databases with moderate-size records (tens of KB). The key innovation is a novel **NTRU packing** technique that compresses N*phi NTRU encodings -- whose constant terms form a target record -- into phi NTRU encodings, using an FFT-style structure built from Galois group automorphisms and the field trace function.[^4] This replaces the homomorphic selection method used in Spiral and NTRUPIR's second-dimension processing. Combined with a polynomial-matrix database layout indexed by (col, term) pairs, NPIR achieves 1.50--2.84x better server throughput than Spiral and 1.77--2.55x better than NTRUPIR for 1--32 GB databases with 32 KB records, with a communication rate of 0.250.[^5]
+NPIR addresses the high server computation cost of existing high-rate PIR schemes (Spiral, NTRUPIR) for databases with moderate-size records (tens of KB). The key innovation is a novel **NTRU packing** technique that compresses N*phi NTRU encodings -- whose constant terms form a target record -- into phi NTRU encodings, using an FFT-style structure built from Galois group automorphisms and the field trace function.&#8201;[^4] This replaces the homomorphic selection method used in Spiral and NTRUPIR's second-dimension processing. Combined with a polynomial-matrix database layout indexed by (col, term) pairs, NPIR achieves 1.50--2.84x better server throughput than Spiral and 1.77--2.55x better than NTRUPIR for 1--32 GB databases with 32 KB records, with a communication rate of 0.250.&#8201;[^5]
 
 [^5]: Table 1 (p.15) and Section 5.2 (p.16-17): NPIR throughput ranges from 175.34 MB/s (1 GB) to 715.15 MB/s (32 GB), compared to Spiral's 116.89--272.11 MB/s and NTRUPIR's 98.56--311.69 MB/s over the same range. NPIR's rate is 0.250 while Spiral's rate is 0.390.
 
@@ -92,11 +92,11 @@ NPIR addresses the high server computation cost of existing high-rate PIR scheme
 
 ### Key Data Structures
 
-- **Database:** D in R_p^{N*phi x ell}, a matrix of polynomials over the plaintext ring R_p = Z_p[X]/(X^N + 1) with p = 256. Each record is indexed by a (col, term) pair where col in [ell] and term in [N]. The row count is N*phi where phi is the packing number. Record size = N*phi*log_2(p) bits = N*phi bytes (for p = 256).[^12]
-- **Public parameters (pp):** Packing key pk (log_2(N) = 11 automorphism keys, each of size t_pk * log_2(q) bits), expansion key ck (ceil(log_2(ell)) automorphism keys, each of size t_ce * log_2(q) bits), and decomposition bases B_pk, B_ce, B_g. Total storage: 0.89--1.44 MB.[^13]
+- **Database:** D in R_p^{N*phi x ell}, a matrix of polynomials over the plaintext ring R_p = Z_p[X]/(X^N + 1) with p = 256. Each record is indexed by a (col, term) pair where col in [ell] and term in [N]. The row count is N*phi where phi is the packing number. Record size = N*phi*log_2(p) bits = N*phi bytes (for p = 256).&#8201;[^12]
+- **Public parameters (pp):** Packing key pk (log_2(N) = 11 automorphism keys, each of size t_pk * log_2(q) bits), expansion key ck (ceil(log_2(ell)) automorphism keys, each of size t_ce * log_2(q) bits), and decomposition bases B_pk, B_ce, B_g. Total storage: 0.89--1.44 MB.&#8201;[^13]
 - **Query key (qk):** Secret key f (single polynomial in R).
-- **Query (qu):** Triple consisting of ((2^r)^{-1} mod q) * cc, (N^{-1} mod q) * rc, where cc is an NTRU encoding and rc is an NGSW encoding. Size: 84 KB (N*log_2(q)*(1 + t_g) bits).[^14]
-- **Response (resp):** phi modulus-switched NTRU encodings. Size: N*phi*log_2(q_1) bits = 128 KB for phi = 16.[^15]
+- **Query (qu):** Triple consisting of ((2^r)^{-1} mod q) * cc, (N^{-1} mod q) * rc, where cc is an NTRU encoding and rc is an NGSW encoding. Size: 84 KB (N*log_2(q)*(1 + t_g) bits).&#8201;[^14]
+- **Response (resp):** phi modulus-switched NTRU encodings. Size: N*phi*log_2(q_1) bits = 128 KB for phi = 16.&#8201;[^15]
 
 [^12]: Section 4.1 (p.12): "NPIR operates on database D = {d_{i,j}}_{i in [N*phi], j in [ell]} in R_p^{N*phi x ell}, where each record maps to coefficients of a column-specific term."
 
@@ -110,10 +110,10 @@ NPIR addresses the high server computation cost of existing high-rate PIR scheme
 
 ### Database Encoding
 
-- **Representation:** Matrix of polynomials D in R_p^{N*phi x ell}. Each column corresponds to one of ell groups; each row is one of N*phi polynomials. A record at index ind = (col, term) spans all N*phi rows at column col, with the data stored in the coefficient of X^term in each polynomial.[^12]
+- **Representation:** Matrix of polynomials D in R_p^{N*phi x ell}. Each column corresponds to one of ell groups; each row is one of N*phi polynomials. A record at index ind = (col, term) spans all N*phi rows at column col, with the data stored in the coefficient of X^term in each polynomial.&#8201;[^12]
 - **Record addressing:** Two-part index: col in [ell] selects a column, term in [N] selects a polynomial coefficient. The record consists of the term-th coefficients from all N*phi polynomials in column col.
-- **Preprocessing required:** Server converts the database from raw records d_i in Z_p^m into polynomial encoding {d_{i,j}} in R_p^{N*phi x ell}, then performs NTT conversion for efficient polynomial multiplication.[^16]
-- **Record size equation:** Record size = N * phi * log_2(p) bits. For p = 256 (8 bits): record_size = N * phi bytes. With N = 2048: phi = 16 gives 32 KB, phi = 1 gives 2 KB, phi = 64 gives 128 KB.[^17]
+- **Preprocessing required:** Server converts the database from raw records d_i in Z_p^m into polynomial encoding {d_{i,j}} in R_p^{N*phi x ell}, then performs NTT conversion for efficient polynomial multiplication.&#8201;[^16]
+- **Record size equation:** Record size = N * phi * log_2(p) bits. For p = 256 (8 bits): record_size = N * phi bytes. With N = 2048: phi = 16 gives 32 KB, phi = 1 gives 2 KB, phi = 64 gives 128 KB.&#8201;[^17]
 
 [^16]: Section 4.1 (p.12): "the server converts the database format (polynomial encoding + NTT conversion)."
 
@@ -165,7 +165,7 @@ NPIR addresses the high server computation cost of existing high-rate PIR scheme
 
 #### Option A: FHE Noise Analysis
 
-The paper tracks noise via sub-Gaussian parameters through four phases of the Response algorithm: query recovery (coefficient expansion + external product), first-dimension multiplication, NTRU packing, and modulus switching.[^20]
+The paper tracks noise via sub-Gaussian parameters through four phases of the Response algorithm: query recovery (coefficient expansion + external product), first-dimension multiplication, NTRU packing, and modulus switching.&#8201;[^20]
 
 | Phase | Noise parameter | Growth type | Notes |
 |-------|----------------|-------------|-------|
@@ -175,9 +175,9 @@ The paper tracks noise via sub-Gaussian parameters through four phases of the Re
 | After NTRU packing | sigma_3rd <= sqrt((N^2-1) * t_pk * N * B_pk^2 * sigma_chi^2 / 36 + sigma_2nd^2) | Additive (log_2(N) automorphism levels) | From Theorem 1 |
 | After modulus switching | sigma_4th^2 <= sigma_3rd^2 / q_2^2 + N * sigma_chi^2 / 4 | Scaling + rounding | Modswitch from q to q_1 introduces rounding error bounded by 1/2 and scaling by q_1/q |
 
-- **Correctness condition:** floor(q_1/p) >= sigma_chi * sqrt(N * ln(2/delta) / pi) * sqrt(composite_expression) where the composite expression aggregates all four noise phases (Equation 2, p.29).[^21]
+- **Correctness condition:** floor(q_1/p) >= sigma_chi * sqrt(N * ln(2/delta) / pi) * sqrt(composite_expression) where the composite expression aggregates all four noise phases (Equation 2, p.29).&#8201;[^21]
 - **Independence heuristic used?** The proof assumes sub-Gaussian composition (summation property) throughout, which is standard but implicitly assumes independence of noise sources across phases.
-- **Empirical noise budget:** Parameters are selected to achieve delta <= 2^{-40} correctness error.[^2]
+- **Empirical noise budget:** Parameters are selected to achieve delta <= 2^{-40} correctness error.&#8201;[^2]
 - **Dominant noise source:** The first-dimension multiplication (sigma_2nd) dominates because it involves an inner product of ell database polynomials with ell query ciphertexts, each contributing p^2/12 variance per coefficient. For large databases (large ell), this term scales linearly with ell.
 
 [^20]: Appendix A.2 (p.28-29): Proof of Theorem 2 decomposes the Response algorithm into four steps: query recovery, database-query multiplication, packing, and modulus switching.
@@ -226,7 +226,7 @@ The paper tracks noise via sub-Gaussian parameters through four phases of the Re
 
 ### Performance Benchmarks
 
-**Hardware:** Aliyun ECS.r7.16xlarge instance, Intel Xeon Ice Lake Platinum 8369B at 2.70 GHz, 64 vCPUs, 512 GB RAM, Ubuntu 22.04. Single-threaded. AVX2 for SIMD optimizations.[^25]
+**Hardware:** Aliyun ECS.r7.16xlarge instance, Intel Xeon Ice Lake Platinum 8369B at 2.70 GHz, 64 vCPUs, 512 GB RAM, Ubuntu 22.04. Single-threaded. AVX2 for SIMD optimizations.&#8201;[^25]
 
 [^25]: Section 5.1 (p.14): "Experiments are conducted on an Aliyun ECS.r7.16xlarge instance (Ubuntu 22.04) with 64 vCPUs (Intel Xeon Ice Lake Platinum 8369B at 2.70 GHz) and 512 GB of RAM, leveraging AVX2 for SIMD optimizations."
 
@@ -258,7 +258,7 @@ The paper tracks noise via sub-Gaussian parameters through four phases of the Re
 
 #### Varying record sizes (8 GB DB)
 
-NPIR achieves maximum throughput at 4 KB records. For 32 KB records, NPIR is 2.38x faster than the next best scheme. The non-monotonic throughput trend arises from two opposing effects: larger records reduce query recovery cost per byte but increase packing frequency.[^27]
+NPIR achieves maximum throughput at 4 KB records. For 32 KB records, NPIR is 2.38x faster than the next best scheme. The non-monotonic throughput trend arises from two opposing effects: larger records reduce query recovery cost per byte but increase packing frequency.&#8201;[^27]
 
 [^27]: Section 5.3.2 (p.18) and Figure 6 (p.18): "the optimal throughput is achieved at a record size of 4 KB" due to the tradeoff between reduced query ciphertext recovery and increased packing frequency.
 
@@ -280,7 +280,7 @@ NPIR achieves maximum throughput at 4 KB records. For 32 KB records, NPIR is 2.3
 
 [^28]: Section 5.2 (p.17): "In terms of server processing time, NPIR outperforms Spiral by 1.50 to 2.84 times and NTRUPIR by 1.77 to 2.55 times for databases ranging from 1 GB to 32 GB."
 
-**Key takeaway:** Prefer NPIR when server throughput for moderate-size records (10--100 KB) is the primary optimization target and communication bandwidth is not the binding constraint. NPIR has the smallest public parameter storage (0.89--1.44 MB vs 5--14.83 MB for competitors), fastest preprocessing (tied with NTRUPIR, sharing NTT conversion), and shortest client time. However, its query size (84 KB) is 5.25x larger than Spiral's (16 KB), making it less suitable for severely upload-constrained settings.[^29]
+**Key takeaway:** Prefer NPIR when server throughput for moderate-size records (10--100 KB) is the primary optimization target and communication bandwidth is not the binding constraint. NPIR has the smallest public parameter storage (0.89--1.44 MB vs 5--14.83 MB for competitors), fastest preprocessing (tied with NTRUPIR, sharing NTT conversion), and shortest client time. However, its query size (84 KB) is 5.25x larger than Spiral's (16 KB), making it less suitable for severely upload-constrained settings.&#8201;[^29]
 
 [^29]: Section 1.1 (p.4): "Limitation: query size in communication. ... it is 2.16 times greater than Spiral, primarily due to a query size that is 5.25 times larger, whereas the response size is only 1.78 times larger."
 
@@ -288,8 +288,8 @@ NPIR achieves maximum throughput at 4 KB records. For 32 KB records, NPIR is 2.3
 
 ### Portable Optimizations
 
-- **NTRU packing via Galois automorphisms:** The FFT-style packing structure that extracts constant terms from N NTRU encodings can be applied to any NTRU-based scheme needing to compress homomorphic computation results. The key insight -- using the anticirculant matrix M(f) to bridge NTRU's f^{-1} factor with the ring packing model -- is potentially applicable to NTRU-based bootstrapping and NTRU-based multi-party computation.[^7]
-- **Polynomial-matrix database layout:** The (col, term) indexing scheme, where a record spans all rows at one column and one polynomial coefficient, enables simultaneous first-dimension processing and rotation. This layout could be adapted for any ring-based PIR scheme.[^30]
+- **NTRU packing via Galois automorphisms:** The FFT-style packing structure that extracts constant terms from N NTRU encodings can be applied to any NTRU-based scheme needing to compress homomorphic computation results. The key insight -- using the anticirculant matrix M(f) to bridge NTRU's f^{-1} factor with the ring packing model -- is potentially applicable to NTRU-based bootstrapping and NTRU-based multi-party computation.&#8201;[^7]
+- **Polynomial-matrix database layout:** The (col, term) indexing scheme, where a record spans all rows at one column and one polynomial coefficient, enables simultaneous first-dimension processing and rotation. This layout could be adapted for any ring-based PIR scheme.&#8201;[^30]
 
 [^30]: Section 1.1 (p.3): "This database can be considered a polynomial version of the database in KsPIR [40], enabling simultaneous first dimension processing and rotation."
 
@@ -297,10 +297,10 @@ NPIR achieves maximum throughput at 4 KB records. For 32 KB records, NPIR is 2.3
 
 ### Implementation Notes
 
-- **Language / Library:** Rust (approx 4,600 lines) with 50 lines of C++. Uses NTL-11.5.1 for number-theoretic operations and the NTT module from Spiral-rs (https://github.com/menonsamir/spiral-rs).[^31]
+- **Language / Library:** Rust (approx 4,600 lines) with 50 lines of C++. Uses NTL-11.5.1 for number-theoretic operations and the NTT module from Spiral-rs (https://github.com/menonsamir/spiral-rs).&#8201;[^31]
 - **Polynomial arithmetic:** NTT-based via Spiral-rs NTT module; database stored in NTT domain after preprocessing.
-- **CRT decomposition:** q = q_1 * q_2 with q_1 = 11 * 2^21 + 1 and q_2 = 479 * 2^21 + 1 (both NTT-friendly primes).[^11]
-- **SIMD / vectorization:** AVX2 for SIMD optimizations.[^25]
+- **CRT decomposition:** q = q_1 * q_2 with q_1 = 11 * 2^21 + 1 and q_2 = 479 * 2^21 + 1 (both NTT-friendly primes).&#8201;[^11]
+- **SIMD / vectorization:** AVX2 for SIMD optimizations.&#8201;[^25]
 - **Parallelism:** Single-threaded for all benchmarks.
 - **Open source:** https://github.com/llllinyl/npir
 
@@ -310,8 +310,8 @@ NPIR achieves maximum throughput at 4 KB records. For 32 KB records, NPIR is 2.3
 
 ### Application Scenarios
 
-- **Private advertising systems:** Moderate-size records (20--40 KB advertisements) over mobile networks with limited bandwidth (8 Mbps upload, 29 Mbps download). NPIR's high rate and low server cost make it suitable for constrained-network deployments.[^32]
-- **Private Wikipedia:** Article sizes up to 30 KB with mobile users on bandwidth-limited connections.[^32]
+- **Private advertising systems:** Moderate-size records (20--40 KB advertisements) over mobile networks with limited bandwidth (8 Mbps upload, 29 Mbps download). NPIR's high rate and low server cost make it suitable for constrained-network deployments.&#8201;[^32]
+- **Private Wikipedia:** Article sizes up to 30 KB with mobile users on bandwidth-limited connections.&#8201;[^32]
 
 [^32]: Section 1 (p.2): "Notably, moderate-size records are used for privacy-preserving advertising systems [5, 27, 45] where the size of an advertisement is 20-40 KB, and for private Wikipedia [43] with a maximum article size of 30 KB."
 
@@ -323,7 +323,7 @@ NPIR achieves maximum throughput at 4 KB records. For 32 KB records, NPIR is 2.3
 - **Public parameter reuse:** The public parameters (packing key + expansion key) are reusable across all queries for a given client. Size is small (0.89--1.44 MB), making offline upload practical even over constrained networks.
 - **Session model:** Persistent client with one-time key upload; stateless queries thereafter.
 - **Cold start suitability:** No -- requires offline public parameter upload before first query. However, the upload is small compared to schemes like Spiral (0.89 MB vs 8.38 MB).
-- **Batch support:** NPIR_b variant supports batch queries (8--32 records), though it becomes less efficient than PIRANA for batch sizes >= 32 due to lack of batch codes and SIMD/constant-weight optimizations.[^33]
+- **Batch support:** NPIR_b variant supports batch queries (8--32 records), though it becomes less efficient than PIRANA for batch sizes >= 32 due to lack of batch codes and SIMD/constant-weight optimizations.&#8201;[^33]
 
 [^33]: Section 5.4.1 (p.18-19): "with larger batch sizes" NPIR_b becomes less efficient than PIRANA. The paper does not specify a specific threshold (e.g., ">= 32").
 
@@ -331,8 +331,8 @@ NPIR achieves maximum throughput at 4 KB records. For 32 KB records, NPIR is 2.3
 
 ### Key Tradeoffs & Limitations
 
-- **Query size is large:** 84 KB query is 5.25x larger than Spiral's 16 KB, driven by the NGSW encoding component (t_g + 1 = 6 polynomials). Reducing NGSW encoding size is identified as an open problem.[^29]
-- **Communication rate is lower than Spiral and NTRUPIR:** Rate of 0.250 vs Spiral's 0.390 and NTRUPIR's 0.444. Total online communication is 2.16x greater than Spiral.[^29]
+- **Query size is large:** 84 KB query is 5.25x larger than Spiral's 16 KB, driven by the NGSW encoding component (t_g + 1 = 6 polynomials). Reducing NGSW encoding size is identified as an open problem.&#8201;[^29]
+- **Communication rate is lower than Spiral and NTRUPIR:** Rate of 0.250 vs Spiral's 0.390 and NTRUPIR's 0.444. Total online communication is 2.16x greater than Spiral.&#8201;[^29]
 - **Packing overhead for small databases:** For 1 GB databases, packing time (4.61 s) represents a significant fraction of total server time (5.84 s). Amortization at 0.288 s helps but is still non-trivial.
 - **NTRU security considerations:** NTRU parameter selection is more delicate than RLWE; the paper uses the Lattice Estimator for NIST-I security validation but notes that parameter optimization following Ducas-van Woerden [23] is future work.
 
@@ -340,10 +340,10 @@ NPIR achieves maximum throughput at 4 KB records. For 32 KB records, NPIR is 2.3
 
 ### Open Problems
 
-- **NGSW encoding compression:** "The large query size is particularly the result of NTRU-based GSW-like encryption consisting of a vector of NTRU encodings, and reducing the size of this encryption or the entire query message deserves further exploration."[^34]
+- **NGSW encoding compression:** "The large query size is particularly the result of NTRU-based GSW-like encryption consisting of a vector of NTRU encodings, and reducing the size of this encryption or the entire query message deserves further exploration."&#8201;[^34]
 - **Batch code integration:** Incorporating batch codes to reduce database traversal for the batch variant NPIR_b.
 - **Parameter optimization:** Applying NTRU parameter optimization techniques from [23] (Ducas-van Woerden, "NTRU fatigue").
-- **Extension to other NTRU-based protocols:** Applying the NTRU packing framework to privacy-enhancing protocols beyond PIR.[^35]
+- **Extension to other NTRU-based protocols:** Applying the NTRU packing framework to privacy-enhancing protocols beyond PIR.&#8201;[^35]
 
 [^34]: Section 1.1 (p.4): Limitation discussion of query size.
 

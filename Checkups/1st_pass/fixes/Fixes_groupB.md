@@ -59,8 +59,8 @@
 
 #### [Pirouette notes](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md) -- [\[^10\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#user-content-fn-10-8107ded82fd68762768e920e1ddc3923)
 - **Issue:** Cites Table 3 for the q=2N claim; Table 3 does not contain this -- it is in Section 3.1
-- **Before:** `Bit decomposition via blind rotation requires q = 2N (i.e., q_in = 2 * 2^11 for the blind rotation step).[^10]` with footnote citing Table 3 only
-- **After:** `Bit decomposition via blind rotation requires q = 2N (Section 3.1, p.6). Table 3 (p.10) shows the actual parameters: log_2(q_in) = 32 for the input LWE query modulus.[^10]`
+- **Before:** `Bit decomposition via blind rotation requires q = 2N (i.e., q_in = 2 * 2^11 for the blind rotation step).&#8201;[^10]` with footnote citing Table 3 only
+- **After:** `Bit decomposition via blind rotation requires q = 2N (Section 3.1, p.6). Table 3 (p.10) shows the actual parameters: log_2(q_in) = 32 for the input LWE query modulus.&#8201;[^10]`
 
 #### [Pirouette notes](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md) -- [\[^24\]](../../../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#user-content-fn-24-8107ded82fd68762768e920e1ddc3923)
 - **Issue:** Claims "exact transcriptions" but parallel table has offline comm (91 MB) in computation rows for T-Respire

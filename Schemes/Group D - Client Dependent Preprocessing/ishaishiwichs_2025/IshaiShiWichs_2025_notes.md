@@ -29,36 +29,36 @@ This paper is the first to study information-theoretic single-server preprocessi
 #### Preprocessing PIR (Section 2, p.8)
 
 A k-server preprocessing PIR scheme consists of:
-- **Preprocessing:** Executed once upfront. Each server holds DB in {0,1}^n. Client and server(s) run a protocol; each party may store local state afterward.[^1]
-- **Query:** Repeatable. Client inputs index id in {0,...,n-1}. Stateful client and server(s) run a query protocol; client outputs the answer.[^1]
+- **Preprocessing:** Executed once upfront. Each server holds DB in {0,1}^n. Client and server(s) run a protocol; each party may store local state afterward.&#8201;[^1]
+- **Query:** Repeatable. Client inputs index id in {0,...,n-1}. Stateful client and server(s) run a query protocol; client outputs the answer.&#8201;[^1]
 
 [^1]: Section 2 (p.8): Defines a k-server preprocessing PIR as a two-phase stateful protocol (preprocessing + query), where the total number of queries T(n) is polynomial in n.
 
 #### Privacy Definitions
 
-**Perfect privacy:** A k-server preprocessing PIR scheme satisfies perfect privacy iff there exists a simulator Sim such that for any n, any DB in {0,1}^n, any sequence of queries, for any server j in [k], the real-world server view is identically distributed to Sim(n, DB, T(n), j).[^2]
+**Perfect privacy:** A k-server preprocessing PIR scheme satisfies perfect privacy iff there exists a simulator Sim such that for any n, any DB in {0,1}^n, any sequence of queries, for any server j in [k], the real-world server view is identically distributed to Sim(n, DB, T(n), j).&#8201;[^2]
 
 [^2]: Section 2 (p.8): The simulator is not given the query sequence, capturing the intuition that any single server's view leaks nothing about queries.
 
 #### Correctness Definitions
 
-**Non-adaptive correctness:** For any polynomial T(n), there exists negl(.) such that for any n, any DB, any sequence of T(n) queries chosen independently of the scheme's randomness, the client outputs correct answers for all queries with probability 1 - negl(n).[^3]
+**Non-adaptive correctness:** For any polynomial T(n), there exists negl(.) such that for any n, any DB, any sequence of T(n) queries chosen independently of the scheme's randomness, the client outputs correct answers for all queries with probability 1 - negl(n).&#8201;[^3]
 
 [^3]: Section 2 (p.9): Non-adaptive correctness assumes queries are chosen independently of the randomness consumed by the PIR scheme.
 
-**Adaptive correctness:** For any adversary A that adaptively chooses queries based on the server's view so far, the client outputs correct answers for all queries with probability 1 - negl(n).[^4]
+**Adaptive correctness:** For any adversary A that adaptively chooses queries based on the server's view so far, the client outputs correct answers for all queries with probability 1 - negl(n).&#8201;[^4]
 
 [^4]: Section 2 (p.9): Adaptive correctness is strictly stronger; the adversary can choose each query after seeing the server's state from prior queries.
 
 #### (n,t)-PIR (Definition 1, p.20)
 
-A relaxed model used in lower-bound proofs. Allows arbitrary preprocessing (DB_tilde, hint) <- Prep(1^λ, DB), a PIR protocol Pi between server (holding DB_tilde) and client (holding hint and t indices), and requires only computational security for the protocol transcript.[^5]
+A relaxed model used in lower-bound proofs. Allows arbitrary preprocessing (DB_tilde, hint) <- Prep(1^λ, DB), a PIR protocol Pi between server (holding DB_tilde) and client (holding hint and t indices), and requires only computational security for the protocol transcript.&#8201;[^5]
 
 [^5]: Definition 1 (p.20-21): The (n,t)-PIR model relaxes standard preprocessing PIR in five ways: trusted preprocessing may produce an encoded database correlated with the hint; both parties may be arbitrarily stateful; queries are bounded by t; indices are chosen upfront; and security is only against outsiders seeing the protocol transcript.
 
 #### Database-oblivious (n,t)-PIR (Definition 3, p.25)
 
-A database-oblivious scheme restricts Definition 1 so that: (1) the database is not encoded (DB_tilde = DB), and (2) each question from the client depends only on the client's randomness and the index sequence, not on the server's responses.[^6]
+A database-oblivious scheme restricts Definition 1 so that: (1) the database is not encoded (DB_tilde = DB), and (2) each question from the client depends only on the client's randomness and the index sequence, not on the server's responses.&#8201;[^6]
 
 [^6]: Definition 3 (p.25): All known constructions (CK20, Piano, MIR23, etc.) are database-oblivious, making the SZK barrier widely applicable.
 
@@ -119,10 +119,10 @@ A database-oblivious scheme restricts Definition 1 so that: (1) the database is 
 
 ### Key Data Structures
 
-- **Database representation:** n-bit string x in {0,1}^n reshaped as a 3-dimensional m x m x m array where m = n^{1/3}, with DB[x,y,z] = DB[id] for id = (x,y,z) in base-m representation.[^11]
-- **Cross-product sets:** Each hint entry is S = X x Y x Z where X, Y, Z are subsets of {0,...,m-1}, described in O(n^{1/6}) bits.[^8]
-- **Hint table:** L = 20*sqrt(n) cross-product sets, each with 8 associated parity bits (full set parity plus 7 "planar set" parities obtained by removing one element from one dimension).[^12]
-- **Planar sets:** For each hint S = X x Y x Z and each element x in X (resp. y in Y, z in Z), the "planar set" {x} x Y x Z (resp. X x {y} x Z, X x Y x {z}) of size n^{1/3} whose parity can be maintained during streaming.[^13]
+- **Database representation:** n-bit string x in {0,1}^n reshaped as a 3-dimensional m x m x m array where m = n^{1/3}, with DB[x,y,z] = DB[id] for id = (x,y,z) in base-m representation.&#8201;[^11]
+- **Cross-product sets:** Each hint entry is S = X x Y x Z where X, Y, Z are subsets of {0,...,m-1}, described in O(n^{1/6}) bits.&#8201;[^8]
+- **Hint table:** L = 20*sqrt(n) cross-product sets, each with 8 associated parity bits (full set parity plus 7 "planar set" parities obtained by removing one element from one dimension).&#8201;[^12]
+- **Planar sets:** For each hint S = X x Y x Z and each element x in X (resp. y in Y, z in Z), the "planar set" {x} x Y x Z (resp. X x {y} x Z, X x Y x {z}) of size n^{1/3} whose parity can be maintained during streaming.&#8201;[^13]
 
 [^11]: Section 4.1 (p.12-13): The database index id in {0,...,n-1} is expressed as a tuple (x,y,z) in {0,...,m-1}^3 using base-m representation.
 
@@ -190,13 +190,13 @@ Given a cross-product set S = X x Y x Z containing query point (x,y,z), the clie
 - p_100 = parity(X x (Y\{y}) x (Z\{z}))
 - p_000 = parity((X\{x}) x (Y\{y}) x (Z\{z}))
 
-Then DB[x,y,z] = XOR_{i,j,k in {0,1}} p_{ijk}. This works because every element except (x,y,z) appears an even number of times in the sum.[^17]
+Then DB[x,y,z] = XOR_{i,j,k in {0,1}} p_{ijk}. This works because every element except (x,y,z) appears an even number of times in the sum.&#8201;[^17]
 
 [^17]: Section 4.1 (p.13-14): The reconstruction identity DB[x,y,z] = XOR_{i,j,k} p_{ijk} holds because for any element (x',y',z') != (x,y,z), it appears in an even number of the 8 sub-cross-products, so its contribution cancels.
 
 ### Resample Operation (Section 4.1)
 
-Given set S = X x Y x Z and point (x,y,z) in S, Resample(S, (x,y,z)) produces S' = X' x Y' x Z' by re-sampling each element's membership (independently with probability 1/n^{1/6}) while forcing x in X', y in Y', z in Z'. This preserves the distribution of S' as identical to a fresh sample from D, hiding which point was queried.[^18]
+Given set S = X x Y x Z and point (x,y,z) in S, Resample(S, (x,y,z)) produces S' = X' x Y' x Z' by re-sampling each element's membership (independently with probability 1/n^{1/6}) while forcing x in X', y in Y', z in Z'. This preserves the distribution of S' as identical to a fresh sample from D, hiding which point was queried.&#8201;[^18]
 
 [^18]: Section 4.1 (p.13): The Resample operation re-randomizes the set while keeping the queried point, ensuring the query sent to the server is indistinguishable from a fresh random set.
 
@@ -221,11 +221,11 @@ Given set S = X x Y x Z and point (x,y,z) in S, Resample(S, (x,y,z)) produces S'
 
 #### Adaptive Correctness Upgrade (Appendix A)
 
-The paper introduces a novel technique using hint-specific permutations to achieve adaptive correctness. Each hint entry stores (S, pi) where pi is a special-purpose random permutation over {0,...,n-1}^3 defined by a random vector r in GF(2^k)^{3x3} (where k = log(n)/3). The permutation pi_r(v) = Rv is a GF(2^k)-linear map, which can be described in O(1) field elements (O(log n) bits).[^21]
+The paper introduces a novel technique using hint-specific permutations to achieve adaptive correctness. Each hint entry stores (S, pi) where pi is a special-purpose random permutation over {0,...,n-1}^3 defined by a random vector r in GF(2^k)^{3x3} (where k = log(n)/3). The permutation pi_r(v) = Rv is a GF(2^k)-linear map, which can be described in O(1) field elements (O(log n) bits).&#8201;[^21]
 
 [^21]: Appendix A.3 (p.35): The permutation pi_r maps (x_0, y_0, z_0) to (x, y, z) via an invertible 3x3 matrix R over GF(2^k), achieving the key property that for distinct v != v', the probability Pr_r[x = x'] <= 1/(n^{1/3}-1) for each coordinate.
 
-The key property: for distinct points v, v', if (x,y,z) = pi_r(v) and (x',y',z') = pi_r(v'), then Pr_r[x = x'] <= 1/(n^{1/3}-1) and similarly for y, z coordinates (Claim A.1). This ensures that the correctness proof from Section 4.5 extends to arbitrary (not just random) queries, because the permutation effectively randomizes the (x,y,z) representation from the adversary's perspective.[^22]
+The key property: for distinct points v, v', if (x,y,z) = pi_r(v) and (x',y',z') = pi_r(v'), then Pr_r[x = x'] <= 1/(n^{1/3}-1) and similarly for y, z coordinates (Claim A.1). This ensures that the correctness proof from Section 4.5 extends to arbitrary (not just random) queries, because the permutation effectively randomizes the (x,y,z) representation from the adversary's perspective.&#8201;[^22]
 
 [^22]: Proposition A.2 (p.35): The counterpart of Proposition 4.2 for arbitrary queries: for any fixed original coordinates, the probability that a distinct point lands in the same set is at most 4.1/sqrt(n).
 
@@ -313,10 +313,10 @@ The key property: for distinct points v, v', if (x,y,z) = pi_r(v) and (x',y',z')
 ##### Extensions of the OWF Lower Bound (Section 5.1.1)
 
 The lower bound extends along several dimensions:
-- **Hint size vs mutual information:** The condition |hint| is small can be replaced by the more general condition that the mutual information I((DB, DB_tilde); hint) is small.[^30]
-- **Index-dependent preprocessing:** The result holds even if preprocessing (DB_tilde, hint) <- Prep(1^λ, DB, (i_1,...,i_t)) depends on the query indices.[^30]
-- **Retrieving a single chunk:** The bound applies even to schemes that only retrieve t consecutive locations.[^31]
-- **Download vs communication:** The bound can be stated in terms of download complexity d alone: |hint|(1 - t/n) <= t(1 - dt/n) - 1.[^31]
+- **Hint size vs mutual information:** The condition |hint| is small can be replaced by the more general condition that the mutual information I((DB, DB_tilde); hint) is small.&#8201;[^30]
+- **Index-dependent preprocessing:** The result holds even if preprocessing (DB_tilde, hint) <- Prep(1^λ, DB, (i_1,...,i_t)) depends on the query indices.&#8201;[^30]
+- **Retrieving a single chunk:** The bound applies even to schemes that only retrieve t consecutive locations.&#8201;[^31]
+- **Download vs communication:** The bound can be stated in terms of download complexity d alone: |hint|(1 - t/n) <= t(1 - dt/n) - 1.&#8201;[^31]
 
 [^30]: Section 5.1.1 (p.24): The generalization to mutual information shows the lower bound applies to schemes where the hint contains a large random component plus a small database-dependent component.
 
@@ -362,14 +362,14 @@ The lower bound extends along several dimensions:
 
 ### Explicit Adaptive Correctness Attack on Prior Schemes (Section 1.3)
 
-The paper identifies an explicit adaptive correctness attack against Piano [ZPSZ24] and Ghoshal et al. [GZS24a]. These schemes use a single public PRP to permute database indices for load balancing, with O_tilde(1) replacement entries per chunk. The attack: after observing the PRP, adaptively choose sqrt(n) queries that all land in the same chunk, exhausting its replacement entries and causing correctness failure.[^36]
+The paper identifies an explicit adaptive correctness attack against Piano [ZPSZ24] and Ghoshal et al. [GZS24a]. These schemes use a single public PRP to permute database indices for load balancing, with O_tilde(1) replacement entries per chunk. The attack: after observing the PRP, adaptively choose sqrt(n) queries that all land in the same chunk, exhausting its replacement entries and causing correctness failure.&#8201;[^36]
 
 [^36]: Section 1.2-1.3 (p.7-8): The attack exploits that Piano's load balancing uses a public PRP with O_tilde(1) replacement entries per chunk; choosing all queries in one chunk breaks correctness.
 
 ### Application Scenarios
 
-- **Secure multiparty computation:** Information-theoretic PIR protocols can be distributed among two or more parties making only black-box use of cryptography (or none at all in honest-majority settings), avoiding the non-black-box overhead of OWF-based protocols.[^37]
-- **Information-theoretic ORAM:** The lower bound also applies to "truly information-theoretic" ORAM where encryption is not free, ruling out certain constructions.[^38]
+- **Secure multiparty computation:** Information-theoretic PIR protocols can be distributed among two or more parties making only black-box use of cryptography (or none at all in honest-majority settings), avoiding the non-black-box overhead of OWF-based protocols.&#8201;[^37]
+- **Information-theoretic ORAM:** The lower bound also applies to "truly information-theoretic" ORAM where encryption is not free, ruling out certain constructions.&#8201;[^38]
 
 [^37]: Section 1.1 (p.6): Distributing the PIR client among multiple parties for MPC is a primary motivation; IT protocols can be distributed without non-black-box use of cryptography.
 
@@ -381,7 +381,7 @@ The paper identifies an explicit adaptive correctness attack against Piano [ZPSZ
 - **Super-logarithmic overhead:** The O_tilde(.) notation hides a super-logarithmic alpha(n) factor from omega(log n)-wise parallel repetition needed for negligible failure probability.
 - **Construction 1 has super-linear server computation:** The nearly optimal tradeoff (Theorem 3.1) requires n^{1+o(1)} server computation per query, making it impractical despite tight client-space/bandwidth tradeoff.
 - **Construction 2 has n^{2/3} client space:** While achieving sublinear server computation, the client space O_tilde(n^{2/3}) exceeds the sqrt(n) lower bound by a polynomial factor.
-- **2-server scheme lacks adaptive correctness:** The 2-server variant (Theorem B.1) achieves only non-adaptive correctness because the preprocessing phase reveals the random set choices to the left server.[^39]
+- **2-server scheme lacks adaptive correctness:** The 2-server variant (Theorem B.1) achieves only non-adaptive correctness because the preprocessing phase reveals the random set choices to the left server.&#8201;[^39]
 - **Gap between upper and lower bounds:** For sublinear server computation, there is a gap between the O_tilde(n^{2/3}) upper bound on client space/bandwidth and the Omega(sqrt(n)) lower bound. Closing this gap is stated as an open problem.
 - **1-bit records:** All constructions work over {0,1}^n (single-bit entries); extending to w-bit entries requires standard but non-trivial adaptations.
 
@@ -389,9 +389,9 @@ The paper identifies an explicit adaptive correctness attack against Piano [ZPSZ
 
 ### Open Problems
 
-- Can we simultaneously achieve O_tilde(n^{1/2}) client space, bandwidth, AND server computation in a single-server IT preprocessing PIR?[^40]
-- Can we achieve a 2-server IT preprocessing PIR scheme with adaptive correctness and the same efficiency as Theorem B.1?[^39]
-- Does a ROM construction with o(sqrt(n)) client space and bandwidth for database-oblivious PIR exist? (Such a construction would separate SZK from BPP relative to a random oracle.)[^41]
+- Can we simultaneously achieve O_tilde(n^{1/2}) client space, bandwidth, AND server computation in a single-server IT preprocessing PIR?&#8201;[^40]
+- Can we achieve a 2-server IT preprocessing PIR scheme with adaptive correctness and the same efficiency as Theorem B.1?&#8201;[^39]
+- Does a ROM construction with o(sqrt(n)) client space and bandwidth for database-oblivious PIR exist? (Such a construction would separate SZK from BPP relative to a random oracle.)&#8201;[^41]
 
 [^40]: Section 1.1 (p.5): The paper asks whether client space, bandwidth, and server computation can all be bounded by O_tilde(n^{1/2}), closing the gap between the upper bound (Theorem 1.4) and the lower bound (Theorem 1.1).
 

@@ -22,7 +22,7 @@
 
 ### Core Idea
 
-InsPIRe addresses the fundamental tension in single-server PIR between high throughput and low query communication without requiring offline communication. Prior CRS-model schemes like YPIR achieve high throughput but sacrifice online communication (up to megabytes per query). InsPIRe resolves this by introducing InspiRING, a novel ring packing algorithm that transforms d LWE ciphertexts into a single RLWE ciphertext using only two key-switching matrices (versus lg(d) in CDKS), with smaller noise growth and most computation deferrable to an offline preprocessing phase.[^1] Additionally, InsPIRe encodes database columns as polynomials and uses homomorphic polynomial evaluation with RGSW-encrypted unit monomials to compress the second-dimension PIR response to a single ciphertext, incurring only additive noise per multiplication.[^2]
+InsPIRe addresses the fundamental tension in single-server PIR between high throughput and low query communication without requiring offline communication. Prior CRS-model schemes like YPIR achieve high throughput but sacrifice online communication (up to megabytes per query). InsPIRe resolves this by introducing InspiRING, a novel ring packing algorithm that transforms d LWE ciphertexts into a single RLWE ciphertext using only two key-switching matrices (versus lg(d) in CDKS), with smaller noise growth and most computation deferrable to an offline preprocessing phase.&#8201;[^1] Additionally, InsPIRe encodes database columns as polynomials and uses homomorphic polynomial evaluation with RGSW-encrypted unit monomials to compress the second-dimension PIR response to a single ciphertext, incurring only additive noise per multiplication.&#8201;[^2]
 
 [^1]: Abstract (p.1): "At the core of InsPIRe, we develop a novel ring packing algorithm, InspiRING, for transforming LWE ciphertexts into RLWE ciphertexts. InspiRING only requires two key-switching matrices whereas prior approaches needed logarithmic key-switching matrices."
 
@@ -38,7 +38,7 @@ InsPIRe addresses the fundamental tension in single-server PIR between high thro
 | **InsPIRe^(2)** | Two layers of partial ring packing with parameters gamma_0, gamma_1, gamma_2 | None (CRS) | Flexible tradeoff via gamma_i | Medium entries (64 B), balancing communication and computation |
 | **InsPIRe** | InspiRING + homomorphic polynomial evaluation; polynomial-encoded database | None (CRS) | Lowest total communication at moderate/large entries | General-purpose; 64 B to 32 KB entries |
 
-InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses and is useful when the entry size is small.[^3] InsPIRe^(2) uses two levels of partial ring packing and is more flexible.[^4] InsPIRe is the full construction that combines InspiRING with homomorphic polynomial evaluation for the best communication-computation balance.[^5]
+InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses and is useful when the entry size is small.&#8201;[^3] InsPIRe^(2) uses two levels of partial ring packing and is more flexible.&#8201;[^4] InsPIRe is the full construction that combines InspiRING with homomorphic polynomial evaluation for the best communication-computation balance.&#8201;[^5]
 
 [^3]: Section 4 (p.12): "InsPIRe_0 is instantiated on top of DoublePIR by using InspiRING or PartialInspiRING to pack the result of the DoublePIR responses."
 
@@ -57,12 +57,12 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 | **Name** | InspiRING |
 | **Type** | Cryptographic primitive (ring packing algorithm) |
 | **Interface / Operations** | `InspiRING.Pack([A, b] in Z_q^{d x (d+1)}, K_g in R_q^{ell x 2}, K_h in R_q^{ell x 2}) -> (a_fin, b_fin) in R_q x R_q`. Input: d LWE ciphertexts (as matrix), two key-switching matrices. Output: one RLWE ciphertext encrypting the d messages as polynomial coefficients. |
-| **Security definition** | Security inherits from RLWE hardness + circular security assumption (key-switching matrices encrypt scaled automorphic images of the secret key).[^6] |
+| **Security definition** | Security inherits from RLWE hardness + circular security assumption (key-switching matrices encrypt scaled automorphic images of the secret key).&#8201;[^6] |
 | **Correctness definition** | Output RLWE ciphertext has additive packing noise e_pack with sub-Gaussian parameter sigma_pack^2 <= ell * d^2 * z^2 * sigma_chi^2 / 4 (Theorem 2, p.11). |
 | **Purpose** | Translate d LWE ciphertexts into a single RLWE ciphertext, enabling efficient response compression in PIR. Designed specifically for the CRS model where random components are fixed and preprocessable. |
 | **Built from** | Galois group trace function (Lemma 1), key-switching, Galois automorphisms tau_g and tau_h |
-| **Standalone complexity** | Offline: O(d^3 + ell * d^2 * lg(d)). Online: O(ell * d^2).[^7] |
-| **Relationship to prior primitives** | Improves on CDKS [18] ring packing: CDKS needs lg(d) key-switching matrices (large cryptographic material); InspiRING needs only 2. InspiRING also has smaller noise growth and faster concrete packing times when total key-switching material must be small.[^8] |
+| **Standalone complexity** | Offline: O(d^3 + ell * d^2 * lg(d)). Online: O(ell * d^2).&#8201;[^7] |
+| **Relationship to prior primitives** | Improves on CDKS [18] ring packing: CDKS needs lg(d) key-switching matrices (large cryptographic material); InspiRING needs only 2. InspiRING also has smaller noise growth and faster concrete packing times when total key-switching material must be small.&#8201;[^8] |
 
 [^6]: Section 3.2 (p.12): "Beyond RLWE hardness, our packing scheme relies on the standard circular security assumption, as key-switching matrices encrypt (scaled) automorphic images of the secret key."
 
@@ -72,15 +72,15 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 ##### Three-Stage Construction
 
-**Stage 1 -- LWE to Intermediate Ciphertext (TRANSFORM):** Each LWE ciphertext (a, b = -<a,s> + m) is reinterpreted as a larger intermediate representation IRCtx(m_hat) = (a_hat, b_tilde) where a_hat in R_q^d is constructed from Galois images of the RLWE-embedded random component, and b_tilde retains the original b. The key insight is using the trace function Tr(p) = sum_{j=0}^{d/2-1} tau_g^j(p) + tau_h o tau_g^j(p) to isolate the constant term: Tr(p) = d * c_0.[^9] The message is embedded as a constant-term polynomial m_hat(X) = m, enabling interference-free aggregation.
+**Stage 1 -- LWE to Intermediate Ciphertext (TRANSFORM):** Each LWE ciphertext (a, b = -<a,s> + m) is reinterpreted as a larger intermediate representation IRCtx(m_hat) = (a_hat, b_tilde) where a_hat in R_q^d is constructed from Galois images of the RLWE-embedded random component, and b_tilde retains the original b. The key insight is using the trace function Tr(p) = sum_{j=0}^{d/2-1} tau_g^j(p) + tau_h o tau_g^j(p) to isolate the constant term: Tr(p) = d * c_0.&#8201;[^9] The message is embedded as a constant-term polynomial m_hat(X) = m, enabling interference-free aggregation.
 
 [^9]: Lemma 1 (p.9): "Let p(X) in Z[X]/(X^d + 1) ... Then Tr(p) = d * c_0." This is the foundation for constructing the intermediate ciphertext representation.
 
-**Stage 2 -- Aggregation of Intermediate Ciphertexts (PACK):** d IRCtx ciphertexts are combined by multiplying IRCtx(m_hat_k) by X^k and summing: the aggregated plaintext m_hat_agg = sum_{k=0}^{d-1} m_hat_k * X^k embeds each original LWE message into a distinct polynomial coefficient.[^10]
+**Stage 2 -- Aggregation of Intermediate Ciphertexts (PACK):** d IRCtx ciphertexts are combined by multiplying IRCtx(m_hat_k) by X^k and summing: the aggregated plaintext m_hat_agg = sum_{k=0}^{d-1} m_hat_k * X^k embeds each original LWE message into a distinct polynomial coefficient.&#8201;[^10]
 
 [^10]: Section 3.2 (p.10): "The above operation positions the original plaintext messages in the LWE ciphertexts, m_k, into the coefficients of m_hat_agg."
 
-**Stage 3 -- Conversion to RLWE Ciphertext (COLLAPSE):** The aggregated intermediate ciphertext IRCtx(m_hat_agg) = (a_hat_agg, b_tilde_agg) in R_q^d x R_q is converted to a standard two-component RLWE ciphertext via iterative key-switching. The key-switching matrices K_g and K_h, plus their Galois automorphic images, "telescope" the d random components down to masking by two secret key shares s_bar and tau_h(s_bar), then a final key-switching eliminates tau_h(s_bar).[^11]
+**Stage 3 -- Conversion to RLWE Ciphertext (COLLAPSE):** The aggregated intermediate ciphertext IRCtx(m_hat_agg) = (a_hat_agg, b_tilde_agg) in R_q^d x R_q is converted to a standard two-component RLWE ciphertext via iterative key-switching. The key-switching matrices K_g and K_h, plus their Galois automorphic images, "telescope" the d random components down to masking by two secret key shares s_bar and tau_h(s_bar), then a final key-switching eliminates tau_h(s_bar).&#8201;[^11]
 
 [^11]: Section 3.2 (p.10-11): "This iterative key-switching procedure is designed to maintain an important invariant: throughout the reduction, the evolving random components remain dependent only on the initial, preprocessable random components of the input LWE ciphertexts and the key-switching matrices K_g and K_h."
 
@@ -92,7 +92,7 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 | **Type** | Variant of InspiRING (ring packing algorithm) |
 | **Interface / Operations** | `PartialInspiRING.PartialPack([A, b] in Z_q^{gamma x (d+1)}, K_g in R_q^{ell x 2}) -> (a_fin, b_fin) in R_q x R_q`. Packs gamma <= d/2 LWE ciphertexts using only one key-switching matrix. |
 | **Purpose** | Reduces key material by half (1 KS matrix instead of 2). Only the first gamma coefficients of the packed RLWE ciphertext carry the messages; remaining coefficients are discarded. Used in InsPIRe^(2) and InsPIRe for partial response packing. |
-| **Standalone complexity** | Offline: O(gamma^2 * d + ell * gamma * d * lg(d)). Online: O(ell * gamma * d).[^12] |
+| **Standalone complexity** | Offline: O(gamma^2 * d + ell * gamma * d * lg(d)). Online: O(ell * gamma * d).&#8201;[^12] |
 | **Noise** | sigma_pack^2 <= ell * gamma * d * z^2 * sigma_chi^2 / 4 (Theorem 4, p.12). |
 
 [^12]: Theorem 3 (p.12): PartialInspiRING complexity with gamma <= d/2 LWE ciphertexts and one key-switching matrix.
@@ -105,9 +105,9 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 | **Type** | PIR technique / abstraction |
 | **Interface / Operations** | Server encodes each database column as a polynomial h^(i)(Z) = sum_{j=0}^{t-1} c_j^(i) * Z^j in R_p[Z] where h^(i)(z_j) = y_j^(i) (the j-th entry in column i). Client sends RGSW(omega^j) for a single evaluation point z_j = omega^j. Server evaluates the polynomial homomorphically using RLWE-RGSW external products. |
 | **Purpose** | Replaces one-hot selection vectors (O(lg(t)) ciphertexts) for the second PIR dimension with a single RGSW ciphertext, reducing communication. |
-| **Built from** | Polynomial interpolation over R_p using unit monomial evaluation points z_k = omega^k where omega = X^{2d/t} is a primitive t-th root of unity. Evaluation via Horner's method (EvalPoly, Algorithm 9).[^13] |
-| **Key property** | By choosing evaluation points as unit monomials (elements of the form +/- X^k), each RLWE-RGSW external product incurs only additive noise growth (Lemma 2), not multiplicative. This is critical for keeping noise manageable across t-1 multiplications.[^14] |
-| **Constraints** | (1) t <= 2d (required for unit monomial evaluation points). (2) t is a power of two (required for Cooley-Tukey FFT interpolation). Non-power-of-two t supported via less efficient Lagrange interpolation (Appendix G.3). Constraint (1) can be relaxed via multivariate interpolation (Appendix G.2).[^15] |
+| **Built from** | Polynomial interpolation over R_p using unit monomial evaluation points z_k = omega^k where omega = X^{2d/t} is a primitive t-th root of unity. Evaluation via Horner's method (EvalPoly, Algorithm 9).&#8201;[^13] |
+| **Key property** | By choosing evaluation points as unit monomials (elements of the form +/- X^k), each RLWE-RGSW external product incurs only additive noise growth (Lemma 2), not multiplicative. This is critical for keeping noise manageable across t-1 multiplications.&#8201;[^14] |
+| **Constraints** | (1) t <= 2d (required for unit monomial evaluation points). (2) t is a power of two (required for Cooley-Tukey FFT interpolation). Non-power-of-two t supported via less efficient Lagrange interpolation (Appendix G.3). Constraint (1) can be relaxed via multivariate interpolation (Appendix G.2).&#8201;[^15] |
 
 [^13]: Section 6.1 (p.16): "To perform evaluation, we will use the Horner-style method (see EvalPoly in Algorithm 9), that only involves RLWE-RGSW external products and RLWE additions."
 
@@ -124,8 +124,8 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 | **Hardness assumption** | Key-dependent RLWE (Definition 1, Appendix F, p.32): a variant of decisional RLWE where the oracle provides samples that may depend on the secret key via a function family F_auto = {k * tau_g \| k in Z_q, g in N}. Standard RLWE is a special case. |
 | **Encryption/encoding schemes** | (1) **LWE encryption:** (a, b) in Z_q^d x Z_q, b = -<a,s> + e + Delta*m. Used for first-dimension PIR query (indicator vector). (2) **RLWE encryption:** (a, b) in R_q x R_q. Used for packed responses and intermediate packing results. (3) **RGSW encryption:** [a', b'] = [a, -sa + e] + m * G_{2,z}. Used for homomorphic polynomial evaluation (single ciphertext encrypting evaluation point). |
 | **Ring / Field** | R = Z[X]/(X^d + 1) with d a power of two. R_q = Z_q[X]/(X^d + 1). Concrete: d = 2048 for InsPIRe^(2) and InsPIRe. Plaintext ring: R_p = Z_p[X]/(X^d + 1). |
-| **Key structure** | Secret key s sampled from chi(Z^d) (LWE) or chi(R) (RLWE). In the CRS model, random components (a vectors, A matrices) are fixed globally and shared; fresh secret keys are sampled per query (multiplicative security loss proportional to number of queries).[^16] |
-| **Correctness condition** | Probabilistic: for delta > 2d*exp(-pi*(Delta/2 - tp/2)^2 / sigma_main^2), InsPIRe is (1-delta)-correct, where sigma_main^2 = N*p^2*sigma_chi^2 + t*ell_ks*d^2*z_ks^2*sigma_chi^2/4 + t*ell_gsw*d*z_gsw^2*sigma_chi^2/2 (Theorem 10, p.32).[^17] |
+| **Key structure** | Secret key s sampled from chi(Z^d) (LWE) or chi(R) (RLWE). In the CRS model, random components (a vectors, A matrices) are fixed globally and shared; fresh secret keys are sampled per query (multiplicative security loss proportional to number of queries).&#8201;[^16] |
+| **Correctness condition** | Probabilistic: for delta > 2d*exp(-pi*(Delta/2 - tp/2)^2 / sigma_main^2), InsPIRe is (1-delta)-correct, where sigma_main^2 = N*p^2*sigma_chi^2 + t*ell_ks*d^2*z_ks^2*sigma_chi^2/4 + t*ell_gsw*d*z_gsw^2*sigma_chi^2/2 (Theorem 10, p.32).&#8201;[^17] |
 
 [^16]: Section 2.1 (p.7): "Under this assumption, we fix the random components of the LWE/RLWE ciphertexts, and this scheme remains secure as long as fresh secret keys are generated for each query."
 
@@ -135,7 +135,7 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 ### Key Data Structures
 
-- **Database:** D in Z_p^{td x N/t}, a matrix where each column corresponds to t database entries, each entry an element of Z_p^d. For InsPIRe, entries are further encoded as polynomials: each column i is represented by h^(i)(Z) in R_p[Z] of degree t-1, with h^(i)(z_j) = y_j^(i). The encoded database D' in Z_p^{td x N/t} stores the polynomial coefficients c_j^(i) in R_p.[^18]
+- **Database:** D in Z_p^{td x N/t}, a matrix where each column corresponds to t database entries, each entry an element of Z_p^d. For InsPIRe, entries are further encoded as polynomials: each column i is represented by h^(i)(Z) in R_p[Z] of degree t-1, with h^(i)(z_j) = y_j^(i). The encoded database D' in Z_p^{td x N/t} stores the polynomial coefficients c_j^(i) in R_p.&#8201;[^18]
 - **Key-switching matrices:** K_g = KS.Setup(tau_g(s_bar), s_bar) and K_h = KS.Setup(tau_h(s_bar), s_bar) in R_q^{ell x 2} each. For InsPIRe: two KS matrices for InspiRING packing. Total key material: 2 * d * ell_ks * log_2(q) bits.
 - **RGSW ciphertext:** A single RGSW(omega^j) in R_q^{2*ell_gsw x 2} encrypting the evaluation point. Size: 4 * ell_gsw * d * log_2(q) bits.
 - **Query:** Consists of (b, RGSW(omega^j), y_g, y_h) where b in Z_q^{N/t} is the encrypted indicator vector, RGSW(omega^j) is the evaluation-point ciphertext, and y_g, y_h are key-switching material components.
@@ -148,7 +148,7 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 - **Representation:** Matrix D in Z_p^{td x N/t}. Each column holds t entries, each entry in Z_p^d. For InsPIRe, each column is further encoded as a degree-(t-1) polynomial h^(i)(Z) over R_p whose evaluation at t unit monomial points z_0, ..., z_{t-1} yields the t entries.
 - **Record addressing:** Two-level index (i, j): column i = target column (selected by LWE indicator vector), row j = target entry within column (selected by polynomial evaluation at z_j = omega^j).
-- **Preprocessing required:** Polynomial interpolation of each column: given the t entries y_0^(i), ..., y_{t-1}^(i) in R_p, compute coefficients c_0^(i), ..., c_{t-1}^(i) via inverse DFT (Cooley-Tukey FFT). Time: O(t * log(t)) per column, O(N/t * t * log(t)) = O(N * log(t)) total.[^19]
+- **Preprocessing required:** Polynomial interpolation of each column: given the t entries y_0^(i), ..., y_{t-1}^(i) in R_p, compute coefficients c_0^(i), ..., c_{t-1}^(i) via inverse DFT (Cooley-Tukey FFT). Time: O(t * log(t)) per column, O(N/t * t * log(t)) = O(N * log(t)) total.&#8201;[^19]
 - **Record size equation:** Each entry is an element of Z_p^d, i.e., d * log_2(p) bits. For arbitrary entry size m: if m > d, divide into m/d chunks and run PIR on m/d parallel databases; if m < d, bundle d/m entries per Z_p^d element.
 
 [^19]: Algorithm 7 (p.17): EncodeDB calls Interpolate which uses CooleyTukey for FFT-based interpolation.
@@ -194,7 +194,7 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 #### Option A: FHE Noise Analysis
 
-The noise analysis tracks sub-Gaussian parameters through three sources, combined under the independence heuristic.[^20]
+The noise analysis tracks sub-Gaussian parameters through three sources, combined under the independence heuristic.&#8201;[^20]
 
 | Phase | Noise parameter | Growth type | Notes |
 |-------|----------------|-------------|-------|
@@ -204,8 +204,8 @@ The noise analysis tracks sub-Gaussian parameters through three sources, combine
 | **Total main noise** | sigma_main^2 = N*p^2*sigma_chi^2 + t*ell_ks*d^2*z_ks^2*sigma_chi^2/4 + t*ell_gsw*d*z_gsw^2*sigma_chi^2/2 | -- | Theorem 9 (p.31): three terms correspond to the three phases |
 
 - **Correctness condition:** For delta > 2d*exp(-pi*(Delta/2 - tp/2)^2 / sigma_main^2), InsPIRe is (1-delta)-correct (Theorem 10, p.32).
-- **Independence heuristic used?** Yes -- all intermediate error terms are assumed independent to enable variance-based (not worst-case) analysis.[^21]
-- **Overflow noise:** e_overflow = epsilon * p * m_hat where epsilon in [-1/2, 1/2) from the scaling factor Delta = floor(q/p) = q/p + epsilon. Bounded by ||e_overflow||_inf <= tp/2. In practice negligible because q >> tp^2.[^22]
+- **Independence heuristic used?** Yes -- all intermediate error terms are assumed independent to enable variance-based (not worst-case) analysis.&#8201;[^21]
+- **Overflow noise:** e_overflow = epsilon * p * m_hat where epsilon in [-1/2, 1/2) from the scaling factor Delta = floor(q/p) = q/p + epsilon. Bounded by ||e_overflow||_inf <= tp/2. In practice negligible because q >> tp^2.&#8201;[^22]
 - **Dominant noise source:** The packing noise (InspiRING) dominates for small t; the polynomial evaluation noise grows with t.
 
 [^20]: Section 2 (p.7): "we assume the independence heuristic where the error terms of all intermediate computations are independent."
@@ -248,9 +248,9 @@ The noise analysis tracks sub-Gaussian parameters through three sources, combine
 
 ### Performance Benchmarks
 
-**Hardware:** Intel Xeon CPU @ 2.6 GHz, single-threaded. Offline runtimes measured once; online runtimes averaged over 5 runs (standard deviation < 5%).[^23]
+**Hardware:** Intel Xeon CPU @ 2.6 GHz, single-threaded. Offline runtimes measured once; online runtimes averaged over 5 runs (standard deviation < 5%).&#8201;[^23]
 
-**Implementation:** ~3,000 lines of Rust (InspiRING); ~3,000 lines of Rust (InsPIRe^(2)); ~2,000 lines of Rust (InsPIRe). Built on RLWE building blocks from spiral-rs. Code: https://github.com/google/private-membership/tree/main/research/InsPIRe.[^24]
+**Implementation:** ~3,000 lines of Rust (InspiRING); ~3,000 lines of Rust (InsPIRe^(2)); ~2,000 lines of Rust (InsPIRe). Built on RLWE building blocks from spiral-rs. Code: https://github.com/google/private-membership/tree/main/research/InsPIRe.&#8201;[^24]
 
 [^23]: Section 7 (p.19): "We perform all experimental evaluations on an Intel Xeon CPU @ 2.6 GHz ... single-threaded mode."
 
@@ -265,7 +265,7 @@ The noise analysis tracks sub-Gaussian parameters through three sources, combine
 | InsPIRe^(2) | 2048 | 53 | 6.4 | 65536 | 3 | -- | 2^19 | -- |
 | InsPIRe | 2048 | 56 | 6.4 | 65535 | 3 | 3 | 2^19 | 2^19 |
 
-Security: 128-bit, based on lattice-estimator [2] with correctness parameter delta = 2^{-40}.[^25]
+Security: 128-bit, based on lattice-estimator [2] with correctness parameter delta = 2^{-40}.&#8201;[^25]
 
 [^25]: Section 7 (p.19): "For InsPIRe^(2) and InsPIRe, we use lattice parameters which provide 128-bit security based on the lattice-estimator [2] and correctness parameter delta = 2^{-40}."
 
@@ -313,7 +313,7 @@ Security: 128-bit, based on lattice-estimator [2] with correctness parameter del
 | Offline Runtime | 2.0 s | 2.4 s | 11 s | 36 s |
 | Online Runtime | 141 ms | **16 ms** | 56 ms | **40 ms** |
 
-InspiRING achieves 84% less key material than HintlessPIR and 76% less than CDKS. InspiRING (d=10) achieves 71% faster online time than CDKS (16 ms vs 56 ms); InspiRING (d=11) achieves 28% faster online time than CDKS (40 ms vs 56 ms), at the cost of a slower offline phase.[^26]
+InspiRING achieves 84% less key material than HintlessPIR and 76% less than CDKS. InspiRING (d=10) achieves 71% faster online time than CDKS (16 ms vs 56 ms); InspiRING (d=11) achieves 28% faster online time than CDKS (40 ms vs 56 ms), at the cost of a slower offline phase.&#8201;[^26]
 
 [^26]: Section 7.4 (p.22): "InspiRING requires significantly smaller key material compared to existing work, specifically, 84%, 76%, and over 99% less key material than CDKS and HintlessPIR, respectively."
 
@@ -323,7 +323,7 @@ InspiRING achieves 84% less key material than HintlessPIR and 76% less than CDKS
 
 #### Private Queries in IPFS (Section 8.1)
 
-IPFS content retrieval involves three PIR query types: peer routing (256 x 1.5 KB), content discovery (200K records), and content retrieval (2^14 x 256 KB). InsPIRe improves communication by 32-51% and computation by 8-86% over prior RLWEPIR-based work [60].[^27]
+IPFS content retrieval involves three PIR query types: peer routing (256 x 1.5 KB), content discovery (200K records), and content retrieval (2^14 x 256 KB). InsPIRe improves communication by 32-51% and computation by 8-86% over prior RLWEPIR-based work [60].&#8201;[^27]
 
 | IPFS Step | DB Shape | InsPIRe Comm | Prior [60] Comm | Improvement |
 |-----------|----------|-------------|-----------------|-------------|
@@ -335,7 +335,7 @@ IPFS content retrieval involves three PIR query types: peer routing (256 x 1.5 K
 
 #### Privacy-Preserving Device Enrollment (Section 8.2)
 
-Chrome OS device enrollment checks membership in a server-held database. InsPIRe is ideal because there is no opportunity for offline client-server communication (cold start). For 40M devices (each 64 bytes, 2.38 GB database): total communication 292 KB, response time 815 ms.[^28]
+Chrome OS device enrollment checks membership in a server-held database. InsPIRe is ideal because there is no opportunity for offline client-server communication (cold start). For 40M devices (each 64 bytes, 2.38 GB database): total communication 292 KB, response time 815 ms.&#8201;[^28]
 
 [^28]: Table 7 (p.23): "The concrete cost of using PIR for device enrollment is only a few hundred KiloBytes."
 
@@ -343,8 +343,8 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 
 ### Deployment Considerations
 
-- **Database updates:** Server re-encodes database (polynomial interpolation) on change. No per-client state to update. Server-side preprocessing of InspiRING can be re-executed independently.[^29]
-- **Cold start suitability:** Excellent -- no offline communication needed. CRS model means clients can issue queries immediately.[^30]
+- **Database updates:** Server re-encodes database (polynomial interpolation) on change. No per-client state to update. Server-side preprocessing of InspiRING can be re-executed independently.&#8201;[^29]
+- **Cold start suitability:** Excellent -- no offline communication needed. CRS model means clients can issue queries immediately.&#8201;[^30]
 - **Anonymous query support:** Yes -- no per-client state on server. Fresh secret key per query. Server stores no client-identifying material.
 - **Session model:** Ephemeral client (stateless between queries).
 - **Key rotation / query limits:** Security degrades multiplicatively with number of queries Q (standard hybrid argument, Appendix F.1). Fresh secret key per query mitigates this.
@@ -358,11 +358,11 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 
 ### Key Tradeoffs & Limitations
 
-- **Communication vs computation tradeoff via interpolation degree t:** Larger t reduces query size (fewer rows N/t in the indicator vector) but increases polynomial evaluation cost (t-1 external products). Optimal total communication at t = sqrt(N), but server runtime increases.[^31]
+- **Communication vs computation tradeoff via interpolation degree t:** Larger t reduces query size (fewer rows N/t in the indicator vector) but increases polynomial evaluation cost (t-1 external products). Optimal total communication at t = sqrt(N), but server runtime increases.&#8201;[^31]
 - **Offline preprocessing cost:** InspiRING's offline phase has cubic dependence on d (O(d^3)), which is slower than CDKS's offline for large d. The online savings compensate in PIR applications.
 - **Constraint on t:** Requires t <= 2d for unit monomial evaluation points. For d = 2048 and typical database shapes, t <= 4096. Multivariate extension (Appendix G.2) relaxes this at the cost of alpha RGSW ciphertexts instead of one.
 - **Key material still non-trivial:** While 5x smaller than YPIR's keys, the 84 KB packing key upload is not zero. In bandwidth-critical applications, this matters.
-- **Approximate gadget decomposition (Appendix G.1):** Can reduce key material and computation by ~25-33% by dropping the least significant digit of the decomposition, at the cost of a small additive noise term.[^32]
+- **Approximate gadget decomposition (Appendix G.1):** Can reduce key material and computation by ~25-33% by dropping the least significant digit of the decomposition, at the cost of a small additive noise term.&#8201;[^32]
 
 [^31]: Section 7.2 (p.20): "the choice of the interpolation degree results in a tradeoff between communication and computation."
 
@@ -381,7 +381,7 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 | Throughput | **3620 MB/s** | 1720 MB/s | 1310 MB/s | 1370 MB/s | 1720 MB/s |
 | Upload Keys | 84 KB | 462 KB | 360 KB | 128 KB | 462 KB |
 
-**Key takeaway:** InsPIRe simultaneously achieves the lowest total communication (67% less than YPIR, 51% less than KSPIR) and the highest throughput (2.1x over YPIR) among all CRS-model and hintless PIR schemes, without any offline communication. For 1-bit entries, InsPIRe_0 achieves even lower communication (226 KB) and faster server time (320 ms). The only scenario where InsPIRe is outperformed is when minimizing only server runtime for 1-bit entries (where InsPIRe_0 with its simpler DoublePIR-based structure may be preferred).[^33]
+**Key takeaway:** InsPIRe simultaneously achieves the lowest total communication (67% less than YPIR, 51% less than KSPIR) and the highest throughput (2.1x over YPIR) among all CRS-model and hintless PIR schemes, without any offline communication. For 1-bit entries, InsPIRe_0 achieves even lower communication (226 KB) and faster server time (320 ms). The only scenario where InsPIRe is outperformed is when minimizing only server runtime for 1-bit entries (where InsPIRe_0 with its simpler DoublePIR-based structure may be preferred).&#8201;[^33]
 
 [^33]: Section 7.3 (p.21): "In summary, InsPIRe strictly improves over existing PIR schemes with server-side preprocessing, and may also be parameterized to optimize specific metrics such as communication."
 
@@ -389,7 +389,7 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 
 ### Portable Optimizations
 
-- **InspiRING ring packing:** Applicable to any RLWE-based PIR in the CRS model that needs LWE-to-RLWE conversion. Can directly replace CDKS packing in YPIR for improved key material and online time.[^34]
+- **InspiRING ring packing:** Applicable to any RLWE-based PIR in the CRS model that needs LWE-to-RLWE conversion. Can directly replace CDKS packing in YPIR for improved key material and online time.&#8201;[^34]
 - **Homomorphic polynomial evaluation with unit monomials:** Applicable to any scheme needing homomorphic evaluation of a polynomial over R_p. The additive-only noise property from unit monomial evaluation points is a general technique independent of PIR.
 - **Trace-function-based intermediate ciphertexts:** The use of Galois group trace to isolate constant terms is a reusable algebraic technique for constructing MLWE-like intermediate representations from LWE ciphertexts.
 - **Approximate gadget decomposition (Appendix G.1):** Dropping least-significant digits of gadget decomposition to reduce key material. Applicable to any scheme using key-switching or RGSW external products.
@@ -411,7 +411,7 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 
 ### Open Problems
 
-- **Multivariate polynomial evaluation:** Extending to t > 2d via multivariate interpolation (Appendix G.2) with alpha variables, requiring alpha RGSW ciphertexts. Full analysis of the communication-computation tradeoff in this regime is left open.[^35]
+- **Multivariate polynomial evaluation:** Extending to t > 2d via multivariate interpolation (Appendix G.2) with alpha variables, requiring alpha RGSW ciphertexts. Full analysis of the communication-computation tradeoff in this regime is left open.&#8201;[^35]
 - **Non-power-of-two t:** Lagrange interpolation (Appendix G.3) supports arbitrary t at O(t^2) cost instead of O(t*log(t)). Whether more efficient approaches exist for specific non-power-of-two t values is open.
 - **Approximate gadget decomposition:** Mentioned as a promising optimization with estimated 25-33% improvement, but not fully implemented or benchmarked.
 

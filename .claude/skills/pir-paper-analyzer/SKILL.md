@@ -481,7 +481,7 @@ Use GitHub Markdown footnotes (`[^N]`) to cite the paper for every non-trivial c
 
 Example:
 ```
-The key innovation is ciphertext translation, achieving (n+1)^2/2 compression on GSW encodings.[^1]
+The key innovation is ciphertext translation, achieving (n+1)^2/2 compression on GSW encodings.&#8201;[^1]
 
 [^1]: Remark 3.3 (p.15): RegevToGSW takes t_GSW Regev encodings and outputs a single GSW encoding with (n+1)^2*t_GSW elements, yielding an (n+1)^2/2 compression factor.
 ```

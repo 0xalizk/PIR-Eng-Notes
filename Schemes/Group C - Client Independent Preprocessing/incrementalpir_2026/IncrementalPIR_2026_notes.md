@@ -22,7 +22,7 @@
 
 ### Core Idea
 
-iSimplePIR (Entry-level) introduces *entry-level incremental preprocessing* for SimplePIR: when individual database entries are inserted, modified, or deleted, the server computes a compact *difference* for the affected entry and sends it to the client, who locally updates the corresponding row of the hint matrix **H** via a single vector-scalar multiplication and addition.[^3] The key observation is that the hint **H** = **D** . **A**, so **H'** = **D'** . **A** = **D** . **A** + (**D'** - **D**) . **A**. For a single modified entry at position (i, j), the difference delta = d'_{i,j} - d_{i,j} is a scalar, and the hint update reduces to adding delta . **A**[j] to the i-th row of **H** — requiring only O(n) integer multiplications and additions instead of the O(n * sqrt(N)) operations needed by the row-level strategy.[^4] For scenarios with many updates in the same row, a *communication-optimized row aggregation* mechanism switches to row-level transmission when the per-entry communication exceeds the per-row cost, controlled by a threshold t = ceil((n * log q + log sqrt(N)) / (log p + log sqrt(N))).[^5] The online phase is completely unchanged from SimplePIR, preserving its throughput and communication properties.
+iSimplePIR (Entry-level) introduces *entry-level incremental preprocessing* for SimplePIR: when individual database entries are inserted, modified, or deleted, the server computes a compact *difference* for the affected entry and sends it to the client, who locally updates the corresponding row of the hint matrix **H** via a single vector-scalar multiplication and addition.&#8201;[^3] The key observation is that the hint **H** = **D** . **A**, so **H'** = **D'** . **A** = **D** . **A** + (**D'** - **D**) . **A**. For a single modified entry at position (i, j), the difference delta = d'_{i,j} - d_{i,j} is a scalar, and the hint update reduces to adding delta . **A**[j] to the i-th row of **H** — requiring only O(n) integer multiplications and additions instead of the O(n * sqrt(N)) operations needed by the row-level strategy.&#8201;[^4] For scenarios with many updates in the same row, a *communication-optimized row aggregation* mechanism switches to row-level transmission when the per-entry communication exceeds the per-row cost, controlled by a threshold t = ceil((n * log q + log sqrt(N)) / (log p + log sqrt(N))).&#8201;[^5] The online phase is completely unchanged from SimplePIR, preserving its throughput and communication properties.
 
 [^1]: Section 3.1 (p. 8): SimplePIR scheme description with H = D . A as the hint.
 [^2]: Section 1 (p. 2): "Ma et al. [33] propose the concept of incremental preprocessing."
@@ -207,9 +207,9 @@ Parameters: Lattice dimension n = 2^10, modulus q = 2^32, plaintext modulus p ch
 
 #### Key observations from microbenchmarks
 
-1. **Row-major (worst case for entry-level):** iSimplePIR (Entry-level) matches row-level performance due to row aggregation automatically triggering when many entries in the same row are modified.[^28]
-2. **Column-major (best case for entry-level):** 224x reduction in preprocessing computation (172.45s vs 0.77s), 4.2x reduction in communication (120.75 MB vs 28.50 MB), 4.2x reduction in monetary cost ($0.010635 vs $0.002527).[^28]
-3. **Online phase unchanged:** Both schemes achieve ~95 ms server computation and ~10.5 GB/s throughput for a 1GB database, consistent with original SimplePIR.[^29]
+1. **Row-major (worst case for entry-level):** iSimplePIR (Entry-level) matches row-level performance due to row aggregation automatically triggering when many entries in the same row are modified.&#8201;[^28]
+2. **Column-major (best case for entry-level):** 224x reduction in preprocessing computation (172.45s vs 0.77s), 4.2x reduction in communication (120.75 MB vs 28.50 MB), 4.2x reduction in monetary cost ($0.010635 vs $0.002527).&#8201;[^28]
+3. **Online phase unchanged:** Both schemes achieve ~95 ms server computation and ~10.5 GB/s throughput for a 1GB database, consistent with original SimplePIR.&#8201;[^29]
 
 [^28]: Section 6.1 (p. 17): "under conditions unfavorable to entry-level incremental preprocessing, iSimplePIR (Entry-level) incurs no additional overhead compared to the row-level scheme" and "it achieves 224x less computation, 4.2x smaller communication."
 [^29]: Section 6.1 (p. 17): "the online server computation time of iSimplePIR(Entry-level) is approximately 95ms, which is comparable to that of SimplePIR [26, Table 8]."
@@ -230,9 +230,9 @@ Database: ~4GB of SHA256 hashes from the Blyss implementation [7, 35], ~1.3 mill
 | Offline computation (s) | ~500 (estimated from Fig. 5) | **~6** |
 | Offline communication (MB) | ~350 (estimated from Fig. 5) | **~170** |
 
-- iSimplePIR (Entry-level) achieves **86x** reduction in preprocessing computation and **2.1x** reduction in communication compared to row-level.[^31]
-- **Online throughput:** 8–29x higher than the Spiral family and 133x higher than MulPIR. Online communication is 1.4x lower than DoublePIR but 7x higher than Spiral.[^32]
-- **Client storage:** 241 MB for the hint (applies to all SimplePIR-based schemes).[^18]
+- iSimplePIR (Entry-level) achieves **86x** reduction in preprocessing computation and **2.1x** reduction in communication compared to row-level.&#8201;[^31]
+- **Online throughput:** 8–29x higher than the Spiral family and 133x higher than MulPIR. Online communication is 1.4x lower than DoublePIR but 7x higher than Spiral.&#8201;[^32]
+- **Client storage:** 241 MB for the hint (applies to all SimplePIR-based schemes).&#8201;[^18]
 
 [^31]: Section 6.2 (p. 20): "iSimplePIR (Entry-level) achieves 86x lower computation and 2.1x smaller communication for offline hint preprocessing compared to iSimplePIR (Row-level)."
 [^32]: Section 6.2 (p. 20): "the throughput of iSimplePIR (Entry-level) is 8–29x higher than the Spiral family and 133x higher than MulPIR."

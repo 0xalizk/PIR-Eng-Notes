@@ -28,7 +28,7 @@
 
 ### Core Idea
 
-Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage and T = O(sqrt(n)) server probes, yielding ST = O(λ * n * w) — a factor λ away from the Omega(nw) lower bound. The extra λ comes from the coupon-collector duplication inherent in independently sampled hint sets. This paper adapts the permutation-based hint table of [LP24] to work with a single server by introducing a novel relocation data structure. Each query consumes one column of the hint table; entries in that column are relocated to random empty positions in the same row, maintaining the invariant that each DB entry appears exactly once per row. A small-domain PRP compresses the permutation state, reducing client storage from O(n) to O(n/T * (log n + w)). The resulting scheme achieves ST = O(nw) when w = Omega(log n), matching the lower bound up to constant factors.[^4]
+Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage and T = O(sqrt(n)) server probes, yielding ST = O(λ * n * w) — a factor λ away from the Omega(nw) lower bound. The extra λ comes from the coupon-collector duplication inherent in independently sampled hint sets. This paper adapts the permutation-based hint table of [LP24] to work with a single server by introducing a novel relocation data structure. Each query consumes one column of the hint table; entries in that column are relocated to random empty positions in the same row, maintaining the invariant that each DB entry appears exactly once per row. A small-domain PRP compresses the permutation state, reducing client storage from O(n) to O(n/T * (log n + w)). The resulting scheme achieves ST = O(nw) when w = Omega(log n), matching the lower bound up to constant factors.&#8201;[^4]
 
 [^4]: Theorem 1.1 (p.2): Client storage O(Qw + Q log n) bits, amortized communication O(Tw + T log n) bits, amortized server computation O(T) accesses, amortized client computation O(T) XORs and O(T) small-domain PRP calls, over Q = n/T queries.
 
@@ -127,11 +127,11 @@ Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage a
 
 Deterministic correctness -- the scheme always returns the correct answer, with probability 1.
 
-The key invariant is maintained by induction (Lemma 4.3, p.19): after every query, for every unconsumed column c in [m'] \ C, the stored hint h_c equals XOR_{j in [T]} DB_j[DS_j.Access(c)]. Initially this holds because HintConstruct computes exactly these XOR sums. After a query consuming column c, the Reconstruct phase relocates each entry in column c to a random empty position r_j in the same row (via DS_j.Relocate), and updates h_{r_j} <- h_{r_j} XOR a[j] where a[j] is the entry value returned by the server. This preserves the XOR invariant for the new column because the relocated entry is now accounted for in h_{r_j}.[^21]
+The key invariant is maintained by induction (Lemma 4.3, p.19): after every query, for every unconsumed column c in [m'] \ C, the stored hint h_c equals XOR_{j in [T]} DB_j[DS_j.Access(c)]. Initially this holds because HintConstruct computes exactly these XOR sums. After a query consuming column c, the Reconstruct phase relocates each entry in column c to a random empty position r_j in the same row (via DS_j.Relocate), and updates h_{r_j} <- h_{r_j} XOR a[j] where a[j] is the entry value returned by the server. This preserves the XOR invariant for the new column because the relocated entry is now accounted for in h_{r_j}.&#8201;[^21]
 
 [^21]: Lemma 4.3 (p.19): Initially the hint table is correct by inspecting HintConstruct. After a query, an element is appended to Hist; for each row where an element is moved in DS, the value is XORed onto the parity value for the new column (paraphrase of proof argument).
 
-Correctness of answer reconstruction: the client computes DB[i] = h[c] XOR (XOR_{j in [T], j != j*} a[j]). Since h[c] = XOR_{j in [T]} DB_j[DS_j.Access(c)] and a[j] = DB_j[DS_j.Access(c)] for j != j*, the XOR cancels all terms except DB_{j*}[DS_{j*}.Access(c)] = DB[i]. (Lemma 4.4, p.19).[^2]
+Correctness of answer reconstruction: the client computes DB[i] = h[c] XOR (XOR_{j in [T], j != j*} a[j]). Since h[c] = XOR_{j in [T]} DB_j[DS_j.Access(c)] and a[j] = DB_j[DS_j.Access(c)] for j != j*, the XOR cancels all terms except DB_{j*}[DS_{j*}.Access(c)] = DB[i]. (Lemma 4.4, p.19).&#8201;[^2]
 
 ### Complexity
 
@@ -170,7 +170,7 @@ Correctness of answer reconstruction: the client computes DB[i] = h[c] XOR (XOR_
 
 #### Space-Time Tradeoff
 
-The scheme achieves any point on the tradeoff curve S * T = O(nw) by varying the time parameter T.[^25]
+The scheme achieves any point on the tradeoff curve S * T = O(nw) by varying the time parameter T.&#8201;[^25]
 
 | Operating point | T (server probes) | S (client storage) | Communication |
 |-----------------|-------------------|--------------------|---------------|
@@ -240,7 +240,7 @@ At the balanced operating point T = sqrt(n) with w = Theta(log n):
 - Server computation: T = O(sqrt(n)) DB accesses (no extra computation beyond retrieval)
 - Amortization window: Q = n/T = sqrt(n) queries per preprocessing phase
 
-Server performs no computation beyond retrieving the T requested entries, distinguishing this scheme from FHE-based PIR where the server performs expensive homomorphic operations.[^33]
+Server performs no computation beyond retrieving the T requested entries, distinguishing this scheme from FHE-based PIR where the server performs expensive homomorphic operations.&#8201;[^33]
 
 [^33]: Section 1.1 (p.3): "The server performs no extra computation aside from retrieving the T entries requested by the client."
 

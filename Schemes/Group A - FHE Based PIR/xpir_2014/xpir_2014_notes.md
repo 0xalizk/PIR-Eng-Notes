@@ -22,7 +22,7 @@
 
 ### Core Idea
 
-The paper constructs a single-server cPIR by evaluating the arithmetic retrieval function f(x) = SUM\_{y in [2^l]} (x == y) \* D\_y (mod 2) homomorphically using a leveled Somewhat Homomorphic Encryption (SWHE) scheme based on the Stehle-Steinfeld variant of NTRU. The key insight is that the equality-comparison circuit has depth only ceil(log\_2(l)) where l = log\_2(N), so a depth-5 SWHE suffices for databases up to 2^32 (4 billion) entries. By combining CRT-based SIMD batching (encoding epsilon independent index bits into one ciphertext), the scheme achieves query sizes as small as 32 KB for 4 billion entries in bundled mode — over 1000x smaller than BGN and K-O schemes.[^3]
+The paper constructs a single-server cPIR by evaluating the arithmetic retrieval function f(x) = SUM\_{y in [2^l]} (x == y) \* D\_y (mod 2) homomorphically using a leveled Somewhat Homomorphic Encryption (SWHE) scheme based on the Stehle-Steinfeld variant of NTRU. The key insight is that the equality-comparison circuit has depth only ceil(log\_2(l)) where l = log\_2(N), so a depth-5 SWHE suffices for databases up to 2^32 (4 billion) entries. By combining CRT-based SIMD batching (encoding epsilon independent index bits into one ciphertext), the scheme achieves query sizes as small as 32 KB for 4 billion entries in bundled mode — over 1000x smaller than BGN and K-O schemes.&#8201;[^3]
 
 ### Cryptographic Foundation
 
@@ -36,17 +36,17 @@ The paper constructs a single-server cPIR by evaluating the arithmetic retrieval
 
 ### Key Data Structures
 
-- **Database:** Matrix M of size 2^{l/2} x 2^{l/2} where N = 2^l is the number of single-bit entries. Index i is split: first l/2 bits select row, last l/2 bits select column.[^9]
-- **Query:** Vector of l encrypted index bits Q = [xi\_0(x), ..., xi\_{l-1}(x)], each an NTRU ciphertext polynomial in R\_{q\_0}. In Bundled Query mode, epsilon index bits are CRT-packed into each ciphertext.[^10]
-- **Response:** A single ciphertext polynomial R encoding the result (or epsilon results in bundled mode).[^11]
-- **Modulus chain:** Decreasing sequence of odd primes q\_0 > q\_1 > ... > q\_d with divisibility condition q\_i \| q\_{i+1}.[^6]
+- **Database:** Matrix M of size 2^{l/2} x 2^{l/2} where N = 2^l is the number of single-bit entries. Index i is split: first l/2 bits select row, last l/2 bits select column.&#8201;[^9]
+- **Query:** Vector of l encrypted index bits Q = [xi\_0(x), ..., xi\_{l-1}(x)], each an NTRU ciphertext polynomial in R\_{q\_0}. In Bundled Query mode, epsilon index bits are CRT-packed into each ciphertext.&#8201;[^10]
+- **Response:** A single ciphertext polynomial R encoding the result (or epsilon results in bundled mode).&#8201;[^11]
+- **Modulus chain:** Decreasing sequence of odd primes q\_0 > q\_1 > ... > q\_d with divisibility condition q\_i \| q\_{i+1}.&#8201;[^6]
 
 ### Database Encoding
 
-- **Representation:** Database D of N = 2^l single-bit entries stored as matrix M of dimension 2^{l/2} x 2^{l/2}.[^9]
-- **Record addressing:** Index x is split into l bits; first l/2 bits -> row selector A (one-hot encoded), last l/2 bits -> column selector B (one-hot encoded).[^9]
-- **Batching (Bundled Query):** Database row bits {D\_y[1], ..., D\_y[epsilon]} are encoded as polynomials via inverse CRT: D\_y(x) = CRT^{-1}(D\_y[1], ..., D\_y[epsilon]) using the factorization of Phi\_m(x) into irreducible factors mod 2.[^12]
-- **Batching (Single Query):** Row index bits {y\_i[1], ..., y\_i[epsilon]} and data bits {D\_y[1], ..., D\_y[epsilon]} are both CRT-packed for parallel comparison across epsilon slots.[^13]
+- **Representation:** Database D of N = 2^l single-bit entries stored as matrix M of dimension 2^{l/2} x 2^{l/2}.&#8201;[^9]
+- **Record addressing:** Index x is split into l bits; first l/2 bits -> row selector A (one-hot encoded), last l/2 bits -> column selector B (one-hot encoded).&#8201;[^9]
+- **Batching (Bundled Query):** Database row bits {D\_y[1], ..., D\_y[epsilon]} are encoded as polynomials via inverse CRT: D\_y(x) = CRT^{-1}(D\_y[1], ..., D\_y[epsilon]) using the factorization of Phi\_m(x) into irreducible factors mod 2.&#8201;[^12]
+- **Batching (Single Query):** Row index bits {y\_i[1], ..., y\_i[epsilon]} and data bits {D\_y[1], ..., D\_y[epsilon]} are both CRT-packed for parallel comparison across epsilon slots.&#8201;[^13]
 
 ### Protocol Phases
 
@@ -62,7 +62,7 @@ The paper constructs a single-server cPIR by evaluating the arithmetic retrieval
 
 #### Option A: FHE Noise Analysis
 
-The NTRU SWHE uses modulus reduction (not relinearization) to control noise growth through multiplicative levels. Each AND gate (polynomial multiplication) produces noise that grows exponentially in the secret key power, but modulus reduction at each level rescales the noise by a factor kappa = q\_{i+1}/q\_i.[^8]
+The NTRU SWHE uses modulus reduction (not relinearization) to control noise growth through multiplicative levels. Each AND gate (polynomial multiplication) produces noise that grows exponentially in the secret key power, but modulus reduction at each level rescales the noise by a factor kappa = q\_{i+1}/q\_i.&#8201;[^8]
 
 | Phase | Noise parameter | Growth type | Notes |
 |-------|----------------|-------------|-------|
@@ -76,7 +76,7 @@ The NTRU SWHE uses modulus reduction (not relinearization) to control noise grow
 
 #### Option C: Deterministic Correctness
 
-Deterministic correctness — the retrieval function f(x) is an exact arithmetic identity (equality check via product of XOR comparisons). When the noise condition is satisfied, decryption is exact. No probabilistic failure mode.[^1]
+Deterministic correctness — the retrieval function f(x) is an exact arithmetic identity (equality check via product of XOR comparisons). When the noise condition is satisfied, decryption is exact. No probabilistic failure mode.&#8201;[^1]
 
 ### Complexity
 
@@ -103,7 +103,7 @@ Deterministic correctness — the retrieval function f(x) is an exact arithmetic
 
 ### Performance Benchmarks
 
-**Hardware:** Intel Pentium @ 3.5 GHz (single-threaded). NTL 6.0 library for lattice operations.[^18]
+**Hardware:** Intel Pentium @ 3.5 GHz (single-threaded). NTL 6.0 library for lattice operations.&#8201;[^18]
 
 #### Table 2: Parameter choices and communication sizes [^14]
 
@@ -129,7 +129,7 @@ Deterministic correctness — the retrieval function f(x) is an exact arithmetic
 | 2^14 (16384) | (1.00538, 5) | (1.0067, 5) | (1.0081, 6) | (1.0108, 6) | (1.0135, 6) |
 | 2^15 (32768) | (1.00269, 5) | (1.0033, 5) | (1.0040, 6) | (1.0054, 6) | (1.0067, 6) |
 
-Security is parameterized via the Hermite factor gamma. The feasibility boundary for current lattice reduction is delta^n <= 1.01^n.[^20]
+Security is parameterized via the Hermite factor gamma. The feasibility boundary for current lattice reduction is delta^n <= 1.01^n.&#8201;[^20]
 
 ### Comparison with Prior Work
 
@@ -143,45 +143,45 @@ Security is parameterized via the Hermite factor gamma. The feasibility boundary
 | **Ours (Bundled)** | **alpha log N** | **8192** | **3250** | **2560** | **32 KB** | **406 B** | **320 B** |
 
 **Key observations:**
-- At d=5 (N up to 2^32), Bundled Query achieves 32 KB — 1024x smaller than BGN (96 MB), 3072x smaller than K-O (32 MB).[^22]
-- At d=4 (N up to 2^16), Bundled Query achieves 406 B — 944x smaller than BGN (384 KB).[^21]
+- At d=5 (N up to 2^32), Bundled Query achieves 32 KB — 1024x smaller than BGN (96 MB), 3072x smaller than K-O (32 MB).&#8201;[^22]
+- At d=4 (N up to 2^16), Bundled Query achieves 406 B — 944x smaller than BGN (384 KB).&#8201;[^21]
 - The alpha (ciphertext size) for Single Query mode is very large (8.3M elements at d=5) because each index bit has its own ciphertext without batching normalization. When normalized by epsilon, the per-retrieval cost of Single Query is comparable to Bundled Query.
-- Ciphertext size alpha is "almost independent" of database size — growing from 256 entries to 2^16 entries increases alpha by only 1.26x in bundled mode.[^23]
+- Ciphertext size alpha is "almost independent" of database size — growing from 256 entries to 2^16 entries increases alpha by only 1.26x in bundled mode.&#8201;[^23]
 
-**Key takeaway:** This scheme achieves dramatically lower bandwidth than prior HE-based PIR (BGN, K-O) by leveraging NTRU SWHE with O(log N) communication complexity instead of O(sqrt(N)). The tradeoff is significantly higher server computation, approximately 8x slower than K-O for d=4 with 1 GB rows.[^24]
+**Key takeaway:** This scheme achieves dramatically lower bandwidth than prior HE-based PIR (BGN, K-O) by leveraging NTRU SWHE with O(log N) communication complexity instead of O(sqrt(N)). The tradeoff is significantly higher server computation, approximately 8x slower than K-O for d=4 with 1 GB rows.&#8201;[^24]
 
 ### Implementation Notes
 
-- **Language / Library:** C++ with Shoup's NTL library version 6.0 [17] for lattice/polynomial operations.[^18]
-- **Polynomial arithmetic:** Cyclotomic polynomial ring arithmetic via NTL. The paper uses Phi\_m(x) (not necessarily x^n + 1), requiring m to satisfy m \| (2^λ - 1) for CRT batching to produce enough slots.[^12]
-- **Modulus chain:** Specialized: q\_i \| q\_{i+1}, which eliminates the need for key switching and public evaluation keys. This reduces key size significantly but constrains the modulus chain to a divisibility tower.[^6]
-- **No relinearization:** The circuit is a perfect binary tree (depth d), so secret key grows as f^{2^d}. This avoids the expensive relinearization step but means the secret key power grows exponentially, constraining achievable depth.[^5]
-- **Batching:** CRT-based SIMD using the factorization of Phi\_m(x) mod 2 into epsilon irreducible factors of degree λ. Requires m such that 2 has multiplicative order λ mod m (i.e., λ is the smallest integer with m \| (2^λ - 1)).[^12]
+- **Language / Library:** C++ with Shoup's NTL library version 6.0 [17] for lattice/polynomial operations.&#8201;[^18]
+- **Polynomial arithmetic:** Cyclotomic polynomial ring arithmetic via NTL. The paper uses Phi\_m(x) (not necessarily x^n + 1), requiring m to satisfy m \| (2^λ - 1) for CRT batching to produce enough slots.&#8201;[^12]
+- **Modulus chain:** Specialized: q\_i \| q\_{i+1}, which eliminates the need for key switching and public evaluation keys. This reduces key size significantly but constrains the modulus chain to a divisibility tower.&#8201;[^6]
+- **No relinearization:** The circuit is a perfect binary tree (depth d), so secret key grows as f^{2^d}. This avoids the expensive relinearization step but means the secret key power grows exponentially, constraining achievable depth.&#8201;[^5]
+- **Batching:** CRT-based SIMD using the factorization of Phi\_m(x) mod 2 into epsilon irreducible factors of degree λ. Requires m such that 2 has multiplicative order λ mod m (i.e., λ is the smallest integer with m \| (2^λ - 1)).&#8201;[^12]
 - **SIMD / vectorization:** Not mentioned. Single-threaded implementation on Intel Pentium.
-- **Parallelism:** The server computation (iterating over each database row) is embarrassingly parallel but no multi-threading was implemented.[^18]
+- **Parallelism:** The server computation (iterating over each database row) is embarrassingly parallel but no multi-threading was implemented.&#8201;[^18]
 
 ### Key Tradeoffs & Limitations
 
-- **Bandwidth vs. computation:** The scheme achieves >1000x bandwidth improvement over BGN/K-O at the cost of significantly higher server computation. At d=4, processing time is ~8x slower than K-O for 1 GB rows.[^24]
-- **Single-bit entries:** The base scheme retrieves single-bit entries. Multi-bit entries (w-bit) require w parallel evaluations of the PIR function, each on independent batched data. Data aggregation cost is proportional to w (polynomial multiplication per additional bit in Single Query mode).[^2]
-- **Bundled vs. Single Query tradeoff:** Bundled Query packs epsilon independent indices into one query (different rows retrieved simultaneously) — ideal for batch retrieval. Single Query retrieves one row but processes epsilon database positions in parallel — no batch retrieval, but faster per-row data aggregation in Bundled mode (0.22 ms vs. 37 ms at d=5).[^16]
-- **Index comparison dominates:** At d=5, index comparison takes 4.45 ms/row versus 0.22 ms/row for data aggregation in Bundled mode. The index comparison is a one-time cost per row that amortizes over wider database entries.[^16]
-- **Ciphertext size nearly database-independent:** Going from N=256 to N=65536 increases ciphertext size by only ~1.26x in bundled mode because the PIR depth only grows logarithmically. This is a significant advantage for scaling.[^23]
-- **No key switching / no relinearization** simplifies the implementation but limits the maximum circuit depth (practically d <= 6) because the secret key power f^{2^d} grows exponentially.[^5]
-- **Security estimation via Hermite factor** is a pre-2016 methodology; modern lattice estimator tools may yield different security levels for the same parameters.[^20]
+- **Bandwidth vs. computation:** The scheme achieves >1000x bandwidth improvement over BGN/K-O at the cost of significantly higher server computation. At d=4, processing time is ~8x slower than K-O for 1 GB rows.&#8201;[^24]
+- **Single-bit entries:** The base scheme retrieves single-bit entries. Multi-bit entries (w-bit) require w parallel evaluations of the PIR function, each on independent batched data. Data aggregation cost is proportional to w (polynomial multiplication per additional bit in Single Query mode).&#8201;[^2]
+- **Bundled vs. Single Query tradeoff:** Bundled Query packs epsilon independent indices into one query (different rows retrieved simultaneously) — ideal for batch retrieval. Single Query retrieves one row but processes epsilon database positions in parallel — no batch retrieval, but faster per-row data aggregation in Bundled mode (0.22 ms vs. 37 ms at d=5).&#8201;[^16]
+- **Index comparison dominates:** At d=5, index comparison takes 4.45 ms/row versus 0.22 ms/row for data aggregation in Bundled mode. The index comparison is a one-time cost per row that amortizes over wider database entries.&#8201;[^16]
+- **Ciphertext size nearly database-independent:** Going from N=256 to N=65536 increases ciphertext size by only ~1.26x in bundled mode because the PIR depth only grows logarithmically. This is a significant advantage for scaling.&#8201;[^23]
+- **No key switching / no relinearization** simplifies the implementation but limits the maximum circuit depth (practically d <= 6) because the secret key power f^{2^d} grows exponentially.&#8201;[^5]
+- **Security estimation via Hermite factor** is a pre-2016 methodology; modern lattice estimator tools may yield different security levels for the same parameters.&#8201;[^20]
 
 ### Portable Optimizations
 
-- **CRT batching for PIR:** Packing multiple independent index bits (or multiple queries) into SIMD slots of a single ciphertext via the Chinese Remainder Theorem. This technique was later adopted widely in BFV-based PIR (SealPIR, FastPIR/Addra).[^12]
-- **Arithmetic retrieval formulation:** Expressing the PIR retrieval function as f(x) = SUM (x == y) D\_y with the equality test decomposed as PROD (x\_i + y\_i + 1). This formulation generalizes to any HE scheme supporting XOR and AND.[^25]
-- **Modulus chain with divisibility:** The q\_i \| q\_{i+1} specialization eliminates key switching entirely. Applicable to any NTRU-based leveled scheme in a single-user setting where relinearization is not needed.[^6]
+- **CRT batching for PIR:** Packing multiple independent index bits (or multiple queries) into SIMD slots of a single ciphertext via the Chinese Remainder Theorem. This technique was later adopted widely in BFV-based PIR (SealPIR, FastPIR/Addra).&#8201;[^12]
+- **Arithmetic retrieval formulation:** Expressing the PIR retrieval function as f(x) = SUM (x == y) D\_y with the equality test decomposed as PROD (x\_i + y\_i + 1). This formulation generalizes to any HE scheme supporting XOR and AND.&#8201;[^25]
+- **Modulus chain with divisibility:** The q\_i \| q\_{i+1} specialization eliminates key switching entirely. Applicable to any NTRU-based leveled scheme in a single-user setting where relinearization is not needed.&#8201;[^6]
 
 ### Uncertainties
 
-- **Security level in bits:** The paper uses Hermite factor gamma as the security metric rather than concrete bit-security. For (n=16384, log q=512), gamma = 1.00538, yielding security t(gamma) = log(T(gamma)) = 1.8/log(gamma) - 110 which gives approximately 225 bits of security by the Lindner-Peikert estimate [15]. However, this estimate is from 2011 and may not reflect modern lattice attack improvements. Confidence: **inferred**.[^20]
-- **Ciphertext size alpha units:** Table 4 gives alpha in number of ciphertexts (not bytes). The paper states "alpha is the ciphertext size that differs in each scheme." For this scheme, one ciphertext is a polynomial of degree n with log\_2(q)-bit coefficients, so one ciphertext is n * log\_2(q) / 8 bytes. At d=5: 16384 * 512 / 8 = 1 MB per ciphertext. The Bundled Query sends l = 32 ciphertexts = 32 MB, which matches Table 2. The "32 KB" bundled query size in Table 4 appears to be after normalizing by epsilon = 1024. **This normalization is critical for the 1000x claim.**[^22]
-- **n vs N collision:** The paper uses n for the cyclotomic polynomial degree (phi(m)) and N for the database size. These are unambiguous within the paper.[^9]
-- **Batching parameter epsilon values:** The paper states epsilon = 1024 for d=5 but does not show the derivation of all epsilon values. These depend on the factorization of specific cyclotomic polynomials mod 2.[^14]
+- **Security level in bits:** The paper uses Hermite factor gamma as the security metric rather than concrete bit-security. For (n=16384, log q=512), gamma = 1.00538, yielding security t(gamma) = log(T(gamma)) = 1.8/log(gamma) - 110 which gives approximately 225 bits of security by the Lindner-Peikert estimate [15]. However, this estimate is from 2011 and may not reflect modern lattice attack improvements. Confidence: **inferred**.&#8201;[^20]
+- **Ciphertext size alpha units:** Table 4 gives alpha in number of ciphertexts (not bytes). The paper states "alpha is the ciphertext size that differs in each scheme." For this scheme, one ciphertext is a polynomial of degree n with log\_2(q)-bit coefficients, so one ciphertext is n * log\_2(q) / 8 bytes. At d=5: 16384 * 512 / 8 = 1 MB per ciphertext. The Bundled Query sends l = 32 ciphertexts = 32 MB, which matches Table 2. The "32 KB" bundled query size in Table 4 appears to be after normalizing by epsilon = 1024. **This normalization is critical for the 1000x claim.**&#8201;[^22]
+- **n vs N collision:** The paper uses n for the cyclotomic polynomial degree (phi(m)) and N for the database size. These are unambiguous within the paper.&#8201;[^9]
+- **Batching parameter epsilon values:** The paper states epsilon = 1024 for d=5 but does not show the derivation of all epsilon values. These depend on the factorization of specific cyclotomic polynomials mod 2.&#8201;[^14]
 - **Missing total query time:** The paper gives per-row times but does not report end-to-end query latency for a full database. For N = 2^32 with d=5 Bundled Query: 2^32 * 4.67 ms = ~200 million seconds per query (infeasible for a single thread). This suggests the scheme targets smaller databases or parallel execution. Confidence: **inferred**.
 
 ---

@@ -13,7 +13,7 @@
 
 ### Core Contribution
 
-Spiral introduces a family of single-server PIR protocols that compose two lattice-based encryption schemes -- Regev (matrix variant) and GSW -- via novel **ciphertext translation** techniques (ScalToMat, RegevToGSW). This composition enables a client to compress its entire query into a single scalar Regev ciphertext (~14 KB), which the server expands into both matrix Regev ciphertexts (for first-dimension processing) and GSW ciphertexts (for dimension folding). The key innovation is that ciphertext translation replaces the need to send large GSW ciphertexts, achieving (n+1)^2/2 compression on GSW encodings.[^1] Across four variants, Spiral achieves Pareto-optimal tradeoffs between query size, response size, rate, throughput, and public parameter size, simultaneously improving over OnionPIR (the prior state-of-the-art) by 4.5x in query size, 1.5x in rate, and 2x in throughput.[^2]
+Spiral introduces a family of single-server PIR protocols that compose two lattice-based encryption schemes -- Regev (matrix variant) and GSW -- via novel **ciphertext translation** techniques (ScalToMat, RegevToGSW). This composition enables a client to compress its entire query into a single scalar Regev ciphertext (~14 KB), which the server expands into both matrix Regev ciphertexts (for first-dimension processing) and GSW ciphertexts (for dimension folding). The key innovation is that ciphertext translation replaces the need to send large GSW ciphertexts, achieving (n+1)^2/2 compression on GSW encodings.&#8201;[^1] Across four variants, Spiral achieves Pareto-optimal tradeoffs between query size, response size, rate, throughput, and public parameter size, simultaneously improving over OnionPIR (the prior state-of-the-art) by 4.5x in query size, 1.5x in rate, and 2x in throughput.&#8201;[^2]
 
 [^1]: Remark 3.3 (p.15): RegevToGSW takes t_GSW Regev encodings (2*t_GSW elements of R_q) and outputs a single GSW encoding with (n+1)*m_GSW = (n+1)^2*t_GSW elements of R_q. This is an (n+1)^2/2 compression factor.
 
@@ -31,9 +31,9 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 | **SpiralStreamPack** | Combines streaming + packing | 15--30 MB | 16--125 MB | 0.3117 | 1.48 GB/s | Maximum throughput streaming |
 
 **Variant interaction logic:**
-- Stream = skip query expansion (client sends expanded encodings). Trades query size for throughput.[^3]
-- Pack = response packing via encoding translation. Trades public parameter size for rate.[^4]
-- StreamPack = both optimizations combined. Best throughput (1.9 GB/s on 10^6 records) but largest query and params.[^5]
+- Stream = skip query expansion (client sends expanded encodings). Trades query size for throughput.&#8201;[^3]
+- Pack = response packing via encoding translation. Trades public parameter size for rate.&#8201;[^4]
+- StreamPack = both optimizations combined. Best throughput (1.9 GB/s on 10^6 records) but largest query and params.&#8201;[^5]
 
 [^3]: Remark 4.4 (p.19): In SpiralStream, the client directly uploads the Regev and GSW encodings rather than compressing into a single encoding. This eliminates noise from query expansion but yields larger queries.
 
@@ -48,7 +48,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 | Layer | Detail |
 |-------|--------|
 | **Hardness assumption** | Ring Learning with Errors (RLWE) in Hermite normal form [LPR10, ACPS09]; decisional RLWE_{d,m,q,chi} over R = Z[x]/(x^d+1) |
-| **Encryption/encoding schemes** | (1) **Matrix Regev encoding** (Construction 2.8): encodes M in R_q^{n x n} as C in R_q^{(n+1) x n}; used for first-dimension processing and final response. (2) **GSW encoding** (Construction 2.14): encodes mu in R_p via gadget matrix G_{n+1,z}; used for dimension folding via external product. Both are "encodings" (no decryption), not full encryptions.[^6] |
+| **Encryption/encoding schemes** | (1) **Matrix Regev encoding** (Construction 2.8): encodes M in R_q^{n x n} as C in R_q^{(n+1) x n}; used for first-dimension processing and final response. (2) **GSW encoding** (Construction 2.14): encodes mu in R_p via gadget matrix G_{n+1,z}; used for dimension folding via external product. Both are "encodings" (no decryption), not full encryptions.&#8201;[^6] |
 | **Ring** | R = Z[x]/(x^d + 1), d = 2048 (power-of-two cyclotomic); R_q = R/qR with q = 2^56 (56-bit modulus, product of two 28-bit primes for CRT) |
 | **Key structure** | Two secret keys: S = [-s_tilde | I_n]^T in R_q^{(n+1) x n} (response encoding) and s = [-s_tilde_0 | 1]^T in R_q^2 (query encoding). Secret s_tilde sampled from error distribution chi (normal form). |
 | **Correctness condition** | ||E||_inf + (q_1 mod p) < q_1/(2p), where E is the final noise after all homomorphic operations and modulus switching (Eq. 5.1, p.24). Target correctness error epsilon_corr = 2dn^2 exp(-pi C^2) <= 2^{-40}. |
@@ -65,7 +65,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 | R_{q_1} | d = 2048 | ~21 bits (q_1 = 4p) | Response modulus-switched component 1 (n^2/(n^2+n) fraction of response) |
 | R_{q_2} | d = 2048 | ~21 bits (smallest satisfying correctness) | Response modulus-switched component 2 (n/(n^2+n) fraction of response) |
 
-**CRT decomposition:** q = alpha * beta where alpha, beta are 28-bit primes chosen as 2^i - 2^j + 1 with 2^i > 2^j > 2d for fast modular reduction. alpha = beta = 1 mod 2d ensures Z_alpha and Z_beta have subgroups of order 2d, enabling nega-cyclic NTT.[^7]
+**CRT decomposition:** q = alpha * beta where alpha, beta are 28-bit primes chosen as 2^i - 2^j + 1 with 2^i > 2^j > 2d for fast modular reduction. alpha = beta = 1 mod 2d ensures Z_alpha and Z_beta have subgroups of order 2d, enabling nega-cyclic NTT.&#8201;[^7]
 
 [^7]: Section 5.2 (p.27-28). CRT with AVX gives a factor of 2x speedup: four 32-bit-by-32-bit multiplications execute in the time of one 64-bit-by-64-bit multiplication.
 
@@ -73,10 +73,10 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 ### Key Data Structures
 
-- **Database:** D = {d_1, ..., d_N} of N = 2^{v1+v2} records, each d_i in R_p^{n x n} with ||d_i||_inf <= p/2. Arranged as a (v2+1)-dimensional hypercube: 2^{v1} x 2 x 2 x ... x 2 (first dimension large, remaining v2 dimensions binary).[^8]
+- **Database:** D = {d_1, ..., d_N} of N = 2^{v1+v2} records, each d_i in R_p^{n x n} with ||d_i||_inf <= p/2. Arranged as a (v2+1)-dimensional hypercube: 2^{v1} x 2 x 2 x ... x 2 (first dimension large, remaining v2 dimensions binary).&#8201;[^8]
 - **Public parameters (pp):** Conversion key ck = (V, W, Pi) for RegevToGSW, automorphism keys W_0, ..., W_{rho-1} for coefficient expansion, plus key S for response encoding. Size: 14--18 MB (Spiral), 344 KB--3 MB (SpiralStream), 14--47 MB (SpiralPack).
 - **Query key (qk):** Secret keys (s, S). Retained by client; never sent.
-- **Query (q):** Single scalar Regev encoding c in R_q^2 (Spiral/SpiralPack) or expanded encodings (SpiralStream/SpiralStreamPack). Compressed via PRG seed for c_0 component.[^9]
+- **Query (q):** Single scalar Regev encoding c in R_q^2 (Spiral/SpiralPack) or expanded encodings (SpiralStream/SpiralStreamPack). Compressed via PRG seed for c_0 component.&#8201;[^9]
 - **Response (r):** Modulus-switched matrix Regev encoding. After ModulusSwitch: (c_hat_1 in R_{q_2}^n, C_hat_2 in R_{q_1}^{n x n}).
 
 [^8]: Construction 4.1 (p.17-18). The first dimension is large (2^{v1}) because processing it requires only linear homomorphisms (scalar multiplication with cleartext DB). The remaining v2 binary dimensions use GSW external products (multiplicative homomorphisms with asymmetric noise growth).
@@ -89,7 +89,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 - **Representation:** (v2+1)-dimensional hypercube with dimensions 2^{v1} x 2 x ... x 2.
 - **Record addressing:** Tuple (i, j_1, ..., j_{v2}) where i in [0, 2^{v1}-1] and j_k in {0,1}. Equivalently, (i, j) where j in [0, 2^{v2}-1].
-- **Preprocessing required:** All ring elements stored in NTT/evaluation representation for fast homomorphic operations during query processing.[^10]
+- **Preprocessing required:** All ring elements stored in NTT/evaluation representation for fast homomorphic operations during query processing.&#8201;[^10]
 - **Record size equation:** Each record is an element of R_p^{n x n}, encoding dn^2 log p bits. For base Spiral (n=2, p=256, d=2048): 2048 * 4 * 8 = 65,536 bits = 8 KB per plaintext element. When record size S > dn^2 log p, split into T = ceil(S/(dn^2 log p)) blocks, each processed as a separate database with the same expanded query.
 
 [^10]: Section 5.2 (p.28): "We represent all ring elements in their evaluation representation (i.e., the FFT/NTT representation). This enables faster homomorphic operations during query processing."
@@ -117,7 +117,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 | Scalar Regev encoding c | c = (c_0, c_1) in R_q^2 | 14 KB (with PRG compression) | Encodes packed polynomial mu(x) containing first-dim index i* and all subsequent-dim indices j_1*, ..., j_{v2}* |
 | Public parameters (ck, W_i) | Key-switching matrices | 14--18 MB | Enable server to perform ScalToMat, RegevToGSW, and automorphisms |
 
-**Query packing (Eq. 4.1, p.18):** The polynomial mu(x) = 2^{-r1} * mu_{i*}(x^2) + 2^{-r2} * x * mu_{J*}(x^2) where mu_{i*} = floor(q/p) * x^{i*} encodes the first-dimension index, and mu_{J*} = sum_{t in [v2]} mu_{j_t*} encodes all subsequent-dimension indices. Here r1 = 1 + v1 and r2 = 1 + ceil(log(t_GSW * v2)).[^11]
+**Query packing (Eq. 4.1, p.18):** The polynomial mu(x) = 2^{-r1} * mu_{i*}(x^2) + 2^{-r2} * x * mu_{J*}(x^2) where mu_{i*} = floor(q/p) * x^{i*} encodes the first-dimension index, and mu_{J*} = sum_{t in [v2]} mu_{j_t*} encodes all subsequent-dimension indices. Here r1 = 1 + v1 and r2 = 1 + ceil(log(t_GSW * v2)).&#8201;[^11]
 
 [^11]: Construction 4.1, Query step 3 (p.18). The coefficient expansion algorithm (Algorithm 1 in Appendix A) recovers the individual coefficients of mu via homomorphic evaluation of automorphisms.
 
@@ -150,7 +150,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 | **Noise (subgaussian)** | sigma^2 = t_conv * d * sigma_chi^2 * z_conv^2 / 2 + d * sigma_e^2 * ||s_GSW||_inf^2 |
 | **Compression factor** | (n+1)^2/2: takes 2*t_GSW ring elements, produces (n+1)^2*t_GSW ring elements as a GSW encoding |
 
-**Why two decomposition bases?** The conversion base z_conv controls noise from the translation step independently from z_GSW which controls noise in subsequent GSW external products. This decoupling enables finer noise optimization during parameter selection.[^12]
+**Why two decomposition bases?** The conversion base z_conv controls noise from the translation step independently from z_GSW which controls noise in subsequent GSW external products. This decoupling enables finer noise optimization during parameter selection.&#8201;[^12]
 
 [^12]: Theorem 3.2 (p.14): "The noise introduced by the encoding conversion step depends only on the decomposition base z_conv and not on the decomposition base z_GSW associated with the GSW encodings."
 
@@ -160,16 +160,16 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 The fundamental design tension in lattice-based PIR is:
 
-1. **Regev ciphertexts** have excellent *rate* (n^2/(n^2+n) plaintext-to-ciphertext ratio for matrix version) and support additive homomorphisms efficiently. However, multiplicative homomorphism between two Regev ciphertexts causes *exponential* noise growth in the multiplication depth.[^13]
+1. **Regev ciphertexts** have excellent *rate* (n^2/(n^2+n) plaintext-to-ciphertext ratio for matrix version) and support additive homomorphisms efficiently. However, multiplicative homomorphism between two Regev ciphertexts causes *exponential* noise growth in the multiplication depth.&#8201;[^13]
 
-2. **GSW ciphertexts** support multiplicative homomorphism via external products with *asymmetric* noise growth: when one operand is a "fresh" GSW ciphertext, noise grows only *linearly* (additively) in the number of multiplications, not exponentially.[^14] However, GSW ciphertexts have terrible rate -- encrypting a scalar requires a large matrix.
+2. **GSW ciphertexts** support multiplicative homomorphism via external products with *asymmetric* noise growth: when one operand is a "fresh" GSW ciphertext, noise grows only *linearly* (additively) in the number of multiplications, not exponentially.&#8201;[^14] However, GSW ciphertexts have terrible rate -- encrypting a scalar requires a large matrix.
 
 **The composition strategy** (from Gentry-Halevi [GH19], made concrete by Spiral):
 - Use Regev encodings for the *bulk data processing* (first dimension: matrix-vector multiply with cleartext database).
 - Use GSW encodings only as *selectors* in the binary folding dimensions. Each folding step multiplies a Regev encoding (accumulator) by a fresh GSW encoding (query bit), keeping noise growth linear in v2.
 - The final result is a matrix Regev encoding -- high rate for the response.
 
-**Spiral's specific contribution:** Ciphertext translation (ScalToMat, RegevToGSW) enables compressing the query to a single Regev ciphertext while still producing both ciphertext types server-side. Prior approaches (Gentry-Halevi) required the client to send GSW ciphertexts directly (~30 MB queries).[^15]
+**Spiral's specific contribution:** Ciphertext translation (ScalToMat, RegevToGSW) enables compressing the query to a single Regev ciphertext while still producing both ciphertext types server-side. Prior approaches (Gentry-Halevi) required the client to send GSW ciphertexts directly (~30 MB queries).&#8201;[^15]
 
 [^13]: Section 1.1 (p.3): In the BFV scheme, ciphertext noise scales *exponentially* in the multiplicative depth of computation.
 
@@ -201,11 +201,11 @@ Spiral tracks noise as subgaussian parameters (sigma^2) under the **independence
 
 where C is chosen so that epsilon_corr = 2dn^2 exp(-pi C^2) <= 2^{-40}.
 
-**Independence heuristic (Remark 2.18):** Models noise components from key switching and homomorphic operations as *independent* subgaussian random variables. This allows bounding the *variance* (sigma^2) rather than the L-infinity norm, yielding a square-root improvement on some noise components. The heuristic is standard in lattice-based systems [GHS12b, CGGI18, MCR21] and is validated empirically in Section 5.3 -- the actual noise is several bits below the heuristic prediction (Fig. 6).[^16]
+**Independence heuristic (Remark 2.18):** Models noise components from key switching and homomorphic operations as *independent* subgaussian random variables. This allows bounding the *variance* (sigma^2) rather than the L-infinity norm, yielding a square-root improvement on some noise components. The heuristic is standard in lattice-based systems [GHS12b, CGGI18, MCR21] and is validated empirically in Section 5.3 -- the actual noise is several bits below the heuristic prediction (Fig. 6).&#8201;[^16]
 
 [^16]: Section 5.3 (p.34-35) and Fig. 6: "there is still a decent margin between the measured error magnitude and the predicted error magnitude."
 
-**Dominant noise source:** First-dimension processing (scales as 2^{v1} * n * d * (p/2)^2) when v1 is large. The first dimension size is capped at 2^9 before noise from coefficient expansion becomes too high for the lattice parameters.[^17]
+**Dominant noise source:** First-dimension processing (scales as 2^{v1} * n * d * (p/2)^2) when v1 is large. The first dimension size is capped at 2^9 before noise from coefficient expansion becomes too high for the lattice parameters.&#8201;[^17]
 
 [^17]: Section 5.3 (p.31-32): "the first dimension can have size at most 2^9 before the noise from the coefficient expansion process is too high to ensure correctness." Note: This 2^9 limit applies specifically to Spiral and SpiralPack (not SpiralStream), and the paper adds the qualifier "without moving to a larger set of lattice parameters."
 
@@ -223,7 +223,7 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 | GSW gadget | z_GSW | {2, 4, ..., 56} | Gadget matrix G_{n+1,z_GSW} for GSW external products in folding | Larger z -> more noise in folding | Larger z -> fewer gadget digits -> faster folding |
 | Response modulus switch | q_1, q_2 | q_1=4p, q_2 minimal | Scale down response ciphertext for compact communication | q_1 = 4p ensures q_1 mod p = 0; q_2 chosen as smallest passing correctness | Determines response size |
 
-**Constraint:** 2^{v1} + v2 * t_GSW <= d to pack everything into a single query polynomial.[^18]
+**Constraint:** 2^{v1} + v2 * t_GSW <= d to pack everything into a single query polynomial.&#8201;[^18]
 
 [^18]: Section 5.1 (p.25): "to pack the query into a single scalar Regev encoding, we require that 2^{v1} + v2 * t_GSW <= d."
 
@@ -324,7 +324,7 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 | Security | 128-bit | 115-bit | -- | 111-bit | -- |
 | Server cost | **$0.000140** | $0.000701 | $0.000297 | $0.000297 | 2^18 x 30KB |
 
-**Key takeaway:** Spiral simultaneously achieves the smallest query, highest rate, and highest throughput for moderate-to-large records. Its main limitation is larger public parameters (14--47 MB vs 1--5 MB for competitors). For streaming applications, SpiralStreamPack achieves 1.9 GB/s throughput -- 9.7x higher than FastPIR and only 2.9x slower than hardware-accelerated AES-based two-server PIR.[^19]
+**Key takeaway:** Spiral simultaneously achieves the smallest query, highest rate, and highest throughput for moderate-to-large records. Its main limitation is larger public parameters (14--47 MB vs 1--5 MB for competitors). For streaming applications, SpiralStreamPack achieves 1.9 GB/s throughput -- 9.7x higher than FastPIR and only 2.9x slower than hardware-accelerated AES-based two-server PIR.&#8201;[^19]
 
 [^19]: Section 1 (p.2): "For streaming large records, we estimate the monetary cost of SpiralStreamPack to be only 1.9x greater than that of the no-privacy baseline where the client directly downloads the desired record."
 
@@ -332,7 +332,7 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 
 ### Modulus Switching (Section 3.4)
 
-Spiral introduces a **two-modulus** switching approach that achieves higher rate than standard single-modulus switching.[^20]
+Spiral introduces a **two-modulus** switching approach that achieves higher rate than standard single-modulus switching.&#8201;[^20]
 
 - Standard approach: rescale entire ciphertext from R_q to R_{q'} for a single smaller modulus q'.
 - Spiral's approach: rescale different components of the matrix Regev ciphertext to *different* moduli:
@@ -371,7 +371,7 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 | v_1, v_2 | v_1 in [2,11], v_2 varies | Database configuration; v_1 determines first-dim size |
 | T (executions) | Computed from record size | T = ceil(S / (dn^2 log p)) |
 
-**Search procedure:** ~3 million candidate parameter sets pruned to ~700,000 feasible sets (correctness < 2^{-40}), cached in 40 MB. Heuristic cost model using AWS pricing ($0.0195/CPU-hour, $0.09/GB outbound) selects minimum total cost. Search takes ~10 seconds.[^21]
+**Search procedure:** ~3 million candidate parameter sets pruned to ~700,000 feasible sets (correctness < 2^{-40}), cached in 40 MB. Heuristic cost model using AWS pricing ($0.0195/CPU-hour, $0.09/GB outbound) selects minimum total cost. Search takes ~10 seconds.&#8201;[^21]
 
 #### Sample parameters (Table 1, p.27)
 
@@ -388,7 +388,7 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 
 - **Language / Library:** C++, ~4,000 lines of code.
 - **Polynomial arithmetic:** NTT-based (nega-cyclic NTT). Adapted from SEAL library [SEA19] for FFT implementation. Intel HEXL library [BKS+21] for response-decoding FFTs.
-- **CRT decomposition:** q = alpha * beta (two 28-bit primes). All arithmetic in R_alpha x R_beta via CRT. Primes chosen as 2^i - 2^j + 1 for fast modular reduction. CRT with AVX gives 2x speedup on first-dimension processing.[^22]
+- **CRT decomposition:** q = alpha * beta (two 28-bit primes). All arithmetic in R_alpha x R_beta via CRT. Primes chosen as 2^i - 2^j + 1 for fast modular reduction. CRT with AVX gives 2x speedup on first-dimension processing.&#8201;[^22]
 - **SIMD / vectorization:** AVX2 and AVX-512. AVX2 is the primary performance driver (disabling causes 2x slowdown on large DBs). AVX-512 contributes 6--14% speedup.
 - **Parallelism:** Single-threaded benchmarks. All reported numbers are single-threaded on Amazon EC2 c5n.2xlarge (8 vCPUs, Intel Xeon Platinum 8124M @ 3 GHz, 21 GB RAM).
 - **Database representation:** Elements in NTT/evaluation form. Implicit representation (1 GB minimum) with < 1% effect on compute time.
@@ -406,18 +406,18 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
   - Download: 2.5 GB response
   - Compute: 5.6 CPU-hours
   - Server cost: **$0.33** (1.9x over no-privacy baseline of $0.18)
-  - Comparison: OnionPIR costs $3.01 (17x over baseline, 9x more expensive than Spiral).[^23]
+  - Comparison: OnionPIR costs $3.01 (17x over baseline, 9x more expensive than Spiral).&#8201;[^23]
 
 #### Private voice calls (Addra system)
 - 2^20 users, 5-minute call = 625 rounds, 96 bytes/round. Using SpiralStream:
   - Upload: 29 MB, Download: 11 MB, CPU: 112 seconds
-  - Per-user server cost: $0.0016 (3.9x cheaper than FastPIR/Addra).[^24]
+  - Per-user server cost: $0.0016 (3.9x cheaper than FastPIR/Addra).&#8201;[^24]
 
 #### Private Wikipedia
 - 31 GB database (all English Wikipedia text), 30 KB max article size. Using SpiralPack:
   - 16-core machine, 42 GB RAM, database partitioned into 16 shards
   - End-to-end latency: **4.3 seconds** (2.1x faster than OnionPIR)
-  - Monthly server cost: $229.[^25]
+  - Monthly server cost: $229.&#8201;[^25]
 
 [^23]: Section 5.3 (p.35).
 [^24]: Section 5.3 (p.35).
@@ -439,8 +439,8 @@ Spiral introduces a **two-modulus** switching approach that achieves higher rate
 
 ### Key Tradeoffs & Limitations
 
-1. **Large public parameters** (14--125 MB) vs small queries (14 KB). This is the fundamental tradeoff: ciphertext translation requires key-switching matrices that encode the client's secret key under various transformations. Prior schemes have 1--5 MB public parameters.[^26]
-2. **Plaintext dimension n** creates a rate-vs-computation tradeoff: rate = n^2/(n^2+n) increases with n, but first-dimension processing cost is O(n^2(n+1)) per operation. Base Spiral uses n=2; SpiralPack uses n=1 for processing with packing to achieve high effective n.[^27]
+1. **Large public parameters** (14--125 MB) vs small queries (14 KB). This is the fundamental tradeoff: ciphertext translation requires key-switching matrices that encode the client's secret key under various transformations. Prior schemes have 1--5 MB public parameters.&#8201;[^26]
+2. **Plaintext dimension n** creates a rate-vs-computation tradeoff: rate = n^2/(n^2+n) increases with n, but first-dimension processing cost is O(n^2(n+1)) per operation. Base Spiral uses n=2; SpiralPack uses n=1 for processing with packing to achieve high effective n.&#8201;[^27]
 3. **First-dimension size limited to ~2^9** by noise from coefficient expansion. Cannot scale first dimension indefinitely; must increase v2 (more binary folding rounds) for larger databases, which reduces throughput.
 4. **Streaming vs static tradeoff:** SpiralStream achieves much higher throughput but requires 8--30 MB queries (vs 14 KB). Worthwhile only when query is reused across many databases/invocations.
 5. **Small records have low rate** (all lattice-based PIR schemes share this limitation): ciphertexts have a minimum size regardless of plaintext, so rate is poor when records are smaller than one plaintext element (dn^2 log p bits).

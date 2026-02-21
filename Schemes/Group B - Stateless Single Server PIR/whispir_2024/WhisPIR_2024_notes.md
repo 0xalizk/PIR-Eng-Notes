@@ -22,7 +22,7 @@
 
 ### Core Idea
 
-WhisPIR is a fully stateless single-server PIR protocol that achieves low per-query communication by bundling compressed evaluation keys with the query itself, eliminating any offline phase or persistent client state.[^1] The key technical insight is to use the non-compact variant of the BGV homomorphic encryption scheme -- allowing ciphertexts to grow beyond the standard 2-component form during homomorphic multiplications -- which eliminates the need for relinearization keys and reduces both communication and computation.[^2] WhisPIR further optimizes the index expansion algorithm (inherited from SealPIR/OnionPIR) for the single-rotation-key setting by carefully choosing the generator for substitution operations, reducing the number of rotations by 2--50x over the naive choice, and introduces iterative precomputed key switching that rotates the key instead of the ciphertext.[^3]
+WhisPIR is a fully stateless single-server PIR protocol that achieves low per-query communication by bundling compressed evaluation keys with the query itself, eliminating any offline phase or persistent client state.&#8201;[^1] The key technical insight is to use the non-compact variant of the BGV homomorphic encryption scheme -- allowing ciphertexts to grow beyond the standard 2-component form during homomorphic multiplications -- which eliminates the need for relinearization keys and reduces both communication and computation.&#8201;[^2] WhisPIR further optimizes the index expansion algorithm (inherited from SealPIR/OnionPIR) for the single-rotation-key setting by carefully choosing the generator for substitution operations, reducing the number of rotations by 2--50x over the naive choice, and introduces iterative precomputed key switching that rotates the key instead of the ciphertext.&#8201;[^3]
 
 [^1]: Abstract (p.1): "We introduce WhisPIR, a fully stateless PIR protocol with low per-query communication. WhisPIR clients are all ephemeral, meaning that they appear with only the protocol public parameters and disappear as soon as their query is complete."
 
@@ -36,11 +36,11 @@ WhisPIR is a fully stateless single-server PIR protocol that achieves low per-qu
 
 | Layer | Detail |
 |-------|--------|
-| **Hardness assumption** | Ring Learning with Errors (RLWE) over R_q = Z_q[x]/(x^n + 1) where n is a power of two[^4] |
-| **Encryption/encoding scheme** | BGV (Brakerski-Gentry-Vaikuntanathan) [BGV12]: single encryption scheme for all operations, using non-compact variant that does not relinearize after homomorphic multiplications[^5] |
-| **Ring / Field** | R_q := Z_q[x]/(x^n + 1), n in {2^12, 2^13}; plaintext ring R_p with p coprime to q; ring expansion factor gamma_R (empirically set to 2*sqrt(n))[^6] |
-| **Key structure** | Single secret s sampled from error distribution chi over R_q; switching key swk_pi consists of w = ceil(log_B(q)) tuples of (b'_i, a'_i) in R_q^2; all keys derived from a PRG seed sigma[^7] |
-| **Correctness condition** | The noise term of the ciphertext, defined as ct(sk) = m + p * e, must satisfy ||e||_inf < q/p for correct decryption[^8] |
+| **Hardness assumption** | Ring Learning with Errors (RLWE) over R_q = Z_q[x]/(x^n + 1) where n is a power of two&#8201;[^4] |
+| **Encryption/encoding scheme** | BGV (Brakerski-Gentry-Vaikuntanathan) [BGV12]: single encryption scheme for all operations, using non-compact variant that does not relinearize after homomorphic multiplications&#8201;[^5] |
+| **Ring / Field** | R_q := Z_q[x]/(x^n + 1), n in {2^12, 2^13}; plaintext ring R_p with p coprime to q; ring expansion factor gamma_R (empirically set to 2*sqrt(n))&#8201;[^6] |
+| **Key structure** | Single secret s sampled from error distribution chi over R_q; switching key swk_pi consists of w = ceil(log_B(q)) tuples of (b'_i, a'_i) in R_q^2; all keys derived from a PRG seed sigma&#8201;[^7] |
+| **Correctness condition** | The noise term of the ciphertext, defined as ct(sk) = m + p * e, must satisfy ||e||_inf < q/p for correct decryption&#8201;[^8] |
 
 [^4]: Section 2.2 (p.4): "The BGV scheme is parametrized by a ring R_q := Z_q[x]/(x^n + 1) and a plaintext modulus p coprime to q."
 
@@ -56,11 +56,11 @@ WhisPIR is a fully stateless single-server PIR protocol that achieves low per-qu
 
 ### Key Data Structures
 
-- **Database:** D in Z_t^N, indexed by i in [N]. Digitized into k digits in base l, so i = (i_1, ..., i_k) with each i_j in [l], where l^k >= N. Packed into (R_p)^(l^k) ring elements, each holding n * floor(log_2(p)) bits.[^9]
-- **Public parameters (pp):** Tuple (sigma, pi, k, l, n, q, B, p, N, t) -- just the PRG seed and basic parameters. Fits in a few hundred bits.[^10]
-- **Server parameters (sp):** Precomputed rotations from Algorithm 2 (all outputs of iterative PreSwitch), the PRG-expanded switching key elements, and the server's copy of the database. Computed once and reused across all queries.[^11]
-- **Query (qry):** Tuple (c_0, {b'_i}_{i=0}^{w-1}) -- one ciphertext component c_0 in R_q plus w switching key elements in R_q, where w = ceil(log_B(q)). Total size is (w+1) ring elements over R_q.[^12]
-- **Response (ans):** A non-compact BGV ciphertext with k+1 components: (m + p*e - sum_{i=1}^{k} a_i * s^i, a_1, ..., a_k). After modulus switching, each component is over R_{p*n}, achieving near-minimal modulus.[^13]
+- **Database:** D in Z_t^N, indexed by i in [N]. Digitized into k digits in base l, so i = (i_1, ..., i_k) with each i_j in [l], where l^k >= N. Packed into (R_p)^(l^k) ring elements, each holding n * floor(log_2(p)) bits.&#8201;[^9]
+- **Public parameters (pp):** Tuple (sigma, pi, k, l, n, q, B, p, N, t) -- just the PRG seed and basic parameters. Fits in a few hundred bits.&#8201;[^10]
+- **Server parameters (sp):** Precomputed rotations from Algorithm 2 (all outputs of iterative PreSwitch), the PRG-expanded switching key elements, and the server's copy of the database. Computed once and reused across all queries.&#8201;[^11]
+- **Query (qry):** Tuple (c_0, {b'_i}_{i=0}^{w-1}) -- one ciphertext component c_0 in R_q plus w switching key elements in R_q, where w = ceil(log_B(q)). Total size is (w+1) ring elements over R_q.&#8201;[^12]
+- **Response (ans):** A non-compact BGV ciphertext with k+1 components: (m + p*e - sum_{i=1}^{k} a_i * s^i, a_1, ..., a_k). After modulus switching, each component is over R_{p*n}, achieving near-minimal modulus.&#8201;[^13]
 
 [^9]: Section 3.1 (p.6): "Our first step is to digitize this index space with respect to some digit l, such that l^k >= N. We can now write an index i in [N] as k digits i_1, ..., i_k, i_j in [l]."
 
@@ -76,10 +76,10 @@ WhisPIR is a fully stateless single-server PIR protocol that achieves low per-qu
 
 ### Database Encoding
 
-- **Representation:** k-dimensional hypercube of dimensions [l] x [l] x ... x [l] (k times), where l is the digit base and l^k >= N.[^14]
-- **Record addressing:** Each index i in [N] represented as k digits (i_1, ..., i_k) in base l. Each digit encoded as a length-l one-hot binary vector, concatenated across k sets to form a k*l binary vector.[^15]
-- **Preprocessing required:** Database elements packed into R_p ring elements. For entries smaller than n * floor(log_2(p)) bits, multiple entries share one ring element. Server precomputes all iterative rotations (Algorithm 2) once.[^16]
-- **Record size equation:** Each R_p element encodes n * floor(log_2(p)) bits. For log(p)=1 (binary), each element holds n bits = 512 bytes (n=4096). For log(p)=8, each element holds 8n bits = 4096 bytes (n=4096).[^17]
+- **Representation:** k-dimensional hypercube of dimensions [l] x [l] x ... x [l] (k times), where l is the digit base and l^k >= N.&#8201;[^14]
+- **Record addressing:** Each index i in [N] represented as k digits (i_1, ..., i_k) in base l. Each digit encoded as a length-l one-hot binary vector, concatenated across k sets to form a k*l binary vector.&#8201;[^15]
+- **Preprocessing required:** Database elements packed into R_p ring elements. For entries smaller than n * floor(log_2(p)) bits, multiple entries share one ring element. Server precomputes all iterative rotations (Algorithm 2) once.&#8201;[^16]
+- **Record size equation:** Each R_p element encodes n * floor(log_2(p)) bits. For log(p)=1 (binary), each element holds n bits = 512 bytes (n=4096). For log(p)=8, each element holds 8n bits = 4096 bytes (n=4096).&#8201;[^17]
 
 [^14]: Section 3.1 (p.6): "We view the database as consisting of N = l^k elements of R_p."
 
@@ -109,7 +109,7 @@ WhisPIR is a fully stateless single-server PIR protocol that achieves low per-qu
 | c_0 (message term) | R_q element | n * ceil(log_2(q)) bits | Encrypted index: first component of BGV ciphertext encoding the k*l one-hot index vector |
 | {b'_i}_{i=0}^{w-1} | w R_q elements | w * n * ceil(log_2(q)) bits | Switching key tuples: enable server to perform automorphisms for index expansion without the client's secret key |
 
-Total upload size = (w+1) * n * ceil(log_2(q)) / 8 bytes, where w = ceil(log_B(q)).[^18]
+Total upload size = (w+1) * n * ceil(log_2(q)) / 8 bytes, where w = ceil(log_B(q)).&#8201;[^18]
 
 [^18]: Section 3.1 (p.6): "As long as k*l <= n/2, this digit fits in a single BGV ciphertext... many encrypted indices can be sent along with the query if the application allows a client to perform a batch of queries at once."
 
@@ -127,16 +127,16 @@ Total upload size = (w+1) * n * ceil(log_2(q)) / 8 bytes, where w = ceil(log_B(q
 
 ### Non-Compact BGV: Key Innovation
 
-Standard BGV ciphertexts have 2 components (c_0, c_1) in R_q^2. After multiplying two such ciphertexts, the result has 3 components (c_0, c_1, c_2) in R_q^3, requiring a relinearization step to reduce back to 2 components. Relinearization requires a relinearization key of size comparable to the switching key.[^19]
+Standard BGV ciphertexts have 2 components (c_0, c_1) in R_q^2. After multiplying two such ciphertexts, the result has 3 components (c_0, c_1, c_2) in R_q^3, requiring a relinearization step to reduce back to 2 components. Relinearization requires a relinearization key of size comparable to the switching key.&#8201;[^19]
 
-WhisPIR's insight is to skip relinearization entirely. After k levels of homomorphic multiplication, the ciphertext has k+1 components: ct = (m + p*e - sum_{i=1}^{k} a_i * s^i, a_1, ..., a_k). This "non-compact" ciphertext is still decryptable -- the client evaluates the polynomial in s to recover the message.[^20] The savings are twofold:
+WhisPIR's insight is to skip relinearization entirely. After k levels of homomorphic multiplication, the ciphertext has k+1 components: ct = (m + p*e - sum_{i=1}^{k} a_i * s^i, a_1, ..., a_k). This "non-compact" ciphertext is still decryptable -- the client evaluates the polynomial in s to recover the message.&#8201;[^20] The savings are twofold:
 
 [^19]: Section 2.2 (p.4): "In the full instantiation of BGV, a relinearization operation reduces the degree of the ciphertext back to a linear function of the secret key."
 
 [^20]: Section 3.3 (p.8): Non-compact ciphertext form: (m + p*e - sum a_i * s^i, a_1, ..., a_k). "By not relinearizing, we save on communicating the relinearization key, which is as large as the rotation switching key."
 
-1. **No relinearization key needed:** The relinearization key would be as large as the rotation switching key, roughly doubling the upload. Eliminating it saves a factor of ~k in ring elements per response but removes one key from upload.[^21]
-2. **Smaller response after modulus switching:** The non-compact response has k+1 components but each is over a very small modulus (roughly p*n after switching), so total response size is (k+1)*n*ceil(log_2(p*n)) bits.[^22]
+1. **No relinearization key needed:** The relinearization key would be as large as the rotation switching key, roughly doubling the upload. Eliminating it saves a factor of ~k in ring elements per response but removes one key from upload.&#8201;[^21]
+2. **Smaller response after modulus switching:** The non-compact response has k+1 components but each is over a very small modulus (roughly p*n after switching), so total response size is (k+1)*n*ceil(log_2(p*n)) bits.&#8201;[^22]
 
 [^21]: Section 3.3 (p.8): "By not relinearizing, we save on communicating the relinearization key, which is as large as the rotation switching key, at the cost of growing the number of ring elements in the resulting ciphertext by roughly a factor of k."
 
@@ -153,9 +153,9 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 | Phase | Noise parameter | Growth type | Notes |
 |-------|----------------|-------------|-------|
 | Fresh encryption | \|\|e\|\|_inf <= B_chi (bound on chi samples) | -- | chi is discrete Gaussian with std dev sigma |
-| Key switching (one rotation) | \|\|e'\|\|_inf <= gamma_R * B_chi * B * w | additive | B = decomposition base, w = ceil(log_B(q)); each switching adds noise bounded by gamma_R * B_chi * B * w[^23] |
+| Key switching (one rotation) | \|\|e'\|\|_inf <= gamma_R * B_chi * B * w | additive | B = decomposition base, w = ceil(log_B(q)); each switching adds noise bounded by gamma_R * B_chi * B * w&#8201;[^23] |
 | Index expansion (all rotations) | Accumulated from ~total_rotations key switches | additive | Total rotations depend on generator choice (Table 1) |
-| Homomorphic multiplication (plaintext-ct) | \|\|e'\|\|_inf <= p * gamma_R * \|\|m\|\|_inf * \|\|e\|\|_inf | multiplicative | First level only; plaintext operand is DB element[^24] |
+| Homomorphic multiplication (plaintext-ct) | \|\|e'\|\|_inf <= p * gamma_R * \|\|m\|\|_inf * \|\|e\|\|_inf | multiplicative | First level only; plaintext operand is DB element&#8201;[^24] |
 | Homomorphic multiplication (ct-ct) | \|\|e'\|\|_inf <= p * (\|\|e\|\| + \|\|e'\|\| + gamma_R * \|\|e\|\| * \|\|e'\|\|) | multiplicative | Equation (1), p.4; subsequent k-1 levels |
 | Modulus switching | \|\|e'\|\|_inf <= q_2/q_1 * noise + p * gamma_R * \|\|s\|\|_inf | additive (rounding) | Lemma A.1 (p.14); reduces modulus from q to ~p*n |
 
@@ -163,7 +163,7 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 
 [^24]: Section 2.2 (p.4): EvalMultPlain noise: "||e'|| <= gamma_R * ||m|| * ||e|| < p*sqrt(n)*||e||" when using Euclidean norm.
 
-- **Correctness condition:** ||e||_inf < q/p (equivalently, noise term in ct(sk) = m + p*e must satisfy the bound for mod-p reduction to recover m)[^25]
+- **Correctness condition:** ||e||_inf < q/p (equivalently, noise term in ct(sk) = m + p*e must satisfy the bound for mod-p reduction to recover m)&#8201;[^25]
 - **Independence heuristic used?** No explicit heuristic stated; worst-case bounds used throughout.
 - **Dominant noise source:** Homomorphic multiplications in the depth-k database scan (ciphertext-ciphertext multiplications at depth >= 2)
 
@@ -181,7 +181,7 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 | Response size (download) | ~200--1200 KB (depends on p, chunks, k) (approximate, from Figure 1) | Online |
 | Total communication | ~300--3000 KB (approximate, from Figures 2, 4) | Online |
 | Server computation | ~0.5--30 s single-threaded (approximate, from Figures 2, 4; varies with DB size and param settings) | Online |
-| Client computation | "A few dozen milliseconds regardless of the database size" (key generation, encryption, decryption)[^26] | Online |
+| Client computation | "A few dozen milliseconds regardless of the database size" (key generation, encryption, decryption)&#8201;[^26] | Online |
 
 [^26]: Section 4 (p.10): "The client's computation consists only of key generation, encryption and decryption, which take only a few dozen milliseconds regardless of the database size."
 
@@ -190,9 +190,9 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 | Metric | Value | Phase |
 |--------|-------|-------|
 | Public parameters | O(λ) bits (~few hundred bits) | Setup (once) |
-| Multiplicative depth | k (= number of hypercube dimensions, typically 3--4)[^27] | -- |
+| Multiplicative depth | k (= number of hypercube dimensions, typically 3--4)&#8201;[^27] | -- |
 | Ring dimension n | 2^12 = 4096 or 2^13 = 8192 | -- |
-| Ciphertext modulus q | Fits in two 64-bit machine words (~110 bits)[^28] | -- |
+| Ciphertext modulus q | Fits in two 64-bit machine words (~110 bits)&#8201;[^28] | -- |
 
 [^27]: Section 3.1 (p.6): "After this packing has been performed... we view the database as consisting of N = l^k elements of R_p, and each multiplication reduces the dimension of the remaining database by a factor of l."
 
@@ -204,15 +204,15 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 
 | Optimization | Known/Novel | Source | Improvement | Applicable to |
 |-------------|-------------|--------|-------------|---------------|
-| **Optimal generator selection** for index expansion | Novel | This paper (Section 3.2) | 2--50x reduction in total rotations vs naive choice of generator[^29] | Any PIR scheme using single-key oblivious expansion over Z_{2n}* |
-| **Iterative precomputed key switching** ("rotate the key, not the ciphertext") | Novel | This paper (Section 3.2, Algorithms 2--3) | ~4x computation saving per switching key inner product; enables lazy modular reduction and SIMD vectorization[^30] | Any BGV/BFV scheme computing iterated automorphisms |
-| **Non-compact BGV** (skip relinearization) | Novel application | This paper (Section 3.3); non-compact HE is known but novel in PIR context | Eliminates relinearization key from upload (~halves key upload); reduces response modulus to ~p*n[^31] | Any low-depth BGV/BFV PIR where multiplicative depth k <= 4 |
-| **Splitting the index into multiple ciphertexts** | Novel | This paper (Section 3.5) | Order-of-magnitude reduction in index expansion rotations; reduces index representation from k*l to k*l/c per ciphertext[^32] | Any PIR using index expansion with automorphisms |
-| **Increasing plaintext modulus p** (ciphertext rate tuning) | Known | Standard BGV/BFV technique | Reduces number of R_p elements needed to represent DB; trades noise budget for fewer DB multiplications[^33] | Any ring-based PIR with DB scan phase |
-| **Database chunking** (splitting DB into c chunks) | Known | Standard PIR technique (SealPIR, OnionPIR) | Reduces index space by factor c; increases download by factor c; large net computation reduction[^34] | Any single-server PIR |
-| **PRG seed compression** for switching key | Known | Standard technique (Galbraith et al.) | Replaces random ring elements with PRG output; reduces upload[^35] | Any lattice-based PIR with evaluation keys |
-| **Precomputing top coefficient a_k** | Novel | This paper (Section 3.3) | ~2x server computation reduction during DB scan (precompute a_k from fixed DB)[^36] | WhisPIR and similar non-compact schemes with stable DB |
-| **Hoisting-style decomposition** (decompose over full modulus) | Known | [JVC18, LMRSW23] | Makes non-standard basis decomposition over RNS-unfriendly modulus optimal for single-key setting[^37] | Schemes with non-RNS-friendly key switching |
+| **Optimal generator selection** for index expansion | Novel | This paper (Section 3.2) | 2--50x reduction in total rotations vs naive choice of generator&#8201;[^29] | Any PIR scheme using single-key oblivious expansion over Z_{2n}* |
+| **Iterative precomputed key switching** ("rotate the key, not the ciphertext") | Novel | This paper (Section 3.2, Algorithms 2--3) | ~4x computation saving per switching key inner product; enables lazy modular reduction and SIMD vectorization&#8201;[^30] | Any BGV/BFV scheme computing iterated automorphisms |
+| **Non-compact BGV** (skip relinearization) | Novel application | This paper (Section 3.3); non-compact HE is known but novel in PIR context | Eliminates relinearization key from upload (~halves key upload); reduces response modulus to ~p*n&#8201;[^31] | Any low-depth BGV/BFV PIR where multiplicative depth k <= 4 |
+| **Splitting the index into multiple ciphertexts** | Novel | This paper (Section 3.5) | Order-of-magnitude reduction in index expansion rotations; reduces index representation from k*l to k*l/c per ciphertext&#8201;[^32] | Any PIR using index expansion with automorphisms |
+| **Increasing plaintext modulus p** (ciphertext rate tuning) | Known | Standard BGV/BFV technique | Reduces number of R_p elements needed to represent DB; trades noise budget for fewer DB multiplications&#8201;[^33] | Any ring-based PIR with DB scan phase |
+| **Database chunking** (splitting DB into c chunks) | Known | Standard PIR technique (SealPIR, OnionPIR) | Reduces index space by factor c; increases download by factor c; large net computation reduction&#8201;[^34] | Any single-server PIR |
+| **PRG seed compression** for switching key | Known | Standard technique (Galbraith et al.) | Replaces random ring elements with PRG output; reduces upload&#8201;[^35] | Any lattice-based PIR with evaluation keys |
+| **Precomputing top coefficient a_k** | Novel | This paper (Section 3.3) | ~2x server computation reduction during DB scan (precompute a_k from fixed DB)&#8201;[^36] | WhisPIR and similar non-compact schemes with stable DB |
+| **Hoisting-style decomposition** (decompose over full modulus) | Known | [JVC18, LMRSW23] | Makes non-standard basis decomposition over RNS-unfriendly modulus optimal for single-key setting&#8201;[^37] | Schemes with non-RNS-friendly key switching |
 
 [^29]: Table 1 (p.7): For n=2^12, d=1024, optimal generator gives 113,664 total rotations. For d=2048, optimal generator gives 386,048 total rotations. For n=2^12, d=128, optimal gives 2,496 total rotations.
 
@@ -236,11 +236,11 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 
 ### Performance Benchmarks
 
-**Hardware:** Intel i7 core at 2.5 GHz, 32 GB RAM, Ubuntu 20, clang++ v10. Single-threaded. 128-bit security [ACC+18].[^38]
+**Hardware:** Intel i7 core at 2.5 GHz, 32 GB RAM, Ubuntu 20, clang++ v10. Single-threaded. 128-bit security [ACC+18].&#8201;[^38]
 
 [^38]: Section 4 (p.10): "We implement WhisPIR in C++, compile the code with clang++ version 10, and benchmark on a machine running Ubuntu 20 with an Intel i7 core running at 2.5 GHz and 32 GB of RAM."
 
-**Comparison baselines:** Spiral (own benchmark on same machine), SimplePIR (own benchmark on same machine, 32-byte entries), HintlessPIR (reported from [LMRSW23] at 3.0 GHz).[^39]
+**Comparison baselines:** Spiral (own benchmark on same machine), SimplePIR (own benchmark on same machine, 32-byte entries), HintlessPIR (reported from [LMRSW23] at 3.0 GHz).&#8201;[^39]
 
 [^39]: Section 4 (p.10): Footnotes 2, 3, 4 give benchmark sources. Spiral and SimplePIR run on the same machine. HintlessPIR uses reported values from LMRSW23 at 3.0 GHz.
 
@@ -315,13 +315,13 @@ All values below are approximate (extracted from charts; the paper has no benchm
 | 8 GiB | ~1--2 | ~50,000--100,000 | ~400,000--500,000 |
 | 16 GiB | ~1--2 | ~100,000+ | ~500,000+ |
 
-WhisPIR's one-time communication is negligible (only public parameters) while Spiral and SimplePIR require large offline uploads (evaluation keys and database digests, respectively).[^40]
+WhisPIR's one-time communication is negligible (only public parameters) while Spiral and SimplePIR require large offline uploads (evaluation keys and database digests, respectively).&#8201;[^40]
 
 [^40]: Section 4.2 (p.11): "Observe that nearly all of the communication in both Spiral and SimplePIR is this protocol state."
 
 #### Crossover analysis (WhisPIR vs Spiral)
 
-The number of queries before Spiral outperforms WhisPIR in total communication: ~120 queries for 1 GiB, ~58 queries for 8 GiB, ~26 queries for 16 GiB.[^41] All parameter values benchmarked for WhisPIR never allow Spiral to catch up in computation.[^42]
+The number of queries before Spiral outperforms WhisPIR in total communication: ~120 queries for 1 GiB, ~58 queries for 8 GiB, ~26 queries for 16 GiB.&#8201;[^41] All parameter values benchmarked for WhisPIR never allow Spiral to catch up in computation.&#8201;[^42]
 
 [^41]: Section 4.2 (p.12): "Solving for the minimum number of queries before Spiral outperforms WhisPIR in communication gives 120 queries for a 1 GiB database, 58 queries for an 8 GiB database, and 26 queries for a 16 GiB database."
 
@@ -333,13 +333,13 @@ The number of queries before Spiral outperforms WhisPIR in total communication: 
 
 #### Secure Blocklist Checking in E2E Encrypted Messaging
 
-WhisPIR is applied to URL blocklist checking in end-to-end encrypted messaging apps (e.g., Signal, WhatsApp).[^43]
+WhisPIR is applied to URL blocklist checking in end-to-end encrypted messaging apps (e.g., Signal, WhatsApp).&#8201;[^43]
 
 [^43]: Section 5 (p.12): "We propose using WhisPIR to allow users' applications to privately query the blocklist server to check membership of a message in the blocklist without revealing messages to this host server."
 
-- **Database:** 2^24 malicious URLs, each hashed (SHA3) to 32-byte strings, inserted into a Cuckoo hash table with two hash functions. Final DB size: ~1 GB (2x the original table due to Cuckoo hashing).[^44]
-- **Query protocol:** Client hashes received URL, computes two Cuckoo hash indices, issues one WhisPIR query for the pair of indices (batch of 2). Switching key reused across both indices. Checks if returned hashes match the URL hash.[^45]
-- **Performance (Figure 6):** WhisPIR achieves <25% of HintlessPIR's communication while coming within ~10% of HintlessPIR's computation time for this application.[^46]
+- **Database:** 2^24 malicious URLs, each hashed (SHA3) to 32-byte strings, inserted into a Cuckoo hash table with two hash functions. Final DB size: ~1 GB (2x the original table due to Cuckoo hashing).&#8201;[^44]
+- **Query protocol:** Client hashes received URL, computes two Cuckoo hash indices, issues one WhisPIR query for the pair of indices (batch of 2). Switching key reused across both indices. Checks if returned hashes match the URL hash.&#8201;[^45]
+- **Performance (Figure 6):** WhisPIR achieves <25% of HintlessPIR's communication while coming within ~10% of HintlessPIR's computation time for this application.&#8201;[^46]
 
 [^44]: Section 5 (p.13): "We determine a blocklist consisting of 2^24 entries... Each entry is a 32-byte hash, and the hash table is double the size of the input keys. This results in a database of roughly 1 GB."
 
@@ -351,13 +351,13 @@ WhisPIR is applied to URL blocklist checking in end-to-end encrypted messaging a
 
 ### Deployment Considerations
 
-- **Database updates:** Server precomputation (Algorithm 2 rotations) can be reused as long as DB size remains stable. The precomputed a_k coefficient must be updated when the DB changes, but the paper notes this is practical for most applications where updates are less frequent than queries.[^47]
+- **Database updates:** Server precomputation (Algorithm 2 rotations) can be reused as long as DB size remains stable. The precomputed a_k coefficient must be updated when the DB changes, but the paper notes this is practical for most applications where updates are less frequent than queries.&#8201;[^47]
 - **Sharding:** Not discussed explicitly, but the chunking optimization (splitting DB into c chunks) naturally supports sharding.
-- **Anonymous query support:** Yes -- fully stateless; clients are ephemeral with no persistent identity.[^48]
+- **Anonymous query support:** Yes -- fully stateless; clients are ephemeral with no persistent identity.&#8201;[^48]
 - **Session model:** Ephemeral client -- appears with only public parameters, issues one query (or batch), disappears.
-- **Cold start suitability:** Excellent -- no offline phase. A new client needs only the public parameters (a few hundred bits).[^49]
-- **Amortization crossover:** WhisPIR is preferred over Spiral when the number of queries per client is small (fewer than ~26--120 queries depending on DB size). As query count grows, Spiral's amortized offline cost eventually wins.[^50]
-- **Parallelism:** Protocol is "embarrassingly parallel" and application-dependent. All single-threaded benchmarks; parallel performance left for future work.[^51]
+- **Cold start suitability:** Excellent -- no offline phase. A new client needs only the public parameters (a few hundred bits).&#8201;[^49]
+- **Amortization crossover:** WhisPIR is preferred over Spiral when the number of queries per client is small (fewer than ~26--120 queries depending on DB size). As query count grows, Spiral's amortized offline cost eventually wins.&#8201;[^50]
+- **Parallelism:** Protocol is "embarrassingly parallel" and application-dependent. All single-threaded benchmarks; parallel performance left for future work.&#8201;[^51]
 
 [^47]: Section 3.3 (p.9): "Only in settings where the server is receiving many more updates than queries would maintaining this a_k term result in significant computational overhead."
 
@@ -373,10 +373,10 @@ WhisPIR is applied to URL blocklist checking in end-to-end encrypted messaging a
 
 ### Key Tradeoffs & Limitations
 
-- **Communication-computation tradeoff is continuous:** WhisPIR supports a wide range of operating points via parameters (c, p, B, number of index ciphertexts). The tradeoff curve has a "1/x" shape -- minimum communication is relatively slow, but an order-of-magnitude computation reduction costs only ~2x more communication.[^52]
-- **Computation not competitive with SimplePIR:** SimplePIR's plain-LWE matrix-vector multiply (~0.125s for 1 GB) remains faster, but SimplePIR's communication (126 MB per query) is prohibitive in stateless settings.[^53]
-- **Small record sizes preferred:** WhisPIR outperforms HintlessPIR in both communication and computation for entries up to ~1 KB. For 32 KB entries (8 GiB HintlessPIR benchmark), WhisPIR outperforms in communication but not computation.[^54]
-- **Ring dimension jump:** Communication jumps when the ring dimension must increase from n=2^12 to n=2^13 (at ~8--16 GiB), because each ring element doubles in size.[^55]
+- **Communication-computation tradeoff is continuous:** WhisPIR supports a wide range of operating points via parameters (c, p, B, number of index ciphertexts). The tradeoff curve has a "1/x" shape -- minimum communication is relatively slow, but an order-of-magnitude computation reduction costs only ~2x more communication.&#8201;[^52]
+- **Computation not competitive with SimplePIR:** SimplePIR's plain-LWE matrix-vector multiply (~0.125s for 1 GB) remains faster, but SimplePIR's communication (126 MB per query) is prohibitive in stateless settings.&#8201;[^53]
+- **Small record sizes preferred:** WhisPIR outperforms HintlessPIR in both communication and computation for entries up to ~1 KB. For 32 KB entries (8 GiB HintlessPIR benchmark), WhisPIR outperforms in communication but not computation.&#8201;[^54]
+- **Ring dimension jump:** Communication jumps when the ring dimension must increase from n=2^12 to n=2^13 (at ~8--16 GiB), because each ring element doubles in size.&#8201;[^55]
 - **Single-threaded benchmarks only:** Parallel scaling is not characterized.
 
 [^52]: Section 4.2 (p.11): "The general shape of the performance options for WhisPIR... is roughly a shape of 1/x."
@@ -416,9 +416,9 @@ All values approximate (chart-derived). 1 GiB database, single-threaded.
 
 ### Implementation Notes
 
-- **Language / Library:** C++ (custom implementation), compiled with clang++ v10[^56]
-- **Polynomial arithmetic:** RNS representation of RLWE modulus [GHS12, KPZ21] for ciphertext moduli larger than 64 bits[^57]
-- **SIMD / vectorization:** Lazy modular reduction combined with vectorized instructions enabled by the iterative key switching approach (Algorithm 3 is "almost entirely a single inner product over R_q")[^58]
+- **Language / Library:** C++ (custom implementation), compiled with clang++ v10&#8201;[^56]
+- **Polynomial arithmetic:** RNS representation of RLWE modulus [GHS12, KPZ21] for ciphertext moduli larger than 64 bits&#8201;[^57]
+- **SIMD / vectorization:** Lazy modular reduction combined with vectorized instructions enabled by the iterative key switching approach (Algorithm 3 is "almost entirely a single inner product over R_q")&#8201;[^58]
 - **Parallelism:** Single-threaded benchmarks; described as "embarrassingly parallel"
 - **Open source:** Not mentioned
 
@@ -432,10 +432,10 @@ All values approximate (chart-derived). 1 GiB database, single-threaded.
 
 ### Open Problems (stated by authors)
 
-- Closed-form expression for the optimal generator in the index expansion algorithm, and closed-form solutions when multiple generators are available.[^59]
-- Parallel performance characterization and optimization.[^60]
-- Determining the smallest database entry size for which WhisPIR can no longer strictly outperform HintlessPIR.[^61]
-- Fine-grained tradeoffs that make WhisPIR more Spiral-like (sending evaluation keys to reduce per-query cost) for higher query counts.[^62]
+- Closed-form expression for the optimal generator in the index expansion algorithm, and closed-form solutions when multiple generators are available.&#8201;[^59]
+- Parallel performance characterization and optimization.&#8201;[^60]
+- Determining the smallest database entry size for which WhisPIR can no longer strictly outperform HintlessPIR.&#8201;[^61]
+- Fine-grained tradeoffs that make WhisPIR more Spiral-like (sending evaluation keys to reduce per-query cost) for higher query counts.&#8201;[^62]
 
 [^59]: Section 3.2 (p.7): "We leave the development of a closed-form expression for this optimal generator... for future work."
 

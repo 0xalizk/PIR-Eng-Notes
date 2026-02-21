@@ -24,7 +24,7 @@
 
 ### Core Idea
 
-CK20 presents the first PIR protocols with *sublinear* online server time while requiring *no extra server storage* beyond the database itself. Prior work either required the server to scan the entire database per query (Omega(n) time) or required the server to store a blowup of the database in encoded form.[^2] CK20 achieves this by introducing a new cryptographic primitive called a *puncturable pseudorandom set*, which allows the client to compactly represent a pseudorandom subset S of the database that can be "punctured" at any element to hide the punctured element's identity. In the offline phase, the server precomputes parities of shifted versions of S; in the online phase, the client sends a punctured set key, and the server computes the parity of the remaining elements in sublinear time. A lower bound (Theorem 23) proves these constructions achieve the optimal communication-time tradeoff (up to polylog factors) for PIR schemes where the server stores the database unencoded.[^3]
+CK20 presents the first PIR protocols with *sublinear* online server time while requiring *no extra server storage* beyond the database itself. Prior work either required the server to scan the entire database per query (Omega(n) time) or required the server to store a blowup of the database in encoded form.&#8201;[^2] CK20 achieves this by introducing a new cryptographic primitive called a *puncturable pseudorandom set*, which allows the client to compactly represent a pseudorandom subset S of the database that can be "punctured" at any element to hide the punctured element's identity. In the offline phase, the server precomputes parities of shifted versions of S; in the online phase, the client sends a punctured set key, and the server computes the parity of the remaining elements in sublinear time. A lower bound (Theorem 23) proves these constructions achieve the optimal communication-time tradeoff (up to polylog factors) for PIR schemes where the server stores the database unencoded.&#8201;[^3]
 
 [^2]: Section 1 (p.2): "In particular, in all existing PIR schemes, the work at the servers grows linearly with the database size."
 [^3]: Section 6 (p.28): "(C+1)(T+1) = Omega-tilde(n)" for any offline/online PIR scheme with C bits of offline communication and T online server probes.
@@ -33,7 +33,7 @@ CK20 presents the first PIR protocols with *sublinear* online server time while 
 
 #### Definition 8 — Offline/Online PIR (Two-Server)
 
-An offline/online PIR scheme is a tuple Pi = (Setup, Hint, Query, Answer, Reconstruct) of five efficient algorithms:[^4]
+An offline/online PIR scheme is a tuple Pi = (Setup, Hint, Query, Answer, Reconstruct) of five efficient algorithms:&#8201;[^4]
 
 - **Setup(1^λ, n) -> (ck, q_h):** Client generates a client key ck and hint request q_h. Crucially, the client can run Setup *before* knowing which database bit to read.
 - **Hint(x, q_h) -> h:** The offline server, given database x in {0,1}^n and hint request q_h, produces a hint h.
@@ -43,14 +43,14 @@ An offline/online PIR scheme is a tuple Pi = (Setup, Hint, Query, Answer, Recons
 
 **Correctness:** For every λ, n, x in {0,1}^n, and i in [n], the probability that Reconstruct(h, a) = x_i is 1 (over all randomness).
 
-**Security:** The scheme is *epsilon-secure* if for all i, j in [n], the query distributions D_{λ,n,i} and D_{λ,n,j} have distinguishing advantage at most epsilon(λ, n). The scheme is *statistically secure* if this holds against computationally unbounded adversaries.[^5]
+**Security:** The scheme is *epsilon-secure* if for all i, j in [n], the query distributions D_{λ,n,i} and D_{λ,n,j} have distinguishing advantage at most epsilon(λ, n). The scheme is *statistically secure* if this holds against computationally unbounded adversaries.&#8201;[^5]
 
 [^4]: Definition 8 (p.17): Formal syntax of offline/online PIR.
 [^5]: Definition 8 (p.17): Security definition in terms of query distribution indistinguishability.
 
 #### Definition 40 — Multi-Query Offline/Online PIR (Appendix D)
 
-Extends Definition 8 to support polynomially many adaptive queries from a single offline phase:[^6]
+Extends Definition 8 to support polynomially many adaptive queries from a single offline phase:&#8201;[^6]
 
 - **Setup(1^λ, n) -> (ck, q_h):** As before.
 - **Hint(x, q_h) -> h:** As before.
@@ -58,20 +58,20 @@ Extends Definition 8 to support polynomially many adaptive queries from a single
 - **Answer^x(q) -> a:** As before.
 - **Reconstruct(h, a_left, a_right) -> (h', x_i):** Returns an updated hint h' and the desired bit.
 
-**Security:** Against a stateful, fully malicious adversary that controls either server and can adaptively choose query indices (Games 41, 42, p.54). The adversary sees the query to the corrupted server but learns nothing about the retrieved index.[^7]
+**Security:** Against a stateful, fully malicious adversary that controls either server and can adaptively choose query indices (Games 41, 42, p.54). The adversary sees the query to the corrupted server but learns nothing about the retrieved index.&#8201;[^7]
 
 [^6]: Definition 40 (p.52): Formal syntax of multi-query offline/online PIR.
 [^7]: Games 41-42, Fig. 3 (p.54): Left-server and right-server security games.
 
 #### Definition 46 — Single-Server Offline/Online PIR (Appendix E)
 
-Identical syntax to Definition 8 but with a single-server security notion: the joint distribution of (q_h, q) must be computationally indistinguishable across different query indices i.[^8]
+Identical syntax to Definition 8 but with a single-server security notion: the joint distribution of (q_h, q) must be computationally indistinguishable across different query indices i.&#8201;[^8]
 
 [^8]: Definition 46 (p.61): Single-server security requiring indistinguishability of the combined offline/online view.
 
 #### Relationship to standard PIR
 
-Offline/online PIR is a *strict generalization* of standard PIR: any standard two-server PIR scheme with information-theoretic security can be cast as an offline/online scheme (Remark 10), but the online server's time would be Omega(n).[^9] CK20 achieves the first offline/online constructions where the online server runs in o(n) time.
+Offline/online PIR is a *strict generalization* of standard PIR: any standard two-server PIR scheme with information-theoretic security can be cast as an offline/online scheme (Remark 10), but the online server's time would be Omega(n).&#8201;[^9] CK20 achieves the first offline/online constructions where the online server runs in o(n) time.
 
 [^9]: Remark 10 (p.18): Any two-server perfectly secure PIR scheme can be viewed as an offline/online scheme.
 
@@ -83,13 +83,13 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 |-------|--------|
 | **Name** | Puncturable pseudorandom set |
 | **Type** | Cryptographic primitive |
-| **Interface / Operations** | **Gen(1^λ, n) -> sk:** Generate key for set of size s(n) over universe [n]. **Punc(sk, i) -> sk_p:** Puncture the key at element i in Eval(sk), producing a punctured key. **Eval(sk) -> S:** Expand the key into a set S of [n] with |S| = s(n). Also: **GenWith(1^λ, n, i) -> sk:** Generate a key constrained to contain i. **Shift(sk, delta) -> sk':** Produce a key for the shifted set {x + delta mod n : x in Eval(sk)}.[^10] |
-| **Security definition** | Game 1 (p.14): Given a punctured key sk_p, the adversary guesses the punctured element x*. The guessing advantage is PSAdv\[A, Psi\](λ, n) := Pr\[A wins\] - 1/(n - s(n) + 1). A puncturable pseudorandom set is *computationally secure* if PSAdv <= negl(λ), and *perfectly secure* if PSAdv = 0 for all unbounded adversaries.[^11] |
-| **Correctness definition** | With probability 1 over Gen: (1) S in binom([n], s(n)), i.e., S is a valid s(n)-subset, and (2) for all i in S, Eval(Punc(sk, i)) = S \ {i}.[^12] |
+| **Interface / Operations** | **Gen(1^λ, n) -> sk:** Generate key for set of size s(n) over universe [n]. **Punc(sk, i) -> sk_p:** Puncture the key at element i in Eval(sk), producing a punctured key. **Eval(sk) -> S:** Expand the key into a set S of [n] with |S| = s(n). Also: **GenWith(1^λ, n, i) -> sk:** Generate a key constrained to contain i. **Shift(sk, delta) -> sk':** Produce a key for the shifted set {x + delta mod n : x in Eval(sk)}.&#8201;[^10] |
+| **Security definition** | Game 1 (p.14): Given a punctured key sk_p, the adversary guesses the punctured element x*. The guessing advantage is PSAdv\[A, Psi\](λ, n) := Pr\[A wins\] - 1/(n - s(n) + 1). A puncturable pseudorandom set is *computationally secure* if PSAdv <= negl(λ), and *perfectly secure* if PSAdv = 0 for all unbounded adversaries.&#8201;[^11] |
+| **Correctness definition** | With probability 1 over Gen: (1) S in binom([n], s(n)), i.e., S is a valid s(n)-subset, and (2) for all i in S, Eval(Punc(sk, i)) = S \ {i}.&#8201;[^12] |
 | **Purpose** | Compactly represent pseudorandom subsets of the database with the ability to privately puncture — enabling the online query to hide the target index by sending only a short punctured key instead of the full set |
-| **Built from** | Three constructions provided with increasing compactness: (1) Fact 2: Perfectly secure with linear-size keys (trivially store the set). (2) Theorem 3 / Construction 4: From puncturable PRFs (GGM-tree PRF from OWF), with keys of length O(λ log n) and punctured keys of length O(λ log n). (3) Theorem 7: From PRPs, with keys of length kappa(λ, n) and punctured keys of length s * O(log n), plus fast membership test InSet.[^13] |
-| **Standalone complexity** | Gen: O(s(n)) * poly(λ, log n). Eval: O(s(n)) * poly(λ, log n). Punc: O(s(n)) * poly(λ, log n). InSet (PRP construction only): poly(λ, log n).[^14] |
-| **Relationship to prior primitives** | Analogous to puncturable PRFs but for *sets* rather than *functions*. A puncturable PRF key allows evaluating f at all points except x*; a puncturable pseudorandom set key allows enumerating all elements of S except x*. The punctured key also hides x*. Not equivalent to DPFs: the left key can be generated before the index i is chosen, which standard DPFs cannot achieve.[^15] |
+| **Built from** | Three constructions provided with increasing compactness: (1) Fact 2: Perfectly secure with linear-size keys (trivially store the set). (2) Theorem 3 / Construction 4: From puncturable PRFs (GGM-tree PRF from OWF), with keys of length O(λ log n) and punctured keys of length O(λ log n). (3) Theorem 7: From PRPs, with keys of length kappa(λ, n) and punctured keys of length s * O(log n), plus fast membership test InSet.&#8201;[^13] |
+| **Standalone complexity** | Gen: O(s(n)) * poly(λ, log n). Eval: O(s(n)) * poly(λ, log n). Punc: O(s(n)) * poly(λ, log n). InSet (PRP construction only): poly(λ, log n).&#8201;[^14] |
+| **Relationship to prior primitives** | Analogous to puncturable PRFs but for *sets* rather than *functions*. A puncturable PRF key allows evaluating f at all points except x*; a puncturable pseudorandom set key allows enumerating all elements of S except x*. The punctured key also hides x*. Not equivalent to DPFs: the left key can be generated before the index i is chosen, which standard DPFs cannot achieve.&#8201;[^15] |
 
 [^10]: Section 2.1 (p.13): Formal definition of puncturable pseudorandom sets. Section 2.3 (p.16): GenWith and Shift extensions.
 [^11]: Game 1 (p.14): Security game for puncturable pseudorandom sets.
@@ -104,12 +104,12 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 |-------|--------|
 | **Name** | Sparse DPF |
 | **Type** | Cryptographic primitive (alternative abstraction) |
-| **Interface / Operations** | **Gen(1^λ, n) -> K_left = (k_1, ..., k_m):** Generate a family of left keys. **Choose(K_left, i) -> (j, k_right):** Given a left key family and index i in [n], choose a left key k_j and produce a right key k_right such that Eval(k_j) + Eval(k_right) = e_i. **Eval(k) -> v in F^n:** Evaluate a key into a vector.[^16] |
-| **Security definition** | The right key k_right is computationally (or statistically) indistinguishable from a simulated key Sim_right(1^λ, n), hiding the special index i.[^17] |
-| **Correctness definition** | With high probability: Eval((K_left)_j) + Eval(k_right) = e_i (the unit vector at position i).[^18] |
+| **Interface / Operations** | **Gen(1^λ, n) -> K_left = (k_1, ..., k_m):** Generate a family of left keys. **Choose(K_left, i) -> (j, k_right):** Given a left key family and index i in [n], choose a left key k_j and produce a right key k_right such that Eval(k_j) + Eval(k_right) = e_i. **Eval(k) -> v in F^n:** Evaluate a key into a vector.&#8201;[^16] |
+| **Security definition** | The right key k_right is computationally (or statistically) indistinguishable from a simulated key Sim_right(1^λ, n), hiding the special index i.&#8201;[^17] |
+| **Correctness definition** | With high probability: Eval((K_left)_j) + Eval(k_right) = e_i (the unit vector at position i).&#8201;[^18] |
 | **Purpose** | Alternative lens for viewing CK20's PIR constructions — the left keys are generated offline (independent of i), and the right key is sparse (non-zero in only s(n) positions), enabling sublinear Answer computation |
-| **Built from** | CK20's puncturable pseudorandom sets directly imply sparse DPFs. Standard DPFs (GI14) cannot achieve sparsity on both sides simultaneously (this would violate the Omega(n) server-time lower bound of BIM04).[^19] |
-| **Relationship to prior primitives** | A relaxation of standard DPFs: in standard DPFs, both keys evaluate to dense vectors; in sparse DPFs, the right key evaluates to a sparse vector, but the left key family must be generated before the index is chosen.[^20] |
+| **Built from** | CK20's puncturable pseudorandom sets directly imply sparse DPFs. Standard DPFs (GI14) cannot achieve sparsity on both sides simultaneously (this would violate the Omega(n) server-time lower bound of BIM04).&#8201;[^19] |
+| **Relationship to prior primitives** | A relaxation of standard DPFs: in standard DPFs, both keys evaluate to dense vectors; in sparse DPFs, the right key evaluates to a sparse vector, but the left key family must be generated before the index is chosen.&#8201;[^20] |
 
 [^16]: Appendix G (p.68): Formal definition of sparse DPFs.
 [^17]: Appendix G (p.68): Security property of sparse DPFs.
@@ -123,15 +123,15 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 |-------|--------|
 | **Hardness assumption** | Minimal: OWF (one-way functions) suffice for the two-server statistical variant (Theorem 11); PRG existence for the two-server computational variant (Theorem 14, Corollary 6); linearly homomorphic encryption + standard single-server PIR for the single-server LHE construction (Theorem 20); FHE for the optimal single-server variant (Theorem 22) |
 | **Key structure** | Per-client puncturable pseudorandom set keys; in the computational variant, PRG seeds replace explicit shift vectors |
-| **Correctness condition** | Pr[fail per single read] <= 1/2 (from Bernoulli sampling in Query). Amplified to 2^{-λ} by running λ parallel instances. Can be further transformed to *perfect correctness* at the cost of a negligible security loss.[^21] |
+| **Correctness condition** | Pr[fail per single read] <= 1/2 (from Bernoulli sampling in Query). Amplified to 2^{-λ} by running λ parallel instances. Can be further transformed to *perfect correctness* at the cost of a negligible security loss.&#8201;[^21] |
 
 [^21]: Appendix C.2 (p.49-50): Failure probability analysis. Each read fails when j = bottom (probability <= 1/n) or i_punc != i (probability (s-1)/n), with combined probability at most s/n <= 1/2 for s <= n/2.
 
 ### Key Data Structures
 
 - **Database:** x in {0,1}^n stored in unmodified form on both servers (two-server) or the single server. No encoding, no extra storage.
-- **Client hint (single-query):** A set key sk in K, shift vector delta = (delta_1, ..., delta_m) in [n]^m, and parity bits h = (h_1, ..., h_m) in {0,1}^m, where m = (n/s) log n. Total client storage: O(λ * kappa + (λ * n / s(n)) * log^2 n) bits.[^22]
-- **Client hint (multi-query):** m = (2n/s) log n independent set keys (sk_1, ..., sk_m) in K^m plus m parity bits. Total storage: Õ_λ(n^{1/2}) bits with s = sqrt(n).[^23]
+- **Client hint (single-query):** A set key sk in K, shift vector delta = (delta_1, ..., delta_m) in [n]^m, and parity bits h = (h_1, ..., h_m) in {0,1}^m, where m = (n/s) log n. Total client storage: O(λ * kappa + (λ * n / s(n)) * log^2 n) bits.&#8201;[^22]
+- **Client hint (multi-query):** m = (2n/s) log n independent set keys (sk_1, ..., sk_m) in K^m plus m parity bits. Total storage: Õ_λ(n^{1/2}) bits with s = sqrt(n).&#8201;[^23]
 
 [^22]: Appendix C.2 (p.50): Client storage claim for the single-query scheme.
 [^23]: Appendix D.2 (p.58): Client stores m = Õ(n^{1/2}) puncturable pseudorandom set keys.
@@ -196,12 +196,12 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 
 | Field | Detail |
 |-------|--------|
-| **Failure mode** | Two failure modes: (1) The desired index i is not covered by any shifted set (j = bottom), probability <= 1/n for m = (n/s) log n. (2) The Bernoulli coin yields b = 1 but i_punc != i_pir, probability (s-1)/n. Combined per-read failure: <= s/n <= 1/2 for s <= n/2.[^26] |
-| **Failure probability** | Per single instance: <= 1/2. After λ parallel repetitions: <= 2^{-λ}. Multi-query: union bound over T reads gives failure <= T / 2^{λ}.[^27] |
-| **Probability grows over queries?** | No for single-query (each offline phase is independent). For multi-query (Construction 44), failure probability is bounded by T / 2^{λ} where T is the number of queries, but per-query failure remains <= 1/2 per instance.[^28] |
+| **Failure mode** | Two failure modes: (1) The desired index i is not covered by any shifted set (j = bottom), probability <= 1/n for m = (n/s) log n. (2) The Bernoulli coin yields b = 1 but i_punc != i_pir, probability (s-1)/n. Combined per-read failure: <= s/n <= 1/2 for s <= n/2.&#8201;[^26] |
+| **Failure probability** | Per single instance: <= 1/2. After λ parallel repetitions: <= 2^{-λ}. Multi-query: union bound over T reads gives failure <= T / 2^{λ}.&#8201;[^27] |
+| **Probability grows over queries?** | No for single-query (each offline phase is independent). For multi-query (Construction 44), failure probability is bounded by T / 2^{λ} where T is the number of queries, but per-query failure remains <= 1/2 per instance.&#8201;[^28] |
 | **Key parameters affecting correctness** | Set size s = s(n) = sqrt(n)/2 (from Construction 4); number of shifted sets m = (n/s) log n; number of parallel repetitions λ |
 | **Proof technique** | Birthday-bound analysis for set coverage (Eq. 15, p.49): Pr[j = bottom] = (1 - s/n)^m <= e^{-log n} = 1/n. Bernoulli analysis for i_punc != i: Pr[b=1] = (s-1)/n. |
-| **Amplification** | Run λ independent instances in parallel; client succeeds if any instance succeeds. Transforms 1/2 per-read failure to 2^{-λ}.[^29] |
+| **Amplification** | Run λ independent instances in parallel; client succeeds if any instance succeeds. Transforms 1/2 per-read failure to 2^{-λ}.&#8201;[^29] |
 | **Adaptive vs non-adaptive** | Correctness holds for adaptive queries in the multi-query variant (Theorem 17, Construction 44). |
 | **Query model restrictions** | Single-query variant: one query per offline phase. Multi-query variant: polynomially many adaptive queries per offline phase. |
 
@@ -240,7 +240,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 | **Preprocessing model** | Random-access (server needs to evaluate parities of pseudorandom subsets of the database) |
 | **Client peak memory** | Õ_λ(sqrt(n)) |
 | **Number of DB passes** | Not specified (not streaming; requires random access for parity computation) |
-| **Hint refresh mechanism** | Single-query: full re-execution of offline phase. Multi-query: online hint refresh via left server -- client sends punctured key of new set, left server returns parity, client updates hint locally.[^31] |
+| **Hint refresh mechanism** | Single-query: full re-execution of offline phase. Multi-query: online hint refresh via left server -- client sends punctured key of new set, left server returns parity, client updates hint locally.&#8201;[^31] |
 
 [^31]: Section 4.1 (p.23): Hint refresh mechanism in the multi-query scheme.
 
@@ -249,13 +249,13 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 | Field | Detail |
 |-------|--------|
 | **Bound type** | Communication-time tradeoff (space-time lower bound) |
-| **Bound statement** | For any computationally secure offline/online PIR scheme where the server stores the database in unmodified form: (C + 1)(T + 1) = Omega-tilde(n), where C = offline communication bits downloaded by client, T = number of database bits probed by online server.[^32] |
+| **Bound statement** | For any computationally secure offline/online PIR scheme where the server stores the database in unmodified form: (C + 1)(T + 1) = Omega-tilde(n), where C = offline communication bits downloaded by client, T = number of database bits probed by online server.&#8201;[^32] |
 | **Variables** | C: bits the client downloads in the offline phase. T: bits of the database the online server probes. n: database size in bits. |
-| **Model assumptions** | Server stores the database in its original (unencoded) form; no extra server storage. Correctness: client recovers its bit with probability at least 1/2 + epsilon for constant epsilon. Both computational and statistical security are covered.[^33] |
-| **Proof technique** | Reduction to Yao's Box Problem (Definition 47, p.64): an offline/online PIR scheme implies an algorithm for Yao's Box Problem with C bits of advice and T queries. Applying the known lower bound for Yao's Box Problem (Theorem 48: epsilon = Õ(sqrt(C(T+1)/N))) completes the proof.[^34] |
-| **Tightness** | Tight up to polylogarithmic factors. The two-server construction of Theorem 11 (C = Õ(sqrt(n)), T = Õ(sqrt(n))) achieves (C+1)(T+1) = Õ(n). The single-server FHE construction of Theorem 22 also matches.[^35] |
+| **Model assumptions** | Server stores the database in its original (unencoded) form; no extra server storage. Correctness: client recovers its bit with probability at least 1/2 + epsilon for constant epsilon. Both computational and statistical security are covered.&#8201;[^33] |
+| **Proof technique** | Reduction to Yao's Box Problem (Definition 47, p.64): an offline/online PIR scheme implies an algorithm for Yao's Box Problem with C bits of advice and T queries. Applying the known lower bound for Yao's Box Problem (Theorem 48: epsilon = Õ(sqrt(C(T+1)/N))) completes the proof.&#8201;[^34] |
+| **Tightness** | Tight up to polylogarithmic factors. The two-server construction of Theorem 11 (C = Õ(sqrt(n)), T = Õ(sqrt(n))) achieves (C+1)(T+1) = Õ(n). The single-server FHE construction of Theorem 22 also matches.&#8201;[^35] |
 | **Matching upper bound** | Theorem 11 (two-server), Theorem 22 (single-server, with FHE) |
-| **Implications** | The lower bound holds against single-server schemes as well. It does NOT preclude schemes where the server stores an encoded database (Remark 24).[^36] |
+| **Implications** | The lower bound holds against single-server schemes as well. It does NOT preclude schemes where the server stores an encoded database (Remark 24).&#8201;[^36] |
 
 [^32]: Theorem 23 (p.28): "(C+1)(T+1) = Omega-tilde(n)" formal statement.
 [^33]: Theorem 23 (p.28): Model restrictions -- server stores DB in original form, uses no additional storage.
@@ -273,27 +273,27 @@ No implementation. Analytical estimates:
 - Online server time: sqrt(n) * poly(λ, log n)
 - Client storage: O(λ * kappa + λ * sqrt(n) * log^2 n) bits, where kappa = O(λ) (PRF key length)
 
-**Remark 12 (Concrete efficiency, p.18):** The poly(λ, log n) factors hidden in Õ notation can be made as small as O(λ * log n) with careful implementation.[^37]
+**Remark 12 (Concrete efficiency, p.18):** The poly(λ, log n) factors hidden in Õ notation can be made as small as O(λ * log n) with careful implementation.&#8201;[^37]
 
 **Single-server LHE (Theorem 20):** For n-bit database:
 - Offline: Õ_λ(n^{2/3}) communication, Õ_λ(n) server operations in group G
 - Online: Õ_λ(n^{1/3}) communication, Õ_λ(n^{2/3}) time, zero group operations
 - Client: Õ_λ(n^{2/3}) time and memory
 
-**Remark 13 (Tradeoff, p.18):** The communication-time tradeoff is continuous. For any function C(n) <= n/2, one can build a two-server scheme with C(n) bits of offline communication and Õ(n/C(n)) online server time.[^38]
+**Remark 13 (Tradeoff, p.18):** The communication-time tradeoff is continuous. For any function C(n) <= n/2, one can build a two-server scheme with C(n) bits of offline communication and Õ(n/C(n)) online server time.&#8201;[^38]
 
 [^37]: Remark 12 (p.18): "It is possible to make these hidden factors as small as O(λ * log n)."
 [^38]: Remark 13 (p.18): Trading communication for online time.
 
 ### Single-Server Construction (Theorem 20, Section 5)
 
-The single-server scheme converts the two-server construction into a single-server setting using linearly homomorphic encryption (LHE):[^39]
+The single-server scheme converts the two-server construction into a single-server setting using linearly homomorphic encryption (LHE):&#8201;[^39]
 
 1. **Offline phase (unbalanced):** The client encrypts its set S as an indicator vector v in F^{sqrt(n)} using LHE: ct_v = Enc(k, v). The server computes ct_h = ct_v * Circ(x) via an FFT-like computation in Õ_λ(n) time, exploiting the circulant structure. The client then uses batch PIR (IKOS04) to privately retrieve the m desired components of ct_h.
 
-2. **Rebalancing:** The database is partitioned into n^{1/3} buckets of size n^{2/3} each. The unbalanced scheme is run once per bucket, with the client sending a single query per bucket. This yields total communication Õ_λ(n^{2/3}) and online time Õ_λ(n^{2/3}).[^40]
+2. **Rebalancing:** The database is partitioned into n^{1/3} buckets of size n^{2/3} each. The unbalanced scheme is run once per bucket, with the client sending a single query per bucket. This yields total communication Õ_λ(n^{2/3}) and online time Õ_λ(n^{2/3}).&#8201;[^40]
 
-3. **With FHE (Theorem 22):** Using FHE instead of LHE, the client sends an encryption of the PRG seed rather than the set indicator vector. The server homomorphically evaluates the offline server's algorithm on the encrypted seed. This achieves the optimal Õ_λ(sqrt(n)) communication and time, matching the lower bound.[^41]
+3. **With FHE (Theorem 22):** Using FHE instead of LHE, the client sends an encryption of the PRG seed rather than the set indicator vector. The server homomorphically evaluates the offline server's algorithm on the encrypted seed. This achieves the optimal Õ_λ(sqrt(n)) communication and time, matching the lower bound.&#8201;[^41]
 
 [^39]: Section 5.1 (p.25-27): Proof of Theorem 20.
 [^40]: Section 5.1 (p.27): Rebalancing step using the CGKS95 technique.
@@ -311,7 +311,7 @@ Table 2 in the paper provides a comprehensive comparison. Key entries for CK20's
 | Online comm | n^{1/2} | log n | n^{1/2} | n^{1/3} | n^{1/2} | n^{0.6} | log n |
 | Extra server storage | **0** | **0** | **0** | **0** | **0** | n^{3.2} | mn |
 
-All columns omit poly(λ) factors and polylog(n) factors.[^42]
+All columns omit poly(λ) factors and polylog(n) factors.&#8201;[^42]
 
 **Key takeaway:** CK20 is the first (and, for the no-extra-storage model, optimal) construction achieving sublinear online server time without blowing up server storage. Prior approaches (BIM04, DIO01) required massive server storage (n^{3.2} or mn bits). The tradeoff is that CK20 requires a client-dependent offline phase that runs once per client (or once per query in the single-query variant).
 
@@ -343,7 +343,7 @@ All columns omit poly(λ) factors and polylog(n) factors.[^42]
 
 ### Open Problems
 
-The paper lists the following open questions (Section 7, p.29):[^43]
+The paper lists the following open questions (Section 7, p.29):&#8201;[^43]
 
 1. Is it possible to construct offline/online PIR schemes in which the client runs in total time o(n), stores o(n) bits, and has online running time polylog(n)?
 2. Does Theorem 22 (FHE-based single-server optimal scheme) follow from an assumption weaker than FHE?

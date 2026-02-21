@@ -18,13 +18,13 @@
 | **Builds on** | Piano [ZPZS24, Group D], RMS24 [Group D]; the core iPRF construction uses PRP [LR88] + a novel pseudorandom multinomial sampler (PMNS) |
 | **What changed** | Prior OO-PIR schemes (Piano, RMS24) use standard PRFs to represent hint sets, requiring the client to perform a linear Õ(r) pass over all stored hints to find one containing the queried index. Plinko replaces PRFs with invertible PRFs (iPRFs), enabling Õ(1) hint searching and Õ(1) worst-case database updates. |
 | **Superseded by** | N/A |
-| **Concurrent work** | LP24 (Lazzaretti-Papamanthou, USENIX Security 2024) and FLLP24/ThorPIR (Fisch et al.) independently achieve efficient updates, but use 2-server or public-key operations respectively[^1] |
+| **Concurrent work** | LP24 (Lazzaretti-Papamanthou, USENIX Security 2024) and FLLP24/ThorPIR (Fisch et al.) independently achieve efficient updates, but use 2-server or public-key operations respectively&#8201;[^1] |
 
 [^1]: Section 1 (p.5): "We note that independent, concurrent work [LP24, FLLP24] additionally achieves efficient updates, but uses different techniques from us. Their work either uses 2 servers [LP24] or public-key operations [FLLP24]."
 
 ### Core Idea
 
-Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve sub-linear query time t = Õ(r + n/r) where r is client storage, but always require Õ(r) client time to search for a relevant hint among the client's r stored hints.[^2] This means the total query time is Õ(r + n/r), which is only optimal when r = O(sqrt(n)). Plinko introduces a novel cryptographic primitive called an invertible pseudorandom function (iPRF) that allows the client to efficiently invert the PRF used for hint generation, finding all hints containing a given index x in Õ(1) time.[^3] This reduces total query time to Õ(n/r) for any choice of client storage r, matching the known lower bound r * t = Omega(n) up to polylogarithmic factors for all parameterizations.[^4] As a direct consequence, the iPRF inversion also enables worst-case Õ(1) database updates, since the client can immediately identify all hints affected by a changed entry.[^5]
+Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve sub-linear query time t = Õ(r + n/r) where r is client storage, but always require Õ(r) client time to search for a relevant hint among the client's r stored hints.&#8201;[^2] This means the total query time is Õ(r + n/r), which is only optimal when r = O(sqrt(n)). Plinko introduces a novel cryptographic primitive called an invertible pseudorandom function (iPRF) that allows the client to efficiently invert the PRF used for hint generation, finding all hints containing a given index x in Õ(1) time.&#8201;[^3] This reduces total query time to Õ(n/r) for any choice of client storage r, matching the known lower bound r * t = Omega(n) up to polylogarithmic factors for all parameterizations.&#8201;[^4] As a direct consequence, the iPRF inversion also enables worst-case Õ(1) database updates, since the client can immediately identify all hints affected by a changed entry.&#8201;[^5]
 
 [^2]: Section 2, "Hint Searching" (p.7): "Unfortunately one drawback of the above scheme is elided in the brief description that the client will 'find a hint set containing x,' which itself will depend on the set representation."
 
@@ -42,13 +42,13 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 |-------|--------|
 | **Name** | Invertible Pseudorandom Function (iPRF) |
 | **Type** | Cryptographic primitive |
-| **Interface / Operations** | (Gen, F, F^{-1}): Gen : {0,1}^* -> K (key generation); F : K x D -> R (forward evaluation, deterministic); F^{-1} : K x R -> 2^D (inversion, deterministic, returns set of all pre-images)[^6] |
-| **Security definition** | iPRF security (Definition 4.1): an adversary with oracle access to both F_k(.) and F_k^{-1}(.) cannot distinguish the pair from (R(.), R^{-1}(.)) where R is a truly random function with its true inverse. Strictly stronger than standard PRF security.[^7] |
-| **Correctness definition** | For all y in R: Pr[F_k^{-1}(y) != {x in D : F_k(x) = y}] <= negl(λ)[^8] |
+| **Interface / Operations** | (Gen, F, F^{-1}): Gen : {0,1}^* -> K (key generation); F : K x D -> R (forward evaluation, deterministic); F^{-1} : K x R -> 2^D (inversion, deterministic, returns set of all pre-images)&#8201;[^6] |
+| **Security definition** | iPRF security (Definition 4.1): an adversary with oracle access to both F_k(.) and F_k^{-1}(.) cannot distinguish the pair from (R(.), R^{-1}(.)) where R is a truly random function with its true inverse. Strictly stronger than standard PRF security.&#8201;[^7] |
+| **Correctness definition** | For all y in R: Pr[F_k^{-1}(y) != {x in D : F_k(x) = y}] <= negl(λ)&#8201;[^8] |
 | **Purpose** | Enable Õ(1) hint searching and Õ(1) worst-case database updates in OO-PIR schemes |
-| **Built from** | PRP (pseudorandom permutation) + PMNS (pseudorandom multinomial sampler); both built from OWF[^9] |
-| **Standalone complexity** | Gen: Õ(1); Forward evaluation F: Õ(1) time; Inversion F^{-1}: O(|pre-image|) time (linear in output size), with O(log m) calls to F and the PRP[^10] |
-| **Relationship to prior primitives** | Not equivalent to truncated PRPs (which have distinguishable pre-image size distributions). Not the same as the "invertible PRF" of Boneh-Kim-Wu [BKW17], which considers only injective random functions. iPRFs handle arbitrary (non-injective) mappings with varying pre-image sizes.[^11] |
+| **Built from** | PRP (pseudorandom permutation) + PMNS (pseudorandom multinomial sampler); both built from OWF&#8201;[^9] |
+| **Standalone complexity** | Gen: Õ(1); Forward evaluation F: Õ(1) time; Inversion F^{-1}: O(|pre-image|) time (linear in output size), with O(log m) calls to F and the PRP&#8201;[^10] |
+| **Relationship to prior primitives** | Not equivalent to truncated PRPs (which have distinguishable pre-image size distributions). Not the same as the "invertible PRF" of Boneh-Kim-Wu [BKW17], which considers only injective random functions. iPRFs handle arbitrary (non-injective) mappings with varying pre-image sizes.&#8201;[^11] |
 
 [^6]: Definition 4.1 (p.10): "An invertible pseudorandom function (iPRF) from domain D to range R with keyspace K is a triple of efficiently computable functions: a randomized key generation function Gen, a deterministic function F : K x D -> R, and a deterministic function F^{-1} : K x R -> 2^D."
 
@@ -68,12 +68,12 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 |-------|--------|
 | **Name** | Pseudorandom Multinomial Sampler (PMNS) |
 | **Type** | Cryptographic primitive (intermediate building block for iPRF) |
-| **Interface / Operations** | (Gen, S, S^{-1}): Gen : {0,1}^* -> K (encoding generation); S : K x [n] -> [m] (forward: which bin does ball x land in?); S^{-1} : K x [m] -> 2^{[n]} (inverse: which balls landed in bin y?)[^12] |
-| **Security definition** | PMNS security (Definition 4.3): the inverse oracle S^{-1}(k,.) is computationally indistinguishable from the inverse of a true multinomial distribution MN(n,m), which models throwing n balls into m bins uniformly at random[^13] |
+| **Interface / Operations** | (Gen, S, S^{-1}): Gen : {0,1}^* -> K (encoding generation); S : K x [n] -> [m] (forward: which bin does ball x land in?); S^{-1} : K x [m] -> 2^{[n]} (inverse: which balls landed in bin y?)&#8201;[^12] |
+| **Security definition** | PMNS security (Definition 4.3): the inverse oracle S^{-1}(k,.) is computationally indistinguishable from the inverse of a true multinomial distribution MN(n,m), which models throwing n balls into m bins uniformly at random&#8201;[^13] |
 | **Correctness definition** | For all y in [m]: Pr[S^{-1}(k,y) != {x in [n] : S(k,x) = y}] <= negl(λ) |
 | **Purpose** | Provides a PRF-like function whose pre-image distribution matches that of a random function (multinomial distribution), unlike truncated PRPs which have uniform pre-image sizes |
-| **Built from** | A binary tree of pseudorandom binomial samples seeded by a PRF F(k, node). At each tree node, Binomial(count, p; F(k, node)) decides how many balls go left vs. right. The tree has depth ceil(log m).[^14] |
-| **Standalone complexity** | Forward and inverse evaluation: O(log m) time, O(log m) calls to the seeding function F[^15] |
+| **Built from** | A binary tree of pseudorandom binomial samples seeded by a PRF F(k, node). At each tree node, Binomial(count, p; F(k, node)) decides how many balls go left vs. right. The tree has depth ceil(log m).&#8201;[^14] |
+| **Standalone complexity** | Forward and inverse evaluation: O(log m) time, O(log m) calls to the seeding function F&#8201;[^15] |
 
 [^12]: Definition 4.2 (p.11): "A multinomial sampler (MNS) for MN(n,m) with encoding space K is a triple of efficiently computable functions."
 
@@ -87,10 +87,10 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 | Layer | Detail |
 |-------|--------|
-| **Hardness assumption** | Existence of one-way functions (OWF) — the minimal assumption for computational PIR with preprocessing[^16] |
-| **Primitives used** | PRF (from OWF via GGM [GGM84]); PRP (from PRF via Luby-Rackoff [LR88]); small-domain PRP (e.g., Sometimes-Recurse Shuffle [MR14] for O(log n) calls to underlying PRF)[^17]; PMNS (from PRF, this paper) |
+| **Hardness assumption** | Existence of one-way functions (OWF) — the minimal assumption for computational PIR with preprocessing&#8201;[^16] |
+| **Primitives used** | PRF (from OWF via GGM [GGM84]); PRP (from PRF via Luby-Rackoff [LR88]); small-domain PRP (e.g., Sometimes-Recurse Shuffle [MR14] for O(log n) calls to underlying PRF)&#8201;[^17]; PMNS (from PRF, this paper) |
 | **Key structure** | Per-client: master PRF key msk generates n/r per-block iPRF keys K[alpha] = PRF(msk, alpha). Each iPRF key itself is a pair (k1, k2) = (PRP key, PMNS encoding). |
-| **Correctness condition** | Pr[fail] <= negl(λ); correctness is inherited from RMS24/Piano since iPRFs are computationally indistinguishable from random functions[^18] |
+| **Correctness condition** | Pr[fail] <= negl(λ); correctness is inherited from RMS24/Piano since iPRFs are computationally indistinguishable from random functions&#8201;[^18] |
 
 [^16]: Section 1, "New Single-Server PIR with Optimal Trade-off Curve" (p.4): "Even more interesting is that we achieve this trade-off without the use of public-key cryptography, because Plinko only requires the existence of one-way functions."
 
@@ -100,11 +100,11 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 ### Key Data Structures
 
-- **Database:** n entries of B bits each, partitioned into c = n/w blocks of w consecutive entries each, where w is the block size parameter. Index i is decomposed as i = alpha * w + beta, where alpha is the block index and beta is the intra-block offset.[^19]
-- **Regular hint table H:** λ * w entries stored in H[0], ..., H[λ*w - 1]. Each entry H[j] = (P_j, p_j) consists of a partition P_j (subset of c/2 + 1 blocks) and a parity p_j (XOR of selected entries).[^20]
-- **Backup hint table T:** q entries stored in T[λ*w], ..., T[λ*w + q - 1]. Each entry T[j] = (B_j, ell_j, r_j) consists of a block subset B_j of size c/2, plus two parities ell_j and r_j (XOR of entries at iPRF-chosen offsets within B_j and its complement).[^21]
-- **Cache Q:** Hash table storing results of previously queried indices, to handle repeated queries.[^22]
-- **iPRF keys K[alpha]:** One iPRF key per block (alpha in [c]), derived from a master key via PRF. Maps hint indices to intra-block offsets. Forward: iF.F(K[alpha], j) gives the offset for hint j in block alpha. Inverse: iF.F^{-1}(K[alpha], beta) returns all hint indices that chose offset beta in block alpha.[^23]
+- **Database:** n entries of B bits each, partitioned into c = n/w blocks of w consecutive entries each, where w is the block size parameter. Index i is decomposed as i = alpha * w + beta, where alpha is the block index and beta is the intra-block offset.&#8201;[^19]
+- **Regular hint table H:** λ * w entries stored in H[0], ..., H[λ*w - 1]. Each entry H[j] = (P_j, p_j) consists of a partition P_j (subset of c/2 + 1 blocks) and a parity p_j (XOR of selected entries).&#8201;[^20]
+- **Backup hint table T:** q entries stored in T[λ*w], ..., T[λ*w + q - 1]. Each entry T[j] = (B_j, ell_j, r_j) consists of a block subset B_j of size c/2, plus two parities ell_j and r_j (XOR of entries at iPRF-chosen offsets within B_j and its complement).&#8201;[^21]
+- **Cache Q:** Hash table storing results of previously queried indices, to handle repeated queries.&#8201;[^22]
+- **iPRF keys K[alpha]:** One iPRF key per block (alpha in [c]), derived from a master key via PRF. Maps hint indices to intra-block offsets. Forward: iF.F(K[alpha], j) gives the offset for hint j in block alpha. Inverse: iF.F^{-1}(K[alpha], beta) returns all hint indices that chose offset beta in block alpha.&#8201;[^23]
 
 [^19]: Section 5.2 (p.21): "The set [n] of the indices of the database is partitioned into c := n/w blocks of w consecutive indices."
 
@@ -134,11 +134,11 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 | Field | Detail |
 |-------|--------|
 | **Failure mode** | A queried index x is not covered by any unused hint in H (all hints containing x have been consumed or none exist) |
-| **Failure probability** | Pr[fail] <= negl(λ); each hint independently includes x with probability O(1/w), and there are λ*w + q = Õ(r) hints total[^24] |
+| **Failure probability** | Pr[fail] <= negl(λ); each hint independently includes x with probability O(1/w), and there are λ*w + q = Õ(r) hints total&#8201;[^24] |
 | **Probability grows over queries?** | Yes -- hints are consumed per query; bounded by q queries per offline phase |
 | **Probability grows over DB mutations?** | No -- updates modify hint parities in place without changing the hint structure |
 | **Key parameters affecting correctness** | λ (security parameter), w (block size), q (backup count), r (client storage) |
-| **Proof technique** | Chernoff bound on the number of hints containing any given entry. Expected number of hints containing x is Õ(r/w) = Õ(1). By Chernoff, at most Õ(1) hints contain x except with probability 2^{-λ - log n}. Union bound over all n entries gives negligible failure probability.[^25] |
+| **Proof technique** | Chernoff bound on the number of hints containing any given entry. Expected number of hints containing x is Õ(r/w) = Õ(1). By Chernoff, at most Õ(1) hints contain x except with probability 2^{-λ - log n}. Union bound over all n entries gives negligible failure probability.&#8201;[^25] |
 | **Amplification** | Not needed; failure is already negligible |
 | **Adaptive vs non-adaptive** | Correctness holds for adaptive queries (up to Q queries per window) |
 | **Query model restrictions** | At most q queries per offline phase; repeated queries served from Cache |
@@ -153,11 +153,11 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
-| Query upload (communication) | Õ(n/r) bits[^26] | N/A (no implementation) | Online |
+| Query upload (communication) | Õ(n/r) bits&#8201;[^26] | N/A (no implementation) | Online |
 | Response (communication) | Õ(n/r) bits | N/A (no implementation) | Online |
-| Server computation | Õ(n/r)[^27] | N/A (no implementation) | Online |
-| Client computation (query) | Õ(n/r)[^28] | N/A (no implementation) | Online |
-| Total query time (client + server) | Õ(n/r)[^29] | N/A (no implementation) | Online |
+| Server computation | Õ(n/r)&#8201;[^27] | N/A (no implementation) | Online |
+| Client computation (query) | Õ(n/r)&#8201;[^28] | N/A (no implementation) | Online |
+| Total query time (client + server) | Õ(n/r)&#8201;[^29] | N/A (no implementation) | Online |
 
 [^26]: Theorem 5.3 (p.20): "Each online query uses Õ(n/r) bits of communication."
 
@@ -171,10 +171,10 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
-| Client hint storage | Õ(r) bits[^30] | N/A (no implementation) | Persistent |
-| Offline phase time | Õ(n)[^31] | N/A (no implementation) | Per window of q queries |
-| Offline communication | O(n) bits (streaming download)[^32] | N/A (no implementation) | Per window of q queries |
-| Amortization window | q queries (parameterizable; think of q = Õ(r))[^33] | N/A (no implementation) | -- |
+| Client hint storage | Õ(r) bits&#8201;[^30] | N/A (no implementation) | Persistent |
+| Offline phase time | Õ(n)&#8201;[^31] | N/A (no implementation) | Per window of q queries |
+| Offline communication | O(n) bits (streaming download)&#8201;[^32] | N/A (no implementation) | Per window of q queries |
+| Amortization window | q queries (parameterizable; think of q = Õ(r))&#8201;[^33] | N/A (no implementation) | -- |
 
 [^30]: Theorem 5.3 (p.20): "The client uses Õ(r) memory."
 
@@ -191,7 +191,7 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 | **Preprocessing model** | Streaming (single-pass over DB) |
 | **Client peak memory** | Õ(r) |
 | **Number of DB passes** | 1 |
-| **Hint refresh mechanism** | Pipelining: client streams n/q entries per query to build a replacement hint set in the background. After q queries the new set is ready.[^34] |
+| **Hint refresh mechanism** | Pipelining: client streams n/q entries per query to build a replacement hint set in the background. After q queries the new set is ready.&#8201;[^34] |
 
 [^34]: Section 5.2 (p.22): "More recent works [ZPZS24, RMS24] propose amortizing the offline phase by streaming n/q = Õ(n/r) database entries following each query... this does not increase query time or communication as each query already uses Õ(n/r) communication and time."
 
@@ -199,12 +199,12 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Cost per DB update (worst-case) | Õ(1) client time (polylog(n)) | Via single iPRF inversion to find all affected hints[^35] |
+| Cost per DB update (worst-case) | Õ(1) client time (polylog(n)) | Via single iPRF inversion to find all affected hints&#8201;[^35] |
 | Cost per DB update (amortized) | Õ(1) | Same as worst-case -- no amortization needed |
-| Communication per update | O(log n) bits | Server sends (index, old XOR new) to client[^36] |
+| Communication per update | O(log n) bits | Server sends (index, old XOR new) to client&#8201;[^36] |
 | Aggregation threshold | None -- each update is processed individually | |
-| Deletion semantics | Weak (overwrite with zero or canonical value)[^37] | |
-| Supported mutation types | Modify (update entry value). Insert/delete via cuckoo hashing reduction to keyword-PIR or via zeroed-entry approach.[^38] | |
+| Deletion semantics | Weak (overwrite with zero or canonical value)&#8201;[^37] | |
+| Supported mutation types | Modify (update entry value). Insert/delete via cuckoo hashing reduction to keyword-PIR or via zeroed-entry approach.&#8201;[^38] | |
 
 [^35]: Section 5.2, "Update Algorithm" (p.22): "The client can perform an iPRF inversion, like when querying x, to enumerate hints which have x in them and update the corresponding parities."
 
@@ -221,7 +221,7 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 | **Update types supported** | Modify (primary). Insert/Delete via reduction to keyword-PIR or zeroed-entry approach. |
 | **Who initiates updates** | Server unilaterally: server modifies DB[i] and sends delta to client |
 | **Consistency model** | Immediate -- client updates affected hints upon receiving delta |
-| **Impact on hints** | Each update affects Õ(1) hints in expectation and with high probability. Client identifies affected hints via iPRF inversion at the updated index.[^39] |
+| **Impact on hints** | Each update affects Õ(1) hints in expectation and with high probability. Client identifies affected hints via iPRF inversion at the updated index.&#8201;[^39] |
 | **Re-preprocessing trigger** | After q queries (hint exhaustion), not triggered by updates |
 
 [^39]: Section 2, "Efficient Database Updates" (p.8): "Our efficient hint searching algorithm has the benefit of not only giving one candidate hint but all hints that contain the specified index. So, when a client is told to perform an update, they can just do a single call to the iPRF in use, find the hints containing the index, and then update those parities immediately."
@@ -233,7 +233,7 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 | **Plinko (RMS24-based)** | Primary construction; modifies RMS24 by replacing PRFs with iPRFs | RMS24 | Õ(n/r) | Õ(1) |
 | **Plinko-Piano** | Alternative construction applying iPRFs to Piano [ZPZS24] instead of RMS24 | Piano [ZPZS24] | Õ(n/r) | Õ(1) |
 
-The Plinko-Piano variant (Appendix B) uses Piano's set structure (sets of size n/w with one element per block) but replaces PRF evaluations with iPRF evaluations. The main idea is the same: iPRF inversion enables fast hint searching and efficient updates.[^40]
+The Plinko-Piano variant (Appendix B) uses Piano's set structure (sets of size n/w with one element per block) but replaces PRF evaluations with iPRF evaluations. The main idea is the same: iPRF inversion enables fast hint searching and efficient updates.&#8201;[^40]
 
 [^40]: Appendix B (p.30): "In this section, we show how we can use invertible PRFs (iPRFs) to improve the client-side computation for queries and updates in Piano [ZPZS24]."
 
@@ -242,11 +242,11 @@ The Plinko-Piano variant (Appendix B) uses Piano's set structure (sets of size n
 | Field | Detail |
 |-------|--------|
 | **Bound type** | Space-time tradeoff for PIR with client preprocessing |
-| **Bound statement** | r * t = Omega(n), where r is client storage and t is online query time[^41] |
+| **Bound statement** | r * t = Omega(n), where r is client storage and t is online query time&#8201;[^41] |
 | **Variables** | n = database size (bits), r = client hint storage (bits), t = total online query time |
 | **Model assumptions** | Single-server PIR with client preprocessing; adaptive adversary |
 | **Proof technique** | Established in [CK20, CHK22, Yeo23] |
-| **Tightness** | Plinko matches this bound: achieves t = Õ(n/r) for any r, giving r * t = Õ(n). Tight up to polylogarithmic factors for ALL parameterizations.[^42] |
+| **Tightness** | Plinko matches this bound: achieves t = Õ(n/r) for any r, giving r * t = Õ(n). Tight up to polylogarithmic factors for ALL parameterizations.&#8201;[^42] |
 | **Matching upper bound** | Plinko (this paper) -- first scheme to match for all r, not just r = O(sqrt(n)) |
 
 [^41]: Section 1 (p.4): Recent lower bounds show that any PIR with preprocessing scheme with client storage r and query time t must obey r * t = Omega(n) [CK20, CHK22, Yeo23] (paraphrase; exact phrasing varies slightly).
@@ -266,7 +266,7 @@ No implementation. Analytical estimates from Figure 1 (p.3) and Figure 6 (p.30),
 | GZS [GZS24] | OWF | r | r + n/r | sqrt(n/r) | sqrt(n) | sqrt(n) | log n | log n |
 | **Plinko** | **OWF** | **r** | **n/r** | **n/r** | **polylog(n)** | **polylog(n)** | **log n** | **log n** |
 
-All entries hide polylog factors. The key advantage of Plinko is visible in the Query Time column (n/r instead of r + n/r) and the Update Time columns (polylog(n) worst-case instead of sqrt(n) or n).[^43]
+All entries hide polylog factors. The key advantage of Plinko is visible in the Query Time column (n/r instead of r + n/r) and the Update Time columns (polylog(n) worst-case instead of sqrt(n) or n).&#8201;[^43]
 
 [^43]: Figure 1 (p.3): Comparison table of amortized query time and query communication for existing single-server offline/online PIR schemes, with client storage r = sqrt(n).
 
@@ -274,8 +274,8 @@ All entries hide polylog factors. The key advantage of Plinko is visible in the 
 
 | Base Scheme | Integration Point | Improvement | Limitations |
 |------------|-------------------|-------------|-------------|
-| RMS24 [Group D] | Replace PRF with iPRF in hint generation and hint searching | Client query time reduced from Õ(r + n/r) to Õ(n/r); worst-case update reduced from Õ(sqrt(n)) to Õ(1) | Requires iPRF with small domain/range security (standard truncated PRPs insufficient)[^44] |
-| Piano [ZPZS24, Group D] | Replace PRF with iPRF in hint generation and hint searching (Appendix B) | Client query time reduced from Õ(r + n/r) to Õ(n/r); worst-case update reduced from O(n) to Õ(1)[^45] | Same iPRF requirements |
+| RMS24 [Group D] | Replace PRF with iPRF in hint generation and hint searching | Client query time reduced from Õ(r + n/r) to Õ(n/r); worst-case update reduced from Õ(sqrt(n)) to Õ(1) | Requires iPRF with small domain/range security (standard truncated PRPs insufficient)&#8201;[^44] |
+| Piano [ZPZS24, Group D] | Replace PRF with iPRF in hint generation and hint searching (Appendix B) | Client query time reduced from Õ(r + n/r) to Õ(n/r); worst-case update reduced from O(n) to Õ(1)&#8201;[^45] | Same iPRF requirements |
 
 [^44]: Section 5.2 (p.23): "It is clear to see that our usage of iPRF requires security for both small domains and ranges as the number of hints is similar to the size of client storage meaning truncated PRPs cannot be used."
 
@@ -294,7 +294,7 @@ All entries hide polylog factors. The key advantage of Plinko is visible in the 
 | r * t | Õ(n) | Õ(n^{4/3}) | Õ(n^{4/3}) | Omega(n) |
 | Crypto assumption | OWF | OWF | OWF | -- |
 
-This example at r = n^{2/3} illustrates the gap that Plinko closes: prior work achieves total query time Õ(n^{2/3}) (dominated by the client's linear hint search), whereas the lower bound only requires Omega(n^{1/3}). Plinko matches the lower bound.[^46]
+This example at r = n^{2/3} illustrates the gap that Plinko closes: prior work achieves total query time Õ(n^{2/3}) (dominated by the client's linear hint search), whereas the lower bound only requires Omega(n^{1/3}). Plinko matches the lower bound.&#8201;[^46]
 
 [^46]: Section 1 (p.4): "For example, when r = O(n^{2/3}), prior works require query times of t = Õ(n^{2/3}) whereas the lower bound specifies query time only need be as large as Omega(n^{1/3})."
 
@@ -307,7 +307,7 @@ This example at r = n^{2/3} illustrates the gap that Plinko closes: prior work a
 | Worst-case update comm. | O(log n) | Bn | B * log n | O(n) |
 | Amortized update comm. | O(log n) | B * log n | B * log n | O(log n) |
 
-Plinko achieves logarithmic worst-case for both time and communication, matching what the Bentley-Saxe approach achieves only in the amortized case.[^47]
+Plinko achieves logarithmic worst-case for both time and communication, matching what the Bentley-Saxe approach achieves only in the amortized case.&#8201;[^47]
 
 [^47]: Figure 2 (p.3) and Figure 6 (p.30): Comprehensive comparison tables of update metrics.
 
@@ -315,8 +315,8 @@ Plinko achieves logarithmic worst-case for both time and communication, matching
 
 ### Portable Optimizations
 
-- **iPRF-based hint searching:** The technique of replacing PRFs with iPRFs for Õ(1) hint lookups is applicable to any OO-PIR scheme that uses PRF-compressed random sets (demonstrated on both RMS24 and Piano). Could potentially extend to other Group D schemes using similar hint structures.[^48]
-- **PMNS construction:** The pseudorandom multinomial sampler is a standalone primitive with potential applications beyond PIR wherever one needs to efficiently simulate the pre-image distribution of a random function.[^49]
+- **iPRF-based hint searching:** The technique of replacing PRFs with iPRFs for Õ(1) hint lookups is applicable to any OO-PIR scheme that uses PRF-compressed random sets (demonstrated on both RMS24 and Piano). Could potentially extend to other Group D schemes using similar hint structures.&#8201;[^48]
+- **PMNS construction:** The pseudorandom multinomial sampler is a standalone primitive with potential applications beyond PIR wherever one needs to efficiently simulate the pre-image distribution of a random function.&#8201;[^49]
 
 [^48]: Section 2 (p.8): "We can apply iPRFs to two recently proposed schemes, Piano and RMS [ZPZS24, RMS24]."
 
@@ -330,7 +330,7 @@ Plinko achieves logarithmic worst-case for both time and communication, matching
 - **Anonymous query support:** No -- client-dependent preprocessing means each client has personalized hints that could link queries to the client.
 - **Session model:** Persistent client with stateful hint storage.
 - **Cold start suitability:** No -- requires O(n) offline streaming phase before first query.
-- **Necessity of database streaming:** The offline phase necessarily requires linear communication if one insists on building single-server PIR with sub-linear query communication from OWF only, because sub-linear offline communication + sub-linear online communication implies oblivious transfer, which requires public-key operations.[^50]
+- **Necessity of database streaming:** The offline phase necessarily requires linear communication if one insists on building single-server PIR with sub-linear query communication from OWF only, because sub-linear offline communication + sub-linear online communication implies oblivious transfer, which requires public-key operations.&#8201;[^50]
 
 [^50]: Section 5.2, "Necessity of Database Streaming" (p.23-24): "If one constructs a single-server PIR with sub-linear offline phase communication and sub-linear query communication, it is easy to see that this can be used to build oblivious transfer (OT) following the reduction in [DMO00]. Given that OT requires public-key operations [IR89], the offline phase must use linear communication."
 
@@ -340,15 +340,15 @@ Plinko achieves logarithmic worst-case for both time and communication, matching
 - **Client-dependent preprocessing:** Each client must independently stream the entire database and compute personalized hints. Not suitable for anonymous access patterns.
 - **Hint exhaustion:** After q queries, the client must re-execute the offline streaming phase. The pipelining approach (streaming n/q entries per query) amortizes this cost but adds implementation complexity.
 - **iPRF overhead:** The iPRF construction composes a PRP with a PMNS, each requiring O(log m) PRF evaluations per forward/inverse call. For practical block sizes (w = sqrt(n)), this means O(log(sqrt(n))) = O(log n / 2) PRF calls per iPRF operation, which may be acceptable but introduces a logarithmic overhead over raw PRF evaluation.
-- **Small-domain iPRF requirement:** The iPRF must be secure even for small domains and ranges (the number of hints per block is approximately λ * w, which may be comparable to or smaller than the block size w). Truncated PRPs are insufficient for this regime.[^51]
+- **Small-domain iPRF requirement:** The iPRF must be secure even for small domains and ranges (the number of hints per block is approximately λ * w, which may be comparable to or smaller than the block size w). Truncated PRPs are insufficient for this regime.&#8201;[^51]
 
 [^51]: Section 5.2, "Invertible PRF Requirements" (p.23): "It is clear to see that our usage of iPRF requires security for both small domains and ranges as the number of hints is similar to the size of client storage meaning truncated PRPs cannot be used."
 
 ### Open Problems
 
-- **iPRFs from other assumptions:** The current iPRF construction uses only OWF. Can iPRFs be built from assumptions that also provide puncturability? A puncturable iPRF would enable communication-efficient query protocols for PIR schemes that rely on puncturable PRFs.[^52]
-- **Client online time:** Current lower bounds do not separately bound client query time vs. server query time. Some schemes (SACM21, LP23b, LP23a, ZLTS23) achieve nearly-constant online client time after a hint is found. Combining efficient hint finding (iPRFs) with these schemes could yield better asymptotic results.[^53]
-- **Other iPRF applications:** The paper suggests iPRFs may have applications in cryptography beyond PIR, for efficiency or security improvements.[^54]
+- **iPRFs from other assumptions:** The current iPRF construction uses only OWF. Can iPRFs be built from assumptions that also provide puncturability? A puncturable iPRF would enable communication-efficient query protocols for PIR schemes that rely on puncturable PRFs.&#8201;[^52]
+- **Client online time:** Current lower bounds do not separately bound client query time vs. server query time. Some schemes (SACM21, LP23b, LP23a, ZLTS23) achieve nearly-constant online client time after a hint is found. Combining efficient hint finding (iPRFs) with these schemes could yield better asymptotic results.&#8201;[^53]
+- **Other iPRF applications:** The paper suggests iPRFs may have applications in cryptography beyond PIR, for efficiency or security improvements.&#8201;[^54]
 
 [^52]: Section 6 (p.24): "For example, many PIR schemes improve their query communication using puncturable PRFs from a learning with errors assumption. A puncturable iPRF would lead to direct improvements for single-server PIR."
 

@@ -25,7 +25,7 @@
 
 ### Core Idea
 
-Piano achieves sublinear server computation for single-server PIR by having each client precompute a table of "hints" during a streaming pass over the database.[^3] Each hint is the XOR-parity of a pseudorandom set of sqrt(n) database entries (one from each "chunk" of sqrt(n) consecutive entries). To query index x, the client finds a hint whose pseudorandom set contains x, replaces x with a fresh replacement index from the same chunk, and sends the modified set to the server. The server computes the XOR-parity of the modified set in O(sqrt(n)) time and returns it. The client recovers DB[x] by XOR-ing the server's answer with the stored parity and the replacement entry's value.[^4] A PRP applied to the database permutes indices so that arbitrary (non-random) queries are handled, and a pipelining technique amortizes the offline phase to support unbounded queries.[^5]
+Piano achieves sublinear server computation for single-server PIR by having each client precompute a table of "hints" during a streaming pass over the database.&#8201;[^3] Each hint is the XOR-parity of a pseudorandom set of sqrt(n) database entries (one from each "chunk" of sqrt(n) consecutive entries). To query index x, the client finds a hint whose pseudorandom set contains x, replaces x with a fresh replacement index from the same chunk, and sends the modified set to the server. The server computes the XOR-parity of the modified set in O(sqrt(n)) time and returns it. The client recovers DB[x] by XOR-ing the server's answer with the stored parity and the replacement entry's value.&#8201;[^4] A PRP applied to the database permutes indices so that arbitrary (non-random) queries are handled, and a pipelining technique amortizes the offline phase to support unbounded queries.&#8201;[^5]
 
 [^3]: Section 2 (p.3): "Suppose the database DB[0...n-1] contains n bits. We divide the indices {0,1,...,n-1} into sqrt(n) chunks each of size sqrt(n)."
 [^4]: Section 2, "Making a single query" (p.4): Client finds (S,p) with x in S, replaces x's chunk entry with replacement r, sends S' to server, server returns XOR parity q, client computes DB[x] = q XOR p_i XOR DB[r].
@@ -62,11 +62,11 @@ Piano achieves sublinear server computation for single-server PIR by having each
 
 | Layer | Detail |
 |-------|--------|
-| **Hardness assumption** | OWF (one-way functions) — the minimal assumption. PRFs are constructed from OWF.[^10] |
+| **Hardness assumption** | OWF (one-way functions) — the minimal assumption. PRFs are constructed from OWF.&#8201;[^10] |
 | **PRF instantiation** | AES-128 with AES-NI hardware acceleration. 128-bit keys. |
-| **PRP** | Pseudorandom permutation applied to DB indices for load balancing (converts arbitrary queries to random queries). Server publishes PRP key.[^11] |
-| **Key structure** | Master PRF key msk in {0,1}^λ; per-hint short tags tag_i (32 bits). j-th offset of i-th hint = PRF(msk, tag_i || j). This optimization saves 30% storage and provides 2-3x PRF evaluation speedup.[^12] |
-| **Correctness condition** | Pr[all Q queries correct] >= 1 - negl(kappa) - negl(λ), where kappa is the statistical security parameter (set to 40) and λ is the computational security parameter (set to 128).[^13] |
+| **PRP** | Pseudorandom permutation applied to DB indices for load balancing (converts arbitrary queries to random queries). Server publishes PRP key.&#8201;[^11] |
+| **Key structure** | Master PRF key msk in {0,1}^λ; per-hint short tags tag_i (32 bits). j-th offset of i-th hint = PRF(msk, tag_i || j). This optimization saves 30% storage and provides 2-3x PRF evaluation speedup.&#8201;[^12] |
+| **Correctness condition** | Pr[all Q queries correct] >= 1 - negl(kappa) - negl(λ), where kappa is the statistical security parameter (set to 40) and λ is the computational security parameter (set to 128).&#8201;[^13] |
 
 [^10]: Section 1.1 (p.3): "the only cryptographic primitive we need is pseudorandom functions (PRFs)." Section 5 (p.13): "it is the first single-server PIR scheme that relies solely on one-way functions (OWF) and has sublinear server computation."
 [^11]: Section 2 (p.5): "the server applies a pseudorandom permutation (PRP) to all indices of the database... The server publishes the PRP key."
@@ -75,9 +75,9 @@ Piano achieves sublinear server computation for single-server PIR by having each
 
 ### Key Data Structures
 
-- **Primary table T:** M_1 = sqrt(n) ln(kappa) alpha(kappa) entries, each consisting of a PRF key sk_i (stored as 32-bit tag), a previously queried index x' (or bottom), and a parity bit p_i = XOR_{j in Set(sk_i)} DB[Set(sk_i)[j]].[^14]
-- **Replacement entries:** For each chunk j in {0,...,sqrt(n)-1}, M_2 = log(kappa) alpha(kappa) = O~(1) entries of the form (r, DB[r]) where r is a random index from chunk j. Used to replace the queried chunk index in the set sent to the server.[^15]
-- **Backup table:** For each chunk j, M_2 = 3 ln(kappa) alpha(kappa) entries of the form (sk_bar_{j,k}, p_bar_{j,k}) where sk_bar_{j,k} is a PRF key for a backup set and p_bar_{j,k} is the parity of all indices in the backup set except the one in chunk j. Used to refresh the primary table after a query.[^16]
+- **Primary table T:** M_1 = sqrt(n) ln(kappa) alpha(kappa) entries, each consisting of a PRF key sk_i (stored as 32-bit tag), a previously queried index x' (or bottom), and a parity bit p_i = XOR_{j in Set(sk_i)} DB[Set(sk_i)[j]].&#8201;[^14]
+- **Replacement entries:** For each chunk j in {0,...,sqrt(n)-1}, M_2 = log(kappa) alpha(kappa) = O~(1) entries of the form (r, DB[r]) where r is a random index from chunk j. Used to replace the queried chunk index in the set sent to the server.&#8201;[^15]
+- **Backup table:** For each chunk j, M_2 = 3 ln(kappa) alpha(kappa) entries of the form (sk_bar_{j,k}, p_bar_{j,k}) where sk_bar_{j,k} is a PRF key for a backup set and p_bar_{j,k} is the parity of all indices in the backup set except the one in chunk j. Used to refresh the primary table after a query.&#8201;[^16]
 
 [^14]: Figure 1 (p.6): Primary table definition. Implementation uses 32-bit tags with master key rather than independent λ-bit keys.
 [^15]: Figure 1 (p.6): "Store replacement entries: sample and store M_2 tuples of the form (r, DB[r]) where r is a random index from the j-th chunk."
@@ -102,15 +102,15 @@ Piano achieves sublinear server computation for single-server PIR by having each
 
 | Field | Detail |
 |-------|--------|
-| **Failure mode** | Two failure types: (1) client cannot find a primary hint set containing the queried index x; (2) client runs out of backup/replacement entries in a chunk.[^18] |
-| **Failure probability** | Bounded by negl(kappa) + negl(λ). With kappa = 40, the failure probability is bounded by 2^{-40} across all Q queries in a window, matching SimplePIR [Group C].[^19] |
-| **Probability grows over queries?** | No — the bound holds jointly for all Q = sqrt(n) ln(kappa) alpha(kappa) queries in a single preprocessing window. After the window, a new preprocessing phase runs.[^20] |
+| **Failure mode** | Two failure types: (1) client cannot find a primary hint set containing the queried index x; (2) client runs out of backup/replacement entries in a chunk.&#8201;[^18] |
+| **Failure probability** | Bounded by negl(kappa) + negl(λ). With kappa = 40, the failure probability is bounded by 2^{-40} across all Q queries in a window, matching SimplePIR [Group C].&#8201;[^19] |
+| **Probability grows over queries?** | No — the bound holds jointly for all Q = sqrt(n) ln(kappa) alpha(kappa) queries in a single preprocessing window. After the window, a new preprocessing phase runs.&#8201;[^20] |
 | **Probability grows over DB mutations?** | N/A for the base static scheme. The dynamic extension (Appendix B.2) uses hierarchical data structures with separate PIR instances per level. |
 | **Key parameters affecting correctness** | M_1 = sqrt(n) ln(kappa) alpha(kappa) (primary hints); M_2 = 3 ln(kappa) alpha(kappa) (backup entries per chunk); Q = sqrt(n) ln(kappa) alpha(kappa) (window size) |
-| **Proof technique** | Union bound for failure type 1: Pr[no set contains x] = (1 - 1/sqrt(n))^{M_1} <= (1/e)^{ln(kappa) alpha(kappa)} = kappa^{-alpha(kappa)}. Chernoff bound for negatively correlated variables for failure type 2: balls-into-bins argument bounding the probability that any chunk receives more than M_2 queries.[^21] |
+| **Proof technique** | Union bound for failure type 1: Pr[no set contains x] = (1 - 1/sqrt(n))^{M_1} <= (1/e)^{ln(kappa) alpha(kappa)} = kappa^{-alpha(kappa)}. Chernoff bound for negatively correlated variables for failure type 2: balls-into-bins argument bounding the probability that any chunk receives more than M_2 queries.&#8201;[^21] |
 | **Amplification** | Not needed — failure probability is already negligible by parameter choice. |
-| **Adaptive vs non-adaptive** | Adaptive queries supported. Privacy proof (Theorem 3.2 / Theorem C.1) shows the adversary can adaptively choose queries and the client's hint table remains identically distributed to a fresh random sampling in the adversary's view.[^22] |
-| **Query model restrictions** | At most Q = sqrt(n) ln(kappa) alpha(kappa) distinct queries per preprocessing window. Duplicate queries handled via local caching. Arbitrary (non-random) queries handled via PRP. Unbounded total queries via pipelining.[^23] |
+| **Adaptive vs non-adaptive** | Adaptive queries supported. Privacy proof (Theorem 3.2 / Theorem C.1) shows the adversary can adaptively choose queries and the client's hint table remains identically distributed to a fresh random sampling in the adversary's view.&#8201;[^22] |
+| **Query model restrictions** | At most Q = sqrt(n) ln(kappa) alpha(kappa) distinct queries per preprocessing window. Duplicate queries handled via local caching. Arbitrary (non-random) queries handled via PRP. Unbounded total queries via pipelining.&#8201;[^23] |
 
 [^18]: Theorem 3.3 proof sketch (p.8-9): "There are only two types of events that causes failures: 1) the client cannot find a set that contains the online query index; 2) the client runs out of hints in a backup group."
 [^19]: Section 4.1 (p.10): "We set the statistical security parameter kappa to 40... matching the same failure probability as SimplePIR."
@@ -152,10 +152,10 @@ Piano achieves sublinear server computation for single-server PIR by having each
 
 | Aspect | Value |
 |--------|-------|
-| **Preprocessing model** | Streaming (single-pass). Client downloads DB sequentially chunk by chunk, updates all M_1 primary hint parities and M_2 backup parities per chunk, then deletes the chunk.[^28] |
-| **Client peak memory** | O_λ(sqrt(n) log kappa alpha(kappa)). During preprocessing, the client holds one sqrt(n)-size chunk plus all hint/backup state. Concretely, the client storage column in Table 1 reflects the persistent storage (839 MB at 100 GB).[^29] |
+| **Preprocessing model** | Streaming (single-pass). Client downloads DB sequentially chunk by chunk, updates all M_1 primary hint parities and M_2 backup parities per chunk, then deletes the chunk.&#8201;[^28] |
+| **Client peak memory** | O_λ(sqrt(n) log kappa alpha(kappa)). During preprocessing, the client holds one sqrt(n)-size chunk plus all hint/backup state. Concretely, the client storage column in Table 1 reflects the persistent storage (839 MB at 100 GB).&#8201;[^29] |
 | **Number of DB passes** | 1 |
-| **Hint refresh mechanism** | Pipelining — during the current window of Q queries, the client runs the preprocessing phase for the next window in the background. Client stores 2x sets of hints (current + next). After current window exhausted, swap to the new set.[^30] |
+| **Hint refresh mechanism** | Pipelining — during the current window of Q queries, the client runs the preprocessing phase for the next window in the background. Client stores 2x sets of hints (current + next). After current window exhausted, swap to the new set.&#8201;[^30] |
 
 [^28]: Figure 1, "Offline preprocessing" (p.6): "Client downloads the whole DB from the server in a streaming way: when the client has the j-th chunk DB[j*sqrt(n) : (j+1)*sqrt(n)]: ... Delete DB[j*sqrt(n) : (j+1)*sqrt(n)] from the local storage."
 [^29]: Theorem 3.4 proof (p.9): "the client will only store one sqrt(n)-size chunk of the DB at a time. So the client's storage is O_λ(sqrt(n) log kappa alpha(kappa))."
@@ -177,7 +177,7 @@ Hardware: Two AWS m5.8xlarge instances with 128 GB RAM. Server computation is si
 | Am. offline comm. | 0.6 KB | 4.9 KB | 0.6 KB | 6.6 KB | 1.4 KB | 120.5 KB |
 | Client storage | 123 MB | 61 MB | 173 MB | 71 MB | 1.2 GB | 839 MB |
 
-(*) SimplePIR 100 GB results are extrapolated since their implementation does not support databases this large.[^31]
+(*) SimplePIR 100 GB results are extrapolated since their implementation does not support databases this large.&#8201;[^31]
 
 [^31]: Table 1 (p.11): "The results for SimplePIR with the 100GB database are extrapolated since their implementation cannot directly support such a large database."
 
@@ -193,19 +193,19 @@ Hardware: Two AWS m5.8xlarge instances with 128 GB RAM. Server computation is si
 
 ### Application Scenarios
 
-- **Private DNS:** Database size approximately 100 GB for a full DNS repository. Frequent queries during daytime; preprocessing can run at night or during idle periods. Piano's streaming preprocessing is well-suited.[^34]
-- **Private Light-weight Blockchain Node:** Light-weight nodes make frequent queries to full nodes for blockchain data, with a natural verification pass over the blockchain history that can double as the preprocessing phase.[^35]
+- **Private DNS:** Database size approximately 100 GB for a full DNS repository. Frequent queries during daytime; preprocessing can run at night or during idle periods. Piano's streaming preprocessing is well-suited.&#8201;[^34]
+- **Private Light-weight Blockchain Node:** Light-weight nodes make frequent queries to full nodes for blockchain data, with a natural verification pass over the blockchain history that can double as the preprocessing phase.&#8201;[^35]
 
 [^34]: Section 6 (p.16): "DNS queries are usually made frequently and usually made during a period periodically (e.g., daytime). Piano is also suitable for building a private DNS service."
 [^35]: Section 6 (p.16): "A light-weight node needs to make a verification pass over the blockchain history, and it has frequent queries, which makes Piano a suitable privacy-preserving solution."
 
 ### Deployment Considerations
 
-- **Database updates:** Base scheme is static. Appendix B.2 describes a dynamic extension using hierarchical data structures (Bentley-Saxe technique): every Q updates, merge and rebuild affected levels. Amortized communication per update is O_λ(log n), amortized server time is O(log n), amortized client time is O_λ(log n * log kappa * alpha(kappa)).[^36]
-- **Key-value queries:** Appendix B.1 describes extension using Cuckoo hashing: hash n keys into a table D of size O(n) with logarithmic overflow pile F. Client stores F locally and retrieves from two candidate positions in D.[^37]
+- **Database updates:** Base scheme is static. Appendix B.2 describes a dynamic extension using hierarchical data structures (Bentley-Saxe technique): every Q updates, merge and rebuild affected levels. Amortized communication per update is O_λ(log n), amortized server time is O(log n), amortized client time is O_λ(log n * log kappa * alpha(kappa)).&#8201;[^36]
+- **Key-value queries:** Appendix B.1 describes extension using Cuckoo hashing: hash n keys into a table D of size O(n) with logarithmic overflow pile F. Client stores F locally and retrieves from two candidate positions in D.&#8201;[^37]
 - **Session model:** Persistent client with per-client preprocessing state. Not suitable for anonymous/ephemeral access.
 - **Cold start suitability:** No — requires full DB download for preprocessing.
-- **Amortization crossover:** Piano becomes faster than SimplePIR immediately for online queries at any database size, but requires O(n) preprocessing communication. At 100 GB, Piano's online time (11.9 ms LAN / 72.6 ms WAN) vs SimplePIR's extrapolated 10.9 s shows approximately 150-915x speedup on the online path.[^38]
+- **Amortization crossover:** Piano becomes faster than SimplePIR immediately for online queries at any database size, but requires O(n) preprocessing communication. At 100 GB, Piano's online time (11.9 ms LAN / 72.6 ms WAN) vs SimplePIR's extrapolated 10.9 s shows approximately 150-915x speedup on the online path.&#8201;[^38]
 - **Query limits:** Q = sqrt(n) ln n queries per preprocessing window. With pipelining, unlimited total queries.
 
 [^36]: Appendix B.2, "Performance analysis" (p.23-24): Hierarchical data structure with L = O(log n) levels, each level l containing a PIR instance of size 2^l * Q. Amortized costs per update: O_λ(log n) communication, O(log n) server time.
@@ -214,10 +214,10 @@ Hardware: Two AWS m5.8xlarge instances with 128 GB RAM. Server computation is si
 
 ### Key Tradeoffs & Limitations
 
-- **O(n) preprocessing communication:** Client must download the entire database once per preprocessing window. This is the dominant cost and is orders of magnitude larger than SimplePIR's hint (e.g., 100 GB vs 1.2 GB at 100 GB database size).[^39]
-- **O(sqrt(n)) online communication:** Compared to prior theoretical schemes [ZLTS23, LP22] that achieve O~_λ(1) online communication, Piano trades optimal communication for practical simplicity and PRF-only assumptions.[^40]
+- **O(n) preprocessing communication:** Client must download the entire database once per preprocessing window. This is the dominant cost and is orders of magnitude larger than SimplePIR's hint (e.g., 100 GB vs 1.2 GB at 100 GB database size).&#8201;[^39]
+- **O(sqrt(n)) online communication:** Compared to prior theoretical schemes [ZLTS23, LP22] that achieve O~_λ(1) online communication, Piano trades optimal communication for practical simplicity and PRF-only assumptions.&#8201;[^40]
 - **Client storage grows with DB size:** At 100 GB, client storage is 839 MB. At 1 GB, it is only 61 MB.
-- **Preprocessing is client-compute-bound:** Preprocessing requires O(n log kappa alpha(kappa)) PRF evaluations and XOR operations. For 100 GB with 8 threads, this takes 32 minutes. PRF evaluations dominate when entry size is small (64 bytes or less).[^41]
+- **Preprocessing is client-compute-bound:** Preprocessing requires O(n log kappa alpha(kappa)) PRF evaluations and XOR operations. For 100 GB with 8 threads, this takes 32 minutes. PRF evaluations dominate when entry size is small (64 bytes or less).&#8201;[^41]
 - **Not suitable for anonymous access:** Client-dependent preprocessing means the server knows which client is querying (but not what is being queried).
 
 [^39]: Section 6 (p.16): "The main limitation of Piano is its communication cost: 1) the client has to download the whole database during the setup phase; 2) the online communication cost per query is O(sqrt(n))."
@@ -257,8 +257,8 @@ Hardware: Two AWS m5.8xlarge instances with 128 GB RAM. Server computation is si
 
 ### Portable Optimizations
 
-- **Master PRF key + short tags:** Instead of storing an independent λ-bit PRF key per hint, store one master key msk and a 32-bit tag per hint. Compute PRF(msk, tag_i || j) for the j-th chunk offset. This saves 30% storage and provides 2-3x PRF evaluation speedup, applicable to any PRF-based hint scheme (RMS24, Plinko).[^44]
-- **PRP load balancing:** Applying a PRP to database indices converts arbitrary query patterns into random query patterns. This makes the balls-into-bins analysis exact and simplifies correctness proofs. Applicable to any Group D scheme with chunk-based structure.[^45]
+- **Master PRF key + short tags:** Instead of storing an independent λ-bit PRF key per hint, store one master key msk and a 32-bit tag per hint. Compute PRF(msk, tag_i || j) for the j-th chunk offset. This saves 30% storage and provides 2-3x PRF evaluation speedup, applicable to any PRF-based hint scheme (RMS24, Plinko).&#8201;[^44]
+- **PRP load balancing:** Applying a PRP to database indices converts arbitrary query patterns into random query patterns. This makes the balls-into-bins analysis exact and simplifies correctness proofs. Applicable to any Group D scheme with chunk-based structure.&#8201;[^45]
 - **Pipelining preprocessing:** Running the next window's preprocessing concurrently with the current window's queries, at 2x storage cost, converts a bounded-query scheme into an unbounded-query scheme. Applicable to any Group D scheme with windowed amortization.
 
 [^44]: Section 4.1, "Optimization" (p.10): "the client just needs to generate a λ-bit master PRF key msk and a unique short tag tag_i (e.g. 32 bits) for the i-th hint."
@@ -266,12 +266,12 @@ Hardware: Two AWS m5.8xlarge instances with 128 GB RAM. Server computation is si
 
 ### Implementation Notes
 
-- **Language / Library:** Go (Golang), approximately 800 lines of code for the full implementation. A tutorial reference implementation in 160 lines of code is also provided.[^46]
+- **Language / Library:** Go (Golang), approximately 800 lines of code for the full implementation. A tutorial reference implementation in 160 lines of code is also provided.&#8201;[^46]
 - **Polynomial arithmetic:** N/A (PRF-based, no polynomial rings).
 - **SIMD / vectorization:** AES-NI hardware instructions for PRF evaluation.
-- **Parallelism:** Preprocessing is parallelized across 8 threads (client-side). Server-side and online computation are single-threaded.[^47]
-- **64-bit index:** Uses 64-bit integers for database indices to support arbitrarily large databases.[^48]
-- **Chunk size:** Set to 2*sqrt(n), rounded to nearest power of 2, making modulo operations efficient. Does not affect asymptotic complexity.[^49]
+- **Parallelism:** Preprocessing is parallelized across 8 threads (client-side). Server-side and online computation are single-threaded.&#8201;[^47]
+- **64-bit index:** Uses 64-bit integers for database indices to support arbitrarily large databases.&#8201;[^48]
+- **Chunk size:** Set to 2*sqrt(n), rounded to nearest power of 2, making modulo operations efficient. Does not affect asymptotic complexity.&#8201;[^49]
 - **Open source:** https://github.com/wuwuz/Piano-PIR-new
 
 [^46]: Section 1.1 (p.3) and Section 4.1 (p.10): "the core implementation contains only around 800 lines of code" (p.10). The 160-line reference implementation is mentioned on p.3.
@@ -281,7 +281,7 @@ Hardware: Two AWS m5.8xlarge instances with 128 GB RAM. Server computation is si
 
 ### Open Problems
 
-- Designing a practical single-server PIR with O~_λ(1) online communication (current Piano uses O(sqrt(n))).[^50]
+- Designing a practical single-server PIR with O~_λ(1) online communication (current Piano uses O(sqrt(n))).&#8201;[^50]
 - Reducing the preprocessing communication from O(n) (full DB download) while maintaining PRF-only assumptions and practical efficiency.
 
 [^50]: Section 6 (p.16): "designing a truly practical single-server PIR with O~_λ(1) communication overhead is one of the major future questions to be explored."
@@ -297,7 +297,7 @@ Hardware: Two AWS m5.8xlarge instances with 128 GB RAM. Server computation is si
 - **SimplePIR / DoublePIR [Group C]:** Primary comparison target. Piano achieves 43-915x faster online queries at the cost of client-dependent preprocessing and O(n) offline communication.
 - **CK20 [Group D]:** Theoretical predecessor. First single-server sublinear PIR in the client-preprocessing model, but required puncturable PRFs and supported only a single query.
 - **Plinko [Group D]:** Successor. Uses invertible PRFs for worst-case O(1) database updates, but is theory-only (no implementation).
-- **TreePIR [Group D]:** Two-server concurrent work. Achieves polylogarithmic per-query communication via weak privately puncturable PRFs. For 2^28 entries (8 GB), TreePIR's best amortized online time is 23 ms (non-recursive) vs Piano's 8 ms amortized with 4x local storage.[^51]
+- **TreePIR [Group D]:** Two-server concurrent work. Achieves polylogarithmic per-query communication via weak privately puncturable PRFs. For 2^28 entries (8 GB), TreePIR's best amortized online time is 23 ms (non-recursive) vs Piano's 8 ms amortized with 4x local storage.&#8201;[^51]
 - **RMS24 [Group D]:** Successor. Uses dummy subsets for standard (non-consumable) correctness model.
 
 [^51]: Section 5 (p.16): "For an 8GB database with 2^28 entries, the best amortized online time results reported in TreePIR are 23ms for the non-recursive scheme and 84ms for the recursive scheme. For comparison, our scheme has an amortized 8ms per-query time under the same setting with 4x local storage."
