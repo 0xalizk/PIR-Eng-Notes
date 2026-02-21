@@ -293,11 +293,11 @@
       shapes: hd.shapes,
       height: Math.max(500, sorted.length * 22 + 120),
       annotations: (hd.annotations || []).concat([{
-        text: 'click column to sort by it',
+        text: '<i>Click column to sort by it</i>',
         xref: 'paper', yref: 'paper',
         x: 0, y: 1.06,
         showarrow: false,
-        font: { size: 11, color: t.muted },
+        font: { size: 13, color: t.muted },
         xanchor: 'left'
       }])
     });
