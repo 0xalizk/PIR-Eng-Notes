@@ -471,7 +471,7 @@ After completing all passes, produce notes in this format. **Omit sections marke
 
 ### Footnote convention
 
-Use GitHub Markdown footnotes (`[^N]`) to cite the paper for every non-trivial claim. Place the inline marker at the end of the sentence making the claim, and place the definition immediately after the paragraph (not at the bottom of the file).
+Use GitHub Markdown footnotes (`[^N]`) to cite the paper for every non-trivial claim. Place the inline marker at the end of the sentence making the claim, and place the definition immediately after the paragraph (not at the bottom of the file). Always insert a thin space (`&#8201;`) before the footnote marker so the superscript doesn't touch the preceding word — write `text&#8201;[^1]`, never `text[^1]`.
 
 **Format:** `[^N]: <Location> (p.<page>): <what it says>`
 
