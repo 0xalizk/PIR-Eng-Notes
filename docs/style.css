@@ -386,7 +386,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   gap: 4px;
   font-size: 14px;
   color: var(--text-muted);
-  margin: 8px 0 20px;
+  margin: 8px 0 28px;
 }
 .tier-legend-stacked strong {
   color: var(--text);
