@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | Incremental Single-Server Private Information Retrieval (2026) |
+| **Paper** | [Incremental Single-Server Private Information Retrieval](https://eprint.iacr.org/2026/030) (2026) |
 | **Archetype** | Construction + Update/maintenance |
 | **PIR Category** | Group C — Client-Independent Preprocessing |
 | **Security model** | Semi-honest single-server preprocessing PIR |

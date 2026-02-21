@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | [VeriSimplePIR: Verifiability in SimplePIR at No Online Cost for Honest Servers](https://github.com/leodec/VeriSimplePIR) (2024) |
+| **Paper** | [VeriSimplePIR: Verifiability in SimplePIR at No Online Cost for Honest Servers](https://eprint.iacr.org/2024/341) (2024) |
 | **Archetype** | Construction + Security upgrade + Building-block (VLHE) |
 | **PIR Category** | Group C — Client-Independent Preprocessing |
 | **Security model** | Malicious single-server verifiable PIR (stateful) |

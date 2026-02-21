@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | [TreePIR: Sublinear-Time and Polylog-Bandwidth Private Information Retrieval from DDH](https://github.com/alazzaretti/treePIR) (2023) |
+| **Paper** | [TreePIR: Sublinear-Time and Polylog-Bandwidth Private Information Retrieval from DDH](https://eprint.iacr.org/2023/204) (2023) |
 | **Archetype** | Construction (primary) + Building-block (secondary: weak privately puncturable PRF / wpPRF) |
 | **PIR Category** | **Group D** -- Client-dependent preprocessing, 2-server non-colluding |
 | **Security model** | Semi-honest 2-server non-colluding[^1] |

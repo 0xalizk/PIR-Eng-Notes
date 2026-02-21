@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | Plinko: Single-Server PIR with Efficient Updates via Invertible PRFs (Alexander Hoover, Sarvar Patel, Giuseppe Persiano, Kevin Yeo, 2024) |
+| **Paper** | [Plinko: Single-Server PIR with Efficient Updates via Invertible PRFs](https://eprint.iacr.org/2024/318) (Hoover et al., 2024) |
 | **Archetype** | Construction (theory-only) + Building-block (invertible PRFs) + Update/maintenance |
 | **PIR Category** | Group D — Client-Dependent Preprocessing |
 | **Security model** | Semi-honest single-server |

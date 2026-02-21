@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | Barely Doubly-Efficient SimplePIR (Keewoo Lee, 2025) |
+| **Paper** | [Barely Doubly-Efficient SimplePIR](https://eprint.iacr.org/2025/1305) (Keewoo Lee, 2025) |
 | **Archetype** | Construction (theory-only) / Feasibility |
 | **PIR Category** | Group C — Client-Independent Preprocessing |
 | **Security model** | Semi-honest single-server DEPIR in the CRS model (unkeyed); equivalently, keyed DEPIR with public preprocessing in the standard model |
