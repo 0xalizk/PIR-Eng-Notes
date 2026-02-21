@@ -74,7 +74,7 @@
 
 ### Note: schemes below span multiple groups
 
-| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $\color{darkorange}{\textsf{Scheme}}$ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | $\color{darkorange}{\textsf{Why}}$ |
+| $\color{darkorange}{\textsf{Scheme}}$ | $\color{darkorange}{\textsf{Why}}$ |
 |:------------------------------------------------------------:|-----|
 | 2025 [VIA](Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md) | Base VIA is Group B (hintless); VIA-C straddles B/C — its offline evaluation-key upload is client-independent preprocessing |
 | 2024 [ThorPIR](Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md) | Group A + D hybrid — FHE-based construction, but client sends encrypted PRG seeds and server performs per-client homomorphic preprocessing |
