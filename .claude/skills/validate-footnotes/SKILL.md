@@ -31,6 +31,9 @@ Read the markdown and extract every `[^N]` footnote definition. For each footnot
 | **Arithmetic** | If the footnote derives a value (e.g., "9 * 46 * 4096 bits = ~27 KB"), verify the math |
 | **Attribution** | The claim is attributed to the correct paper, not to an external document or a paper that postdates the source |
 | **Editorial vs citation** | Flag when subjective commentary (e.g., "below the typical 128-bit target") is mixed into what appears to be a cited claim |
+| **Figures and plots** | If the footnote cites a figure, verify data points against axis labels, legend entries, and units — see Section 6 |
+| **Table values** | Verify the correct row, column, and parameter set — watch for multi-level headers and adjacent-row swaps — see Section 6 |
+| **Mathematical notation** | Verify asymptotic expressions, variable definitions, theorem statements, and concrete vs asymptotic claims — see Section 6 |
 
 ## 3. Classify each footnote
 
@@ -123,7 +126,33 @@ where `HASH` is a 32-character hex string unique to each file (same hash for all
 - GitHub strips `<a>` tags from inside `[^N]:` footnote definitions, so custom anchors cannot be injected
 - The hash differs between the GitHub API and the web view — always scrape from the web view
 
-## 6. Common pitfalls to watch for
+## 6. Reading figures, tables, and math
+
+### Figures and plots
+
+- **Read axis labels and units first** before interpreting data points. A log-scale axis changes the meaning of visual distances between points.
+- **Match data series to legend entries** — plots with multiple lines/bars often have overlapping colors. Confirm which series the footnote is referencing by checking the legend text, not just position.
+- **Distinguish reported vs interpolated values** — if the footnote cites a specific data point (e.g., "throughput of 1.2 GB/s at N=2^20"), verify that exact (N, value) pair appears as a plotted point, not just somewhere along a trend line.
+- **Caption vs body text** — figure captions sometimes state different numbers than the surrounding prose. Check which the footnote is actually citing.
+
+### Tables
+
+- **Identify the parameter set** — benchmark tables typically have multiple columns for different configurations (database size, element size, security parameter). Verify the footnote cites the correct column, not an adjacent one.
+- **Watch for multi-level headers** — tables with merged header cells (e.g., "Upload" spanning "Query" and "Key" sub-columns) are a common source of column misattribution.
+- **Row identity** — when multiple schemes appear in the same table, verify the footnote attributes the value to the correct row. Adjacent rows with similar values are frequently swapped.
+- **Table footnotes vs paper footnotes** — some tables have their own footnotes (often marked with symbols like †, ‡, or lowercase letters). These may qualify or override the main cell values.
+- **Units in table headers** — check if the header specifies units (e.g., "Time (ms)" vs "Time (s)") separately from the cell values. The footnote may convert units without stating so.
+
+### Mathematical notation
+
+- **Asymptotic notation** — verify the exact expression inside O(·), Õ(·), Ω(·). Common errors: dropping log factors, confusing O(n) with O(n log n), or writing O(√n) when the paper says O(n^{1/2} · log n).
+- **Variable definitions** — confirm that variables in the footnote match the paper's definitions. Papers often reuse symbols (n, N, d, k, λ) with different meanings across sections. Check which definition is in scope at the cited location.
+- **Theorem/lemma statements** — when a footnote cites a theorem, verify the exact statement including all conditions and quantifiers. Dropping "for sufficiently large n" or "with overwhelming probability" can change the claim.
+- **Concrete vs asymptotic** — flag when the footnote conflates a concrete instantiation (e.g., "128-bit security") with an asymptotic statement (e.g., "λ-bit security"), or vice versa.
+- **Subscripts and superscripts** — in markdown notes, expressions like `n^{1/3}` or `log_2(n)` may not perfectly mirror the PDF's typeset notation. Verify the mathematical content matches even if the formatting differs.
+- **Summations, products, and bounds** — when the footnote reproduces a formula, check every term: base, exponent, index range, and any floor/ceiling operators.
+
+## 7. Common pitfalls to watch for
 
 These are the most frequent error patterns found across 1300+ validated footnotes in this repo:
 
