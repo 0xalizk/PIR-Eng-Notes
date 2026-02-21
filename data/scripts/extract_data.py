@@ -6,7 +6,7 @@ This script was used to generate the initial draft of pir_data.json.
 The final pir_data.json is hand-curated and is the single source of truth.
 
 To regenerate from scratch:
-    cd Visualization/
+    cd data/
     uv run scripts/extract_data.py
 
 This will overwrite pir_data.json with a fresh extraction. Review carefully

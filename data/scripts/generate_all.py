@@ -3,7 +3,7 @@
 Master runner: generates all PIR visualization outputs.
 
 Usage:
-    cd Visualization/
+    cd data/
     uv run scripts/generate_all.py
 """
 

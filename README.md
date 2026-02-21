@@ -1,13 +1,13 @@
 ## PIR Engineering Notes
 
-**TLDR**: [Deep reading](https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434) of PIR papers to extract eng. notes ([eg](Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md)) and [visualize](Visualization/README.md#pir-visualization-system) comparative benchs/asymptotics. The correctness of these notes are [continuously validated](Checkups/README.md#checking-correctness-of-cited-claims):
+**TLDR**: [Deep reading](https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434) of PIR papers to extract eng. notes ([eg](Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md)) and [visualize](data/README.md#pir-visualization-system) comparative benchs/asymptotics. The correctness of these notes are [continuously validated](Checkups/README.md#checking-correctness-of-cited-claims):
 - Scheme grouping [based on this taxonomy](https://hackmd.io/@keewoolee/SJyGoXCzZe#Taxonomy)
 - Multi-server schemes are excluded
 - Structured engineering notes ([eg](/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md)) for 34 Private Information Retrieval (PIR) research papers: scheme design, complexity analysis, cryptographic assumptions, and reported benchmarks. 
 - Per-scheme notes are produced by reading the source PDF (incl. tables/figures which Claude can do to some extent) using a [standardized methodology](.claude/skills/pir-paper-analyzer/SKILL.md). 
 - Footnotes used ([eg](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-2-5ed4c8df6d0cf7056920fa3002fe1a3a)) to support statements and reference pages/sections of the paper.
 
-| [![T1: Communication Scatter](Visualization/output/top_level/T1_communication_scatter.png)](Visualization/output/top_level#communication-design-space--query-vs-response-size) | [![T2: Throughput Bar](Visualization/output/top_level/T2_throughput_bar.png)](Visualization/output/top_level#server-throughput-comparison) | [![T3: Pareto Frontier](Visualization/output/top_level/T3_pareto_frontier.png)](Visualization/output/top_level#pareto-frontier--communication-vs-server-time) |
+| [![T1: Communication Scatter](data/output/top_level/T1_communication_scatter.png)](data/output/top_level#communication-design-space--query-vs-response-size) | [![T2: Throughput Bar](data/output/top_level/T2_throughput_bar.png)](data/output/top_level#server-throughput-comparison) | [![T3: Pareto Frontier](data/output/top_level/T3_pareto_frontier.png)](data/output/top_level#pareto-frontier--communication-vs-server-time) |
 |:---:|:---:|:---:|
 
 ### Group A — FHE-Based PIR

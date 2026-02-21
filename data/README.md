@@ -8,7 +8,7 @@ Visual comparison of 35 PIR schemes across 5 groups, covering both concrete benc
 #### Quick Start
 
 ```bash
-cd Visualization/
+cd data/  # (formerly Visualization/)
 uv venv && uv pip install matplotlib seaborn pandas numpy adjustText
 uv run scripts/generate_all.py
 ```
@@ -18,7 +18,7 @@ All outputs go to `output/`.
 #### Structure
 
 ```
-Visualization/
+data/
   pir_data.json              # Master curated data (source of truth for all plots)
   scripts/
     plot_config.py           # Colors, markers, fonts, group names

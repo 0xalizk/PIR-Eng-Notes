@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PIR Engineering Notes</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+</head>
+<body>
+
+<!-- Hamburger (mobile) -->
+<button class="hamburger" aria-label="Menu">&#9776;</button>
+<div class="sidebar-overlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-title">PIR Eng Notes</div>
+  <nav>
+    <a href="#overview">Overview Heatmap</a>
+    <div class="divider"></div>
+    <a href="#communication">Communication</a>
+    <a href="#server-perf">Server Performance</a>
+    <a href="#client-cost">Client Cost</a>
+    <a href="#offline-storage">Offline &amp; Storage</a>
+    <div class="divider"></div>
+    <a href="#tradeoffs">Trade-offs</a>
+    <a href="#pareto" class="sub-nav">Pareto Frontiers</a>
+    <a href="#radar" class="sub-nav">Scheme Comparison</a>
+    <a href="#timeline" class="sub-nav">Timeline</a>
+    <div class="divider"></div>
+    <a href="#catalog">Scheme Catalog</a>
+    <a href="#methodology">Methodology</a>
+    <div class="divider"></div>
+    <a href="https://github.com/0xalizk/PIR-Eng-Notes" target="_blank" class="external">GitHub Repo</a>
+    <a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/data/pir_data.json" target="_blank" class="external">Source Data</a>
+  </nav>
+</aside>
+
+<!-- Main Content -->
+<main class="content">
+
+<!-- 1. Overview / Hero -->
+<section id="overview">
+  <h2>PIR Engineering Notes</h2>
+  <p class="subtitle">Comparative benchmarks &amp; asymptotics for Private Information Retrieval</p>
+  <p class="desc">
+    Structured engineering notes for 34 PIR research papers covering scheme design,
+    complexity analysis, cryptographic assumptions, and reported benchmarks.
+    Per-scheme notes produced by reading source PDFs using a
+    <a href="https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434" target="_blank">standardized methodology</a>
+    with footnoted citations. Scheme grouping follows the
+    <a href="https://hackmd.io/@keewoolee/SJyGoXCzZe#Taxonomy" target="_blank">Keewoo Lee taxonomy</a>.
+    Multi-server schemes are excluded.
+  </p>
+
+  <div class="tier-banner">
+    <div class="tier-item"><span class="tier-badge t1">T1</span> Exact &mdash; direct benchmarks from an implementation</div>
+    <div class="tier-item"><span class="tier-badge t2">T2</span> Approximate &mdash; estimated from analytical models in the paper</div>
+    <div class="tier-item"><span class="tier-badge t3">T3</span> Asymptotic &mdash; derived from theoretical complexity bounds only</div>
+  </div>
+
+  <div class="stat-cards">
+    <div class="stat-card"><span class="num">35</span><span class="label">Schemes</span></div>
+    <div class="stat-card"><span class="num">5</span><span class="label">Groups</span></div>
+    <div class="stat-card"><span class="num">2014&ndash;2026</span><span class="label">Year Range</span></div>
+  </div>
+
+  <div class="links">
+    <a href="https://github.com/0xalizk/PIR-Eng-Notes" target="_blank">GitHub Repo</a>
+    <a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/data/pir_data.json" target="_blank">pir_data.json</a>
+    <a href="https://hackmd.io/@keewoolee/SJyGoXCzZe#Taxonomy" target="_blank">Taxonomy (HackMD)</a>
+    <a href="https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434" target="_blank">Methodology</a>
+  </div>
+
+  <!-- Hero: Sorted Heatmap -->
+  <div class="chart-container wide" id="chart-heatmap"></div>
+  <p class="chart-note">
+    Schemes sorted by composite score (best at left). Cell color: green = best, red = worst.
+    Gray = missing data. Click a metric row to re-sort by that metric.
+    Left swatch = group color.
+    <span class="badge-legend">&dagger; = Tier 2 (approx) &nbsp; * = Tier 3 (asymptotic)</span>
+  </p>
+</section>
+
+<!-- 2. Communication -->
+<section id="communication">
+  <h2>Communication</h2>
+  <p class="subtitle">Query size vs response size across all schemes (log-log scale)</p>
+  <p class="desc">
+    Point color = group, size = server time (larger = slower).
+    Dashed diagonals show iso-communication lines (constant total bandwidth).
+    Tier 3 schemes shown as diamonds.
+  </p>
+  <div class="chart-container" id="chart-communication"></div>
+</section>
+
+<!-- 3. Server Performance -->
+<section id="server-perf">
+  <h2>Server Performance</h2>
+  <p class="subtitle">Throughput and server computation time</p>
+
+  <div class="chart-pair">
+    <div class="chart-container" id="chart-throughput"></div>
+    <div class="chart-container" id="chart-server-time"></div>
+  </div>
+</section>
+
+<!-- 4. Client Cost -->
+<section id="client-cost">
+  <h2>Client Cost</h2>
+  <p class="subtitle">Client-side computation time (only ~15 schemes report this metric)</p>
+  <div class="chart-container" id="chart-client-cost"></div>
+</section>
+
+<!-- 5. Offline & Storage -->
+<section id="offline-storage">
+  <h2>Offline &amp; Storage</h2>
+  <p class="subtitle">Offline hint sizes and client storage requirements</p>
+  <p class="desc">
+    Cleveland dot plot: blue circles = offline hint size, yellow diamonds = client storage.
+    Lines connect the two values when a scheme reports both. Only ~10 schemes have this data.
+  </p>
+  <div class="chart-container" id="chart-offline-storage"></div>
+</section>
+
+<!-- 6. Trade-offs -->
+<section id="tradeoffs">
+  <h2>Trade-offs</h2>
+  <p class="subtitle">Multi-dimensional comparisons: Pareto frontiers, radar profiles, and evolution</p>
+
+  <!-- 6a. Pareto -->
+  <div id="pareto">
+    <h3>Pareto Frontiers</h3>
+    <p class="desc">
+      Total communication (query + response) vs server time. Starred points are Pareto-optimal
+      (no other scheme is better on both axes). Purple step-line connects the frontier.
+    </p>
+    <div class="chart-container" id="chart-pareto"></div>
+  </div>
+
+  <!-- 6b. Radar -->
+  <div id="radar">
+    <h3>Scheme Comparison</h3>
+    <p class="desc">
+      Per-scheme radar profiles across all metric axes.
+      Center = best (rank 0), rim = worst (rank 1). Hover for raw values.
+    </p>
+    <div class="radar-tabs" id="radar-tabs"></div>
+    <div class="radar-grid" id="radar-grid"></div>
+  </div>
+
+  <!-- 6c. Timeline -->
+  <div id="timeline">
+    <h3>Timeline</h3>
+    <p class="desc">
+      Throughput evolution by year. Bubble size inversely proportional to total communication
+      (smaller bubble = more bandwidth-efficient). Color = group.
+    </p>
+    <div class="chart-container" id="chart-timeline"></div>
+  </div>
+</section>
+
+<!-- 7. Scheme Catalog -->
+<section id="catalog">
+  <h2>Scheme Catalog</h2>
+
+  <div class="tier-legend-inline">
+    <span><strong>T1</strong> Exact benchmarks</span>
+    <span><strong>T2</strong> Estimated from analytical models</span>
+    <span><strong>T3</strong> Asymptotic/theoretical only</span>
+  </div>
+
+  <div id="catalog-filters" class="filter-row"></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr id="catalog-header"></tr></thead>
+      <tbody id="catalog-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 8. Methodology -->
+<section id="methodology">
+  <h2>Methodology</h2>
+  <p class="subtitle">Data tiers, composite scoring, and source references</p>
+
+  <h3>Data Tiers</h3>
+  <div class="tier-defs">
+    <div class="tier-def">
+      <span class="tier-badge t1">Tier 1</span>
+      <span>Exact &mdash; direct benchmarks from implementation (full opacity, circle marker)</span>
+    </div>
+    <div class="tier-def">
+      <span class="tier-badge t2">Tier 2</span>
+      <span>Approximate &mdash; estimated from analytical models (80% opacity, &dagger; badge)</span>
+    </div>
+    <div class="tier-def">
+      <span class="tier-badge t3">Tier 3</span>
+      <span>Asymptotic &mdash; theoretical estimates only (55% opacity, * badge, diamond marker)</span>
+    </div>
+  </div>
+
+  <h3>Composite Score</h3>
+  <p class="desc">
+    Used to sort the heatmap. Based on 4 core metrics: query size, response size, server time, throughput.
+    Each is percentile-ranked (0 = best, 1 = worst). Missing metrics excluded from average.
+    Coverage penalty: +0.1 per missing core metric if &lt;3 available.
+    Tier 3 values pushed 20% toward midpoint. Final = mean(adjusted ranks) + coverage penalty.
+    Lower = better = left in heatmap.
+  </p>
+
+  <h3>References</h3>
+  <div class="links">
+    <a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/data/pir_data.json" target="_blank">pir_data.json</a>
+    <a href="https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434" target="_blank">Deep Reading Methodology</a>
+    <a href="https://hackmd.io/@keewoolee/SJyGoXCzZe#Taxonomy" target="_blank">PIR Taxonomy (HackMD)</a>
+  </div>
+</section>
+
+</main>
+
+<script src="script.js"></script>
+<script src="charts.js"></script>
+</body>
+</html>
