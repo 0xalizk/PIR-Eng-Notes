@@ -81,6 +81,40 @@ PARETO_ALPHA = 0.4
 PARETO_LINE_WIDTH = 1.5
 
 
+# --- Heatmap Color Config ---
+HEATMAP_GOOD = "#27ae60"    # green
+HEATMAP_MID = "#f9e79f"     # yellow
+HEATMAP_BAD = "#c0392b"     # red
+HEATMAP_MISSING = "#f5f5f5" # light gray
+
+TIER_BADGE = {1: "", 2: "\u2020", 3: "*"}  # †, *
+
+
+def rank_color(rank_norm):
+    """Map a normalized rank [0=best, 1=worst] to a green→yellow→red color.
+
+    Uses a 3-stop linear interpolation for perceptual uniformity.
+
+    Args:
+        rank_norm: float in [0, 1] where 0=best and 1=worst
+    Returns:
+        hex color string
+    """
+    rank_norm = max(0.0, min(1.0, rank_norm))
+    # Three stops: green(0) → yellow(0.5) → red(1)
+    if rank_norm <= 0.5:
+        t = rank_norm / 0.5
+        r = int(39 + t * (249 - 39))     # 27ae60 → f9e79f
+        g = int(174 + t * (231 - 174))
+        b = int(96 + t * (159 - 96))
+    else:
+        t = (rank_norm - 0.5) / 0.5
+        r = int(249 + t * (192 - 249))   # f9e79f → c0392b
+        g = int(231 + t * (57 - 231))
+        b = int(159 + t * (43 - 159))
+    return f"#{r:02x}{g:02x}{b:02x}"
+
+
 def apply_style():
     """Apply consistent matplotlib style across all plots."""
     plt.style.use("seaborn-v0_8-whitegrid")

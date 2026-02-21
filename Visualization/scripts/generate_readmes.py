@@ -30,6 +30,10 @@ PLOT_TITLES = {
     "T2": "Server Throughput Comparison",
     "T3": "Pareto Frontier — Communication vs Server Time",
     "T4": "PIR Scheme Heatmap Overview",
+    "T4a": "Enhanced PIR Scheme Heatmap",
+    "T4b": "Interactive PIR Scheme Heatmap",
+    "T4c": "PIR Scheme Rankings by Metric",
+    "T4d": "Parallel Coordinates — Scheme Comparison",
     "T5": "Online vs Offline Cost Split",
     "T6": "PIR Throughput Evolution Over Time",
     "A1": "FHE Efficiency Frontier — Expansion Factor vs Server Time",
@@ -54,6 +58,10 @@ PLOT_CAPTIONS = {
     "T2": "Horizontal bar chart of server throughput (GB/s) by group.",
     "T3": "Server time vs total communication with Pareto frontier overlay.",
     "T4": "Heatmap table of all 35 schemes across key performance metrics.",
+    "T4a": "Enhanced heatmap with group bands, percentile-rank coloring, tier badges, and color legend.",
+    "T4b": "Interactive heatmap with hover details, rank coloring, and group separators. Open in a browser.",
+    "T4c": "Small multiples of ranked horizontal bar charts for each metric, colored by group.",
+    "T4d": "Parallel coordinates plot comparing tier 1–2 schemes across all metrics. Open in a browser.",
     "T5": "Stacked bar comparison of online vs offline communication and computation.",
     "T6": "Throughput evolution over publication year; marker size inversely proportional to communication.",
     "A1": "Scatter of expansion factor vs server time for FHE-based schemes.",
@@ -147,13 +155,18 @@ def generate_readme(subdir, plot_results):
             scheme_refs.append(f"{s['display_name']}<sup>{fn}</sup>")
         scheme_list = ", ".join(scheme_refs)
 
-        # Plot section: 1-column, 2-row table
+        # Plot section: 1-column, 2-row table (image), or link (HTML)
         lines.append(f"### {plot_title}\n")
-        lines.append("| |")
-        lines.append("|:---:|")
-        lines.append(f"| ![{plot_title}]({filename}) |")
-        lines.append(f"| <sub>**{plot_title}.** {caption} Schemes: {scheme_list}</sub> |")
-        lines.append("")
+        if filename.endswith(".html"):
+            # Link to interactive HTML file
+            lines.append(f"[Open {plot_title}]({filename}) *(interactive — open in browser)*\n")
+            lines.append(f"<sub>**{plot_title}.** {caption} Schemes: {scheme_list}</sub>\n")
+        else:
+            lines.append("| |")
+            lines.append("|:---:|")
+            lines.append(f"| ![{plot_title}]({filename}) |")
+            lines.append(f"| <sub>**{plot_title}.** {caption} Schemes: {scheme_list}</sub> |")
+            lines.append("")
 
         # Footnotes section (collapsible)
         lines.append("<details>")
