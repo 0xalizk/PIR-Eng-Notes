@@ -72,9 +72,9 @@
 
 [^1]: The "MulPIR" referenced in KeywordPIR is the Ali et al. [[1]](https://eprint.iacr.org/2019/1483) implementation of Gentry & Halevi's "Compressible FHE with Applications to PIR" [[2]](https://eprint.iacr.org/2019/733), which is already covered under [mulpir_2019](Schemes/Group%20A%20-%20FHE%20Based%20PIR/mulpir_2019/mulpir_2019_notes.md#mulpir--engineering-notes). Open-source implementations: [[3](https://github.com/apple/swift-homomorphic-encryption)] [[4](https://github.com/tlepoint/fhe.rs)].
 
-### Cross-group schemes
+### Note: schemes below span multiple groups
 
-| Scheme &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Why |
+| $\color{darkorange}{\textsf{Scheme}}$ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | $\color{darkorange}{\textsf{Why}}$ |
 |-----------------------------------------------|-----|
 | 2025 [VIA](Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md) | Base VIA is Group B (hintless); VIA-C straddles B/C — its offline evaluation-key upload is client-independent preprocessing |
 | 2024 [ThorPIR](Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md) | Group A + D hybrid — FHE-based construction, but client sends encrypted PRG seeds and server performs per-client homomorphic preprocessing |
