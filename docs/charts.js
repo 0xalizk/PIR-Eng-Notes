@@ -364,19 +364,33 @@
       g.marker.symbol.push(s.data_tier === 3 ? 'diamond' : s.data_tier === 2 ? 'square' : 'circle');
     });
 
-    // Group traces — rectangular legend swatches via marker symbol 'square'
+    // Group legend entries — square patches for color correspondence
+    Object.keys(groups).forEach(function (g) {
+      traces.push({
+        x: [null], y: [null],
+        mode: 'markers',
+        type: 'scatter',
+        name: 'Group ' + g + ' — ' + GROUP_NAMES[g],
+        legendgroup: 'group-' + g,
+        marker: { symbol: 'square', size: 12, color: GROUP_COLORS[g] },
+        hoverinfo: 'skip'
+      });
+    });
+
+    // Group data traces — hidden from legend
     Object.keys(groups).forEach(function (g) {
       traces.push({
         x: groups[g].x, y: groups[g].y,
         mode: 'markers+text',
         type: 'scatter',
-        name: 'Group ' + g + ' — ' + GROUP_NAMES[g],
+        name: 'Group ' + g,
+        showlegend: false,
+        legendgroup: 'group-' + g,
         text: groups[g].names,
         textposition: 'top right',
         textfont: { size: 9, color: t.muted },
         hovertext: groups[g].text,
         hoverinfo: 'text',
-        legendgroup: 'group-' + g,
         marker: {
           color: groups[g].marker.color,
           opacity: groups[g].marker.opacity,
