@@ -979,7 +979,7 @@
         var pill = document.createElement('button');
         pill.className = 'filter-pill active';
         pill.style.borderColor = GROUP_COLORS[g];
-        pill.textContent = g;
+        pill.textContent = GROUP_NAMES[g];
         pill.addEventListener('click', function () {
           if (activeGroups.has(g)) { activeGroups.delete(g); pill.classList.remove('active'); }
           else { activeGroups.add(g); pill.classList.add('active'); }
