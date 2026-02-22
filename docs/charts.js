@@ -1054,27 +1054,43 @@
       });
       filterEl.appendChild(groupRow);
 
-      // clear link
-      var clearLink = document.createElement('a');
-      clearLink.href = '#';
-      clearLink.textContent = 'Clear filters';
-      clearLink.className = 'filter-clear';
-      clearLink.addEventListener('click', function (e) {
+      // select all / clear links
+      var actionsRow = document.createElement('div');
+      actionsRow.className = 'filter-row-line';
+
+      var selectAllLink = document.createElement('a');
+      selectAllLink.href = '#';
+      selectAllLink.textContent = 'Select all';
+      selectAllLink.className = 'filter-clear';
+      selectAllLink.addEventListener('click', function (e) {
         e.preventDefault();
-        // reset all state
         activeGroups = new Set(Object.keys(GROUP_COLORS));
         activeTiers = new Set([1, 2, 3]);
-        implFilter = null;
-        sortCol = 'year';
-        sortAsc = false;
-        // reset all pill visuals
+        implFilter = true;
         Array.from(filterEl.querySelectorAll('.filter-pill')).forEach(function (p) {
-          if (p === implPill) { p.classList.remove('active'); }
-          else { p.classList.add('active'); }
+          p.classList.add('active');
         });
         applyFilters();
       });
-      filterEl.appendChild(clearLink);
+      actionsRow.appendChild(selectAllLink);
+
+      var clearLink = document.createElement('a');
+      clearLink.href = '#';
+      clearLink.textContent = 'Clear';
+      clearLink.className = 'filter-clear';
+      clearLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        activeGroups = new Set();
+        activeTiers = new Set();
+        implFilter = null;
+        Array.from(filterEl.querySelectorAll('.filter-pill')).forEach(function (p) {
+          p.classList.remove('active');
+        });
+        applyFilters();
+      });
+      actionsRow.appendChild(clearLink);
+
+      filterEl.appendChild(actionsRow);
     }
 
     renderRows(sorted);
