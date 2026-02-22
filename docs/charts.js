@@ -385,7 +385,7 @@
         x: groups[g].x, y: groups[g].y,
         mode: 'markers+text',
         type: 'scatter',
-        name: 'Group ' + g,
+        name: GROUP_NAMES[g],
         showlegend: false,
         legendgroup: 'group-' + g,
         text: groups[g].names,
@@ -642,7 +642,7 @@
       traces.push({
         x: gItems.map(function (s) { return s._totalComm; }),
         y: gItems.map(function (s) { return getVal(s, 'server_time_ms'); }),
-        mode: 'markers+text', type: 'scatter', name: 'Group ' + g,
+        mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
         text: gItems.map(function (s) { return s.display_name; }),
         textposition: 'top center',
         textfont: { size: 9, color: t.muted },
@@ -841,7 +841,7 @@
       traces.push({
         x: gItems.map(function (s) { return s.year; }),
         y: gItems.map(function (s) { return getVal(s, 'throughput_gbps'); }),
-        mode: 'markers+text', type: 'scatter', name: 'Group ' + g,
+        mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
         text: gItems.map(function (s) { return s.display_name; }),
         textposition: 'top center',
         textfont: { size: 9, color: t.muted },
