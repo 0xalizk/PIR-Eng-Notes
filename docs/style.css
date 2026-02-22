@@ -67,11 +67,14 @@ a:hover { text-decoration: underline; }
   transition: transform 0.3s ease;
 }
 .sidebar-title {
+  display: block;
   font-size: 15px;
   font-weight: 700;
   padding: 0 20px 16px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 8px;
+  color: var(--text);
+  text-decoration: none;
 }
 .sidebar nav a {
   display: block;
