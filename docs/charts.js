@@ -682,10 +682,10 @@
 
   // ── 6b. Radar — Tabbed per-group, 3-per-row grid ─────
   var RADAR_GROUPS = [
-    { key: 'A', label: 'Group A — FHE-Based' },
-    { key: 'B', label: 'Group B — Stateless' },
-    { key: 'C', label: 'Group C — Client-Indep.' },
-    { key: 'D', label: 'Group D — Client-Dep.' }
+    { key: 'A', label: 'FHE-Based' },
+    { key: 'B', label: 'Stateless' },
+    { key: 'C', label: 'Client-Indep.' },
+    { key: 'D', label: 'Client-Dep.' }
   ];
 
   function renderRadar(data) {
