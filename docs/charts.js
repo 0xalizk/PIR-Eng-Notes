@@ -370,8 +370,10 @@
         x: [null], y: [null],
         mode: 'lines',
         type: 'scatter',
-        name: 'Group ' + g + ' — ' + GROUP_NAMES[g],
-        legendgroup: 'group-' + g,
+        name: g + ' — ' + GROUP_NAMES[g],
+        legendgroup: 'groups',
+        legendgrouptitle: { text: 'Groups', font: { size: 11, color: t.muted } },
+        legendrank: 1,
         line: { color: GROUP_COLORS[g], width: 10 },
         hoverinfo: 'skip'
       });
@@ -403,14 +405,16 @@
 
     // Tier legend entries — unfilled shapes
     var tierShapes = { 1: 'circle', 2: 'square', 3: 'diamond' };
-    var tierNames = { 1: 'Tier 1 (Exact)', 2: 'Tier 2 (Approx)', 3: 'Tier 3 (Asymptotic)' };
+    var tierNames = { 1: 'T1 (Exact)', 2: 'T2 (Approx)', 3: 'T3 (Asymptotic)' };
     [1, 2, 3].forEach(function (tier) {
       traces.push({
         x: [null], y: [null],
         mode: 'markers',
         type: 'scatter',
         name: tierNames[tier],
-        legendgroup: 'tier-' + tier,
+        legendgroup: 'tiers',
+        legendgrouptitle: { text: 'Tiers', font: { size: 11, color: t.muted } },
+        legendrank: 2,
         marker: {
           symbol: tierShapes[tier],
           size: 10,
@@ -434,7 +438,8 @@
     var layout = baseLayout('Communication Design Space (Query vs Response)', {
       xaxis: { title: 'Query Size (KB)', type: 'log', exponentformat: 'power', gridcolor: t.grid },
       yaxis: { title: 'Response Size (KB)', type: 'log', exponentformat: 'power', gridcolor: t.grid },
-      legend: { orientation: 'h', y: -0.15, traceorder: 'normal' },
+      legend: { orientation: 'v', x: 1.02, y: 1, traceorder: 'grouped', groupclick: 'toggleitem', font: { size: 11 } },
+      margin: { r: 200 },
       height: 650
     });
 
