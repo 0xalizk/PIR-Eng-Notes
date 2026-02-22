@@ -974,7 +974,35 @@
         renderRows(sorted);
       }
 
-      // group pills
+      // tier row
+      var tierRow = document.createElement('div');
+      tierRow.className = 'filter-row-line';
+      [1, 2, 3].forEach(function (tier) {
+        var pill = document.createElement('button');
+        pill.className = 'filter-pill active';
+        pill.textContent = 'Tier ' + tier;
+        pill.addEventListener('click', function () {
+          if (activeTiers.has(tier)) { activeTiers.delete(tier); pill.classList.remove('active'); }
+          else { activeTiers.add(tier); pill.classList.add('active'); }
+          applyFilters();
+        });
+        tierRow.appendChild(pill);
+      });
+      // impl pill on tier row
+      var implPill = document.createElement('button');
+      implPill.className = 'filter-pill';
+      implPill.textContent = 'Has Impl';
+      implPill.addEventListener('click', function () {
+        if (implFilter === true) { implFilter = null; implPill.classList.remove('active'); }
+        else { implFilter = true; implPill.classList.add('active'); }
+        applyFilters();
+      });
+      tierRow.appendChild(implPill);
+      filterEl.appendChild(tierRow);
+
+      // group row
+      var groupRow = document.createElement('div');
+      groupRow.className = 'filter-row-line';
       Object.keys(GROUP_COLORS).forEach(function (g) {
         var pill = document.createElement('button');
         pill.className = 'filter-pill active';
@@ -985,32 +1013,9 @@
           else { activeGroups.add(g); pill.classList.add('active'); }
           applyFilters();
         });
-        filterEl.appendChild(pill);
+        groupRow.appendChild(pill);
       });
-
-      // tier pills
-      [1, 2, 3].forEach(function (tier) {
-        var pill = document.createElement('button');
-        pill.className = 'filter-pill active';
-        pill.textContent = 'Tier ' + tier;
-        pill.addEventListener('click', function () {
-          if (activeTiers.has(tier)) { activeTiers.delete(tier); pill.classList.remove('active'); }
-          else { activeTiers.add(tier); pill.classList.add('active'); }
-          applyFilters();
-        });
-        filterEl.appendChild(pill);
-      });
-
-      // impl pill
-      var implPill = document.createElement('button');
-      implPill.className = 'filter-pill';
-      implPill.textContent = 'Has Impl';
-      implPill.addEventListener('click', function () {
-        if (implFilter === true) { implFilter = null; implPill.classList.remove('active'); }
-        else { implFilter = true; implPill.classList.add('active'); }
-        applyFilters();
-      });
-      filterEl.appendChild(implPill);
+      filterEl.appendChild(groupRow);
     }
 
     renderRows(sorted);

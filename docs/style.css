@@ -275,9 +275,14 @@ h4 {
 /* ── Filter Row ─────────────────────────────────────── */
 .filter-row {
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0 16px;
+}
+.filter-row-line {
+  display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin: 12px 0 16px;
 }
 .filter-pill {
   font-family: var(--font);
