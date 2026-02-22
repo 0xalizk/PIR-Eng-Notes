@@ -889,7 +889,7 @@
       xaxis: { title: 'Year', dtick: 1, gridcolor: t.grid },
       yaxis: { title: 'Throughput (GB/s)', type: 'log', gridcolor: t.grid },
       legend: { orientation: 'h', y: -0.2 },
-      height: 450
+      height: 495
     }), plotConfig());
   }
 
