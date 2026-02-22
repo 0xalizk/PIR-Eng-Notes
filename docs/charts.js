@@ -846,8 +846,8 @@
       tabsEl.appendChild(btn);
     });
 
-    // default to All
-    showAll();
+    // default to last tab (Client-Dep. Preprocessing)
+    drawGroup(RADAR_GROUPS[RADAR_GROUPS.length - 1].key);
   }
 
   // ── 6c. Timeline ──────────────────────────────────────
