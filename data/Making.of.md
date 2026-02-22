@@ -1,22 +1,7 @@
 ## Making of this directory
 
-Design rationale and decisions for the comparative visualization of PIR schemes' metrics and paper-reported benchmarks and/or asymptotics.
-
-### Data Pipeline
-
-1. **Audit (Step 0):** Cross-checked all 5 group README.md comparison tables against the 34 individual scheme notes.md files. Result: zero discrepancies across all groups. The README tables faithfully reflect the source-of-truth notes.md files.
-
-2. **Data Extraction (Step 1):** Rather than fragile regex parsing of heterogeneous markdown tables, the data was hand-curated into `pir_data.json` from the verified README tables. Each scheme gets a structured entry with concrete benchmarks, asymptotic complexity, and group-specific metrics.
-
-3. **Data Confidence Tiers:** Schemes are classified into three tiers to prevent apples-to-oranges comparisons:
-   - **Tier 1 (26 schemes):** Exact paper-reported benchmarks. Filled markers in plots.
-   - **Tier 2 (2 schemes):** Approximate values (WhisPIR, VeriSimplePIR). Open markers.
-   - **Tier 3 (7 schemes):** Asymptotic complexity only, no implementation. Excluded from scatter plots, shown in tables only.
-
 <details>
-<summary>Data sources by tier</summary>
-
-#### Tier 1 — Direct benchmarks (26 schemes)
+<summary><strong>Tier 1</strong> (~74%) Exact — direct benchmarks from an implementation (26 schemes)</summary>
 
 | Scheme | Source |
 |--------|--------|
@@ -47,14 +32,20 @@ Design rationale and decisions for the comparative visualization of PIR schemes'
 | 2016 XPIR | Figure 6, Figure 7, Figure 8 |
 | 2014 XPIR | Table 2, Table 3 |
 
-#### Tier 2 — Approximate values (2 schemes)
+</details>
+
+<details>
+<summary><strong>Tier 2</strong> (~6%) Approximate — estimated from analytical models in the paper (2 schemes)</summary>
 
 | Scheme | Source | How estimated |
 |--------|--------|---------------|
 | 2024 VeriSimplePIR | Figure 7, Figure 8 | Values read from paper figures (approximate) |
 | 2024 WhisPIR | Figure 1, Figure 2, Figure 4 | Values read from paper figures (approximate) |
 
-#### Tier 3 — Analytical estimates (7 schemes)
+</details>
+
+<details>
+<summary><strong>Tier 3</strong> (~20%) Asymptotic — derived from theoretical complexity bounds only (7 schemes)</summary>
 
 | Scheme | Source | How derived |
 |--------|--------|-------------|
@@ -67,6 +58,19 @@ Design rationale and decisions for the comparative visualization of PIR schemes'
 | 2019 MulPIR | Section 5, Appendix A | Analytical cost model: rate=4/9, ~1.72 mults/byte, ring dim 2^12 |
 
 </details>
+
+Design rationale and decisions for the comparative visualization of PIR schemes' metrics and paper-reported benchmarks and/or asymptotics.
+
+### Data Pipeline
+
+1. **Audit (Step 0):** Cross-checked all 5 group README.md comparison tables against the 34 individual scheme notes.md files. Result: zero discrepancies across all groups. The README tables faithfully reflect the source-of-truth notes.md files.
+
+2. **Data Extraction (Step 1):** Rather than fragile regex parsing of heterogeneous markdown tables, the data was hand-curated into `pir_data.json` from the verified README tables. Each scheme gets a structured entry with concrete benchmarks, asymptotic complexity, and group-specific metrics.
+
+3. **Data Confidence Tiers:** Schemes are classified into three tiers to prevent apples-to-oranges comparisons:
+   - **Tier 1 (26 schemes):** Exact paper-reported benchmarks. Filled markers in plots.
+   - **Tier 2 (2 schemes):** Approximate values (WhisPIR, VeriSimplePIR). Open markers.
+   - **Tier 3 (7 schemes):** Asymptotic complexity only, no implementation. Excluded from scatter plots, shown in tables only.
 
 ### Key Design Decisions
 

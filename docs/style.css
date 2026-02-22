@@ -394,7 +394,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
 /* ── Data Sources Toggle ────────────────────────────── */
 .data-sources-toggle {
-  margin: 8px 0 24px;
+  margin: 0 0 4px;
   font-size: 14px;
 }
 .data-sources-toggle summary {
@@ -402,16 +402,13 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   color: var(--text-muted);
   font-size: 14px;
   padding: 4px 0;
+  line-height: 1.6;
 }
 .data-sources-toggle summary:hover {
   color: var(--text);
 }
-.data-sources-toggle h4 {
-  margin: 16px 0 8px;
-  font-size: 14px;
-}
 .data-sources-toggle .table-wrap {
-  margin: 4px 0 12px;
+  margin: 8px 0 4px;
 }
 
 .tier-defs {
