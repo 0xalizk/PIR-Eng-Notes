@@ -1,11 +1,11 @@
 ## Group D — Client-Dependent Preprocessing
 
-### Client-Dependent Preprocessing — Online Server Latency
+### Online Server Latency
 
 | |
 |:---:|
-| ![Client-Dependent Preprocessing — Online Server Latency](D1_online_latency_bars.png) |
-| <sub>**Client-Dependent Preprocessing — Online Server Latency.** Horizontal bar chart of online server latency (log scale). Schemes: IncPIR<sup>1</sup>, WangRen<sup>2</sup>, RMS24<sup>3</sup>, Plinko<sup>4</sup>, Piano<sup>5</sup>, TreePIR<sup>6</sup>, IshaiShiWichs<sup>7</sup>, CK20<sup>8</sup></sub> |
+| ![Online Server Latency](D1_online_latency_bars.png) |
+| <sub>Horizontal bar chart of online server latency (log scale). Schemes: IncPIR<sup>1</sup>, WangRen<sup>2</sup>, RMS24<sup>3</sup>, Plinko<sup>4</sup>, Piano<sup>5</sup>, TreePIR<sup>6</sup>, IshaiShiWichs<sup>7</sup>, CK20<sup>8</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>
@@ -26,7 +26,7 @@
 | |
 |:---:|
 | ![Server vs Client Online Latency](D2_preprocessing_roi.png) |
-| <sub>**Server vs Client Online Latency.** Scatter of server vs client online latency; bubble size indicates client storage. Schemes: IncPIR<sup>1</sup>, Piano<sup>2</sup>, TreePIR<sup>3</sup>, RMS24<sup>4</sup></sub> |
+| <sub>Scatter of server vs client online latency; bubble size indicates client storage. Schemes: IncPIR<sup>1</sup>, Piano<sup>2</sup>, TreePIR<sup>3</sup>, RMS24<sup>4</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>
@@ -43,7 +43,7 @@
 | |
 |:---:|
 | ![Client Storage vs Server Computation Tradeoff](D3_client_storage_vs_server.png) |
-| <sub>**Client Storage vs Server Computation Tradeoff.** Scatter of client storage vs server computation tradeoff. Schemes: Piano<sup>1</sup>, Plinko<sup>2</sup>, WangRen<sup>3</sup></sub> |
+| <sub>Scatter of client storage vs server computation tradeoff. Schemes: Piano<sup>1</sup>, Plinko<sup>2</sup>, WangRen<sup>3</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>
@@ -59,7 +59,7 @@
 | |
 |:---:|
 | ![Asymptotic Classification — Theory-Only Schemes](D4_asymptotic_classification.png) |
-| <sub>**Asymptotic Classification — Theory-Only Schemes.** Asymptotic complexity table for theory-only Group D schemes. Schemes: CK20<sup>1</sup>, IshaiShiWichs<sup>2</sup>, Plinko<sup>3</sup>, WangRen<sup>4</sup></sub> |
+| <sub>Asymptotic complexity table for theory-only schemes. Schemes: CK20<sup>1</sup>, IshaiShiWichs<sup>2</sup>, Plinko<sup>3</sup>, WangRen<sup>4</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>

@@ -1,11 +1,11 @@
 ## Group B — Stateless Single-Server PIR
 
-### Stateless PIR — Throughput vs Communication Tradeoff
+### Throughput vs Communication Tradeoff
 
 | |
 |:---:|
-| ![Stateless PIR — Throughput vs Communication Tradeoff](B1_throughput_vs_communication.png) |
-| <sub>**Stateless PIR — Throughput vs Communication Tradeoff.** Throughput vs total online communication scatter for stateless schemes. Schemes: HintlessPIR<sup>1</sup>, YPIR<sup>2</sup>, Respire<sup>3</sup>, Pirouette<sup>4</sup>, InsPIRe<sup>5</sup>, NPIR<sup>6</sup>, VIA<sup>7</sup></sub> |
+| ![Throughput vs Communication Tradeoff](B1_throughput_vs_communication.png) |
+| <sub>Throughput vs total online communication scatter. Schemes: HintlessPIR<sup>1</sup>, YPIR<sup>2</sup>, Respire<sup>3</sup>, Pirouette<sup>4</sup>, InsPIRe<sup>5</sup>, NPIR<sup>6</sup>, VIA<sup>7</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>
@@ -20,12 +20,12 @@
 
 </details>
 
-### Stateless PIR — Query/Response Size Comparison
+### Query/Response Size Comparison
 
 | |
 |:---:|
-| ![Stateless PIR — Query/Response Size Comparison](B2_query_response_bars.png) |
-| <sub>**Stateless PIR — Query/Response Size Comparison.** Paired horizontal bars of query/response sizes sorted by total communication. Schemes: Pirouette<sup>1</sup>, Respire<sup>2</sup>, NPIR<sup>3</sup>, InsPIRe<sup>4</sup>, VIA<sup>5</sup>, WhisPIR<sup>6</sup>, HintlessPIR<sup>7</sup>, YPIR<sup>8</sup></sub> |
+| ![Query/Response Size Comparison](B2_query_response_bars.png) |
+| <sub>Paired horizontal bars of query/response sizes sorted by total communication. Schemes: Pirouette<sup>1</sup>, Respire<sup>2</sup>, NPIR<sup>3</sup>, InsPIRe<sup>4</sup>, VIA<sup>5</sup>, WhisPIR<sup>6</sup>, HintlessPIR<sup>7</sup>, YPIR<sup>8</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>
@@ -41,12 +41,12 @@
 
 </details>
 
-### Stateless PIR — Server Computation Time
+### Server Computation Time
 
 | |
 |:---:|
-| ![Stateless PIR — Server Computation Time](B3_server_time_comparison.png) |
-| <sub>**Stateless PIR — Server Computation Time.** Horizontal bar chart of server computation time for stateless schemes. Schemes: HintlessPIR<sup>1</sup>, InsPIRe<sup>2</sup>, Respire<sup>3</sup>, YPIR<sup>4</sup>, VIA<sup>5</sup>, NPIR<sup>6</sup>, WhisPIR<sup>7</sup>, Pirouette<sup>8</sup></sub> |
+| ![Server Computation Time](B3_server_time_comparison.png) |
+| <sub>Horizontal bar chart of server computation time. Schemes: HintlessPIR<sup>1</sup>, InsPIRe<sup>2</sup>, Respire<sup>3</sup>, YPIR<sup>4</sup>, VIA<sup>5</sup>, NPIR<sup>6</sup>, WhisPIR<sup>7</sup>, Pirouette<sup>8</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>

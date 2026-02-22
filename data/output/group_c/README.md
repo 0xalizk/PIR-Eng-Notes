@@ -1,11 +1,11 @@
 ## Group C — Client-Independent Preprocessing
 
-### Client-Independent Preprocessing — Online Throughput
+### Online Throughput
 
 | |
 |:---:|
-| ![Client-Independent Preprocessing — Online Throughput](C1_online_throughput.png) |
-| <sub>**Client-Independent Preprocessing — Online Throughput.** Bar chart of online throughput for preprocessing-based schemes. Schemes: IncrementalPIR<sup>1</sup>, SimplePIR<sup>2</sup>, DoublePIR<sup>3</sup></sub> |
+| ![Online Throughput](C1_online_throughput.png) |
+| <sub>Bar chart of online throughput for preprocessing-based schemes. Schemes: IncrementalPIR<sup>1</sup>, SimplePIR<sup>2</sup>, DoublePIR<sup>3</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>
@@ -21,7 +21,7 @@
 | |
 |:---:|
 | ![Hint Size vs Online Communication Tradeoff](C2_hint_vs_online_comm.png) |
-| <sub>**Hint Size vs Online Communication Tradeoff.** Scatter of offline hint size vs online communication. Schemes: SimplePIR<sup>1</sup>, DoublePIR<sup>2</sup>, IncrementalPIR<sup>3</sup></sub> |
+| <sub>Scatter of offline hint size vs online communication. Schemes: SimplePIR<sup>1</sup>, DoublePIR<sup>2</sup>, IncrementalPIR<sup>3</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>
@@ -37,7 +37,7 @@
 | |
 |:---:|
 | ![Throughput Scaling with Database Size](C3_throughput_scaling.png) |
-| <sub>**Throughput Scaling with Database Size.** Throughput scaling with database size (multi-point where available). Schemes: Respire<sup>1</sup>, SimplePIR<sup>2</sup>, DoublePIR<sup>3</sup>, IncrementalPIR<sup>4</sup></sub> |
+| <sub>Throughput scaling with database size (multi-point where available). Schemes: Respire<sup>1</sup>, SimplePIR<sup>2</sup>, DoublePIR<sup>3</sup>, IncrementalPIR<sup>4</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>

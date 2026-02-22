@@ -5,7 +5,7 @@
 | |
 |:---:|
 | ![FHE Efficiency Frontier — Expansion Factor vs Server Time](A1_fhe_efficiency_frontier.png) |
-| <sub>**FHE Efficiency Frontier — Expansion Factor vs Server Time.** Scatter of expansion factor vs server time for FHE-based schemes. Schemes: SealPIR<sup>1</sup>, MulPIR<sup>2</sup>, OnionPIR<sup>3</sup>, FrodoPIR<sup>4</sup>, OnionPIRv2<sup>5</sup></sub> |
+| <sub>Scatter of expansion factor vs server time. Schemes: SealPIR<sup>1</sup>, MulPIR<sup>2</sup>, OnionPIR<sup>3</sup>, FrodoPIR<sup>4</sup>, OnionPIRv2<sup>5</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>
@@ -18,12 +18,12 @@
 
 </details>
 
-### FHE-Based PIR Communication Evolution
+### Communication Evolution
 
 | |
 |:---:|
-| ![FHE-Based PIR Communication Evolution](A2_evolution_timeline.png) |
-| <sub>**FHE-Based PIR Communication Evolution.** Paired bar chart showing query/response size evolution across FHE-based schemes. Schemes: XPIR (2014)<sup>1</sup>, SealPIR<sup>2</sup>, MulPIR<sup>3</sup>, OnionPIR<sup>4</sup>, Addra/FastPIR<sup>5</sup>, CwPIR<sup>6</sup>, Spiral<sup>7</sup>, FrodoPIR<sup>8</sup>, ThorPIR<sup>9</sup>, OnionPIRv2<sup>10</sup></sub> |
+| ![Communication Evolution](A2_evolution_timeline.png) |
+| <sub>Paired bar chart showing query/response size evolution. Schemes: XPIR (2014)<sup>1</sup>, SealPIR<sup>2</sup>, MulPIR<sup>3</sup>, OnionPIR<sup>4</sup>, Addra/FastPIR<sup>5</sup>, CwPIR<sup>6</sup>, Spiral<sup>7</sup>, FrodoPIR<sup>8</sup>, ThorPIR<sup>9</sup>, OnionPIRv2<sup>10</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>
@@ -41,12 +41,12 @@
 
 </details>
 
-### Group A (FHE-Based) Full Comparison
+### Full Comparison
 
 | |
 |:---:|
-| ![Group A (FHE-Based) Full Comparison](A3_full_comparison_heatmap.png) |
-| <sub>**Group A (FHE-Based) Full Comparison.** Full comparison table of all Group A schemes. Schemes: XPIR (2014)<sup>1</sup>, XPIR (2016)<sup>2</sup>, SealPIR<sup>3</sup>, MulPIR<sup>4</sup>, OnionPIR<sup>5</sup>, Addra/FastPIR<sup>6</sup>, CwPIR<sup>7</sup>, Spiral<sup>8</sup>, FrodoPIR<sup>9</sup>, ThorPIR<sup>10</sup>, OnionPIRv2<sup>11</sup></sub> |
+| ![Full Comparison](A3_full_comparison_heatmap.png) |
+| <sub>Full comparison heatmap of all Group A schemes. Schemes: XPIR (2014)<sup>1</sup>, XPIR (2016)<sup>2</sup>, SealPIR<sup>3</sup>, MulPIR<sup>4</sup>, OnionPIR<sup>5</sup>, Addra/FastPIR<sup>6</sup>, CwPIR<sup>7</sup>, Spiral<sup>8</sup>, FrodoPIR<sup>9</sup>, ThorPIR<sup>10</sup>, OnionPIRv2<sup>11</sup></sub> |
 
 <details>
 <summary>${\color{#E67300}\textbf{Citations \& Footnotes}}$</summary>
