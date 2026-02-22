@@ -904,9 +904,9 @@
     var headerRow = document.getElementById('catalog-header');
     if (!el || !headerRow) return;
 
-    var sorted = data.slice().sort(function (a, b) { return a._composite - b._composite; });
-    var sortCol = null;
-    var sortAsc = true;
+    var sorted = data.slice().sort(function (a, b) { return b.year - a.year; });
+    var sortCol = 'year';
+    var sortAsc = false;
 
     function renderRows(items) {
       el.innerHTML = '';
