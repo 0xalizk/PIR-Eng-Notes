@@ -887,7 +887,12 @@
 
     Plotly.newPlot(el, traces, baseLayout('Throughput Timeline — Evolution by Year', {
       xaxis: { title: 'Year', dtick: 1, gridcolor: t.grid },
-      yaxis: { title: 'Throughput (GB/s)', type: 'log', gridcolor: t.grid },
+      yaxis: {
+        title: 'Throughput (GB/s) — Higher is Better',
+        type: 'log', gridcolor: t.grid,
+        tickvals: [0.1, 0.2, 0.5, 1, 2, 5, 10, 20],
+        ticktext: ['0.1', '0.2', '0.5', '1', '2', '5', '10', '20']
+      },
       legend: { orientation: 'h', y: -0.2 },
       height: 495
     }), plotConfig());
