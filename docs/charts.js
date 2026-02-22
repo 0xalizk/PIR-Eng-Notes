@@ -364,15 +364,15 @@
       g.marker.symbol.push(s.data_tier === 3 ? 'diamond' : s.data_tier === 2 ? 'square' : 'circle');
     });
 
-    // Group legend entries — square patches for color correspondence
+    // Group legend entries — thick line for rectangular color patches
     Object.keys(groups).forEach(function (g) {
       traces.push({
         x: [null], y: [null],
-        mode: 'markers',
+        mode: 'lines',
         type: 'scatter',
         name: 'Group ' + g + ' — ' + GROUP_NAMES[g],
         legendgroup: 'group-' + g,
-        marker: { symbol: 'square', size: 12, color: GROUP_COLORS[g] },
+        line: { color: GROUP_COLORS[g], width: 10 },
         hoverinfo: 'skip'
       });
     });
