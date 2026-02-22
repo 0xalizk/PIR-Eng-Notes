@@ -992,7 +992,7 @@
       [1, 2, 3].forEach(function (tier) {
         var pill = document.createElement('button');
         pill.className = 'filter-pill active';
-        pill.textContent = 'T' + tier;
+        pill.textContent = 'Tier ' + tier;
         pill.addEventListener('click', function () {
           if (activeTiers.has(tier)) { activeTiers.delete(tier); pill.classList.remove('active'); }
           else { activeTiers.add(tier); pill.classList.add('active'); }
