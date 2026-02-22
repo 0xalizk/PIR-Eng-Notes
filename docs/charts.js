@@ -295,7 +295,7 @@
       annotations: (hd.annotations || []).concat([{
         text: '<i>Click inside a column to sort by it</i>',
         xref: 'paper', yref: 'paper',
-        x: -0.12, y: 1.06,
+        x: -0.22, y: 1.06,
         showarrow: false,
         font: { size: 13, color: t.muted },
         xanchor: 'left'
