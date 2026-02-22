@@ -58,6 +58,69 @@
     <div><strong>Tier 3</strong> (~20%) Asymptotic &mdash; derived from theoretical complexity bounds only</div>
   </div>
 
+  <details class="data-sources-toggle">
+    <summary>Data sources by tier</summary>
+    <h4>Tier 1 &mdash; Direct benchmarks (26 schemes)</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Scheme</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>2026 IncrementalPIR</td><td>Table 2</td></tr>
+          <tr><td>2025 DistributionalPIR</td><td>Section 7.2.1, Figure 9, Figure 10, Table 12</td></tr>
+          <tr><td>2025 InsPIRe</td><td>Table 2, Table 3</td></tr>
+          <tr><td>2025 NPIR</td><td>Table 1</td></tr>
+          <tr><td>2025 OnionPIRv2</td><td>Table 2</td></tr>
+          <tr><td>2025 Pirouette</td><td>Table 7</td></tr>
+          <tr><td>2025 VIA</td><td>Table 1, Table 2</td></tr>
+          <tr><td>2024 Respire</td><td>Table 1, Table 2</td></tr>
+          <tr><td>2024 SinglePass</td><td>Table 2</td></tr>
+          <tr><td>2024 YPIR</td><td>Table 2</td></tr>
+          <tr><td>2023 HintlessPIR</td><td>Table 1, Table 2</td></tr>
+          <tr><td>2023 Piano</td><td>Table 1</td></tr>
+          <tr><td>2023 RMS24</td><td>Table 2, Table 3</td></tr>
+          <tr><td>2023 TreePIR</td><td>Figure 7, Figure 8, Figure 9</td></tr>
+          <tr><td>2022 CwPIR</td><td>Table 7, Table 8</td></tr>
+          <tr><td>2022 DoublePIR</td><td>Table 1, Table 8</td></tr>
+          <tr><td>2022 FrodoPIR</td><td>Table 6, Table 7</td></tr>
+          <tr><td>2022 SimplePIR</td><td>Table 1, Table 8</td></tr>
+          <tr><td>2022 Spiral</td><td>Table 3, Table 5</td></tr>
+          <tr><td>2021 Addra/FastPIR</td><td>Figure 9, Figure 10</td></tr>
+          <tr><td>2021 IncPIR</td><td>Figure 9, Figure 10</td></tr>
+          <tr><td>2021 OnionPIR</td><td>Table 3, Table 4</td></tr>
+          <tr><td>2019 KeywordPIR</td><td>Table 3, Table 4</td></tr>
+          <tr><td>2018 SealPIR</td><td>Figure 9</td></tr>
+          <tr><td>2016 XPIR</td><td>Figure 6, Figure 7, Figure 8</td></tr>
+          <tr><td>2014 XPIR</td><td>Table 2, Table 3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h4>Tier 2 &mdash; Approximate values (2 schemes)</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Scheme</th><th>Source</th><th>How estimated</th></tr></thead>
+        <tbody>
+          <tr><td>2024 VeriSimplePIR</td><td>Figure 7, Figure 8</td><td>Values read from paper figures (approximate)</td></tr>
+          <tr><td>2024 WhisPIR</td><td>Figure 1, Figure 2, Figure 4</td><td>Values read from paper figures (approximate)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h4>Tier 3 &mdash; Analytical estimates (7 schemes)</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Scheme</th><th>Source</th><th>How derived</th></tr></thead>
+        <tbody>
+          <tr><td>2025 BarelyDoublyEfficient</td><td>Theorem 3.1</td><td>Asymptotic formulas with N=2<sup>33</sup> bits; unknown poly(&lambda;) constants</td></tr>
+          <tr><td>2024 IshaiShiWichs</td><td>Table 1, Theorem 4.4</td><td>Information-theoretic O&#771;(n<sup>2/3</sup>) server, O&#771;(n<sup>1/3</sup>) comm at n=2<sup>28</sup></td></tr>
+          <tr><td>2024 Plinko</td><td>Figure 1, Figure 6</td><td>Asymptotic O&#771;(n/r) at r=&radic;n for N=2<sup>20</sup> entries; no implementation</td></tr>
+          <tr><td>2024 ThorPIR</td><td>Table 2</td><td>Concrete numbers from Table 2 (proven-security variant) at N=2<sup>30</sup></td></tr>
+          <tr><td>2024 WangRen</td><td>Theorem 4.1</td><td>Balanced tradeoff T=&radic;n at N=2<sup>20</sup> entries; calibrated vs RMS24</td></tr>
+          <tr><td>2019 CK20</td><td>Theorem 14</td><td>Two-server computational with s=&radic;n, &lambda;=128, n=2<sup>28</sup> bits</td></tr>
+          <tr><td>2019 MulPIR</td><td>Section 5, Appendix A</td><td>Analytical cost model: rate=4/9, ~1.72 mults/byte, ring dim 2<sup>12</sup></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
   <div class="links">
     <a href="https://github.com/0xalizk/PIR-Eng-Notes" target="_blank">GitHub Repo</a>
     <a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/data/pir_data.json" target="_blank">Raw Data</a>
