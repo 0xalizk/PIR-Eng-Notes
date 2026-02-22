@@ -5,32 +5,32 @@
 
 | Scheme | Source |
 |--------|--------|
-| 2026 IncrementalPIR | Table 2 |
-| 2025 DistributionalPIR | Section 7.2.1, Figure 9, Figure 10, Table 12 |
-| 2025 InsPIRe | Table 2, Table 3 |
-| 2025 NPIR | Table 1 |
-| 2025 OnionPIRv2 | Table 2 |
-| 2025 Pirouette | Table 7 |
-| 2025 VIA | Table 1, Table 2 |
-| 2024 Respire | Table 1, Table 2 |
-| 2024 SinglePass | Table 2 |
-| 2024 YPIR | Table 2 |
-| 2023 HintlessPIR | Table 1, Table 2 |
-| 2023 Piano | Table 1 |
-| 2023 RMS24 | Table 2, Table 3 |
-| 2023 TreePIR | Figure 7, Figure 8, Figure 9 |
-| 2022 CwPIR | Table 7, Table 8 |
-| 2022 DoublePIR | Table 1, Table 8 |
-| 2022 FrodoPIR | Table 6, Table 7 |
-| 2022 SimplePIR | Table 1, Table 8 |
-| 2022 Spiral | Table 3, Table 5 |
-| 2021 Addra/FastPIR | Figure 9, Figure 10 |
-| 2021 IncPIR | Figure 9, Figure 10 |
-| 2021 OnionPIR | Table 3, Table 4 |
-| 2019 KeywordPIR | Table 3, Table 4 |
-| 2018 SealPIR | Figure 9 |
-| 2016 XPIR | Figure 6, Figure 7, Figure 8 |
-| 2014 XPIR | Table 2, Table 3 |
+| 2026 IncrementalPIR | [Table 2](../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md) |
+| 2025 DistributionalPIR | [Section 7.2.1, Figure 9, Figure 10, Table 12](../Schemes/Group%20X%20-%20Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md) |
+| 2025 InsPIRe | [Table 2, Table 3](../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md) |
+| 2025 NPIR | [Table 1](../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md) |
+| 2025 OnionPIRv2 | [Table 2](../Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpirv2_2025/onionpirv2_2025_notes.md) |
+| 2025 Pirouette | [Table 7](../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md) |
+| 2025 VIA | [Table 1, Table 2](../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md) |
+| 2024 Respire | [Table 1, Table 2](../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md) |
+| 2024 SinglePass | [Table 2](../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/singlepass_2024/SinglePass_2024_notes.md) |
+| 2024 YPIR | [Table 2](../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/ypir_2024/YPIR_2024_notes.md) |
+| 2023 HintlessPIR | [Table 1, Table 2](../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/hintlesspir_2023/HintlessPIR_2023_notes.md) |
+| 2023 Piano | [Table 1](../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/piano_2023/Piano_2023_notes.md) |
+| 2023 RMS24 | [Table 2, Table 3](../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md) |
+| 2023 TreePIR | [Figure 7, Figure 8, Figure 9](../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/treepir_2023/TreePIR_2023_notes.md) |
+| 2022 CwPIR | [Table 7, Table 8](../Schemes/Group%20A%20-%20FHE%20Based%20PIR/cwpir_2022/cwpir_2022_notes.md) |
+| 2022 DoublePIR | [Table 1, Table 8](../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md) |
+| 2022 FrodoPIR | [Table 6, Table 7](../Schemes/Group%20A%20-%20FHE%20Based%20PIR/frodopir_2022/frodopir_2022_notes.md) |
+| 2022 SimplePIR | [Table 1, Table 8](../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md) |
+| 2022 Spiral | [Table 3, Table 5](../Schemes/Group%20A%20-%20FHE%20Based%20PIR/spiral_2022/spiral_2022_notes.md) |
+| 2021 Addra/FastPIR | [Figure 9, Figure 10](../Schemes/Group%20A%20-%20FHE%20Based%20PIR/addra_2021/addra_2021_notes.md) |
+| 2021 IncPIR | [Figure 9, Figure 10](../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/incpir_2021/IncPIR_2021_notes.md) |
+| 2021 OnionPIR | [Table 3, Table 4](../Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpir_2021/onionpir_2021_notes.md) |
+| 2019 KeywordPIR | [Table 3, Table 4](../Schemes/Group%20X%20-%20Extensions/keywordpir_2019/KeywordPIR_2019_notes.md) |
+| 2018 SealPIR | [Figure 9](../Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md) |
+| 2016 XPIR | [Figure 6, Figure 7, Figure 8](../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2016/xpir_2016_notes.md) |
+| 2014 XPIR | [Table 2, Table 3](../Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2014/xpir_2014_notes.md) |
 
 </details>
 
@@ -39,8 +39,8 @@
 
 | Scheme | Source | How estimated |
 |--------|--------|---------------|
-| 2024 VeriSimplePIR | Figure 7, Figure 8 | Values read from paper figures (approximate) |
-| 2024 WhisPIR | Figure 1, Figure 2, Figure 4 | Values read from paper figures (approximate) |
+| 2024 VeriSimplePIR | [Figure 7, Figure 8](../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/verisimplepir_2024/VeriSimplePIR_2024_notes.md) | Values read from paper figures (approximate) |
+| 2024 WhisPIR | [Figure 1, Figure 2, Figure 4](../Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/whispir_2024/WhisPIR_2024_notes.md) | Values read from paper figures (approximate) |
 
 </details>
 
@@ -49,13 +49,13 @@
 
 | Scheme | Source | How derived |
 |--------|--------|-------------|
-| 2025 BarelyDoublyEfficient | Theorem 3.1 | Asymptotic formulas with N=2^33 bits; unknown poly(λ) constants |
-| 2024 IshaiShiWichs | Table 1, Theorem 4.4 | Information-theoretic Õ(n^{2/3}) server, Õ(n^{1/3}) comm at n=2^28 |
-| 2024 Plinko | Figure 1, Figure 6 | Asymptotic Õ(n/r) at r=√n for N=2^20 entries; no implementation |
-| 2024 ThorPIR | Table 2 | Concrete numbers from Table 2 (proven-security variant) at N=2^30 |
-| 2024 WangRen | Theorem 4.1 | Balanced tradeoff T=√n at N=2^20 entries; calibrated vs RMS24 |
-| 2019 CK20 | Theorem 14 | Two-server computational with s=√n, λ=128, n=2^28 bits |
-| 2019 MulPIR | Section 5, Appendix A | Analytical cost model: rate=4/9, ~1.72 mults/byte, ring dim 2^12 |
+| 2025 BarelyDoublyEfficient | [Theorem 3.1](../Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/barelydoublyefficient_2025/BarelyDoublyEfficient_2025_notes.md) | Asymptotic formulas with N=2^33 bits; unknown poly(λ) constants |
+| 2024 IshaiShiWichs | [Table 1, Theorem 4.4](../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md) | Information-theoretic Õ(n^{2/3}) server, Õ(n^{1/3}) comm at n=2^28 |
+| 2024 Plinko | [Figure 1, Figure 6](../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/plinko_2024/Plinko_2024_notes.md) | Asymptotic Õ(n/r) at r=√n for N=2^20 entries; no implementation |
+| 2024 ThorPIR | [Table 2](../Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md) | Concrete numbers from Table 2 (proven-security variant) at N=2^30 |
+| 2024 WangRen | [Theorem 4.1](../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/wangren_2024/WangRen_2024_notes.md) | Balanced tradeoff T=√n at N=2^20 entries; calibrated vs RMS24 |
+| 2019 CK20 | [Theorem 14](../Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ck20_2019/CK20_2019_notes.md) | Two-server computational with s=√n, λ=128, n=2^28 bits |
+| 2019 MulPIR | [Section 5, Appendix A](../Schemes/Group%20A%20-%20FHE%20Based%20PIR/mulpir_2019/mulpir_2019_notes.md) | Analytical cost model: rate=4/9, ~1.72 mults/byte, ring dim 2^12 |
 
 </details>
 
