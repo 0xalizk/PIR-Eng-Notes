@@ -438,8 +438,7 @@
     var layout = baseLayout('Communication Design Space (Query vs Response)', {
       xaxis: { title: 'Query Size (KB)', type: 'log', exponentformat: 'power', gridcolor: t.grid },
       yaxis: { title: 'Response Size (KB)', type: 'log', exponentformat: 'power', gridcolor: t.grid },
-      legend: { orientation: 'v', x: 1.02, y: 1, traceorder: 'grouped', groupclick: 'toggleitem', font: { size: 11 } },
-      margin: { r: 200 },
+      legend: { orientation: 'h', x: 0, y: -0.2, traceorder: 'grouped', groupclick: 'toggleitem', font: { size: 11 } },
       height: 650
     });
 
