@@ -460,8 +460,16 @@
     });
 
     var layout = baseLayout('Communication Design Space (Query vs Response)', {
-      xaxis: { title: 'Query Size (KB)', type: 'log', exponentformat: 'power', gridcolor: t.grid },
-      yaxis: { title: 'Response Size (KB)', type: 'log', exponentformat: 'power', gridcolor: t.grid },
+      xaxis: {
+        title: 'Query Size', type: 'log', gridcolor: t.grid,
+        tickvals: [0.01, 0.1, 1, 10, 100, 1000, 10000],
+        ticktext: ['0.01 KB', '0.1 KB', '1 KB', '10 KB', '100 KB', '1 MB', '10 MB']
+      },
+      yaxis: {
+        title: 'Response Size', type: 'log', gridcolor: t.grid,
+        tickvals: [0.01, 0.1, 1, 10, 100, 1000, 10000],
+        ticktext: ['0.01 KB', '0.1 KB', '1 KB', '10 KB', '100 KB', '1 MB', '10 MB']
+      },
       legend: { orientation: 'h', x: 0, y: -0.2, traceorder: 'grouped', groupclick: 'toggleitem', font: { size: 11 } },
       height: 715
     });
