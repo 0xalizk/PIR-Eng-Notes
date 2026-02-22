@@ -29,7 +29,6 @@
     <a href="#timeline" class="sub-nav">Timeline</a>
     <div class="divider"></div>
     <a href="#catalog">Scheme Catalog</a>
-    <a href="#methodology">Methodology</a>
     <div class="divider"></div>
     <a href="https://github.com/0xalizk/PIR-Eng-Notes" target="_blank" class="external">GitHub Repo</a>
     <a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/data/pir_data.json" target="_blank" class="external">Source Data</a>
@@ -214,36 +213,6 @@
       <thead><tr id="catalog-header"></tr></thead>
       <tbody id="catalog-body"></tbody>
     </table>
-  </div>
-</section>
-
-<!-- 8. Methodology -->
-<section id="methodology">
-  <h2>Methodology</h2>
-  <p class="subtitle">Data tiers, composite scoring, and source references</p>
-
-  <h3>Data Tiers</h3>
-  <div class="tier-legend-stacked">
-    <div><strong>Tier 1</strong> Exact &mdash; direct benchmarks from implementation (full opacity, circle marker)</div>
-    <div><strong>Tier 2</strong> Approximate &mdash; estimated from analytical models (80% opacity, &dagger; badge)</div>
-    <div><strong>Tier 3</strong> Asymptotic &mdash; theoretical estimates only (55% opacity, * badge, diamond marker)</div>
-  </div>
-
-  <h3>Composite Score</h3>
-  <p class="desc">
-    Used to sort the heatmap. Based on 4 core metrics: query size, response size, server time, throughput.
-    Each is percentile-ranked (0 = best, 1 = worst). Missing metrics excluded from average.
-    Coverage penalty: +0.1 per missing core metric if &lt;3 available.
-    Tier 3 values pushed 20% toward midpoint. Final = mean(adjusted ranks) + coverage penalty.
-    Lower = better = left in heatmap.
-  </p>
-
-  <h3>References</h3>
-  <div class="links">
-    <a href="https://github.com/0xalizk/PIR-Eng-Notes/tree/main/Schemes" target="_blank">Engineering Notes</a>
-    <a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/data/pir_data.json" target="_blank">Raw Data</a>
-    <a href="https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434" target="_blank">Deep Reading Methodology</a>
-    <a href="https://hackmd.io/@keewoolee/SJyGoXCzZe#Taxonomy" target="_blank">Taxonomy</a>
   </div>
 </section>
 
