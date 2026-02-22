@@ -846,8 +846,8 @@
       tabsEl.appendChild(btn);
     });
 
-    // default to last tab (Client-Dep. Preprocessing)
-    drawGroup(RADAR_GROUPS[RADAR_GROUPS.length - 1].key);
+    // default to FHE-Based
+    drawGroup('A');
   }
 
   // ── 6c. Timeline ──────────────────────────────────────
