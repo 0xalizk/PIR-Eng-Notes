@@ -396,10 +396,10 @@
     });
 
     var layout = baseLayout('Communication Design Space (Query vs Response)', {
-      xaxis: { title: 'Query Size (KB)', type: 'log', gridcolor: t.grid },
-      yaxis: { title: 'Response Size (KB)', type: 'log', gridcolor: t.grid },
-      legend: { orientation: 'h', y: -0.2 },
-      height: 500
+      xaxis: { title: 'Query Size (KB)', type: 'log', exponentformat: 'power', gridcolor: t.grid },
+      yaxis: { title: 'Response Size (KB)', type: 'log', exponentformat: 'power', gridcolor: t.grid },
+      legend: { orientation: 'h', y: -0.15 },
+      height: 650
     });
 
     Plotly.newPlot(el, traces, layout, plotConfig());
