@@ -561,33 +561,12 @@
     var schemes = items.map(function (s) { return s.display_name; });
     var traces = [];
 
-    // Legend entries — thick lines for rectangular patches
-    traces.push({
-      x: [null], y: [null],
-      mode: 'lines', type: 'scatter',
-      name: 'Offline Hint',
-      legendgroup: 'legend',
-      legendrank: 1,
-      line: { color: HINT_COLOR, width: 10 },
-      hoverinfo: 'skip'
-    });
-    traces.push({
-      x: [null], y: [null],
-      mode: 'lines', type: 'scatter',
-      name: 'Client Storage',
-      legendgroup: 'legend',
-      legendrank: 2,
-      line: { color: STORAGE_COLOR, width: 10 },
-      hoverinfo: 'skip'
-    });
-
     // Offline hint bars
     traces.push({
       y: schemes,
       x: items.map(function (s) { return getVal(s, 'offline_hint_mb'); }),
       type: 'bar', orientation: 'h',
       name: 'Offline Hint',
-      showlegend: false,
       marker: { color: HINT_COLOR, opacity: 0.85 },
       text: items.map(function (s) {
         var v = getVal(s, 'offline_hint_mb');
@@ -607,7 +586,6 @@
       x: items.map(function (s) { return getVal(s, 'client_storage_mb'); }),
       type: 'bar', orientation: 'h',
       name: 'Client Storage',
-      showlegend: false,
       marker: { color: STORAGE_COLOR, opacity: 0.85 },
       text: items.map(function (s) {
         var v = getVal(s, 'client_storage_mb');
@@ -623,7 +601,7 @@
 
     Plotly.newPlot(el, traces, baseLayout('Offline Hints & Client Storage', {
       barmode: 'group',
-      xaxis: { title: 'Size (MB)', type: 'log', gridcolor: t.grid },
+      xaxis: { title: 'Size (MB)', gridcolor: t.grid },
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
       legend: { orientation: 'h', x: 0, y: -0.15, font: { size: 11 } },
       margin: { l: 140, r: 60, t: 48, b: 60 },
