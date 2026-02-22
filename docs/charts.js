@@ -684,8 +684,8 @@
   var RADAR_GROUPS = [
     { key: 'A', label: 'FHE-Based' },
     { key: 'B', label: 'Stateless' },
-    { key: 'C', label: 'Client-Indep.' },
-    { key: 'D', label: 'Client-Dep.' }
+    { key: 'C', label: 'Client-Indep. Preprocessing' },
+    { key: 'D', label: 'Client-Dep. Preprocessing' }
   ];
 
   function renderRadar(data) {
