@@ -68,6 +68,29 @@
 
   var BASE_URL = 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/';
 
+  var IMPL_URLS = {
+    addra_2021: 'https://github.com/ishtiyaque/FastPIR',
+    cwpir_2022: 'https://github.com/RasoulAM/constant-weight-pir',
+    distributionalpir_2025: 'https://github.com/ryanleh/crowdsurf',
+    simplepir_2022: 'https://github.com/ahenzinger/simplepir',
+    doublepir_2022: 'https://github.com/ahenzinger/simplepir',
+    frodopir_2022: 'https://github.com/brave-experiments/frodo-pir',
+    hintlesspir_2023: 'https://github.com/google/hintless_pir',
+    inspire_2025: 'https://github.com/google/private-membership/tree/main/research/InsPIRe',
+    npir_2026: 'https://github.com/llllinyl/npir',
+    onionpirv2_2025: 'https://github.com/chenyue42/OnionPIRv2',
+    pirouette_2025: 'https://github.com/KULeuven-COSIC/Pirouette',
+    rms24_2024: 'https://github.com/renling/S3PIR',
+    respire_2024: 'https://github.com/AMACB/respire',
+    sealpir_2018: 'https://github.com/microsoft/SealPIR',
+    spiral_2022: 'https://github.com/menonsamir/spiral',
+    treepir_2023: 'https://github.com/alazzaretti/treePIR',
+    xpir_2016: 'https://github.com/XPIR-team/XPIR',
+    xpir_2014: 'https://github.com/XPIR-team/XPIR',
+    piano_2023: 'https://github.com/wuwuz/Piano-PIR-new',
+    ypir_2024: 'https://github.com/menonsamir/ypir'
+  };
+
   function schemeUrl(id) {
     return SCHEME_LINKS[id] ? BASE_URL + SCHEME_LINKS[id] : '#';
   }
@@ -894,7 +917,7 @@
           '<td class="num">' + formatNum(getVal(s, 'throughput_gbps')) + '</td>' +
           '<td class="num">' + formatNum(getVal(s, 'client_time_ms')) + '</td>' +
           '<td>' + TIER_LABELS[s.data_tier] + '</td>' +
-          '<td>' + (s.has_implementation ? 'Yes' : 'No') + '</td>';
+          '<td>' + (s.has_implementation ? (IMPL_URLS[s.id] ? '<a href="' + IMPL_URLS[s.id] + '" target="_blank">Yes</a>' : 'Yes') : 'No') + '</td>';
         el.appendChild(tr);
       });
     }
