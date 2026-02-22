@@ -310,6 +310,12 @@ h4 {
 .filter-pill:hover {
   opacity: 0.8;
 }
+.filter-clear {
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-top: 2px;
+}
 
 /* ── Tables ──────────────────────────────────────────── */
 .table-wrap {

@@ -1053,6 +1053,28 @@
         groupRow.appendChild(pill);
       });
       filterEl.appendChild(groupRow);
+
+      // clear link
+      var clearLink = document.createElement('a');
+      clearLink.href = '#';
+      clearLink.textContent = 'Clear filters';
+      clearLink.className = 'filter-clear';
+      clearLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        // reset all state
+        activeGroups = new Set(Object.keys(GROUP_COLORS));
+        activeTiers = new Set([1, 2, 3]);
+        implFilter = null;
+        sortCol = 'year';
+        sortAsc = false;
+        // reset all pill visuals
+        Array.from(filterEl.querySelectorAll('.filter-pill')).forEach(function (p) {
+          if (p === implPill) { p.classList.remove('active'); }
+          else { p.classList.add('active'); }
+        });
+        applyFilters();
+      });
+      filterEl.appendChild(clearLink);
     }
 
     renderRows(sorted);
