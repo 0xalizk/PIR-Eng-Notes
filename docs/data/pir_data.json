@@ -535,7 +535,7 @@
     "has_implementation": true,
     "data_tier": 2,
     "source_ref": "Figure 1, Figure 2, Figure 4",
-    "estimation_meta": null,
+    "estimation_meta": {"confidence": "moderate", "method": "Values read from paper figures (approximate)"},
     "concrete": {
       "reference_db": "various (approximate from figures)",
       "num_entries": null,
@@ -792,7 +792,7 @@
     "has_implementation": true,
     "data_tier": 2,
     "source_ref": "Figure 7, Figure 8",
-    "estimation_meta": null,
+    "estimation_meta": {"confidence": "moderate", "method": "Values read from paper figures (approximate)"},
     "concrete": {
       "reference_db": "4-256 GiB databases",
       "num_entries": null,
@@ -1132,7 +1132,7 @@
     "display_name": "Plinko",
     "group": "D",
     "year": 2024,
-    "has_implementation": false,
+    "has_implementation": true,
     "data_tier": 3,
     "source_ref": "Figure 1, Figure 6",
     "estimation_meta": {

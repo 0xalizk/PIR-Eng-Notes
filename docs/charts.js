@@ -131,6 +131,9 @@
     return layout;
   }
 
+  function isMobile() { return window.innerWidth <= 768; }
+  function barLeftMargin() { return isMobile() ? 110 : 140; }
+
   function plotConfig() {
     return { responsive: true, displayModeBar: false };
   }
@@ -328,6 +331,10 @@
 
     Plotly.newPlot(el, [trace], layout, plotConfig());
 
+    // cursor pointer on heatmap cells (sortable by click)
+    var plotArea = el.querySelector('.nsewdrag');
+    if (plotArea) plotArea.style.cursor = 'pointer';
+
     // click any cell to re-sort by that cell's metric column
     el.on('plotly_click', function (eventData) {
       if (!eventData.points.length) return;
@@ -471,7 +478,7 @@
         ticktext: ['0.01 KB', '0.1 KB', '1 KB', '10 KB', '100 KB', '1 MB', '10 MB']
       },
       legend: { orientation: 'h', x: 0, y: -0.2, traceorder: 'grouped', groupclick: 'toggleitem', font: { size: 11 } },
-      height: 715
+      height: isMobile() ? 500 : 715
     });
 
     Plotly.newPlot(el, traces, layout, plotConfig());
@@ -503,7 +510,7 @@
     }], baseLayout('Server Throughput (GB/s) — Higher is Better', {
       yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: 'Throughput (GB/s)', gridcolor: t.grid },
-      margin: { l: 140, r: 60, t: 48, b: 48 },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
       height: Math.max(350, items.length * 30 + 100)
     }), plotConfig());
   }
@@ -534,7 +541,7 @@
     }], baseLayout('Server Time (ms) — Lower is Better', {
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: 'Server Time (ms)', type: 'log', gridcolor: t.grid },
-      margin: { l: 140, r: 60, t: 48, b: 48 },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
       height: Math.max(350, items.length * 26 + 100)
     }), plotConfig());
   }
@@ -565,7 +572,7 @@
     }], baseLayout('Client Computation Time (ms)', {
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: 'Client Time (ms)', type: 'log', gridcolor: t.grid },
-      margin: { l: 140, r: 60, t: 48, b: 48 },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
       height: Math.max(300, items.length * 30 + 100)
     }), plotConfig());
   }
@@ -636,7 +643,7 @@
       xaxis: { title: 'Size (MB)', gridcolor: t.grid },
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
       legend: { orientation: 'h', x: 0, y: -0.15, font: { size: 11 } },
-      margin: { l: 140, r: 60, t: 48, b: 60 },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: 60 },
       height: Math.max(350, items.length * 40 + 120)
     }), plotConfig());
   }
@@ -902,7 +909,7 @@
         ticktext: ['0.1', '0.2', '0.5', '1', '2', '5', '10', '20']
       },
       legend: { orientation: 'h', y: -0.2 },
-      height: 495
+      height: isMobile() ? 380 : 495
     }), plotConfig());
   }
 
@@ -1097,21 +1104,30 @@
   }
 
   // ── Data Loading & Init ───────────────────────────────
+  var _cachedData = null;
+
+  function renderCharts(data) {
+    renderHeatmap(data);
+    renderCommunicationScatter(data);
+    renderThroughputBars(data);
+    renderServerTimeBars(data);
+    renderClientCost(data);
+    renderOfflineStorage(data);
+    renderPareto(data);
+    renderRadar(data);
+    renderTimeline(data);
+  }
+
   function init() {
     fetch('data/pir_data.json')
       .then(function (r) { return r.json(); })
       .then(function (raw) {
-        var data = computeCompositeScores(raw);
-        renderHeatmap(data);
-        renderCommunicationScatter(data);
-        renderThroughputBars(data);
-        renderServerTimeBars(data);
-        renderClientCost(data);
-        renderOfflineStorage(data);
-        renderPareto(data);
-        renderRadar(data);
-        renderTimeline(data);
-        renderCatalog(data);
+        // clear loading indicators
+        var loaders = document.querySelectorAll('.chart-loading');
+        loaders.forEach(function (el) { el.remove(); });
+        _cachedData = computeCompositeScores(raw);
+        renderCharts(_cachedData);
+        renderCatalog(_cachedData);
       })
       .catch(function (err) {
         console.error('Failed to load PIR data:', err);
@@ -1120,10 +1136,12 @@
       });
   }
 
-  // re-render on theme change
+  // re-render charts on theme change (preserve catalog filters/sort)
   if (window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-      init();
+      if (_cachedData) {
+        renderCharts(_cachedData);
+      }
     });
   }
 

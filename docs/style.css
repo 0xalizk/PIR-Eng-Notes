@@ -317,6 +317,20 @@ h4 {
   margin-top: 2px;
 }
 
+/* ── Focus & Accessibility ────────────────────────────── */
+a:focus-visible, button:focus-visible, .radar-tab:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+/* ── Loading ─────────────────────────────────────────── */
+.chart-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
 /* ── Tables ──────────────────────────────────────────── */
 .table-wrap {
   overflow-x: auto;
@@ -340,6 +354,7 @@ thead th {
   border-bottom: 2px solid var(--border);
   z-index: 1;
   user-select: none;
+  cursor: pointer;
 }
 thead th:hover {
   background: var(--nav-hover);
@@ -500,9 +515,13 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   .radar-grid {
     grid-template-columns: 1fr;
   }
+  .chart-container {
+    min-height: 280px;
+  }
   .chart-container.wide {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    min-height: 400px;
   }
   .stat-cards {
     flex-direction: column;
@@ -513,9 +532,43 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   .radar-controls select {
     min-width: 100%;
   }
+  /* Larger touch targets for filter pills & tabs */
+  .filter-pill {
+    font-size: 13px;
+    padding: 8px 14px;
+    min-height: 36px;
+  }
+  .radar-tab {
+    font-size: 13px;
+    padding: 10px 14px;
+    min-height: 40px;
+  }
+  /* Stack tier legend vertically */
+  .tier-legend-inline {
+    flex-direction: column;
+    gap: 4px;
+  }
+  /* Smaller table text */
+  table { font-size: 12px; }
+  thead th { padding: 8px 8px; }
+  tbody td { padding: 6px 8px; }
+  /* Radar cells shorter on mobile */
+  .radar-cell { min-height: 260px; }
+  /* Description text */
+  .desc { font-size: 14px; }
+  section > .subtitle { font-size: 14px; }
+  h3 { font-size: 18px; }
 }
 
 @media (max-width: 480px) {
   section > h2 { font-size: 22px; }
   .content { padding: 56px 12px 60px; }
+  .filter-pill {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  .links { gap: 8px; }
+  .links a { padding: 8px 12px; font-size: 12px; }
+  .chart-note { font-size: 12px; }
+  .data-sources-toggle summary { font-size: 14px; }
 }
