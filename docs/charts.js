@@ -691,6 +691,7 @@
   function renderRadar(data) {
     var tabsEl = document.getElementById('radar-tabs');
     var gridEl = document.getElementById('radar-grid');
+    var allPanel = document.getElementById('radar-all-panel');
     if (!tabsEl || !gridEl) return;
 
     var radarMetrics = ALL_METRICS.filter(function (m) {
@@ -699,16 +700,33 @@
     var theta = radarMetrics.map(function (m) { return METRIC_LABELS[m]; });
     theta.push(theta[0]);
 
-    var activeGroup = null;
+    var activeTab = null;
+
+    function showAll() {
+      if (activeTab === 'all') return;
+      activeTab = 'all';
+
+      Array.from(tabsEl.children).forEach(function (btn) {
+        btn.classList.toggle('active', btn.dataset.group === 'all');
+      });
+
+      gridEl.style.display = 'none';
+      gridEl.innerHTML = '';
+      if (allPanel) allPanel.style.display = '';
+    }
 
     function drawGroup(groupKey) {
-      if (activeGroup === groupKey) return;
-      activeGroup = groupKey;
+      if (activeTab === groupKey) return;
+      activeTab = groupKey;
 
       // update tab active state
       Array.from(tabsEl.children).forEach(function (btn) {
         btn.classList.toggle('active', btn.dataset.group === groupKey);
       });
+
+      // hide heatmap, show radar grid
+      if (allPanel) allPanel.style.display = 'none';
+      gridEl.style.display = '';
 
       // clear grid
       gridEl.innerHTML = '';
@@ -785,6 +803,16 @@
 
     // build tabs (clear first for theme re-render)
     tabsEl.innerHTML = '';
+
+    // "All" tab (heatmap)
+    var allBtn = document.createElement('button');
+    allBtn.className = 'radar-tab';
+    allBtn.dataset.group = 'all';
+    allBtn.textContent = 'All';
+    allBtn.addEventListener('click', function () { showAll(); });
+    tabsEl.appendChild(allBtn);
+
+    // Per-group tabs
     RADAR_GROUPS.forEach(function (g) {
       var btn = document.createElement('button');
       btn.className = 'radar-tab';
@@ -794,8 +822,8 @@
       tabsEl.appendChild(btn);
     });
 
-    // default to Group A
-    drawGroup('A');
+    // default to All
+    showAll();
   }
 
   // ── 6c. Timeline ──────────────────────────────────────

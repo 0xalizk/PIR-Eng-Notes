@@ -17,7 +17,7 @@
 <aside class="sidebar">
   <div class="sidebar-title">PIR Eng Notes</div>
   <nav>
-    <a href="#overview">Overview Heatmap</a>
+    <a href="#radar">Scheme Comparison</a>
     <div class="divider"></div>
     <a href="#communication">Communication</a>
     <a href="#server-perf">Server</a>
@@ -26,7 +26,6 @@
     <div class="divider"></div>
     <a href="#tradeoffs">Trade-offs</a>
     <a href="#pareto" class="sub-nav">Pareto Frontiers</a>
-    <a href="#radar" class="sub-nav">Scheme Comparison</a>
     <a href="#timeline" class="sub-nav">Timeline</a>
     <div class="divider"></div>
     <a href="#catalog">Scheme Catalog</a>
@@ -117,14 +116,26 @@
     <a href="https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434" target="_blank">Research</a>
   </div>
 
-  <!-- Hero: Sorted Heatmap -->
-  <div class="chart-container wide" id="chart-heatmap"></div>
-  <p class="chart-note">
-    Schemes sorted by composite score (best at left). Cell color: green = best, red = worst.
-    Gray = missing data. Click a metric row to re-sort by that metric.
-    Left swatch = group color.
-    <span class="badge-legend">&dagger; = Tier 2 (approx) &nbsp; * = Tier 3 (asymptotic)</span>
-  </p>
+  <!-- Scheme Comparison — tabbed: All (heatmap) + per-group radars -->
+  <div id="radar">
+    <h3>Scheme Comparison</h3>
+    <p class="desc">
+      Per-scheme profiles across all metric axes.
+      <b>All</b> shows the sorted heatmap (green = best, red = worst, gray = missing).
+      Group tabs show individual radar profiles (center = best, rim = worst).
+    </p>
+    <div class="radar-tabs" id="radar-tabs"></div>
+    <div id="radar-all-panel">
+      <div class="chart-container wide" id="chart-heatmap"></div>
+      <p class="chart-note">
+        Schemes sorted by composite score (best at top). Cell color: green = best, red = worst.
+        Gray = missing data. Click a column to re-sort by that metric.
+        Left swatch = group color.
+        <span class="badge-legend">&dagger; = Tier 2 (approx) &nbsp; * = Tier 3 (asymptotic)</span>
+      </p>
+    </div>
+    <div class="radar-grid" id="radar-grid"></div>
+  </div>
 </section>
 
 <!-- 2. Communication -->
@@ -182,18 +193,7 @@
     <div class="chart-container" id="chart-pareto"></div>
   </div>
 
-  <!-- 6b. Radar -->
-  <div id="radar">
-    <h3>Scheme Comparison</h3>
-    <p class="desc">
-      Per-scheme radar profiles across all metric axes.
-      Center = best (rank 0), rim = worst (rank 1). Hover for raw values.
-    </p>
-    <div class="radar-tabs" id="radar-tabs"></div>
-    <div class="radar-grid" id="radar-grid"></div>
-  </div>
-
-  <!-- 6c. Timeline -->
+  <!-- 6b. Timeline -->
   <div id="timeline">
     <h3>Timeline</h3>
     <p class="desc">
