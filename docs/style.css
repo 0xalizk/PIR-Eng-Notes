@@ -398,7 +398,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   font-size: 14px;
 }
 .data-sources-toggle + .links {
-  margin-top: 20px;
+  margin-top: 32px;
 }
 .data-sources-toggle summary {
   cursor: pointer;
