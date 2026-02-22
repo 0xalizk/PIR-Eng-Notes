@@ -361,20 +361,22 @@
       g.marker.opacity.push(TIER_OPACITY[s.data_tier]);
       var st = getVal(s, 'server_time_ms');
       g.marker.size.push(st ? Math.max(8, Math.min(30, Math.log10(st + 1) * 8)) : 10);
-      g.marker.symbol.push(s.data_tier === 3 ? 'diamond' : 'circle');
+      g.marker.symbol.push(s.data_tier === 3 ? 'diamond' : s.data_tier === 2 ? 'square' : 'circle');
     });
 
+    // Group traces — rectangular legend swatches via marker symbol 'square'
     Object.keys(groups).forEach(function (g) {
       traces.push({
         x: groups[g].x, y: groups[g].y,
         mode: 'markers+text',
         type: 'scatter',
-        name: 'Group ' + g,
+        name: 'Group ' + g + ' — ' + GROUP_NAMES[g],
         text: groups[g].names,
         textposition: 'top right',
         textfont: { size: 9, color: t.muted },
         hovertext: groups[g].text,
         hoverinfo: 'text',
+        legendgroup: 'group-' + g,
         marker: {
           color: groups[g].marker.color,
           opacity: groups[g].marker.opacity,
@@ -382,6 +384,26 @@
           symbol: groups[g].marker.symbol,
           line: { width: 1, color: t.text }
         }
+      });
+    });
+
+    // Tier legend entries — unfilled shapes
+    var tierShapes = { 1: 'circle', 2: 'square', 3: 'diamond' };
+    var tierNames = { 1: 'Tier 1 (Exact)', 2: 'Tier 2 (Approx)', 3: 'Tier 3 (Asymptotic)' };
+    [1, 2, 3].forEach(function (tier) {
+      traces.push({
+        x: [null], y: [null],
+        mode: 'markers',
+        type: 'scatter',
+        name: tierNames[tier],
+        legendgroup: 'tier-' + tier,
+        marker: {
+          symbol: tierShapes[tier],
+          size: 10,
+          color: 'rgba(0,0,0,0)',
+          line: { width: 2, color: t.text }
+        },
+        hoverinfo: 'skip'
       });
     });
 
@@ -398,7 +420,7 @@
     var layout = baseLayout('Communication Design Space (Query vs Response)', {
       xaxis: { title: 'Query Size (KB)', type: 'log', exponentformat: 'power', gridcolor: t.grid },
       yaxis: { title: 'Response Size (KB)', type: 'log', exponentformat: 'power', gridcolor: t.grid },
-      legend: { orientation: 'h', y: -0.15 },
+      legend: { orientation: 'h', y: -0.15, traceorder: 'normal' },
       height: 650
     });
 
