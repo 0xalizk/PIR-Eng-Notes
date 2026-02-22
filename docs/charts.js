@@ -463,7 +463,7 @@
       xaxis: { title: 'Query Size (KB)', type: 'log', exponentformat: 'power', gridcolor: t.grid },
       yaxis: { title: 'Response Size (KB)', type: 'log', exponentformat: 'power', gridcolor: t.grid },
       legend: { orientation: 'h', x: 0, y: -0.2, traceorder: 'grouped', groupclick: 'toggleitem', font: { size: 11 } },
-      height: 650
+      height: 715
     });
 
     Plotly.newPlot(el, traces, layout, plotConfig());
