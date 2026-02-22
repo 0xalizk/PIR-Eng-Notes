@@ -370,7 +370,7 @@
         x: [null], y: [null],
         mode: 'lines',
         type: 'scatter',
-        name: g + ' — ' + GROUP_NAMES[g],
+        name: GROUP_NAMES[g],
         legendgroup: 'groups',
         legendgrouptitle: { text: 'Groups', font: { size: 11, color: t.muted } },
         legendrank: 1,
