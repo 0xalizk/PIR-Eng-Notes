@@ -1,3 +1,5 @@
+**[Comparative benchs](https://0xalizk.github.io/PIR-Eng-Notes)**
+
 ## PIR Engineering Notes
 
 **TLDR**: [Deep reading](https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434) of PIR papers to extract eng. notes ([eg](Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md)) and [visualize](https://0xalizk.github.io/PIR-Eng-Notes/) comparative benchs/asymptotics. The correctness of these notes are [continuously validated](Checkups/README.md#checking-correctness-of-cited-claims):
