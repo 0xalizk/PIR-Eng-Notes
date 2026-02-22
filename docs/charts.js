@@ -538,74 +538,96 @@
     }), plotConfig());
   }
 
-  // ── 5. Offline & Storage Dot Plot ─────────────────────
+  // ── 5. Offline & Storage Bar Chart ───────────────────
   function renderOfflineStorage(data) {
     var el = document.getElementById('chart-offline-storage');
     if (!el) return;
     var t = themeColors();
 
+    var HINT_COLOR = '#3b82f6';
+    var STORAGE_COLOR = '#f59e0b';
+
     var items = data.filter(function (s) {
       return getVal(s, 'offline_hint_mb') !== null || getVal(s, 'client_storage_mb') !== null;
     });
 
+    // sort by max of the two values (largest at top)
+    items.sort(function (a, b) {
+      var aMax = Math.max(getVal(a, 'offline_hint_mb') || 0, getVal(a, 'client_storage_mb') || 0);
+      var bMax = Math.max(getVal(b, 'offline_hint_mb') || 0, getVal(b, 'client_storage_mb') || 0);
+      return aMax - bMax;
+    });
+
+    var schemes = items.map(function (s) { return s.display_name; });
     var traces = [];
-    // offline hints
-    var offlineItems = items.filter(function (s) { return getVal(s, 'offline_hint_mb') !== null; });
+
+    // Legend entries — thick lines for rectangular patches
     traces.push({
-      y: offlineItems.map(function (s) { return s.display_name; }),
-      x: offlineItems.map(function (s) { return getVal(s, 'offline_hint_mb'); }),
-      mode: 'markers+text', type: 'scatter', name: 'Offline Hint (MB)',
-      text: offlineItems.map(function (s) { return s.display_name; }),
-      textposition: 'middle right',
-      textfont: { size: 10, color: t.muted },
-      marker: { size: 10, symbol: 'circle', color: '#3b82f6', line: { width: 1, color: t.text } },
-      hovertext: offlineItems.map(function (s) {
-        return s.display_name + '<br>Offline Hint: ' + formatNum(getVal(s, 'offline_hint_mb')) + ' MB';
+      x: [null], y: [null],
+      mode: 'lines', type: 'scatter',
+      name: 'Offline Hint',
+      legendgroup: 'legend',
+      legendrank: 1,
+      line: { color: HINT_COLOR, width: 10 },
+      hoverinfo: 'skip'
+    });
+    traces.push({
+      x: [null], y: [null],
+      mode: 'lines', type: 'scatter',
+      name: 'Client Storage',
+      legendgroup: 'legend',
+      legendrank: 2,
+      line: { color: STORAGE_COLOR, width: 10 },
+      hoverinfo: 'skip'
+    });
+
+    // Offline hint bars
+    traces.push({
+      y: schemes,
+      x: items.map(function (s) { return getVal(s, 'offline_hint_mb'); }),
+      type: 'bar', orientation: 'h',
+      name: 'Offline Hint',
+      showlegend: false,
+      marker: { color: HINT_COLOR, opacity: 0.85 },
+      text: items.map(function (s) {
+        var v = getVal(s, 'offline_hint_mb');
+        return v !== null ? formatNum(v) + ' MB' : '';
+      }),
+      textposition: 'outside',
+      hovertext: items.map(function (s) {
+        var v = getVal(s, 'offline_hint_mb');
+        return v !== null ? s.display_name + '<br>Offline Hint: ' + formatNum(v) + ' MB' : '';
       }),
       hoverinfo: 'text'
     });
 
-    // client storage
-    var storageItems = items.filter(function (s) { return getVal(s, 'client_storage_mb') !== null; });
-    // only label storage dots for schemes that don't already have an offline hint label
-    var storageOnlyItems = storageItems.filter(function (s) { return getVal(s, 'offline_hint_mb') === null; });
+    // Client storage bars
     traces.push({
-      y: storageItems.map(function (s) { return s.display_name; }),
-      x: storageItems.map(function (s) { return getVal(s, 'client_storage_mb'); }),
-      mode: 'markers+text', type: 'scatter', name: 'Client Storage (MB)',
-      text: storageItems.map(function (s) {
-        return getVal(s, 'offline_hint_mb') === null ? s.display_name : '';
+      y: schemes,
+      x: items.map(function (s) { return getVal(s, 'client_storage_mb'); }),
+      type: 'bar', orientation: 'h',
+      name: 'Client Storage',
+      showlegend: false,
+      marker: { color: STORAGE_COLOR, opacity: 0.85 },
+      text: items.map(function (s) {
+        var v = getVal(s, 'client_storage_mb');
+        return v !== null ? formatNum(v) + ' MB' : '';
       }),
-      textposition: 'middle right',
-      textfont: { size: 10, color: t.muted },
-      marker: { size: 10, symbol: 'diamond', color: '#f59e0b', line: { width: 1, color: t.text } },
-      hovertext: storageItems.map(function (s) {
-        return s.display_name + '<br>Client Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB';
+      textposition: 'outside',
+      hovertext: items.map(function (s) {
+        var v = getVal(s, 'client_storage_mb');
+        return v !== null ? s.display_name + '<br>Client Storage: ' + formatNum(v) + ' MB' : '';
       }),
       hoverinfo: 'text'
-    });
-
-    // connecting lines for schemes with both
-    items.forEach(function (s) {
-      var off = getVal(s, 'offline_hint_mb');
-      var stor = getVal(s, 'client_storage_mb');
-      if (off !== null && stor !== null) {
-        traces.push({
-          y: [s.display_name, s.display_name],
-          x: [off, stor],
-          mode: 'lines', type: 'scatter',
-          line: { width: 1, color: t.muted },
-          showlegend: false, hoverinfo: 'skip'
-        });
-      }
     });
 
     Plotly.newPlot(el, traces, baseLayout('Offline Hints & Client Storage', {
+      barmode: 'group',
       xaxis: { title: 'Size (MB)', type: 'log', gridcolor: t.grid },
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
-      legend: { orientation: 'h', y: -0.2 },
-      margin: { l: 140, r: 40, t: 48, b: 60 },
-      height: Math.max(300, items.length * 35 + 120)
+      legend: { orientation: 'h', x: 0, y: -0.15, font: { size: 11 } },
+      margin: { l: 140, r: 60, t: 48, b: 60 },
+      height: Math.max(350, items.length * 40 + 120)
     }), plotConfig());
   }
 
