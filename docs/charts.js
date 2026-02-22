@@ -413,7 +413,7 @@
         type: 'scatter',
         name: tierNames[tier],
         legendgroup: 'tiers',
-        legendgrouptitle: { text: 'Tiers', font: { size: 11, color: t.muted } },
+        legendgrouptitle: { text: 'Data Tiers', font: { size: 11, color: t.muted } },
         legendrank: 2,
         marker: {
           symbol: tierShapes[tier],
