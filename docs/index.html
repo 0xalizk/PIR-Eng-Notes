@@ -24,9 +24,8 @@
     <a href="#client-cost">Client</a>
     <a href="#offline-storage">Offline &amp; Storage</a>
     <div class="divider"></div>
-    <a href="#tradeoffs">Trade-offs</a>
-    <a href="#pareto" class="sub-nav">Pareto Frontiers</a>
-    <a href="#timeline" class="sub-nav">Timeline</a>
+    <a href="#pareto">Pareto Frontiers</a>
+    <a href="#timeline">Timeline</a>
     <div class="divider"></div>
     <a href="#catalog">Scheme Catalog</a>
     <a href="#references">References</a>
@@ -157,29 +156,24 @@
   <div class="chart-container" id="chart-offline-storage"></div>
 </section>
 
-<!-- 6. Trade-offs -->
-<section id="tradeoffs">
-  <h2>Trade-offs</h2>
+<!-- 6. Pareto Frontiers -->
+<section id="pareto">
+  <h2>Pareto Frontiers</h2>
+  <p class="desc">
+    Total communication (query + response) vs server time. Starred points are Pareto-optimal
+    (no other scheme is better on both axes). Purple step-line connects the frontier.
+  </p>
+  <div class="chart-container" id="chart-pareto"></div>
+</section>
 
-  <!-- 6a. Pareto -->
-  <div id="pareto">
-    <h3>Pareto Frontiers</h3>
-    <p class="desc">
-      Total communication (query + response) vs server time. Starred points are Pareto-optimal
-      (no other scheme is better on both axes). Purple step-line connects the frontier.
-    </p>
-    <div class="chart-container" id="chart-pareto"></div>
-  </div>
-
-  <!-- 6b. Timeline -->
-  <div id="timeline">
-    <h3>Timeline</h3>
-    <p class="desc">
-      Throughput evolution by year. Bubble size inversely proportional to total communication
-      (smaller bubble = more bandwidth-efficient). Color = group.
-    </p>
-    <div class="chart-container" id="chart-timeline"></div>
-  </div>
+<!-- 7. Timeline -->
+<section id="timeline">
+  <h2>Timeline</h2>
+  <p class="desc">
+    Throughput evolution by year. Bubble size inversely proportional to total communication
+    (smaller bubble = more bandwidth-efficient). Color = group.
+  </p>
+  <div class="chart-container" id="chart-timeline"></div>
 </section>
 
 <!-- 7. Scheme Catalog -->

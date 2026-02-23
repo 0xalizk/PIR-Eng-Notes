@@ -316,13 +316,13 @@
         tickfont: { size: 10 }, autorange: true,
         gridcolor: t.grid
       },
-      margin: { t: 80, r: 80, b: 24, l: 160 },
+      margin: { t: 100, r: 80, b: 24, l: 160 },
       shapes: hd.shapes,
       height: Math.max(500, sorted.length * 22 + 120),
       annotations: (hd.annotations || []).concat([{
         text: '<i>Click inside a column to sort by it</i>',
         xref: 'paper', yref: 'paper',
-        x: 0.0, y: 1.06,
+        x: 0.0, y: 1.08,
         showarrow: false,
         font: { size: 13, color: t.muted },
         xanchor: 'left'
