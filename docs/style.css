@@ -260,7 +260,7 @@ h4 {
   grid-template-columns: repeat(2, 1fr);
   gap: 16px 16px;
   row-gap: 40px;
-  margin: 0;
+  margin-top: 24px;
 }
 .radar-cell {
   background: var(--bg-card);
