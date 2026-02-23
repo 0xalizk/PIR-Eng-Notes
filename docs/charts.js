@@ -756,7 +756,7 @@
       var tierInfo = [
         { label: 'Tier 1 — Exact', dash: 'solid', fill: 0.13 },
         { label: 'Tier 2 — Approx', dash: 'dashed', fill: 0.05 },
-        { label: 'Tier 3 — Asymptotic', dash: 'dotted', fill: 0 }
+        { label: 'Tier 3 — From asymptotics', dash: 'dotted', fill: 0 }
       ];
       tierInfo.forEach(function (ti) {
         var span = document.createElement('span');
