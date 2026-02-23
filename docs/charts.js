@@ -293,7 +293,7 @@
       colorscale: [[0, '#22c55e'], [0.5, '#eab308'], [1, '#ef4444']],
       text: hd.text,
       texttemplate: '%{text}',
-      textfont: { size: 10 },
+      textfont: { size: isMobile() ? 8 : 10 },
       hovertext: hd.hoverText,
       hoverinfo: 'text',
       showscale: true,
@@ -309,14 +309,14 @@
 
     var layout = baseLayout('PIR Scheme Rankings — Sorted Heatmap<br><span style="font-size:11px;font-weight:normal;color:' + t.muted + '"><i>Click inside a column to sort by it</i></span>', {
       xaxis: {
-        tickfont: { size: 11 }, side: 'top',
+        tickfont: { size: isMobile() ? 9 : 11 }, side: 'top',
         gridcolor: t.grid
       },
       yaxis: {
-        tickfont: { size: 10 }, autorange: true,
+        tickfont: { size: isMobile() ? 8 : 10 }, autorange: true,
         gridcolor: t.grid
       },
-      margin: { t: 100, r: 80, b: 24, l: 160 },
+      margin: { t: 100, r: isMobile() ? 40 : 80, b: 24, l: isMobile() ? 100 : 160 },
       shapes: hd.shapes,
       height: Math.max(500, sorted.length * 22 + 120),
       annotations: hd.annotations || []
@@ -407,7 +407,7 @@
     Object.keys(groups).forEach(function (g) {
       traces.push({
         x: groups[g].x, y: groups[g].y,
-        mode: 'markers+text',
+        mode: isMobile() ? 'markers' : 'markers+text',
         type: 'scatter',
         name: GROUP_NAMES[g],
         showlegend: false,
