@@ -1,9 +1,7 @@
-## Plots of benchmarks/complexity
-
-Visual comparison of 35 PIR schemes across 5 groups, covering both concrete benchmarks and asymptotic complexity.
+See [also](https://0xalizk.github.io/PIR-Eng-Notes/#overview) which reads off of pir_data.json
 
 <details>
-<summary>Code</summary>
+<summary>Scripts</summary>
 
 #### Quick Start
 
