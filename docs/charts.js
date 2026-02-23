@@ -135,7 +135,7 @@
   function barLeftMargin() { return isMobile() ? 110 : 140; }
 
   function plotConfig() {
-    return { responsive: true, displayModeBar: false };
+    return { responsive: false, displayModeBar: false };
   }
 
   function formatNum(v) {
@@ -421,6 +421,7 @@
         legendgroup: 'group-' + g,
         text: groups[g].names,
         textposition: 'top right',
+        cliponaxis: false,
         textfont: { size: 9, color: t.muted },
         hovertext: groups[g].text,
         hoverinfo: 'text',
@@ -477,8 +478,9 @@
         tickvals: [0.01, 0.1, 1, 10, 100, 1000, 10000],
         ticktext: ['0.01 KB', '0.1 KB', '1 KB', '10 KB', '100 KB', '1 MB', '10 MB']
       },
-      legend: { orientation: 'h', x: 0, y: -0.2, traceorder: 'grouped', groupclick: 'toggleitem', font: { size: 11 } },
-      height: isMobile() ? 500 : 715
+      margin: { t: 48, r: 48, b: 100, l: 60 },
+      legend: { orientation: 'h', x: 0, y: -0.12, traceorder: 'grouped', groupclick: 'toggleitem', font: { size: 11 } },
+      height: isMobile() ? 550 : 750
     });
 
     Plotly.newPlot(el, traces, layout, plotConfig());
@@ -503,6 +505,7 @@
       },
       text: items.map(function (s) { return formatNum(getVal(s, 'throughput_gbps')) + ' GB/s'; }),
       textposition: 'outside',
+      cliponaxis: false,
       hovertext: items.map(function (s) {
         return s.display_name + '<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Group: ' + s.group + '<br>Tier: ' + TIER_LABELS[s.data_tier];
       }),
@@ -534,6 +537,7 @@
       },
       text: items.map(function (s) { return formatNum(getVal(s, 'server_time_ms')) + ' ms'; }),
       textposition: 'outside',
+      cliponaxis: false,
       hovertext: items.map(function (s) {
         return s.display_name + '<br>Server Time: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Group: ' + s.group + '<br>Tier: ' + TIER_LABELS[s.data_tier];
       }),
@@ -565,6 +569,7 @@
       },
       text: items.map(function (s) { return formatNum(getVal(s, 'client_time_ms')) + ' ms'; }),
       textposition: 'outside',
+      cliponaxis: false,
       hovertext: items.map(function (s) {
         return s.display_name + '<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms<br>Group: ' + s.group;
       }),
@@ -612,6 +617,7 @@
         return v !== null ? formatNum(v) + ' MB' : '';
       }),
       textposition: 'outside',
+      cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'offline_hint_mb');
         return v !== null ? s.display_name + '<br>Offline Hint: ' + formatNum(v) + ' MB' : '';
@@ -631,6 +637,7 @@
         return v !== null ? formatNum(v) + ' MB' : '';
       }),
       textposition: 'outside',
+      cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'client_storage_mb');
         return v !== null ? s.display_name + '<br>Client Storage: ' + formatNum(v) + ' MB' : '';
@@ -642,9 +649,9 @@
       barmode: 'group',
       xaxis: { title: 'Size (MB)', gridcolor: t.grid },
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
-      legend: { orientation: 'h', x: 0, y: -0.15, font: { size: 11 } },
-      margin: { l: barLeftMargin(), r: 60, t: 48, b: 60 },
-      height: Math.max(350, items.length * 40 + 120)
+      legend: { orientation: 'h', x: 0, y: -0.12, font: { size: 11 } },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: 100 },
+      height: Math.max(400, items.length * 40 + 160)
     }), plotConfig());
   }
 
@@ -684,6 +691,7 @@
         mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
         text: gItems.map(function (s) { return s.display_name; }),
         textposition: 'top center',
+        cliponaxis: false,
         textfont: { size: 9, color: t.muted },
         marker: {
           size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 14 : 8; }),
@@ -714,8 +722,9 @@
     Plotly.newPlot(el, traces, baseLayout('Pareto Frontier — Communication vs Server Time', {
       xaxis: { title: 'Total Communication (KB)', type: 'log', gridcolor: t.grid },
       yaxis: { title: 'Server Time (ms)', type: 'log', gridcolor: t.grid },
-      legend: { orientation: 'h', y: -0.2 },
-      height: 500
+      margin: { t: 48, r: 48, b: 100, l: 60 },
+      legend: { orientation: 'h', y: -0.12 },
+      height: 550
     }), plotConfig());
   }
 
@@ -883,6 +892,7 @@
         mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
         text: gItems.map(function (s) { return s.display_name; }),
         textposition: 'top center',
+        cliponaxis: false,
         textfont: { size: 9, color: t.muted },
         marker: {
           color: GROUP_COLORS[g],
@@ -908,8 +918,9 @@
         tickvals: [0.1, 0.2, 0.5, 1, 2, 5, 10, 20],
         ticktext: ['0.1', '0.2', '0.5', '1', '2', '5', '10', '20']
       },
-      legend: { orientation: 'h', y: -0.2 },
-      height: isMobile() ? 380 : 495
+      margin: { t: 48, r: 48, b: 100, l: 60 },
+      legend: { orientation: 'h', y: -0.12 },
+      height: isMobile() ? 430 : 540
     }), plotConfig());
   }
 
@@ -1144,6 +1155,15 @@
       }
     });
   }
+
+  // debounced re-render on window resize / zoom to prevent Plotly height feedback loop
+  var _resizeTimer = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(function () {
+      if (_cachedData) renderCharts(_cachedData);
+    }, 200);
+  });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
