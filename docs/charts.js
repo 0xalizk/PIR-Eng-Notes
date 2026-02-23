@@ -832,8 +832,8 @@
           margin: { t: 56, r: 30, b: 20, l: 30 },
           height: 336,
           title: {
-            text: s.display_name,
-            font: { size: 14, color: t.text },
+            text: '<b>' + s.display_name + '</b>',
+            font: { size: 15.4, color: t.text },
             y: 0.99
           },
           annotations: [{
