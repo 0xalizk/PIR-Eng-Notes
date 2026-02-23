@@ -95,10 +95,6 @@ a:hover { text-decoration: underline; }
   border-left-color: var(--link);
   font-weight: 600;
 }
-.sidebar nav a.sub-nav {
-  padding-left: 36px;
-  font-size: 12px;
-}
 .sidebar nav .divider {
   height: 1px;
   background: var(--border);
@@ -201,6 +197,7 @@ h4 {
   box-shadow: 0 1px 3px var(--shadow);
   margin: 16px 0;
   min-height: 350px;
+  min-width: 0;
 }
 .chart-container.wide {
   min-height: 700px;
@@ -273,6 +270,7 @@ h4 {
   overflow: hidden;
   box-shadow: 0 1px 3px var(--shadow);
   min-height: 300px;
+  min-width: 0;
 }
 
 /* ── Filter Row ─────────────────────────────────────── */
@@ -497,7 +495,12 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .links a:hover { background: var(--bg-alt); text-decoration: none; }
 
 /* ── Responsive ──────────────────────────────────────── */
-@media (max-width: 768px) {
+@media (max-width: 960px) {
+  .chart-pair { grid-template-columns: 1fr; }
+  .radar-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) {
   .sidebar {
     transform: translateX(-100%);
     width: 280px;
@@ -508,12 +511,6 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   .content {
     margin-left: 0;
     padding: 60px 16px 80px;
-  }
-  .chart-pair {
-    grid-template-columns: 1fr;
-  }
-  .radar-grid {
-    grid-template-columns: 1fr;
   }
   .chart-container {
     min-height: 280px;

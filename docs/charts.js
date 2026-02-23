@@ -131,7 +131,7 @@
     return layout;
   }
 
-  function isMobile() { return window.innerWidth <= 768; }
+  function isMobile() { return window.innerWidth <= 900; }
   function barLeftMargin() { return isMobile() ? 110 : 140; }
 
   function plotConfig() {
