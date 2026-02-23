@@ -836,6 +836,11 @@
         r.push(r[0]);
 
         var tierDash = { 1: 'solid', 2: 'dash', 3: 'dot' };
+        var tierPattern = {
+          1: {},
+          2: { shape: '/', bgcolor: 'rgba(0,0,0,0)', fgcolor: color, fgopacity: 0.3, size: 10, solidity: 0.3 },
+          3: { shape: '.', bgcolor: 'rgba(0,0,0,0)', fgcolor: color, fgopacity: 0.3, size: 6, solidity: 0.5 }
+        };
         var trace = {
           type: 'scatterpolar', mode: 'lines+markers',
           r: r, theta: theta,
@@ -843,7 +848,8 @@
           marker: { size: 5, color: color },
           line: { color: color, width: 2, dash: tierDash[s.data_tier] || 'solid' },
           fill: 'toself',
-          fillcolor: s.data_tier === 1 ? color + '22' : color + '06',
+          fillcolor: s.data_tier === 1 ? color + '22' : color,
+          fillpattern: tierPattern[s.data_tier] || {},
           hovertext: radarMetrics.map(function (m) {
             var raw = getVal(s, m);
             return s.display_name + '<br>' + METRIC_LABELS[m] + ': ' + (raw !== null ? formatNum(raw) : 'N/A') +
@@ -886,60 +892,7 @@
           }]
         };
 
-        Plotly.newPlot(cell, [trace], layout, plotConfig()).then(function () {
-          // inject SVG fill patterns for Tier 2 (lines) and Tier 3 (dots)
-          if (s.data_tier <= 1) return;
-          var svg = cell.querySelector('.main-svg');
-          if (!svg) return;
-
-          var ns = 'http://www.w3.org/2000/svg';
-          var defs = svg.querySelector('defs');
-          if (!defs) { defs = document.createElementNS(ns, 'defs'); svg.insertBefore(defs, svg.firstChild); }
-
-          var patId = 'tier-pat-' + s.id.replace(/[^a-zA-Z0-9]/g, '-');
-          var pat = document.createElementNS(ns, 'pattern');
-          pat.setAttribute('id', patId);
-          pat.setAttribute('patternUnits', 'userSpaceOnUse');
-
-          if (s.data_tier === 2) {
-            pat.setAttribute('width', '8');
-            pat.setAttribute('height', '8');
-            pat.setAttribute('patternTransform', 'rotate(-45)');
-            var line = document.createElementNS(ns, 'line');
-            line.setAttribute('x1', '0'); line.setAttribute('y1', '0');
-            line.setAttribute('x2', '0'); line.setAttribute('y2', '8');
-            line.setAttribute('stroke', color);
-            line.setAttribute('stroke-width', '2.5');
-            line.setAttribute('opacity', '0.3');
-            pat.appendChild(line);
-          } else {
-            pat.setAttribute('width', '6');
-            pat.setAttribute('height', '6');
-            var dot = document.createElementNS(ns, 'circle');
-            dot.setAttribute('cx', '3'); dot.setAttribute('cy', '3');
-            dot.setAttribute('r', '1.2');
-            dot.setAttribute('fill', color);
-            dot.setAttribute('opacity', '0.35');
-            pat.appendChild(dot);
-          }
-          defs.appendChild(pat);
-
-          // find the fill path — it's the first <path> inside the scatterpolar trace group
-          var fillPath = svg.querySelector('.scatterpolar .js-fill');
-          if (!fillPath) {
-            // fallback: find path with the near-transparent fillcolor
-            var paths = svg.querySelectorAll('.scatterpolar path');
-            for (var i = 0; i < paths.length; i++) {
-              var d = paths[i].getAttribute('d');
-              var f = paths[i].style.fill || paths[i].getAttribute('fill');
-              if (d && d.length > 50 && f && f !== 'none') { fillPath = paths[i]; break; }
-            }
-          }
-          if (fillPath) {
-            fillPath.setAttribute('fill', 'url(#' + patId + ')');
-            fillPath.style.fill = 'url(#' + patId + ')';
-          }
-        });
+        Plotly.newPlot(cell, [trace], layout, plotConfig());
       });
     }
 
