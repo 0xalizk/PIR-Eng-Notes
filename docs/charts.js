@@ -748,7 +748,36 @@
     var tabsEl = document.getElementById('radar-tabs');
     var gridEl = document.getElementById('radar-grid');
     var allPanel = document.getElementById('radar-all-panel');
+    var legendEl = document.getElementById('radar-tier-legend');
     if (!tabsEl || !gridEl) return;
+
+    // build tier legend (once)
+    if (legendEl && !legendEl.hasChildNodes()) {
+      var tierInfo = [
+        { label: 'Tier 1 — Exact', style: 'solid' },
+        { label: 'Tier 2 — Approx', style: 'hatch' },
+        { label: 'Tier 3 — Asymptotic', style: 'dots' }
+      ];
+      tierInfo.forEach(function (ti) {
+        var span = document.createElement('span');
+        var swatch = document.createElement('span');
+        swatch.className = 'tier-swatch';
+        if (ti.style === 'solid') {
+          swatch.style.background = 'var(--text-muted)';
+          swatch.style.opacity = '0.25';
+        } else if (ti.style === 'hatch') {
+          swatch.style.background = 'repeating-linear-gradient(-45deg, transparent, transparent 2px, var(--text-muted) 2px, var(--text-muted) 3.5px)';
+          swatch.style.opacity = '0.5';
+        } else {
+          swatch.style.background = 'radial-gradient(circle, var(--text-muted) 1.5px, transparent 1.5px)';
+          swatch.style.backgroundSize = '5px 5px';
+          swatch.style.opacity = '0.5';
+        }
+        span.appendChild(swatch);
+        span.appendChild(document.createTextNode(ti.label));
+        legendEl.appendChild(span);
+      });
+    }
 
     var radarMetrics = ALL_METRICS.filter(function (m) {
       return data.some(function (s) { return getVal(s, m) !== null; });
@@ -770,6 +799,7 @@
       gridEl.style.display = 'none';
       gridEl.innerHTML = '';
       if (allPanel) allPanel.style.display = '';
+      if (legendEl) legendEl.classList.remove('visible');
     }
 
     function drawGroup(groupKey) {
@@ -781,8 +811,9 @@
         btn.classList.toggle('active', btn.dataset.group === groupKey);
       });
 
-      // hide heatmap, show radar grid
+      // hide heatmap, show radar grid + legend
       if (allPanel) allPanel.style.display = 'none';
+      if (legendEl) legendEl.classList.add('visible');
       gridEl.style.display = '';
 
       // clear grid
@@ -804,14 +835,15 @@
         });
         r.push(r[0]);
 
+        var tierDash = { 1: 'solid', 2: 'dash', 3: 'dot' };
         var trace = {
           type: 'scatterpolar', mode: 'lines+markers',
           r: r, theta: theta,
           name: s.display_name,
           marker: { size: 5, color: color },
-          line: { color: color, width: 2 },
+          line: { color: color, width: 2, dash: tierDash[s.data_tier] || 'solid' },
           fill: 'toself',
-          fillcolor: color + '22',
+          fillcolor: s.data_tier === 1 ? color + '22' : 'rgba(0,0,0,0)',
           hovertext: radarMetrics.map(function (m) {
             var raw = getVal(s, m);
             return s.display_name + '<br>' + METRIC_LABELS[m] + ': ' + (raw !== null ? formatNum(raw) : 'N/A') +
@@ -819,6 +851,11 @@
           }),
           hoverinfo: 'text'
         };
+        if (s.data_tier === 2) {
+          trace.fillpattern = { shape: '/', fgcolor: color, fgopacity: 0.35, size: 8, solidity: 0.3 };
+        } else if (s.data_tier === 3) {
+          trace.fillpattern = { shape: '.', fgcolor: color, fgopacity: 0.35, size: 5, solidity: 0.4 };
+        }
 
         var layout = {
           polar: {
@@ -845,8 +882,8 @@
             font: { size: 15.4, color: t.text },
             y: 0.99
           },
-          annotations: [{
-            text: TIER_LABELS[s.data_tier] + (s.has_implementation ? '' : ' (no impl)'),
+          annotations: s.has_implementation ? [] : [{
+            text: '(no impl)',
             showarrow: false,
             xref: 'paper', yref: 'paper',
             x: 0.5, y: -0.02,

@@ -255,6 +255,25 @@ h4 {
   height: 8px;
   border-radius: 50%;
 }
+.radar-tier-legend {
+  display: none;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 12px 0 0;
+  align-items: center;
+}
+.radar-tier-legend.visible { display: flex; }
+.radar-tier-legend .tier-swatch {
+  display: inline-block;
+  width: 18px;
+  height: 12px;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-right: 6px;
+  border: 1.5px solid var(--text-muted);
+}
 .radar-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
