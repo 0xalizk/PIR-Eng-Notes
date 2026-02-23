@@ -59,7 +59,6 @@
 
 </details>
 
-Design rationale and decisions for the comparative visualization of PIR schemes' metrics and paper-reported benchmarks and/or asymptotics.
 
 ### Data Pipeline
 
@@ -71,8 +70,6 @@ Design rationale and decisions for the comparative visualization of PIR schemes'
    - **Tier 1 (26 schemes):** Exact paper-reported benchmarks. Filled markers in plots.
    - **Tier 2 (2 schemes):** Approximate values (WhisPIR, VeriSimplePIR). Open markers.
    - **Tier 3 (7 schemes):** Asymptotic complexity only, no implementation. Excluded from scatter plots, shown in tables only.
-
-### Key Design Decisions
 
 #### Why not normalize across hardware?
 Different schemes benchmark on different hardware (x86, ARM, GPU), different DB sizes (1 GB to 100 GB), and different entry sizes (1 bit to 30 KB). Normalizing would require assumptions about hardware scaling that would mislead more than inform. Instead, each plot annotates the benchmark configuration.
