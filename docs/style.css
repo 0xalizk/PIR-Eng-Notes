@@ -310,6 +310,16 @@ h4 {
   color: var(--text-muted);
   cursor: pointer;
   margin-top: 2px;
+  padding: 4px 8px;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 4px;
+}
+.filter-clear:hover {
+  background: var(--nav-hover);
+  color: var(--text);
+  text-decoration: none;
 }
 
 /* ── Focus & Accessibility ────────────────────────────── */

@@ -135,7 +135,7 @@
   function barLeftMargin() { return isMobile() ? 110 : 140; }
 
   function plotConfig() {
-    return { responsive: false, displayModeBar: false };
+    return { responsive: true, displayModeBar: false };
   }
 
   function formatNum(v) {
@@ -316,7 +316,7 @@
         tickfont: { size: isMobile() ? 8 : 10 }, autorange: true,
         gridcolor: t.grid
       },
-      margin: { t: 100, r: isMobile() ? 40 : 80, b: 24, l: isMobile() ? 100 : 160 },
+      margin: { t: 100, r: isMobile() ? 20 : 80, b: 24, l: isMobile() ? 72 : 160 },
       shapes: hd.shapes,
       height: Math.max(500, sorted.length * 22 + 120),
       annotations: hd.annotations || []
@@ -600,7 +600,7 @@
     var schemes = items.map(function (s) { return s.display_name; });
     var traces = [];
 
-    // Offline hint bars
+    // Offline hint bars (bar legend icons are natively colored rectangles in Plotly)
     traces.push({
       y: schemes,
       x: items.map(function (s) { return getVal(s, 'offline_hint_mb'); }),
@@ -676,6 +676,17 @@
 
     var traces = [];
 
+    // Group legend patches — thick lines render as rectangular swatches
+    Object.keys(GROUP_COLORS).forEach(function (g) {
+      if (!items.some(function (s) { return s.group === g; })) return;
+      traces.push({
+        x: [null], y: [null], mode: 'lines', type: 'scatter',
+        name: GROUP_NAMES[g],
+        line: { color: GROUP_COLORS[g], width: 10 },
+        hoverinfo: 'skip'
+      });
+    });
+
     // all points
     Object.keys(GROUP_COLORS).forEach(function (g) {
       var gItems = items.filter(function (s) { return s.group === g; });
@@ -684,6 +695,7 @@
         x: gItems.map(function (s) { return s._totalComm; }),
         y: gItems.map(function (s) { return getVal(s, 'server_time_ms'); }),
         mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
+        showlegend: false,
         text: gItems.map(function (s) { return s.display_name; }),
         textposition: 'top center',
         cliponaxis: false,
@@ -697,7 +709,7 @@
         },
         hovertext: gItems.map(function (s) {
           return s.display_name + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms' +
-            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal</b>' : '');
+            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '');
         }),
         hoverinfo: 'text'
       });
@@ -881,6 +893,18 @@
     var items = data.filter(function (s) { return getVal(s, 'throughput_gbps') !== null; });
 
     var traces = [];
+
+    // Group legend patches — thick lines render as rectangular swatches
+    Object.keys(GROUP_COLORS).forEach(function (g) {
+      if (!items.some(function (s) { return s.group === g; })) return;
+      traces.push({
+        x: [null], y: [null], mode: 'lines', type: 'scatter',
+        name: GROUP_NAMES[g],
+        line: { color: GROUP_COLORS[g], width: 10 },
+        hoverinfo: 'skip'
+      });
+    });
+
     Object.keys(GROUP_COLORS).forEach(function (g) {
       var gItems = items.filter(function (s) { return s.group === g; });
       if (!gItems.length) return;
@@ -888,6 +912,7 @@
         x: gItems.map(function (s) { return s.year; }),
         y: gItems.map(function (s) { return getVal(s, 'throughput_gbps'); }),
         mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
+        showlegend: false,
         text: gItems.map(function (s) { return s.display_name; }),
         textposition: 'top center',
         cliponaxis: false,
