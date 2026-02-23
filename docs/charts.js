@@ -113,7 +113,7 @@
       text: dark ? '#e6edf3' : '#1f2328',
       muted: dark ? '#8b949e' : '#656d76',
       grid: dark ? '#30363d' : '#d0d7de',
-      font: { family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' }
+      font: { family: '"Ubuntu", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif' }
     };
   }
 
