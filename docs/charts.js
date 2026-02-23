@@ -829,12 +829,12 @@
           paper_bgcolor: 'rgba(0,0,0,0)',
           font: { color: t.text, family: t.font.family, size: 11 },
           showlegend: false,
-          margin: { t: 40, r: 30, b: 20, l: 30 },
-          height: 320,
+          margin: { t: 56, r: 30, b: 20, l: 30 },
+          height: 336,
           title: {
             text: s.display_name,
             font: { size: 14, color: t.text },
-            y: 0.97
+            y: 0.99
           },
           annotations: [{
             text: TIER_LABELS[s.data_tier] + (s.has_implementation ? '' : ' (no impl)'),
