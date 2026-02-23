@@ -722,6 +722,7 @@
   }
 
   // ── 6b. Radar — Tabbed per-group, 3-per-row grid ─────
+  var _lastRadarTab = null;
   var RADAR_GROUPS = [
     { key: 'A', label: 'FHE-Based' },
     { key: 'B', label: 'Stateless' },
@@ -741,11 +742,12 @@
     var theta = radarMetrics.map(function (m) { return METRIC_LABELS[m]; });
     theta.push(theta[0]);
 
-    var activeTab = null;
+    // activeTab persists via closure in outer scope — see _lastRadarTab
+    var activeTab = _lastRadarTab || null;
 
     function showAll() {
-      if (activeTab === 'all') return;
       activeTab = 'all';
+      _lastRadarTab = 'all';
 
       Array.from(tabsEl.children).forEach(function (btn) {
         btn.classList.toggle('active', btn.dataset.group === 'all');
@@ -757,8 +759,8 @@
     }
 
     function drawGroup(groupKey) {
-      if (activeTab === groupKey) return;
       activeTab = groupKey;
+      _lastRadarTab = groupKey;
 
       // update tab active state
       Array.from(tabsEl.children).forEach(function (btn) {
@@ -863,8 +865,9 @@
       tabsEl.appendChild(btn);
     });
 
-    // default to FHE-Based
-    drawGroup('A');
+    // restore last tab or default to FHE-Based
+    if (_lastRadarTab === 'all') { showAll(); }
+    else { drawGroup(_lastRadarTab || 'A'); }
   }
 
   // ── 6c. Timeline ──────────────────────────────────────
