@@ -1,4 +1,4 @@
-**[Comparative benchs](https://0xalizk.github.io/PIR-Eng-Notes)**
+🌐 **[Comparative benchs](https://0xalizk.github.io/PIR-Eng-Notes)**
 
 ## PIR Engineering Notes
 
