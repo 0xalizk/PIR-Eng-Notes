@@ -7,7 +7,7 @@
 - Multi-server schemes are excluded
 - Engineering notes ([eg](/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md)) for 34 Private Information Retrieval (PIR) research papers: scheme design, complexity analysis, cryptographic assumptions, and reported benchmarks. 
 - Per-scheme notes are produced by reading the source PDF (incl. tables/figures which Claude can do to some extent) using a [standardized methodology](.claude/skills/pir-paper-analyzer/SKILL.md). 
-- Footnotes used ([eg](Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-2-67afeb1050732d20fa9372dd83f887fe)) to support statements and reference pages/sections of the paper.
+- Footnotes used ([eg](Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-18-0fc3995a87bbbb4931a4fb224b1f904d)) to support statements and reference pages/sections of the paper.
 
 | [![T1: Communication Scatter](data/output/top_level/T1_communication_scatter.png)](data/output/top_level#communication-design-space--query-vs-response-size) | [![T2: Throughput Bar](data/output/top_level/T2_throughput_bar.png)](data/output/top_level#server-throughput-comparison) | [![T3: Pareto Frontier](data/output/top_level/T3_pareto_frontier.png)](data/output/top_level#pareto-frontier--communication-vs-server-time) |
 |:---:|:---:|:---:|
