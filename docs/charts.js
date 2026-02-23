@@ -407,7 +407,7 @@
     Object.keys(groups).forEach(function (g) {
       traces.push({
         x: groups[g].x, y: groups[g].y,
-        mode: isMobile() ? 'markers' : 'markers+text',
+        mode: 'markers+text',
         type: 'scatter',
         name: GROUP_NAMES[g],
         showlegend: false,
@@ -415,13 +415,13 @@
         text: groups[g].names,
         textposition: 'top right',
         cliponaxis: false,
-        textfont: { size: 9, color: t.muted },
+        textfont: { size: isMobile() ? 7 : 9, color: t.muted },
         hovertext: groups[g].text,
         hoverinfo: 'text',
         marker: {
           color: groups[g].marker.color,
           opacity: groups[g].marker.opacity,
-          size: groups[g].marker.size,
+          size: isMobile() ? groups[g].marker.size.map(function (s) { return Math.max(6, s * 0.7); }) : groups[g].marker.size,
           symbol: groups[g].marker.symbol,
           line: { width: 1, color: t.text }
         }
@@ -463,16 +463,18 @@
     var layout = baseLayout('Communication Design Space (Query vs Response)', {
       xaxis: {
         title: 'Query Size', type: 'log', gridcolor: t.grid,
-        tickvals: [0.01, 0.1, 1, 10, 100, 1000, 10000],
-        ticktext: ['0.01 KB', '0.1 KB', '1 KB', '10 KB', '100 KB', '1 MB', '10 MB']
+        tickvals: isMobile() ? [0.1, 1, 10, 100, 1000, 10000] : [0.01, 0.1, 1, 10, 100, 1000, 10000],
+        ticktext: isMobile() ? ['0.1K', '1K', '10K', '100K', '1M', '10M'] : ['0.01 KB', '0.1 KB', '1 KB', '10 KB', '100 KB', '1 MB', '10 MB'],
+        tickfont: { size: isMobile() ? 9 : 12 }
       },
       yaxis: {
         title: 'Response Size', type: 'log', gridcolor: t.grid,
-        tickvals: [0.01, 0.1, 1, 10, 100, 1000, 10000],
-        ticktext: ['0.01 KB', '0.1 KB', '1 KB', '10 KB', '100 KB', '1 MB', '10 MB']
+        tickvals: isMobile() ? [0.1, 1, 10, 100, 1000, 10000] : [0.01, 0.1, 1, 10, 100, 1000, 10000],
+        ticktext: isMobile() ? ['0.1K', '1K', '10K', '100K', '1M', '10M'] : ['0.01 KB', '0.1 KB', '1 KB', '10 KB', '100 KB', '1 MB', '10 MB'],
+        tickfont: { size: isMobile() ? 9 : 12 }
       },
-      margin: { t: 48, r: 48, b: 100, l: 60 },
-      legend: { orientation: 'h', x: 0, y: -0.12, traceorder: 'grouped', groupclick: 'toggleitem', font: { size: 11 } },
+      margin: { t: 48, r: isMobile() ? 16 : 48, b: 100, l: isMobile() ? 44 : 60 },
+      legend: { orientation: 'h', x: 0, y: isMobile() ? -0.18 : -0.12, traceorder: 'grouped', groupclick: 'toggleitem', font: { size: isMobile() ? 9 : 11 } },
       height: isMobile() ? 550 : 750
     });
 
