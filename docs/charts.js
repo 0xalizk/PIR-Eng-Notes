@@ -851,11 +851,6 @@
           }),
           hoverinfo: 'text'
         };
-        if (s.data_tier === 2) {
-          trace.fillpattern = { shape: '/', fgcolor: color, fgopacity: 0.35, size: 8, solidity: 0.3 };
-        } else if (s.data_tier === 3) {
-          trace.fillpattern = { shape: '.', fgcolor: color, fgopacity: 0.35, size: 5, solidity: 0.4 };
-        }
 
         var layout = {
           polar: {
@@ -892,6 +887,50 @@
         };
 
         Plotly.newPlot(cell, [trace], layout, plotConfig());
+
+        // inject SVG fill patterns for Tier 2 (lines) and Tier 3 (dots)
+        if (s.data_tier > 1) {
+          var svg = cell.querySelector('.main-svg');
+          if (svg) {
+            var ns = 'http://www.w3.org/2000/svg';
+            var defs = svg.querySelector('defs');
+            if (!defs) { defs = document.createElementNS(ns, 'defs'); svg.insertBefore(defs, svg.firstChild); }
+
+            var patId = 'tier-pat-' + s.id.replace(/[^a-zA-Z0-9]/g, '-');
+            var pat = document.createElementNS(ns, 'pattern');
+            pat.setAttribute('id', patId);
+            pat.setAttribute('patternUnits', 'userSpaceOnUse');
+
+            if (s.data_tier === 2) {
+              pat.setAttribute('width', '8');
+              pat.setAttribute('height', '8');
+              pat.setAttribute('patternTransform', 'rotate(-45)');
+              var line = document.createElementNS(ns, 'line');
+              line.setAttribute('x1', '0'); line.setAttribute('y1', '0');
+              line.setAttribute('x2', '0'); line.setAttribute('y2', '8');
+              line.setAttribute('stroke', color);
+              line.setAttribute('stroke-width', '2.5');
+              line.setAttribute('opacity', '0.3');
+              pat.appendChild(line);
+            } else {
+              pat.setAttribute('width', '6');
+              pat.setAttribute('height', '6');
+              var dot = document.createElementNS(ns, 'circle');
+              dot.setAttribute('cx', '3'); dot.setAttribute('cy', '3');
+              dot.setAttribute('r', '1.2');
+              dot.setAttribute('fill', color);
+              dot.setAttribute('opacity', '0.35');
+              pat.appendChild(dot);
+            }
+            defs.appendChild(pat);
+
+            var fillPath = svg.querySelector('.fills path');
+            if (fillPath) {
+              fillPath.setAttribute('fill', 'url(#' + patId + ')');
+              fillPath.style.fill = 'url(#' + patId + ')';
+            }
+          }
+        }
       });
     }
 
