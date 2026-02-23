@@ -307,7 +307,7 @@
       xgap: 2, ygap: 1
     };
 
-    var layout = baseLayout('PIR Scheme Rankings — Sorted Heatmap', {
+    var layout = baseLayout('PIR Scheme Rankings — Sorted Heatmap<br><span style="font-size:11px;font-weight:normal;color:' + t.muted + '"><i>Click inside a column to sort by it</i></span>', {
       xaxis: {
         tickfont: { size: 11 }, side: 'top',
         gridcolor: t.grid
@@ -319,14 +319,7 @@
       margin: { t: 100, r: 80, b: 24, l: 160 },
       shapes: hd.shapes,
       height: Math.max(500, sorted.length * 22 + 120),
-      annotations: (hd.annotations || []).concat([{
-        text: '<i>Click inside a column to sort by it</i>',
-        xref: 'paper', yref: 'paper',
-        x: 0.0, y: 1.08,
-        showarrow: false,
-        font: { size: 13, color: t.muted },
-        xanchor: 'left'
-      }])
+      annotations: hd.annotations || []
     });
 
     Plotly.newPlot(el, [trace], layout, plotConfig());
