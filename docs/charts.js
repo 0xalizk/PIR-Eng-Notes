@@ -754,25 +754,16 @@
     // build tier legend (once)
     if (legendEl && !legendEl.hasChildNodes()) {
       var tierInfo = [
-        { label: 'Tier 1 — Exact', style: 'solid' },
-        { label: 'Tier 2 — Approx', style: 'hatch' },
-        { label: 'Tier 3 — Asymptotic', style: 'dots' }
+        { label: 'Tier 1 — Exact', dash: 'solid', fill: 0.13 },
+        { label: 'Tier 2 — Approx', dash: 'dashed', fill: 0.05 },
+        { label: 'Tier 3 — Asymptotic', dash: 'dotted', fill: 0 }
       ];
       tierInfo.forEach(function (ti) {
         var span = document.createElement('span');
         var swatch = document.createElement('span');
         swatch.className = 'tier-swatch';
-        if (ti.style === 'solid') {
-          swatch.style.background = 'var(--text-muted)';
-          swatch.style.opacity = '0.25';
-        } else if (ti.style === 'hatch') {
-          swatch.style.background = 'repeating-linear-gradient(-45deg, transparent, transparent 2px, var(--text-muted) 2px, var(--text-muted) 3.5px)';
-          swatch.style.opacity = '0.5';
-        } else {
-          swatch.style.background = 'radial-gradient(circle, var(--text-muted) 1.5px, transparent 1.5px)';
-          swatch.style.backgroundSize = '5px 5px';
-          swatch.style.opacity = '0.5';
-        }
+        swatch.style.background = ti.fill > 0 ? 'rgba(120,120,120,' + ti.fill + ')' : 'transparent';
+        swatch.style.border = '2px ' + ti.dash + ' var(--text-muted)';
         span.appendChild(swatch);
         span.appendChild(document.createTextNode(ti.label));
         legendEl.appendChild(span);
@@ -836,8 +827,7 @@
         r.push(r[0]);
 
         var tierDash = { 1: 'solid', 2: 'dash', 3: 'dot' };
-        // Tier 2/3 use a unique marker color so we can find the fill path after render
-        var TIER_FILL_MARKER = 'rgba(1, 2, 3, 0.04)';
+        var tierFill = { 1: color + '22', 2: color + '0d', 3: 'rgba(0,0,0,0)' };
         var trace = {
           type: 'scatterpolar', mode: 'lines+markers',
           r: r, theta: theta,
@@ -845,7 +835,7 @@
           marker: { size: 5, color: color },
           line: { color: color, width: 2, dash: tierDash[s.data_tier] || 'solid' },
           fill: 'toself',
-          fillcolor: s.data_tier === 1 ? color + '22' : TIER_FILL_MARKER,
+          fillcolor: tierFill[s.data_tier] || color + '22',
           hovertext: radarMetrics.map(function (m) {
             var raw = getVal(s, m);
             return s.display_name + '<br>' + METRIC_LABELS[m] + ': ' + (raw !== null ? formatNum(raw) : 'N/A') +
@@ -888,52 +878,7 @@
           }]
         };
 
-        Plotly.newPlot(cell, [trace], layout, plotConfig()).then(function () {
-          if (s.data_tier <= 1) return;
-
-          // Find the fill path by scanning all paths for our marker color
-          var allPaths = cell.querySelectorAll('path');
-          var fillPath = null;
-          for (var pi = 0; pi < allPaths.length; pi++) {
-            var st = allPaths[pi].getAttribute('style') || '';
-            if (st.indexOf('1, 2, 3') !== -1) { fillPath = allPaths[pi]; break; }
-          }
-          if (!fillPath) return;
-
-          // Inject SVG pattern into the nearest <svg>
-          var svgEl = fillPath.closest('svg');
-          if (!svgEl) return;
-          var ns = 'http://www.w3.org/2000/svg';
-          var defs = svgEl.querySelector('defs');
-          if (!defs) { defs = document.createElementNS(ns, 'defs'); svgEl.insertBefore(defs, svgEl.firstChild); }
-
-          var patId = 'tp-' + s.id.replace(/[^a-zA-Z0-9]/g, '-');
-          var pat = document.createElementNS(ns, 'pattern');
-          pat.setAttribute('id', patId);
-          pat.setAttribute('patternUnits', 'userSpaceOnUse');
-
-          if (s.data_tier === 2) {
-            pat.setAttribute('width', '7');
-            pat.setAttribute('height', '7');
-            pat.setAttribute('patternTransform', 'rotate(-45)');
-            var ln = document.createElementNS(ns, 'line');
-            ln.setAttribute('x1', '0'); ln.setAttribute('y1', '0');
-            ln.setAttribute('x2', '0'); ln.setAttribute('y2', '7');
-            ln.setAttribute('stroke', color); ln.setAttribute('stroke-width', '2');
-            ln.setAttribute('opacity', '0.3');
-            pat.appendChild(ln);
-          } else {
-            pat.setAttribute('width', '6');
-            pat.setAttribute('height', '6');
-            var dt = document.createElementNS(ns, 'circle');
-            dt.setAttribute('cx', '3'); dt.setAttribute('cy', '3');
-            dt.setAttribute('r', '1.2');
-            dt.setAttribute('fill', color); dt.setAttribute('opacity', '0.35');
-            pat.appendChild(dt);
-          }
-          defs.appendChild(pat);
-          fillPath.style.fill = 'url(#' + patId + ')';
-        });
+        Plotly.newPlot(cell, [trace], layout, plotConfig());
       });
     }
 
