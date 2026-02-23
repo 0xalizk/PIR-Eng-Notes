@@ -40,25 +40,25 @@ Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage a
 |-------|--------|
 | **Name** | Relocation data structure (DS) |
 | **Type** | Data structure |
-| **Interface / Operations** | DS.Init(m, m'): initialize with m elements in m' positions (m' > m). DS.Access(c) -> e: return element at position c (or bottom). DS.Locate(e) -> c: return position of element e. DS.Relocate(c): consume position c, relocate its element to a random empty position. [^5] |
+| **Interface / Operations** | DS.Init(m, m'): randomized initialization algorithm (not an interface operation). Three interface operations: DS.Access(c) -> e: return element at position c (or bottom). DS.Locate(e) -> c: return position of element e. DS.Relocate(c): consume position c, relocate its element to a random empty position. [^5] |
 | **Security definition** | Perfect security: initial positions are uniformly random in [m']; after each Relocate, the relocated element lands at a uniformly random empty position, conditioned on all prior state (Definition in Section 3.1, p.12–13). Formally verified via Experiments 3.1 and 3.2 producing identical distributions. [^6] |
 | **Correctness definition** | After each Relocate, each element in [m] appears once and only once. Access and Locate are inverses. A relocated element goes to an empty, unconsumed position (Lemma 3.13, 3.14, 3.15). [^7] |
-| **Purpose** | Replace T linear-size permutation arrays with T compact PRP-backed instances, reducing client storage from O(n) to O(n/T * log(n/T) + Q * log(n/T)). [^8] |
+| **Purpose** | Replace T linear-size permutation arrays with T compact PRP-backed instances, reducing client storage from O(n) to O(Qw + Q log n) (Theorem 4.1 / Section 4.3, p.21–22), where the per-instance DS storage is O(lambda + m log m) (Section 1.2, p.7). [^8] |
 | **Built from** | Small-domain PRP P over [m'] (from [MR14]) + Hist data structure (Construction 3.4: array C of consumed positions + hash map M for O(1) lookup). All T DS instances share a single global Hist. [^9] |
 | **Standalone complexity** | Access: O(1) expected PRP calls for random input. Locate: O(1) expected PRP calls for random input. Relocate(c) then Locate(e): O(1) expected + O(1) amortized PRP calls (Theorem 3.3). [^10] |
 | **Relationship to prior primitives** | Novel. Conceptually similar to cuckoo hashing's eviction chains but with a different invariant (every element appears exactly once, positions are uniformly random). The helper graph G (Definition 3.6) of disjoint chains and cycles provides the key structural insight. [^11] |
 
 [^5]: Section 3.1 (p.12): Formal interface definition. DS is parameterized by security parameter λ, size parameters m, m' in N with m' > m.
 
-[^6]: Section 3.1 (p.13): Perfect security formalized via Experiments 3.1 and 3.2. Lemma 3.16 (p.16) proves identical distributions by induction on the number of Relocate operations.
+[^6]: Section 3.1 (pp.12–13): Perfect security formalized via Experiments 3.1 and 3.2 (both on p.13). Lemma 3.16 (p.16) proves identical distributions by induction on the number of Relocate operations.
 
 [^7]: Lemma 3.13 (p.15): elements appear once and only once. Lemma 3.14 (p.16): Access and Locate are inverses. Lemma 3.15 (p.16): Relocate moves elements to empty, unconsumed positions.
 
-[^8]: Section 1.2 (p.7): "the total client storage needed to reconstruct the entire hint table is O(λ + m log m), avoiding the linear client storage."
+[^8]: Section 1.2 (p.7): per-instance DS storage is "O(λ + m log m), avoiding the linear client storage." The total client storage across the full PIR scheme is O(Qw + Q log n) bits (Theorem 4.1, p.17; Section 4.3, p.21–22).
 
-[^9]: Section 1.2 (p.7): "Each DS instance uses a separate small-domain PRP. The keys to the PRPs can be derived pseudorandomly via a PRF from a single master key. The T DS instances will share a global array C."
+[^9]: Section 1.2 (p.7): "Each DS instance uses a separate small-domain PRP. (The keys to the PRPs can be derived pseudorandomly via a PRF from a single master key.) The T DS instances will share a global array C that stores the consumed columns, along with a hash map to allow finding the index of any column in C (i.e., 'invert' C) in constant time."
 
-[^10]: Theorem 3.3 (p.13): Access O(1) expected for random c in [m'] \ C. Locate O(1) expected for random e in [m]. Relocate(c) then Locate(e) uses O(1) expected time over c in [m'] \ C and O(1) amortized time.
+[^10]: Theorem 3.3 (p.13): Access O(1) expected for random c in [m'] \ C. Locate O(1) expected for random e in [m]. Relocate(c) and then Locate(e) uses O(1) expected time over position c in [m'] \ C and O(1) amortized time across m calls with distinct c.
 
 [^11]: Definition 3.6 (p.15): The helper graph G has m' nodes; for the t-th consumed position C[t], there is a directed edge from C[t] to P(m+t). G consists of disjoint chains and cycles (Corollary 3.10). Locate traverses out-edges from chain start to end; Access traverses in-edges from chain end to start.
 
@@ -73,7 +73,7 @@ Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage a
 | **Built from** | Array + hash map |
 | **Standalone complexity** | O(Q log m) bits total for up to Q consumed positions, using the hash map for constant-time inverse lookups. [^12] |
 
-[^12]: Construction 3.4 (p.14-15): Hist stores array C and hash map M. All operations are O(1). Storage is O(|C| * (log m' + log |C|)) bits (storage formula on p.15).
+[^12]: Construction 3.4 (p.14–15): Hist stores array C and hash map M. All operations are O(1). Storage is O(m log m) bits in total for the array and hash map when m' = O(m) (p.15).
 
 ### Cryptographic Foundation
 
@@ -86,7 +86,7 @@ Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage a
 
 [^13]: Construction 4.2 (p.18): "For each row j, an instance of DS_j in Construction 3.5 is instantiated with pseudorandom permutation PRP(ck_j, .) where ck_j = PRF(ck_hat, j) and the globally shared Hist."
 
-[^14]: Construction 4.2 (p.18): "The client stores a key ck_hat, the history of consumed columns Hist, and hints h = (h_0, h_1, ..., h_{m'-1})."
+[^14]: Construction 4.2 (p.18): "The client stores a key ck_hat, the history of consumed columns Hist, and hints h = (h_0, h_1, ..., h_{m'-1})." Initially ck = (ck_hat, Hist); after each query, the updated key is ck' = (ck_hat, Hist) with the appended consumed column.
 
 ### Key Data Structures
 
@@ -129,7 +129,7 @@ Deterministic correctness -- the scheme always returns the correct answer, with 
 
 The key invariant is maintained by induction (Lemma 4.3, p.19): after every query, for every unconsumed column c in [m'] \ C, the stored hint h_c equals XOR_{j in [T]} DB_j[DS_j.Access(c)]. Initially this holds because HintConstruct computes exactly these XOR sums. After a query consuming column c, the Reconstruct phase relocates each entry in column c to a random empty position r_j in the same row (via DS_j.Relocate), and updates h_{r_j} <- h_{r_j} XOR a[j] where a[j] is the entry value returned by the server. This preserves the XOR invariant for the new column because the relocated entry is now accounted for in h_{r_j}.&#8201;[^21]
 
-[^21]: Lemma 4.3 (p.19): Initially the hint table is correct by inspecting HintConstruct. After a query, an element is appended to Hist; for each row where an element is moved in DS, the value is XORed onto the parity value for the new column (paraphrase of proof argument).
+[^21]: Lemma 4.3 (p.19): Initially the hint table is correct by inspecting HintConstruct. After a query, an element is appended to Hist; for each row j where q[j] != bottom, the Reconstruct step computes c = DS_j.Locate(q[j]) and updates h_c = h_c XOR a[j], preserving the XOR invariant for the new column (paraphrase of proof argument).
 
 Correctness of answer reconstruction: the client computes DB[i] = h[c] XOR (XOR_{j in [T], j != j*} a[j]). Since h[c] = XOR_{j in [T]} DB_j[DS_j.Access(c)] and a[j] = DB_j[DS_j.Access(c)] for j != j*, the XOR cancels all terms except DB_{j*}[DS_{j*}.Access(c)] = DB[i]. (Lemma 4.4, p.19).&#8201;[^2]
 
@@ -210,7 +210,7 @@ The scheme achieves any point on the tradeoff curve S * T = O(nw) by varying the
 
 [^28]: Theorem B.2 (p.28): "For any l = O(1) and any l-server computationally secure client preprocessing PIR scheme for many adaptive queries such that, on database size n and entry size w, the server stores DB in its original form, the client stores at most S bits between queries, and the server probes T entries of the database when amortized for all queries, must have ST = Omega(nw)."
 
-[^29]: Appendix B.1 (p.28): "The lower bound in Theorem B.1 can be extended to the amortized server probes over many PIR queries, using a reduction from [CGHK22]."
+[^29]: Appendix B.1 (p.28, "Amortized server probes" paragraph): The lower bound in Theorem B.1 is extended to amortized server probes over many PIR queries, using a reduction from [CGHK22] (Theorem 6.2) showing that any multi-query scheme with T amortized probes implies a single-query scheme with O(T) probes and the same storage.
 
 #### SZK Communication Barrier
 

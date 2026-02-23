@@ -102,7 +102,7 @@ NPIR addresses the high server computation cost of existing high-rate PIR scheme
 
 [^13]: Table 1 (p.15): Storage (public parameter) for NPIR ranges from 0.89 MB (1 GB DB) to 1.44 MB (32 GB DB).
 
-[^14]: Section 4.1 (p.12): "the client generates one NTRU and one NGSW encoding and upload a query of size N*log_2(q)*(1 + t_g)." For N=2048, q approx 2^54, t_g=5: 2048*54*(1+5)/8 = 84 KB.
+[^14]: Section 4.1 (p.12): "the client generates one NTRU and one NGSW encoding and upload a query of size N*log_2(q)*(1 + t_g)." Table 1 (p.15) reports 84 KB for the concrete parameter set (N=2048, t_g=5, q=q_1*q_2).
 
 [^15]: Section 4.1 (p.12): "the client downloads a response of size N*phi*log_2(q_1)." For N=2048, phi=16, q_1 = 11*2^21+1 (approx 2^24.5). The 128 KB response size per Table 1 reflects 32-bit aligned storage in practice.
 

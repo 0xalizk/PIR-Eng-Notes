@@ -25,7 +25,7 @@
 SealPIR's central contribution is *oblivious query expansion* (Expand): a server-side procedure that takes a single BFV ciphertext encoding the client's desired index as a monomial x^i and produces N ciphertexts where the i-th encrypts 1 and all others encrypt 0 — without learning i.&#8201;[^1] This eliminates the O(N) query cost of XPIR, compressing queries from d * N^{1/d} ciphertexts down to d * ceil(N^{1/d}/N_ring) ciphertexts, where N_ring is the ring dimension.&#8201;[^2] The expansion uses only substitution operations (automorphisms) and additions — no homomorphic multiplications — keeping noise growth additive and enabling smaller parameters.&#8201;[^3] A secondary contribution is *probabilistic batch codes* (PBCs) for amortized multi-query PIR.
 
 [^1]: Section 3.3, Figure 3. The server never sees the plaintext index; it only applies algebraic operations (substitution + addition) on ciphertexts.
-[^2]: Section 3.4–3.5. Query communication goes from O(N * d * N^{1/d}) in XPIR to O(N * d * ceil(sqrt_d(n)/N)) in SealPIR, where N_ring = 2048 or 4096.
+[^2]: Section 3.4–3.5. Query communication goes from O(N_d * d-root(n)) in XPIR to O(N_d * ceil(d-root(n)/N)) in SealPIR, where N_d is the ciphertext size, N is the ring dimension (2048 or 4096), and d-root(n) denotes the d-th root of the database size n.
 [^3]: Figure 2 (p. 3). Substitution has additive noise growth (cost 0.279 ms), compared to ciphertext multiplication's multiplicative noise growth (cost 1.514 ms).
 
 ### Novel Primitives / Abstractions
@@ -187,7 +187,7 @@ Structure the database as a d-dimensional hypercube of side N^{1/d}. The client 
 | 3 | 3 * ceil(N^{1/3}/N_ring) | F^2 | O(3 * N^{1/3}) | Small query priority; but response grows as F^2 |
 | d > 3 | d * ceil(N^{1/d}/N_ring) | F^{d-1} | O(d * N^{1/d}) | Response size dominates; impractical&#8201;[^22] |
 
-The query communication complexity goes from O(N * d * N^{1/d}) in XPIR to O(N * d * ceil(N^{1/d}/N_ring)) in SealPIR.&#8201;[^23]
+The query communication complexity goes from O(N_d * d-root(n)) in XPIR to O(N_d * ceil(d-root(n)/N)) in SealPIR, where N_d is ciphertext size.&#8201;[^23]
 
 [^19]: Section 3.4, p. 4. "One issue with Expand is that despite each operation being inexpensive, O(n) operations are needed to extract the n-entry query vector."
 [^20]: Section 3.4, p. 5. Each Expand call costs O(N^{1/d}) rather than O(N).
@@ -225,10 +225,10 @@ When the database has more than N (ring dimension) elements, a single ciphertext
 | Query size | O(d * ceil(N^{1/d} / N_ring) * \|ct\|) | 64 KB | Online |
 | Response size | O(F^{d-1} * \|ct\|) | 256 KB | Online |
 | Server computation (Expand) | O(d * N^{1/d}) substitutions | 0.11 s&#8201;[^26] | Online |
-| Server computation (Answer) | O(N) plaintext-ct multiplications | 0.5 s&#8201;[^26] | Online |
-| Server computation (total) | O(N + d*N^{1/d}) | 1.65 s (Setup + Expand + Answer)&#8201;[^26] | Online |
+| Server computation (Answer) | O(N) plaintext-ct multiplications | 2.01 s&#8201;[^26] | Online |
+| Server computation (total) | O(N + d*N^{1/d}) | 6.38 s (Setup + Expand + Answer)&#8201;[^26] | Online |
 | Client computation (Query) | O(d) encryptions | 3.37 ms&#8201;[^26] | Online |
-| Client computation (Extract) | O(F^{d-1}) decryptions | 1.39 ms&#8201;[^26] | Online |
+| Client computation (Extract) | O(F^{d-1}) decryptions | 1.69 ms&#8201;[^26] | Online |
 | Response overhead | F^{d-1} | F = approximately 5-12 depending on t'; for d=2, 1 ciphertext response | -- |
 
 [^26]: Figure 9 (p. 11), column "SealPIR (d=2)", row n = 1,048,576: Query 3.37 ms, Extract 1.69 ms, Setup 4.26 s, Expand 0.11 s, Answer 2.01 s. Total server time = 4.26 + 0.11 + 2.01 = 6.38 s. For n = 262,144: Extract 1.39 ms, Setup 1.04 s, Answer 0.5 s.
@@ -406,7 +406,7 @@ SealPIR + mPIR integrated into the Pung private communication system:
 - **Server CPU overhead:** Expand adds 11-24% server computation over XPIR. For CPU-bound deployments, this is non-trivial.&#8201;[^39]
 - **Expansion factor constrains response:** For d >= 2, response size grows as F^{d-1}. With F approximately 5-12, d=3 already yields F^2 = 25-144 ciphertexts in the response. This makes d > 3 impractical.
 - **Small element regime:** Benchmarks use 288-byte elements. For larger elements, each element spans multiple FV plaintexts, requiring l parallel Answer computations (one per chunk). Response grows proportionally.
-- **Expand optimization tradeoff:** Reducing t to t' packs fewer DB elements per plaintext. For n=2^22, t' shrinks to 2^12, causing SealPIR to use more plaintexts than XPIR. "For even larger databases, since we must use a higher dimension parameter d... the difference becomes less prominent."&#8201;[^40]
+- **Expand optimization tradeoff:** Reducing t to t' packs fewer DB elements per plaintext. For n=2^22, t' shrinks to 2^12, causing SealPIR to use more plaintexts than XPIR. "For even larger databases, since we must use a higher dimension parameter d... the difference in the number of plaintexts between XPIR and SealPIR (for the same d) becomes less prominent until n is large enough that the second operand in Equation 1 approaches log(t) again."&#8201;[^40]
 - **No ciphertext multiplication compression:** Unlike later schemes (MulPIR, OnionPIR), SealPIR does not use GSW/RGSW to compress the response. The response is always F^{d-1} BFV ciphertexts.
 - **Substitution key size:** 2.9 MB per client is manageable but non-trivial for mobile deployments. Later schemes (OnionPIR) address this.
 

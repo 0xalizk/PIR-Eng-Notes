@@ -140,7 +140,7 @@ WhisPIR's insight is to skip relinearization entirely. After k levels of homomor
 
 [^21]: Section 3.3 (p.8): "By not relinearizing, we save on communicating the relinearization key, which is as large as the rotation switching key, at the cost of growing the number of ring elements in the resulting ciphertext by roughly a factor of k."
 
-[^22]: Remark A.2 (p.15): "Regardless of the size of the ciphertext resulting from a homomorphic computation, as long as this ciphertext meets the requirements of Lemma A.1... it can be reduced to a minimal modulus before being sent over the network. This minimum modulus is defined by Equation (5), meaning that all result ciphertexts have a modulus of size roughly p*n."
+[^22]: Remark A.2 (p.14): "Regardless of the size of the ciphertext resulting from a homomorphic computation, as long as this ciphertext meets the requirements of Lemma A.1... it can be reduced to a minimal modulus before being sent over the network. This minimum modulus is defined by Equation (5), meaning that all result ciphertexts have a modulus of size roughly p*n."
 
 ---
 
@@ -222,7 +222,7 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 
 [^32]: Section 3.5 (p.9): "If we split the k*l vector into two vectors each of length k*l/2, encrypt these vectors separately, then expand out the index using two invocations of Algorithm 1, we will save on the overall number of rotations."
 
-[^33]: Section 3.5 (p.10): "Increasing the Ciphertext Rate. To improve the runtime of this phase, we decrease the number of R_p elements required to represent the database by increasing the plaintext modulus p."
+[^33]: Section 3.5 (p.9): "Increasing the Ciphertext Rate. To improve the runtime of this phase, we decrease the number of R_p elements required to represent the database by increasing the plaintext modulus p."
 
 [^34]: Section 3.5 (p.9): "We can consider a simple variant of the scheme where the database is split into c equal chunks... This increases the download by a factor of c, but it also reduces the index space by a factor of c."
 
@@ -317,7 +317,7 @@ All values below are approximate (extracted from charts; the paper has no benchm
 
 WhisPIR's one-time communication is negligible (only public parameters) while Spiral and SimplePIR require large offline uploads (evaluation keys and database digests, respectively).&#8201;[^40]
 
-[^40]: Section 4.2 (p.11): "Observe that nearly all of the communication in both Spiral and SimplePIR is this protocol state."
+[^40]: Section 4.2 (p.12): "Observe that nearly all of the communication in both Spiral and SimplePIR is this protocol state."
 
 #### Crossover analysis (WhisPIR vs Spiral)
 

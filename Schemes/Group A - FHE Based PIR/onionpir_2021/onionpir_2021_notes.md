@@ -10,7 +10,7 @@
 | **Correctness model** | Deterministic (noise budget is analytically bounded; no probabilistic failure) |
 | **Rounds (online)** | 1 (non-interactive: client sends query, server returns response) |
 | **Record-size regime** | Large (30 KB per entry in experiments)[^recordsize] |
-[^circular]: RGSW encryption of the secret key A = RGSW(-s) is provided to the server for query expansion (Algorithm 2, line 13). This implicitly requires a circular-security assumption (editorial inference — the paper does not explicitly mention circular security).
+[^circular]: RGSW encryption of the secret key A = RGSW(-s) is provided to the server for query expansion (Algorithm 2, line 13: `externalProduct(A, c[...])`). This implicitly requires a circular-security assumption (editorial inference — the paper does not explicitly mention circular security). Note: line numbering may vary by PDF rendering.
 [^recordsize]: Section 6.2, p.10: "We set each database entry to be 30 KB."
 
 ### Lineage
@@ -22,7 +22,7 @@
 | **Superseded by** | OnionPIRv2 / FHEPIR_2025 (engineering optimization) |
 | **Concurrent work** | SHECS-PIR (Park and Tibouchi, 2020) — also uses external products but with >2x computation cost over SealPIR[^concurrent]; Ali et al. (2019) — BFV ciphertext multiplication + modulus switching, ~900s computation[^concurrent2] |
 
-[^whatchanged]: Section 1, p.1 "Main contribution 1": "The main technique is to carefully control the noise growth from the ciphertext operations on the server... with the help of recent advances in homomorphic encryption schemes." Section 4.1, p.5: "the noise only grows additively after each external product operation."
+[^whatchanged]: Section 1, p.1 "Main contribution 1": "The main technique is to carefully control the noise growth from the ciphertext operations on the server with the help of recent advances in homomorphic encryption schemes." Section 4.1, p.5: "the noise only grows additively after each external product operation."
 [^concurrent]: Section 7, p.12: "Park and Tibouchi present a construction based on external products that improve the response overhead to 16x; but their computation cost more than doubled compared to SealPIR."
 [^concurrent2]: Section 7, p.12: "Ali et al. also gives a protocol... to retrieve 60 KB entry from a database with one million entries requires around 900 seconds of server computation."
 
@@ -46,7 +46,7 @@ OnionPIR achieves a 4.2x response overhead (vs. the insecure baseline of downloa
 [^schemes]: Section 4.1, p.5: warm-up uses RGSW for all query vectors with external products. Section 4.2, p.5-6: improved protocol uses BFV for first dimension (DecompMul) and RGSW for remaining dimensions (external products).
 [^ring]: Section 6.2, p.10: "We set the polynomial degree n to 4096 and the size of coefficient modulus q to 124 bits... plaintext modulus t to 60 bits."
 [^keystructure]: Algorithm 2, p.7: "A = RGSW(-s), RGSW encryption of the client's secret key."
-[^correctness]: Section 2.1, p.2: "Since the message is encoded in the most significant bits and the noise e is small, rounding mu recovers m."
+[^correctness]: Section 2.1, p.2: "Since the message is encoded in the most significant bits and the noise e is small, rounding mu recovers m." The specific inequality Err(ct_resp) < floor(q/t)/2 is an editorial formalization of this correctness condition; the paper does not state it in this form.
 
 ### Key Data Structures
 
@@ -83,7 +83,7 @@ OnionPIR achieves a 4.2x response overhead (vs. the insecure baseline of downloa
 | Decode | Client | BFV decrypt to recover plaintext entry | — | Per query |
 
 [^querysize]: Section 4.4, p.8: "Using the pseudorandom seed optimization... the request size is 64 KB."
-[^respsize]: Section 4.4, p.8: "We set the ciphertext modulus q to 124 bits (padded to 128 bits in the implementation). The plaintext modulus t is set to 60 bits. This gives a ciphertext expansion factor F ≈ 4.2. The response is thus only 4.2x larger than the plaintext entry." 128 KB = 30 KB * 4.2 ≈ 126 KB, padded.
+[^respsize]: Section 4.4, p.8: "We set the ciphertext modulus q to 124 bits (padded to 128 bits in the implementation). The plaintext modulus t is set to 60 bits. This gives a ciphertext expansion factor F ≈ 4.2." The concrete 128 KB response figure comes from Section 6.3, p.11: "the response size is only 128 KB" and Table 3, p.11. Editorial calculation: 30 KB * 4.2 ≈ 126 KB, padded to 128 KB.
 
 ### Query Structure
 
@@ -152,7 +152,7 @@ The key insight is captured in Table 1 (p.3). BFV ciphertext multiplication has 
 External products have noise growth O(B * Err(C) + Err(d)), which is additive in the existing noise. Applying L external products yields noise only L times larger: roughly L * O(B * Err(C) + Err(d)). This is why SealPIR was limited to d = 2 dimensions (one BFV multiplication), while OnionPIR can use d = 5+ dimensions.[^noise_comparison_add]
 
 [^noise_exp]: Section 4.4, p.8: "The noise in the unpacked ciphertext (RGSW and BFV both) is bounded by: Err(ct_exp) <= O(w^2) * Err(BFV)."
-[^noise_first]: Section 4.4, p.8: "the noise increases by a factor of O(N_1 * B')... Err(ct_1) = O(w^2 * N_1 * B') * Err(BFV)."
+[^noise_first]: Section 4.4, p.8: "the noise increases by a factor of O(N_1 B')... Err(ct_1) = O(w^2 N_1 B') . Err(BFV)." Note: "Multiplicative" here applies to the first dimension only; the paper's key insight is that subsequent dimensions use external products with additive noise growth.
 [^noise_ext]: Section 4.4, p.8: "Subsequent dimensions use external products and the noise increase is additive and insignificant. Err(ct_resp.) <= Err(ct_1) + O(d) * Err(ct_exp)."
 [^noise_correct]: Section 2.1, p.2.
 [^noise_dominant]: Section 4.4, p.8.
@@ -186,15 +186,15 @@ External products have noise growth O(B * Err(C) + Err(d)), which is additive in
 | Plaintext modulus t | — | 60 bits[^fhe_t] | — |
 | Ring dimension n | — | 4096[^fhe_n] | — |
 | Decomposition factor l | — | 5 (for RGSW gadget)[^fhe_l] | — |
-| Hypercube dimensions d | 1 + ceil(log_4(N/128)) | 5 (for N = 10^6)[^fhe_d] | — |
+| Hypercube dimensions d | 1 + ceil(log_4(N/128)) | 8 (for N = 10^6)[^fhe_d] | — |
 | Security level | — | ~111 bits (LWE estimator, Albrecht et al.)[^fhe_sec] |  — |
 
-[^fhe_F]: Section 4.4, p.8. SealPIR, in comparison, has F = 10 with q set to 60 bits and t = 12 bits.
+[^fhe_F]: Section 4.4, p.8. SealPIR, in comparison, has F = 10 with a 60-bit q and a 12-bit t (Section 6.2, p.10).
 [^fhe_q]: Section 6.2, p.10: "coefficient modulus q to 124 bits." This is moderately large; enables t = 60 bits while maintaining security.
 [^fhe_t]: Section 6.2, p.10.
 [^fhe_n]: Section 6.2, p.10.
 [^fhe_l]: Section 2.2, p.3: "Typically, l is set to 5."
-[^fhe_d]: Section 4.4, p.7: "d = 1 + ceil(log_4(N/128))". For N = 10^6: the formula gives d = 1 + ceil(log_4(7812.5)) = 1 + ceil(6.47) = 8. However, the paper uses d = 5 for its concrete protocol with N_1 = 128 and 4 remaining dimensions of size 4, giving 128 * 4^4 = 32768 addressable entries. The paper notes for 1M entries and l = 5: "a total of 386 values will be packed." The d = 5 figure is the actual protocol configuration, not a direct application of the formula to N = 10^6.
+[^fhe_d]: Section 4.4, p.7: "d = 1 + ceil(log_4(N/N_1))." For N = 10^6: d = 1 + ceil(log_4(10^6/128)) = 1 + ceil(log_4(7812.5)) = 1 + ceil(6.47) = 1 + 7 = 8. The paper confirms this indirectly: with l = 5 and d = 8, the packed query vector has 256 + 4 * 5 * (8-1) = 396 values; the paper states "a total of 386 values will be packed" (the small discrepancy may be due to implementation-level packing optimizations). The paper does not explicitly state a value for d at N = 10^6.
 [^fhe_sec]: Section 6.2, p.10: "The LWE estimator by Albrecht et al. suggests these parameters yield about 111 bits of computational security."
 
 #### If-reported metrics
@@ -234,7 +234,7 @@ External products have noise growth O(B * Err(C) + Err(d)), which is additive in
 
 Key observations from Table 3:
 - Response size: OnionPIR's 128 KB is **25x smaller** than SealPIR's 3,200 KB, constant across all database sizes.[^bench_resp]
-- Request size: OnionPIR's 64 KB is 2x larger than SealPIR's 32 KB (each BFV ciphertext is 4x bigger due to larger q). However, OnionPIR remains 64 KB for all practical sizes while SealPIR grows.[^bench_req]
+- Request size: OnionPIR's 64 KB is 2x larger than SealPIR's 32 KB (each ciphertext in OnionPIR is 4x bigger than SealPIR's, but OnionPIR packs everything into a single ciphertext, yielding a net 2x increase). However, OnionPIR remains 64 KB for all practical sizes while SealPIR grows.[^bench_req]
 - Computation: Nearly identical (within 1-2%) for both schemes. Dot-product time dominates and scales linearly with N.[^bench_comp]
 - Query unpacking: OnionPIR is faster because it packs only a logarithmic number of query bits (vs SealPIR's 2*sqrt(N) bits).[^bench_unpack]
 - Server cost: OnionPIR is ~4x cheaper at small databases (network-dominated) and converges to SealPIR at large databases (computation-dominated).[^bench_cost]
@@ -286,7 +286,7 @@ Key observations from Table 4:
 [^cmp_xpir_comp]: Section 7, p.12: "around 383 seconds of server computation."
 [^cmp_ali_resp]: Section 7, p.12: "357 KB response size."
 [^cmp_ali_req]: Section 7, p.12: "119 KB request size."
-[^cmp_ali_comp]: Section 7, p.12: "around 900 seconds."
+[^cmp_ali_comp]: Section 7, p.12: "around 900 seconds." Note: Ali et al.'s figures are for 60 KB entries, while OnionPIR uses 30 KB entries; the paper chose 60 KB for Ali et al. because their scheme works best with multiples of 20 KB (see footnote 1, p.12). This makes the computation comparison not strictly apples-to-apples.
 [^cmp_shecs]: Section 7, p.12: "their computation cost more than doubled compared to SealPIR."
 
 **Key takeaway:** OnionPIR is the preferred choice when response size (bandwidth) is the primary concern and computation cost comparable to SealPIR is acceptable. For databases up to ~10^6 entries, OnionPIR achieves 25x smaller responses than SealPIR with virtually identical server computation time. The crossover point where SealPIR's request size exceeds OnionPIR's occurs around N = 4 million entries.
@@ -362,7 +362,7 @@ Key observations from Table 4:
 
 4. **Static database only** for the stateful variant.[^tradeoff_static]
 
-5. **Large q (124-bit) needed:** The larger ciphertext modulus increases ciphertext size (partially offsetting response gains) and increases the absolute cost of each polynomial multiplication. The paper notes n = 4096 provides only ~111 bits of security, below the typical 128-bit target.[^tradeoff_security]
+5. **Large q (124-bit) needed:** The larger ciphertext modulus increases ciphertext size (partially offsetting response gains) and increases the absolute cost of each polynomial multiplication. The paper notes n = 4096 provides only ~111 bits of security, which is below the typical 128-bit target (editorial note: the 128-bit target is a common industry convention; the paper does not mention this threshold).[^tradeoff_security]
 
 [^tradeoff_req]: Section 6.3, p.11.
 [^tradeoff_comp]: Table 3, p.11.

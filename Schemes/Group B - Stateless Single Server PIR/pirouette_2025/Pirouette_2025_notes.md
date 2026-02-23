@@ -66,7 +66,7 @@ Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting
 | **Key structure** | LWE secret s in Z^n (binary coefficients); RLWE secret s_1 in R_{N_1}. Client generates both; evaluation keys evk derived from s are uploaded to server offline. Circular security / KDM assumption required.&#8201;[^7] |
 | **Correctness condition** | Failure probability epsilon <= 2^{-40}, achieved by bounding noise variance through each phase using the independence heuristic and atomic patterns.&#8201;[^8] |
 
-[^6]: Section 4.1 (p.8): "Phase 1-3 of the Pirouette protocol operate over R and rely on the hardness of RLWE for security." Section 1.1 (p.2): "the Pirouette query is LWE(idx, Delta) ... relies on the hardness of LWE in this phase."
+[^6]: Section 2.4.1 (p.5): "Phase 1-3 of the Pirouette protocol operate over R and rely on the hardness of RLWE for security." Section 1.1 (p.2): "the Pirouette query is LWE(idx, Delta) ... relies on the hardness of LWE in this phase."
 
 [^7]: Definition A.21 (p.25) and Theorem A.22 (p.25--26): Security proof requires F_scal-KDM security for LWE over Z_q and KDM security for RLWE over R_Q with respect to F_quad and F_aut.
 
@@ -164,7 +164,7 @@ For Pirouette^H, the query instead consists of log(N) separate (n+1)-th LWE comp
 | LWE query (PRG seed + b) | Client -> Server | 36 B (Pirouette) / 55--60 B (Pirouette^H) | No | Per query. Expansion factor from 36 B to full query is enormous due to PRG. |
 | Response | Server -> Client | ~2 KB | No | Per query. After ModSwitch + RingSwitch compression. Nearly constant across database sizes.&#8201;[^18] |
 
-[^18]: Table 7 (p.11) and Section 5.2 (p.10): "yielding a small and nearly constant response sizes (around 3 KB)." Exact value is ~2 KB at 256 B records.
+[^18]: Section 5.2 (p.10): "yielding a small and nearly constant response sizes (around 3 KB)." Table 7 (p.11) lists response size as 2 KB for all evaluated configurations.
 
 ---
 
@@ -264,7 +264,7 @@ Pirouette's correctness relies on bounding the noise variance through a cascade 
 | 2^25 x 256 B | Computation | -- | 51 s | 46 s | 14 s |
 | | Throughput | 136 MB/s | 150 MB/s | 178 MB/s | 585 MB/s |
 
-[^24]: Table 7 (p.11): Values transcribed from official benchmarks. Note: The parallel execution table contains a transcription error where offline communication values (e.g., 91 MB) appear in the computation rows for T-Respire.
+[^24]: Table 7 (p.11): Values transcribed from official benchmarks.
 
 ---
 
@@ -430,7 +430,7 @@ Steps:
 - **Bandwidth-constrained mobile devices:** Asymmetric networks where upload is expensive but download/offline capacity is available (e.g., wired device initialization followed by wireless queries).
 - **Private contact discovery, safe browsing, genome imputation:** General PIR applications cited in the introduction where small query sizes reduce client costs.
 
-[^43]: Abstract (p.1): "Minimizing query size is particularly important ... when clients operate on bandwidth-constrained devices ... such as in satellite-to-ground communication."
+[^43]: Introduction (p.1): "Minimizing query size is particularly important ... when clients operate on bandwidth-constrained devices ... such as in satellite-to-ground communication."
 
 ---
 

@@ -279,7 +279,7 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 ### Portable Optimizations
 
-1. **Subring query embedding:** When the number of values h to pack into an RLWE encoding is much smaller than the ring dimension d, embed h values into the coefficients of a subring R_{d2} subset R_{d1} and send only ~h coefficients instead of a full ring element. Applicable to any RLWE-based PIR using query packing (ACLS18, CCR19) with small inputs. Concretely reduces query size by a factor of d/h (e.g., 2048/512 = 3.5x in Respire).&#8201;[^25]
+1. **Subring query embedding:** When the number of values h to pack into an RLWE encoding is much smaller than the ring dimension d, embed h values into the coefficients of a subring R_{d2} subset R_{d1} and send only ~h coefficients instead of a full ring element. Applicable to any RLWE-based PIR using query packing (ACLS18, CCR19) with small inputs. Concretely reduces query size by a factor of d/h ≈ 3.5 (e.g., from 14 KB to 4 KB in Respire).&#8201;[^25]
 
 2. **Dimension-reduction response compression:** Project the RLWE response from R_{d1} to R_{d2} via the dimension-reduction map kappa^{-1} (Eq. 3.2), composed with split modulus switching. Only works when records are small (information fits in d2 coefficients). Applicable to any Regev+GSW composition PIR with small-record databases.&#8201;[^26]
 
@@ -340,7 +340,7 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 ### Key Tradeoffs & Limitations
 
 - **Small-record niche:** Respire's subring techniques only help when records fit in d2 < d1 coefficients. For records > ~2 KB, Respire reduces to Spiral with no advantage.&#8201;[^33]
-- **Throughput penalty vs Spiral:** Respire is ~26% slower than Spiral on an 8 GB database (20.84 s vs 15.44 s) because the smaller plaintext modulus (p=16 vs p=256) increases the number of RLWE encodings the server must process in the first-dimension scan.&#8201;[^34]
+- **Throughput penalty vs Spiral:** Respire is ~26% slower than Spiral on an 8 GB database because the smaller plaintext modulus (p=16 vs p=256) increases the number of RLWE encodings the server must process in the first-dimension scan.&#8201;[^34]
 - **Throughput gap vs SimplePIR/YPIR:** 27-50x slower than SimplePIR/YPIR, but with up to 27x smaller communication and no large offline hint download (SimplePIR needs 445 MB hint).&#8201;[^35]
 - **Batch scalability limit:** For large batch sizes (T > 128), query expansion becomes the dominant cost and scales linearly with T. Schemes with SIMD support (Vectorized BatchPIR, Piranha) are better for T in the hundreds/thousands.&#8201;[^36]
 - **Client-specific offline phase:** The 3.9 MB upload is tied to the client's secret keys, precluding anonymous / stateless access.

@@ -67,7 +67,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 **CRT decomposition:** q = alpha * beta where alpha, beta are 28-bit primes chosen as 2^i - 2^j + 1 with 2^i > 2^j > 2d for fast modular reduction. alpha = beta = 1 mod 2d ensures Z_alpha and Z_beta have subgroups of order 2d, enabling nega-cyclic NTT.&#8201;[^7]
 
-[^7]: Section 5.2 (p.27-28). CRT with AVX gives a factor of 2x speedup: four 32-bit-by-32-bit multiplications execute in the time of one 64-bit-by-64-bit multiplication.
+[^7]: Section 5.3 (p.34). CRT with AVX gives a factor of 2x speedup: four 32-bit-by-32-bit multiplications execute in the time of one 64-bit-by-64-bit multiplication.
 
 ---
 
@@ -326,7 +326,7 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 
 **Key takeaway:** Spiral simultaneously achieves the smallest query, highest rate, and highest throughput for moderate-to-large records. Its main limitation is larger public parameters (14--47 MB vs 1--5 MB for competitors). For streaming applications, SpiralStreamPack achieves 1.9 GB/s throughput -- 9.7x higher than FastPIR and only 2.9x slower than hardware-accelerated AES-based two-server PIR.&#8201;[^19]
 
-[^19]: Section 1 (p.2): "For streaming large records, we estimate the monetary cost of SpiralStreamPack to be only 1.9x greater than that of the no-privacy baseline where the client directly downloads the desired record."
+[^19]: Abstract (p.1): "For streaming large records, we estimate the monetary cost of SpiralStreamPack to be only 1.9x greater than that of the no-privacy baseline where the client directly downloads the desired record."
 
 ---
 

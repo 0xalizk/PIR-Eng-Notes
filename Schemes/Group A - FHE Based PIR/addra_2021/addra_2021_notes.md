@@ -37,7 +37,7 @@ Addra is the first system that hides voice-call metadata over *fully untrusted* 
 - **Two-hop message delivery:** Caller pushes message to server (1 hop); server answers callee's PIR query and pushes response (2nd hop). This is critical for low latency vs. Pung's log_2(n+1) round trips.&#8201;[^7]
 - **Cover traffic:** Devices not in a call still participate — they call themselves (query their own mailbox) and write encrypted random messages. This prevents traffic analysis from join/leave timing.&#8201;[^8]
 
-[^3]: Paper p.1, Introduction: "each hop in the communication infrastructure must not spend longer than this time period to process and forward the packet."
+[^3]: Paper p.1, Introduction: "each hop in the communication infrastructure must not spend longer than this time period to process and forward the packet, to avoid an unbounded packet build up."
 [^4]: Paper p.10: "For the master, we use a machine of type c5.24xlarge... For the workers, we use the compute-optimized machines of type c5.12xlarge."
 [^5]: Paper p.9: "the master receives CPIR queries from all devices and shards them across the workers."
 [^6]: Paper p.5: "our prototype runs a round every five minutes, and a subround every 480 ms."

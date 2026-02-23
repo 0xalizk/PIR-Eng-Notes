@@ -13,7 +13,7 @@
 | **Rounds (online)** | 1 (non-interactive: client sends query, server returns response) |
 | **Record-size regime** | Large (>=100 KB); scheme needs entry size above ~100 KB for amortization to dominate [^3] |
 
-[^1]: The PIR scheme uses a leveled variant of GSW without bootstrapping, hence only RLWE is needed (no circular security). See Section 5, p. 19: secret key chosen from error distribution, ring-LWE over R_Q. Circular security would be needed only for compressible *fully* homomorphic encryption via bootstrapping (Section 4, p. 10).
+[^1]: The PIR scheme uses a leveled variant of GSW without bootstrapping, hence only RLWE is needed (no circular security). See Section 5, p. 19: secret key chosen from error distribution, ring-LWE over R_Q. Circular security would be needed only for compressible *fully* homomorphic encryption via bootstrapping (Section 1, p. 2).
 
 [^2]: The noise analysis in both variants uses a heuristic independence assumption — treating noise terms as independent Gaussians — then bounds decryption failure via erfc. Section 5 (p. 21): erfc(28/sqrt(2)) < 2^{-570}. Appendix A (p. 32): erfc(20/sqrt(2)) < 2^{-293}, union-bounded over 9 * 2^{12} coefficients to < 2^{-277}.
 
@@ -276,7 +276,7 @@ The critical observation is that GSW ciphertexts and PVW/matrix ciphertexts can 
 
 [^25]: Section 4.2, pp. 11–12, specifically Equation (6).
 
-[^26]: Section 4.1, p. 10 ("Multiplying GSW ciphertexts by plaintext matrices"): "the 'noiseless ciphertext' M* has E' = 0, hence the term sigma * E' from above does not appear in the resulting noise term, no matter how large sigma is." This is exploited in PIR where the database values (large) multiply the query ciphertexts (bits).
+[^26]: Section 4.1, p. 11 ("Multiplying GSW ciphertexts by plaintext matrices"): "the 'noiseless ciphertext' M* has E' = 0, hence the term sigma * E' from above does not appear in the resulting noise term, no matter how large sigma is." This is exploited in PIR where the database values (large) multiply the query ciphertexts (bits).
 
 ### Variants
 
@@ -296,7 +296,7 @@ The critical observation is that GSW ciphertexts and PVW/matrix ciphertexts can 
 | Implementation | None (theory only) | Yes (SEAL-based) | None practical | Trivial |
 | Entry-size regime | Large (>= 100 KB) | Small-medium (optimized for 288 bytes) | Any | Any |
 
-[^27]: Section 1.2, p. 4: "the SealPIR results from [ACLS18, Fig. 9] indicate a rate of roughly 1/1000." SealPIR's rate can be improved for large entries but remains far below 1/2. (Footnote 5, p. 4.)
+[^27]: Section 1.1, p. 4: "the SealPIR results from [ACLS18, Fig. 9] indicate a rate of roughly 1/1000." SealPIR's rate can be improved for large entries but remains far below 1/2. (Footnote 5, p. 4.)
 
 [^28]: Section 1.1, p. 4: "SealPIR reports just over twenty cycles per database byte."
 

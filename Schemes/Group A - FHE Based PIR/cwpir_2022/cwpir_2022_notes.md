@@ -25,8 +25,8 @@
 Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the selection vector by receiving it from the client (encrypted, then expanded). This requires the selection vector to be over index space, making keyword PIR require extra rounds to first resolve a keyword to an index.&#8201;[^1] CwPIR takes a fundamentally different approach: the server *computes* the selection vector itself by evaluating an equality operator between the client's encrypted query and each database identifier. By encoding identifiers as constant-weight codewords (binary strings with fixed Hamming weight k), the equality check circuit has multiplicative depth O(log k) rather than O(log n) for the folklore binary equality operator.&#8201;[^2] This makes the equality-operator approach practical for the first time and naturally enables single-round keyword PIR since the server can compare the encrypted query against arbitrary keyword identifiers without resolving them to indices first.&#8201;[^3]
 
 [^1]: Chor et al. [15] reduce keyword PIR to index PIR using interactive protocols requiring extra rounds of communication. Ali et al. [4] use probabilistic hashing to reduce keyword PIR to index PIR. (Section 2.5, p. 5)
-[^2]: The arithmetic folklore equality operator for domain {0,1}^l has multiplicative depth 1 + ceil(log_2 l); the plain folklore operator has depth ceil(log_2 l). The constant-weight equality operator has multiplicative depth ceil(log_2 k), depending only on the Hamming weight k, not the code length m. (Table 3, p. 9; Section 3.1, p. 6)
-[^3]: "Constant-weight keyword PIR is the first practical, single-round solution for single-server keyword PIR." (Abstract, p. 1)
+[^2]: The arithmetic folklore equality operator for domain {0,1}^l has multiplicative depth 1 + ceil(log_2 l); the plain folklore operator has depth ceil(log_2 l). The plain constant-weight equality operator has multiplicative depth ceil(log_2 k); the arithmetic constant-weight operator has depth 1 + ceil(log_2 k). In both cases, depth depends only on the Hamming weight k, not the code length m. (Table 3, p. 9; Section 3.1, p. 6)
+[^3]: "constant-weight PIR is the first practical single-round solution to single-server keyword PIR." (Abstract, p. 1)
 
 ### Novel Primitives / Abstractions
 
@@ -147,7 +147,7 @@ Prior FHE-based PIR protocols (SealPIR, MulPIR) have the server acquire the sele
 | Multiplicative depth | ceil(log_2 k) (for equality operator)&#8201;[^23] | 1 (k=2), 2 (k=3 or 4) | -- |
 | Expansion factor (F) | 2 log q / log t (standard BFV) | Not explicitly stated; N=8192 default modulus | -- |
 
-[^21]: Section 2, p. 2: "for a multiplicative depth of d in the PIR protocol over a database with n possible identifiers, the representation used in constant-weight PIR has a size of O(d-th root of (k! * n))." For comparison, SealPIR and MulPIR use representations of size O(d * d-th root of n).
+[^21]: Section 2, p. 2: "for a multiplicative depth of d in the PIR protocol over a database with n possible identifiers, the representation used in constant-weight PIR has a size of O(d-th root of (d! * n))." For comparison, SealPIR and MulPIR use representations of size O(d * d-th root of n).
 [^22]: Table 6, p. 11. CwPIR: n*k*M + n*s*PM operations (excluding expansion).
 [^23]: Table 3, p. 9.
 

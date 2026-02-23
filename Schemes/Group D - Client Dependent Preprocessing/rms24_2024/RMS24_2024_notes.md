@@ -26,7 +26,7 @@
 
 [^2]: Section 3.1 (p.4): "We will describe our techniques on top of the partition-based hints because they offer advantages in compact hint storage and fast membership testing." The partition-based hint structure comes from TreePIR [22]. Backup hints for single-server replenishment originate from Corrigan-Gibbs et al. [9].
 
-[^3]: Section 1 (p.2): "Our main idea to address this leakage is for the client to additionally send a dummy subset of indices. The dummy subset contains one random index from each of the sqrt(N)/2 partitions that do not appear in the query subset."
+[^3]: Section 3.1 (p.4): "Our main idea to address this leakage is for the client to additionally send a dummy subset of indices. The dummy subset contains one random index from each of the sqrt(N)/2 partitions that do not appear in the query subset."
 
 [^4]: Section 5 (p.13): Piano PIR weakens the correctness guarantee and requires non-adversarial query sequences; publishing the permutation key enables an adversary to force queries into the same partition and cause correctness failure (paraphrase of discussion on p.13).
 
@@ -53,7 +53,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 [^8]: Section 3.6 (p.9): "The amortized cost of our two-server scheme only depends on the online phase and the hint replenishment step." The offline phase runs once. Each query costs O(1) response and O(sqrt(N)) server computation.
 
-[^9]: Section 3.4 (p.7): The client retrieves λ*sqrt(N) main hints and λ*sqrt(N) backup hints. Backup hints come in pairs; with pairs, the client can make up to λ*sqrt(N)/2 queries before needing to re-run the offline phase. The 0.4*λ*sqrt(N) figure used in Table 1 is a conservative estimate for the simpler non-paired strategy.
+[^9]: Section 3.4 (p.7): The client retrieves λ*sqrt(N) main hints and λ*sqrt(N) backup hints. Backup hints come in pairs; with pairs, the client can make up to λ*sqrt(N)/2 queries before needing to re-run the offline phase. The 0.4*λ*sqrt(N) figure used in Table 1 is a conservative estimate (the paired strategy achieves close to but fewer than 0.5*λ*sqrt(N)).
 
 ---
 

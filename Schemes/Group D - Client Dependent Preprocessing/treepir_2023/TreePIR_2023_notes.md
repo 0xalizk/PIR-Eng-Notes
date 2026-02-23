@@ -11,7 +11,7 @@
 | **Rounds (online)** | 1 (client sends one message to each server; each server responds)&#8201;[^4] |
 | **Record-size regime** | Parameterized (benchmarked at 1-bit, 32-byte, and 256-byte elements) |
 
-[^1]: Section 2.1 (p.6): Privacy is defined with respect to each server individually. The adversary controls one server and interacts with a simulator for the other. Non-collusion is required -- neither server learns the other's query share.
+[^1]: Section 2.1 (p.6): Privacy is defined with respect to each server individually (Definition 2.2). The adversary A acts as one server, while a simulator Sim replaces the client in the simulated experiment, running with no knowledge of the query index. Non-collusion is required -- neither server learns the other's query share.
 
 [^2]: Lemma 4.1 (p.21): The polylog-bandwidth variant replaces the last step (downloading sqrt(N) parities) with a single-server PIR by Dottling et al. (CRYPTO 2019), which relies on DDH. The base TreePIR scheme (Theorem 4.1) requires only OWF.
 
@@ -30,7 +30,7 @@
 | **Superseded by** | N/A (as of 2023; subsequent work includes Piano [Group D], SinglePass [Group D], Plinko [Group D]) |
 | **Concurrent work** | N/A |
 
-[^5]: Figure 1 (p.4): Comparison table shows TreePIR achieves O(sqrt(N) log N) server time, O(sqrt(N) log N) client storage, O(sqrt(N)) bandwidth from OWF; or O(sqrt(N) log N) server time, O(sqrt(N)) client storage, O(polylog N) bandwidth from DDH. The Shi et al. scheme has the big-O notation hiding very large security-parameter-dependent factors.
+[^5]: Figure 1 (p.4): Comparison table shows TreePIR achieves O(sqrt(N) log N) server time, O(sqrt(N) log N) client storage, O(sqrt(N)) bandwidth from OWF; or O(sqrt(N) log N) server time, O(sqrt(N)) client storage, O(polylog N) bandwidth from DDH. The Shi et al. scheme has the big-O notation hiding factors very large in the security parameter.
 
 ---
 
@@ -38,7 +38,7 @@
 
 TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear amortized server computation and sublinear bandwidth. The key insight is a new cryptographic primitive called a *weak privately puncturable PRF* (wpPRF), built from the GGM-tree PRF construction using only one-way functions. The wpPRF allows the client to construct pseudorandom sets that (1) have compact key representation (λ bits), (2) support private puncturing -- removing an element without revealing which element or even which "chunk" it belonged to, and (3) support efficient full evaluation -- enumerating all input-output pairs for every possible puncture guess in O(N log N) time by exploiting shared structure in the GGM tree. During the offline phase, the client sends M = λ * sqrt(N) wpPRF keys to server_0, which computes XOR parities of the corresponding pseudorandom sets. Online, the client punctures two keys (one fresh, one from its table) and sends the punctured keys to the two servers, which each compute sqrt(N) parity values. The client reconstructs the answer by XORing its stored parity with the server's response. This reduces PIR on N elements to PIR on sqrt(N) elements, which can be further resolved by downloading sqrt(N) values or recursing with a single-server PIR scheme.&#8201;[^6]
 
-[^6]: Section 4.1-4.2 (pp.14-18): The reduction from N to sqrt(N) is the core contribution. The wpPRF defines sets S = {i || F.Eval(k,i) : i in [sqrt(N)]}, each containing exactly one element per chunk of size sqrt(N). Puncturing at position x^l (the chunk identifier) produces a key that allows computing parities of the set minus the target element.
+[^6]: Section 4.1-4.2 (pp.14-18): The reduction from N to sqrt(N) is the core contribution. The wpPRF defines sets S = {i || F.Eval(k,i) : i in [sqrt(N)]}, each containing exactly one element for each interval of size sqrt(N) within [N]. Puncturing at position x^l (the chunk identifier) produces a key that allows computing parities of the set minus the target element.
 
 ---
 
@@ -59,9 +59,9 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 | **Efficient full evaluation** | Definition 3.4 (p.12): All N sets S_j = {(x, PEval(k_i, j, x)) : x in {0,1}^n, x != j} for all j in {0,1}^n can be enumerated in O(N log N) time total. Achieved because adjacent puncture guesses share most tree structure -- transitioning from S_j to S_{j+1} requires only O(2^h) re-evaluations where h is the height of the differing subtree.&#8201;[^12] |
 | **Relationship to prior primitives** | **Strictly weaker than privately puncturable PRFs** (which additionally guarantee correctness: PEval(k_x, x') = Eval(k, x') for all x' != x, regardless of whether the evaluator knows x). Privately puncturable PRFs require LWE with superpolynomial modulus + FHE [7,13], making them impractical. **NOT equivalent to DPFs** -- DPFs split a point function into two shares; wpPRFs puncture a PRF key. **Strictly stronger than standard (non-private) pPRFs** -- standard GGM pPRFs reveal the punctured point x as part of the key, and the punctured key also reveals the "chunk" (subtree) containing x.&#8201;[^13] |
 
-[^7]: Figure 5 (p.13): The construction. Puncture outputs the list of seeds not on the path to i, ordered left to right (as shown in Figure 3). PEval reconstructs the tree by placing the punctured key's seeds into positions as if j were the punctured point.
+[^7]: Figure 5 (p.13): The construction. Puncture outputs the list of seeds not on the path to i, ordered left to right (as shown in Figure 3, p.10). PEval computes the leaf node at position x of the tree reconstructed from the pair (j, k_i), where j is the guessed puncture point; it outputs y = G_x((j, k_i)).
 
-[^8]: Definition 3.2 (p.12): The privacy experiment gives the adversary k_{x_b} for adversary-chosen (x_0, x_1) and random bit b. Privacy holds because the punctured key is just an ordered array of log(N) random-looking strings (PRG security), independent of which point was punctured.
+[^8]: Definition 3.2 (p.12): The privacy experiment gives the adversary k_{x_b} for adversary-chosen (x_0, x_1) and random bit b. Privacy holds because the punctured key is just an ordered array of log(N) random-looking strings (PRG security), independent of which point was punctured (proof of Theorem 3.1, p.13).
 
 [^9]: Definition 3.3 (p.12): This is the key relaxation vs. standard privately puncturable PRFs. Standard correctness requires PEval(k_x, x') = Eval(k, x') for ALL x' != x, without needing to know x. Weak correctness only guarantees this when the correct puncture point is supplied as a guess.
 
@@ -69,9 +69,9 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 [^11]: Section 2.3 (p.7): GGM PRF evaluation requires n = log(N) sequential applications of G. The punctured key has size n * λ = log(N) * λ bits.
 
-[^12]: Section 3.1, proof of Theorem 3.1 (p.14): The enumeration time is sum_{h=1}^{n} (2^n / 2^h) * 2^h = n * 2^n = N log N. The first set S_{0^n} takes O(N log N) to compute from scratch; subsequent sets S_j are computed incrementally with O(2^h) operations where h is the height of the node separating j-1 and j.
+[^12]: Section 3.1, proof of Theorem 3.1 (p.14): The enumeration time is sum_{h=1}^{n} (2^n / 2^h) * 2^h = n * 2^n = N log N per pass. The paper states the whole process of evaluating every S_j takes time 2N log N (the first set S_{0^n} takes O(N log N) to compute from scratch, and the incremental transitions also total N log N). Subsequent sets S_j are computed incrementally with O(2^h) operations where h is the height of the node separating j-1 and j.
 
-[^13]: Section 3 (p.9): Standard GGM pPRF punctured key = (x, [sibling seeds]). The index x is explicitly included. Even without x, the structure reveals which subtree x is in. The wpPRF drops x from the key and outputs only the ordered sibling seeds, making the key look like log(N) independent random strings.
+[^13]: Section 3 (pp.9-10): Standard GGM pPRF punctured key = (x, [sibling seeds]). The index x is explicitly included and is needed for evaluation -- without revealing x, there is no way to evaluate the pPRF punctured key at the other points. The wpPRF drops x from the key and outputs only the ordered sibling seeds, making the key look like log(N) independent random strings.
 
 ---
 
@@ -85,7 +85,7 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 | **Key structure** | Per-client: M = λ * sqrt(N) independent wpPRF keys k_i in {0,1}^λ, plus stored parities. Server: holds only DB copies (no per-client persistent state). |
 | **Correctness condition** | Pr[query index x not covered by any of the M sets] <= (1 - 1/sqrt(N))^{λ*sqrt(N)} <= (1/e)^λ = negl(λ)&#8201;[^16] |
 
-[^14]: Section 4.3 (p.20-21): Lemma 4.1 states that assuming DDH is hard, TreePIR achieves polylog online bandwidth by recursing with the Dottling et al. single-server PIR scheme. Without DDH, the base TreePIR (Theorem 4.1) achieves O(sqrt(N)) bandwidth from OWF alone.
+[^14]: Section 4.3 (p.21): Lemma 4.1 states that assuming DDH is hard, TreePIR achieves polylog online bandwidth by recursing with the Dottling et al. (CRYPTO 2019) [19] single-server PIR scheme. The DDH assumption comes from this scheme [19] combined with [16]. Without DDH, the base TreePIR (Theorem 4.1) achieves O(sqrt(N)) bandwidth from OWF alone.
 
 [^15]: Section 5 (p.22): Implementation in 530 lines of C++ and 470 lines of Go. Source code at https://github.com/alazzaretti/treePIR.
 
@@ -102,7 +102,7 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 [^17]: Figure 6 (p.18): T = {T_j = (k_j, p_j) : j in [M]}, where M = λ * sqrt(N).
 
-[^18]: Section 4.1 (p.15): The set S contains each element in [N] with probability 1/sqrt(N), and contains exactly one element within each interval of size sqrt(N).
+[^18]: Section 4.1 (p.15): The set S will contain each element in [N] with probability 1/sqrt(N), and will contain exactly one element for each interval of size sqrt(N) within [N].
 
 [^19]: Figure 6, Answer phase (p.18): P_b = [phi_0, ..., phi_{sqrt(N)}], where phi_i = XOR_{j in S_i} DB[j] and S_i is reconstructed via PEval from the punctured key.
 
@@ -135,7 +135,7 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 [^21]: Figure 6 (p.18): Server_0 participates in both offline and online phases. Server_1 participates only online. However, Theorem 4.1 notes that privacy for server_0 follows symmetrically from the same arguments as for server_1.
 
-[^22]: Section 4.2 (pp.17-19): The privacy proof constructs a simulator Sim that samples a random key k and a random element alpha from [sqrt(N)], then outputs F.Puncture(k, alpha). Indistinguishability follows from security in puncturing (Definition 2.6) and privacy in puncturing (Definition 3.2).
+[^22]: Section 4.2 (pp.17-19): The privacy proof constructs a simulator Sim that runs k <- F.Gen(1^lambda), samples alpha uniformly from [sqrt(N)], and outputs q_sim <- F.Puncture(k, alpha). Indistinguishability follows from security in puncturing (Definition 2.6) and privacy in puncturing (Definition 3.2).
 
 [^23]: Definition 2.2 (p.6): Privacy is defined per-server, assuming servers do not collude. The privacy definition requires existence of a simulator Sim such that the server's view is indistinguishable from a simulation with no knowledge of x_t.
 
@@ -188,13 +188,13 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
-| Query size (to each server) | O(λ * log N) | ~2 KB (at N = 2^32)&#8201;[^29] | Online |
+| Query size (to each server) | O(λ * log N) | ~1 KB (at N = 2^32)&#8201;[^29] | Online |
 | Response size (per server) | O(sqrt(N) * w) | 16.6 KB (N=2^32, w=1 bit) | Online |
 | Server computation (each server) | O(sqrt(N) * log N) | ~1754 ms per server (amortized, N=2^32, w=1 bit)&#8201;[^30] | Online |
 | Client computation | O(sqrt(N)) probabilistic; O(sqrt(N)) deterministic with shift | <1 ms | Online |
 | Total online bandwidth | O(sqrt(N)) (base); O(polylog N) (with DDH recursion) | 16.6 KB (base, N=2^32, w=1); 50 KB (with SPIRAL) | Online |
 
-[^29]: Inferred: The punctured key consists of log(N) seeds of λ bits each. For N = 2^32 and λ = 128, this is 32 * 128 / 8 = 512 bytes per server, so ~1 KB total.
+[^29]: Inferred: The punctured key consists of log(N) seeds of λ bits each. For N = 2^32 and λ = 128, this is 32 * 128 / 8 = 512 bytes per server, so ~0.5 KB per server (~1 KB total for both servers).
 
 [^30]: Figure 7 (p.23): TreePIR amortized query time of 3508 ms over 2000 queries for N = 2^32 with 1-bit elements. This time includes both servers' computation (approximately 1754 ms per server).
 
@@ -259,7 +259,7 @@ Database: 2^22 elements of 256 bytes each (~1 GB).
 
 Query time amortized over 200 queries. The 89 ms is TreePIR's first-phase time; 61 ms is SPIRAL's time on the sqrt(N)-element sub-database.&#8201;[^36]
 
-[^36]: Figure 8 (p.24): TreePIR + SPIRAL achieves (89+61) = 150 ms, which is slightly slower than Checklist's 140 ms for this specific configuration, but uses 14.4x less bandwidth than PRP-PIR and has much less client storage than Checklist at larger scales.
+[^36]: Figure 8 (p.24): TreePIR + SPIRAL achieves (89+61) = 150 ms, which is slightly slower than Checklist's 140 ms for this specific configuration, but uses 14.4x less bandwidth than PRP-PIR (721 KB / 50 KB). At this benchmark size, both TreePIR and Checklist have similar client storage (67 MB vs 78 MB).
 
 #### TreePIR + SPIRAL (small elements, large DB)
 
@@ -342,7 +342,7 @@ Query time amortized over 2000 queries.&#8201;[^37]
 - **Efficient full evaluation via GGM tree sharing:** The observation that adjacent puncture guesses share GGM tree structure, enabling O(N log N) total evaluation instead of O(N^2), may be applicable to other constructions that enumerate over tree-structured PRF evaluations.
 - **Waterfall-based database updates (Section 5.3):** The layered subdatabase approach for supporting mutable databases is borrowed from oblivious RAM literature and is applicable to any client-preprocessing PIR scheme.
 
-[^45]: Appendix A.1 (p.27): The shift technique was previously used in PRP-PIR [15]. TreePIR adapts it by XORing the shift with the wpPRF evaluation: S_i = {v || (F.Eval(k_i, v) XOR s_i) : v in [sqrt(N)]}. Client query step 1 becomes: sample k', let s' = x^r XOR F.Eval(k', x^l), guaranteeing coverage with a single sample.
+[^45]: Appendix A.1 (p.27): This technique was used before in [15]. TreePIR adapts it by XORing the shift with the wpPRF evaluation: S_i = {v || (F.Eval(k_i, v) XOR s_i) : v in [sqrt(N)]}. Client query step 1 becomes: sample k', let s' = x^r XOR F.Eval(k', x^l), guaranteeing coverage with a single sample.
 
 ---
 

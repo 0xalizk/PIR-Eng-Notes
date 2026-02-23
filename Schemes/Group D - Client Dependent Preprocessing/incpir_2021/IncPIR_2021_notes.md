@@ -20,7 +20,7 @@
 | **Superseded by** | IncrementalPIR (2026) [Group C] addresses single-server incremental preprocessing for SimplePIR but in a fundamentally different model (LWE-based, not XOR/set-based) |
 | **Concurrent work** | Checklist [40] (Kogan and Corrigan-Gibbs, USENIX Security 2021) addresses additions via ORAM-inspired bucket splitting; fundamentally different approach |
 
-[^1]: Section 4.1 (p.5): "We start by describing the CK protocol and then we describe our approach to make its preprocessing incremental."
+[^1]: Section 4 (p.5): "We start by describing the CK protocol and then we describe our approach to make its preprocessing incremental."
 [^2]: Section 6.3 (p.11): "Appendix E discusses how to make the SACM OO-PIR scheme [51] incremental with similar high-level ideas as those presented here, but with vastly different concrete mechanisms."
 
 ### Core Idea
@@ -357,7 +357,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 - **Additions must be appended:** Insertions at arbitrary positions would change all subsequent indices, requiring full repreprocessing. Items can only be added to the end of the database.&#8201;[^20]
 - **Keyword PIR incompatibility:** Incremental preprocessing combined with keyword PIR (where clients query by keyword rather than index) remains an open problem because mutations may change keywords or add new keywords, disrupting the underlying search data structure.&#8201;[^52]
 
-[^51]: Section 1 (p.5): "our approach is not black-box. Instead, it requires exploiting the structure of the underlying OO-PIR protocol."
+[^51]: Section 3.4 (p.5): "our approach is not black-box. Instead, it requires exploiting the structure of the underlying OO-PIR protocol."
 [^52]: Section 9 (p.14): "it is unclear how to support incremental preprocessing and PIR-by-keywords given that mutations that changes the keywords of existing items or add new keywords would impact the underlying search data structure."
 
 ### Comparison with Prior Work

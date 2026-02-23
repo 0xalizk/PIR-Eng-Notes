@@ -136,7 +136,7 @@ All values from Table 5 (p. 13) for the 1MB database (5,000 elements of 288B) wi
 
 ### Complexity
 
-#### Core metrics — SealPIR variants and MulPIR (d=2, n=2^20, 288B entries)
+#### Core metrics — SealPIR variants and MulPIR (d=2, n=262,144, 288B entries)
 
 | Metric | SealPIR [5] | Optimized SealPIR | MulPIR (d=2) | Phase |
 |--------|------------|-------------------|-------------|-------|
@@ -163,7 +163,7 @@ Values from Table 3 (p. 12), n = 262,144 column (closest to 2^18); for n = 2^20 
 
 Values from Table 5 (p. 13), 1MB database row.&#8201;[^27]
 
-#### Asymptotic communication complexity (Table 2, p. 8)
+#### Asymptotic communication complexity (Table 2, p. 8; Gentry-Ramzan from Section 4 and Table 8, p. 20)
 
 | HE Type | Recursion d (1 <= d <= log n) | Recursion d = log n | Computation Cost |
 |---------|-------------------------------|---------------------|-----------------|
@@ -315,7 +315,7 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 
 1. **MulPIR computation vs communication**: MulPIR achieves dramatically better communication for large entries but requires larger parameters (N=8192 vs 2048) and costlier ciphertext multiplication, yielding approximately 2x higher server computation than SealPIR for 288B entries.&#8201;[^44]
 
-2. **Gentry-Ramzan prime generation bottleneck**: Each query requires generating fresh safe primes (Q_1, Q_2) of λ_GR bits, which takes 10-50 seconds on the client — impractical for latency-sensitive applications.&#8201;[^45]
+2. **Gentry-Ramzan prime generation bottleneck**: Each query requires generating fresh safe primes (Q_1, Q_2) of λ_GR bits, which takes 3-50 seconds on the client depending on the application — impractical for latency-sensitive applications.&#8201;[^45]
 
 3. **Recursion depth d=2 is optimal in practice**: For both SealPIR and MulPIR, d=3 does not improve communication or computation over d=2, because the upload already consists of a single ciphertext at d=2.&#8201;[^46]
 
@@ -369,10 +369,10 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 [^5]: Section 1.1 (p. 2): "We then present MulPIR, a PIR protocol additionally leveraging multiplicative homomorphism to implement the recursion steps in PIR... it introduces a meaningful tradeoff by significantly reducing communication, at the cost of an increased computational cost for the server."
 [^6]: Section 1.1 (p. 2-3): "We leverage a divide-and-conquer modular interpolation algorithm [7] that enables us to achieve computation complexity Õ(n log^2 n)... This enables a client-aided technique that allows us to improve the server's computation at the price of (small) additional work at the client."
 [^7]: Section 1.1 (p. 3): "we introduce new ways to handle PIR over sparse databases (keyword PIR), based on different hashing techniques."
-[^8]: Table 3 (p. 12): MulPIR (d=2) for n=262,144 shows upload 122 kB, download 122 kB — perfectly balanced communication.
+[^8]: Table 1 (p. 7): MulPIR (d=2) for n=2^20 shows upload 119 kB, download 119 kB — perfectly balanced communication.
 [^9]: Table 5 (p. 13): Gentry-Ramzan (1 generator) achieves 0.5 kB upload / 1.3 kB download for 5,000-element database — orders of magnitude less communication than any HE scheme.
 [^10]: Table 5 (p. 13): Client-Aided GR (50 generators) achieves lowest server cost at 0.0011 US cents for the 1MB database.
-[^11]: Section 6.1 (p. 11): "For SealPIR, we use the parameters of [5]: polynomials of dimension 2048 and a modulus of 60 bits, providing 115 bits of security. The plaintext modulus has a size of 12 bits (d=2) / 16 bits (d=3)."
+[^11]: Section 6.1 (p. 11): "For SealPIR, we use the parameters of [5]: polynomials of dimension 2048 and a modulus of 60 bits, providing 115 bits of security. The plaintext modulus has a size of 12 bits (d=2) / 16 bits (d=3)." The exact value t = 2^12 + 1 is stated in the Table 1 footnote (p. 7): "plaintext modulus t = 2^12 + 1."
 [^12]: Table 1 footnote (p. 7): "For MulPIR, we use a polynomial of dimension 8192 with 50 + 2 * 55 bit modulus, modulus switching to 50 bits, and plaintext modulus t = 2^20 + 2^19 + 2^17 + 2^16 + 2^14 + 1."
 [^13]: Section 3.1 (p. 6): "reduces the download size by approximately log_2(q)/(2 * log_2(t)); using SealPIR parameters and using modulus switching to a prime p approximately 2^25, this technique enables to reduce the download by a factor 60/25 = 2.4x."
 [^14]: Section 4.1 (p. 8), Equation (2): "E <= product(pi_i), and E = D_i mod pi_i for all i in [n]."
@@ -389,7 +389,7 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 [^25]: Section 5, Construction 1 (p. 10): "The server generates cuckoo hash functions using the data dependent key generation Cuckoo.KeyGen(D) and builds a cuckoo hash table for its sparse database."
 [^26]: Table 3 (p. 12): Communication and CPU costs of SealPIR and MulPIR for n elements of 288B.
 [^27]: Table 5 (p. 13): Communication and computation costs for PIR protocols on 1MB database (5,000 elements of 288B).
-[^28]: Table 2 (p. 8): "Communication-Computation Trade-Off of homomorphic encryption based PIR Protocols... This table aims at giving an insight on the overall trend but does not accurately reflect the costs."
+[^28]: Table 2 (p. 8): "Communication-Computation Trade-Off of homomorphic encryption based PIR Protocols... This table aims at giving an insight on the overall trend but does not accurately reflect the costs." The Gentry-Ramzan row is editorially assembled from Section 4 (p. 8-9) and Table 8 (p. 20), which lists GR baseline communication as 3*lambda_GR bits with computation of 2*n*pt multiplications of lambda_GR-bit numbers.
 [^29]: Table 1 (p. 7): For 2MB entries, SealPIR download is 200,294 kB vs MulPIR's 13,660 kB.
 [^30]: Section 6 (p. 11): "All our experiments are performed in a virtual machine with a Intel(R) Xeon(R) CPU E5-2695 v3 @ 2.30GHz and 128GB, running Debian. Monetary costs were computed using Google Cloud Platform prices [1], which at the time of writing were at one cent per CPU-hour and 8 cents per GB of internet traffic."
 [^31]: Table 3 (p. 12): MulPIR server cost 0.0036 vs SealPIR 0.0040 at n=2^20 with 288B entries.

@@ -313,7 +313,7 @@ Security: 128-bit, based on lattice-estimator [2] with correctness parameter del
 | Offline Runtime | 2.0 s | 2.4 s | 11 s | 36 s |
 | Online Runtime | 141 ms | **16 ms** | 56 ms | **40 ms** |
 
-InspiRING achieves 84% less key material than HintlessPIR and 76% less than CDKS. InspiRING (d=10) achieves 71% faster online time than CDKS (16 ms vs 56 ms); InspiRING (d=11) achieves 28% faster online time than CDKS (40 ms vs 56 ms), at the cost of a slower offline phase.&#8201;[^26]
+InspiRING achieves 84% less key material than CDKS and 76% less than HintlessPIR. InspiRING (d=10) achieves 71% faster online time than CDKS (16 ms vs 56 ms); InspiRING (d=11) achieves 28% faster online time than CDKS (40 ms vs 56 ms), at the cost of a slower offline phase.&#8201;[^26]
 
 [^26]: Section 7.4 (p.22): "InspiRING requires significantly smaller key material compared to existing work, specifically, 84%, 76%, and over 99% less key material than CDKS and HintlessPIR, respectively."
 

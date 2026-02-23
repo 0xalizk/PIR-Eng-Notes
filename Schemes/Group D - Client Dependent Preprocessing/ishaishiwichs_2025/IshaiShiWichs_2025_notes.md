@@ -54,7 +54,7 @@ A k-server preprocessing PIR scheme consists of:
 
 A relaxed model used in lower-bound proofs. Allows arbitrary preprocessing (DB_tilde, hint) <- Prep(1^λ, DB), a PIR protocol Pi between server (holding DB_tilde) and client (holding hint and t indices), and requires only computational security for the protocol transcript.&#8201;[^5]
 
-[^5]: Definition 1 (p.20-21): The (n,t)-PIR model relaxes standard preprocessing PIR in five ways: trusted preprocessing may produce an encoded database correlated with the hint; both parties may be arbitrarily stateful; queries are bounded by t; indices are chosen upfront; and security is only against outsiders seeing the protocol transcript.
+[^5]: Definition 1 (p.20-21): The (n,t)-PIR model relaxes standard preprocessing PIR in several ways (summarized from the Remarks on p.21): trusted preprocessing may produce an encoded database correlated with the hint; both parties may be arbitrarily stateful; queries are bounded by t; indices are chosen upfront; and security is only against outsiders seeing the protocol transcript.
 
 #### Database-oblivious (n,t)-PIR (Definition 3, p.25)
 
@@ -115,7 +115,7 @@ A database-oblivious scheme restricts Definition 1 so that: (1) the database is 
 | **Key structure** | Client's hint is a table of random cross-product sets with associated parities; no cryptographic keys |
 | **Correctness condition** | Pr[correct per query] >= 0.1 for a single instance; amplified to 1 - negl(n) via omega(log n) parallel repetition |
 
-[^10]: Section 4.2 (p.14): The base scheme achieves correctness probability >= 0.1 per query; amplification to 1 - negl(n) uses omega(log n) independent parallel instances sharing the same streaming pass.
+[^10]: Section 4.2/4.5 (p.14, 17-19): The base scheme achieves correctness probability >= 0.1 per query (derived in Section 4.5); amplification to 1 - negl(n) uses omega(log n) independent parallel instances sharing the same streaming pass.
 
 ### Key Data Structures
 
@@ -128,7 +128,7 @@ A database-oblivious scheme restricts Definition 1 so that: (1) the database is 
 
 [^12]: Section 4.2 (p.14): The client stores L = 20*sqrt(n) hints, each consisting of: (1) the set description (X, Y, Z), (2) parities of X x Y x Z and of all sub-cross-products formed by removing one element from one dimension.
 
-[^13]: Section 4.2 (p.15): Planar sets have size n^{1/3}; each hint has n^{1/6} planar sets per dimension (3 dimensions), enabling cumulative parity updates during streaming.
+[^13]: Section 4.2 (p.15): Planar sets have size n^{1/3}; each hint has an expected n^{1/6} planar sets per dimension (3 dimensions), enabling cumulative parity updates during streaming.
 
 ### Database Encoding
 
@@ -149,7 +149,7 @@ This construction adapts the Dvir-Gopi 2-server PIR [DG16] to a single-server pr
 | Answer | Server | Computes ans_2(DB, msg') | O(k) download | Per query |
 | Decode | Client | Outputs dec(st', res, res') | -- | Per query |
 
-[^14]: Section 3.1 (p.10-11): The generic construction piggybacks the next phase's preprocessing over the current phase's queries, with each phase covering t queries. The hint table consists of {msg_i, st_i, res_i} for i in [t].
+[^14]: Section 3.1 (p.10-11): The generic construction executes preprocessing upfront, then piggybacks the next phase's preprocessing over the current phase's queries, with each phase covering t queries. The hint table consists of {msg_i, st_i, res_i} for i in [t].
 
 #### Construction 2: Sublinear Server Computation (Theorems 4.3/4.4/A.3)
 
@@ -175,7 +175,7 @@ This is the paper's main novel construction using cross-product sets.
 | Answer | Right server | Computes parities as in single-server scheme | O(n^{2/3}) server computation | Per query |
 | Decode | Client | Reconstruction as in single-server scheme | -- | Per query |
 
-[^16]: Appendix B (p.38-39): In the 2-server variant, preprocessing is performed with the left server and queries with the right server, yielding O(n^{1/3}) online bandwidth per Table 1 (p.3).
+[^16]: Appendix B / Theorem B.1 (p.38-39): In the 2-server variant, preprocessing is performed with the left server and queries with the right server, yielding O_tilde(n^{1/3}) online bandwidth per Theorem 1.5 (p.5).
 
 ### Reconstruction Algorithm (Section 4.1)
 
@@ -215,7 +215,7 @@ Given set S = X x Y x Z and point (x,y,z) in S, Resample(S, (x,y,z)) produces S'
 | **Adaptive vs non-adaptive** | Warmup (Theorem 4.3): non-adaptive only. Full scheme (Theorem 4.4/A.3): adaptive correctness via hint-specific permutations |
 | **Query model restrictions** | Warmup: bounded to Q = sqrt(n)/10 random distinct queries per window. Full scheme (Appendix A): unbounded arbitrary queries via pipelining |
 
-[^19]: Section 4.5 (p.17-19): The probability of failing to find a good match is at most 1/e^{20} + (1 - 1/e^{20}) * 0.5 <= 0.6 using the birthday bound on hint containment and Markov inequality on the number of good hints.
+[^19]: Section 4.5 (p.17-19): The probability of failing to find a good match is at most 1/e^{20} + (1 - 1/e^{20}) * 0.5 <= 0.6 using an independent-trial bound on hint containment and Markov inequality on the number of good hints.
 
 [^20]: Section 4.2 (p.14): The base correctness probability per instance is >= 0.1; running omega(log n) instances in parallel amplifies to 1 - negl(n).
 
@@ -279,7 +279,7 @@ The key property: for distinct points v, v', if (x,y,z) = pi_r(v) and (x',y',z')
 | **Number of DB passes** | 1 |
 | **Hint refresh mechanism** | Pipelining (next window's preprocessing piggybacked on current window's queries) |
 
-[^26]: Section 4.2 (p.15): The preprocessing algorithm proceeds in batches of n^{2/3} bits; at any time the client only stores the current batch plus O(n^{2/3}) set descriptions.
+[^26]: Section 4.2 (p.15): The preprocessing algorithm proceeds in batches of n^{2/3} bits; at any time the client requires only O(n^{2/3}) total space (covering the current batch and set descriptions).
 
 #### Amortized Cost Per Query (Construction 2, single instance)
 
@@ -364,7 +364,7 @@ The lower bound extends along several dimensions:
 
 The paper identifies an explicit adaptive correctness attack against Piano [ZPSZ24] and Ghoshal et al. [GZS24a]. These schemes use a single public PRP to permute database indices for load balancing, with O_tilde(1) replacement entries per chunk. The attack: after observing the PRP, adaptively choose sqrt(n) queries that all land in the same chunk, exhausting its replacement entries and causing correctness failure.&#8201;[^36]
 
-[^36]: Section 1.2-1.3 (p.7-8): The attack exploits that Piano's load balancing uses a public PRP with O_tilde(1) replacement entries per chunk; choosing all queries in one chunk breaks correctness.
+[^36]: Section 1.3 (p.7-8): The attack exploits that Piano's load balancing uses a public PRP with O_tilde(1) replacement entries per chunk; choosing all queries in one chunk breaks correctness.
 
 ### Application Scenarios
 

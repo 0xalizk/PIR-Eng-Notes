@@ -448,7 +448,7 @@ Private packet sniffer filtering traffic by source IP:&#8201;[^45]
 
 [^37]: p. 14, Figure 6 -- "User-perceived throughput of XPIR streaming static data." Log-log plot. "this line is pretty close to the straight line defined by 15/n Gbps."
 
-[^38]: p. 15, Section 4, "Medium Access Issues" -- "OCZ Vertex 460 SSD (4Gbit/s access)"; databases up to 10 Gbits in RAM, larger chunked.
+[^38]: p. 13, Section 4, "Experimental setting" -- "OCZ Vertex 460 SSD (4Gbit/s access)"; p. 15, "Medium Access Issues" -- databases up to 10 Gbits in RAM, larger chunked via SSD.
 
 [^39]: p. 14, Figure 6 caption -- "Performance on a server with a better processor (e.g. ten-core Xeon E7-4870) roughly doubles and caps at that level as RAM bandwidth is saturated."
 

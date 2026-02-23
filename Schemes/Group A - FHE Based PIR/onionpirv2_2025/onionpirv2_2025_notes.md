@@ -110,7 +110,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 | Packed query ciphertext | BFV | 16 KB (n=2048) / 64 KB (n=4096) | Contains N_0 initial-dim indicators + l(d-1) binary selection bits, packed into coefficients&#8201;[^13] |
 | Pseudorandom seed | PRG seed | ~256 bits | Server expands to generate the random component (a) of the BFV ciphertext. Halves request size.&#8201;[^14] |
 
-[^13]: §3.3, p.5: "A BFV ciphertext in our implementation has n = 2048 or n = 4096 plaintext slots. With N_0 = 512 and l = 5, we can pack all the query bits into a single BFV ciphertext."
+[^13]: §3.3, p.6: "A BFV ciphertext in our implementation has n = 2048 or n = 4096 plaintext slots. With N_0 = 512 and l = 5, we can pack all the query bits into a single BFV ciphertext." Note: "plaintext slots" here refers to polynomial coefficient positions, not SIMD batching slots — OnionPIR packs values into individual coefficients.
 [^14]: §3.3, p.8: "Recall that a BFV ciphertext consists of two components, and one of them is sampled uniformly randomly from R mod q. So, the client can generate it pseudorandomly from a short random seed and send the seed to the server."
 
 ### Correctness Analysis

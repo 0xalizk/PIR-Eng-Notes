@@ -378,7 +378,7 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 
 [^36]: Section 3.1 (p.8): "We implement modulus switching before first-dimensional folding. This optimization significantly reduces computational overhead for first-dimensional folding while incurring negligible additional error."
 
-[^37]: Section 4.6 (p.15): The homomorphic repacking algorithm "introduces only logarithmic noise variance, making it suitable for large-scale ciphertext repacking scenarios."
+[^37]: Section 1.1 (p.4): The homomorphic repacking algorithm "introduces only logarithmic noise variance, making it suitable for large-scale ciphertext repacking scenarios."
 
 ### Implementation Notes
 

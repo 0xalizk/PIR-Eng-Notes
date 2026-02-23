@@ -104,7 +104,7 @@ HintlessPIR eliminates the database-dependent client hint from SimplePIR by repl
 
 [^20]: Section 7.2 (p.27): "For large database records, we follow the suggestion in [34] to encode each record using d > 1 LWE plaintext elements and vertically stack them in a column of the database matrix DB."
 [^21]: Lemma 7 (p.24): "Server Long-term Storage: knN(ell + 1) elements of Z_q and sqrt(m) * N elements of Z_Q."
-[^22]: Section 7.2 (p.27): "a NTTlessPIR query is 323KB (which includes two RLWE ciphertexts and a compressed rotation key)."
+[^22]: Section 7.2 (p.27): "a NTTlessPIR query is 323KB (which includes two compressed ciphertexts and a compressed rotation key)."
 
 ### Database Encoding
 

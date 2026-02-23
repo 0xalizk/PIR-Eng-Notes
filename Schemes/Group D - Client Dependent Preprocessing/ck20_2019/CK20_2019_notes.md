@@ -20,14 +20,14 @@
 | **Superseded by** | Piano (2024), Plinko (2024), TreePIR (2023), and other Group D schemes improve on practical aspects (streaming preprocessing, concrete efficiency), but CK20 remains the foundational theoretical result for sublinear-online PIR without extra server storage. |
 | **Concurrent work** | BLW17 (privately constrained PRFs for offline/online PIR with linear online time); PPY18 (private stateful information retrieval with sublinear public-key operations but linear online time) |
 
-[^1]: Abstract (p.1): "We present the first protocols for private information retrieval that allow fast (sublinear-time) database lookups without increasing the server-side storage requirements."
+[^1]: Abstract: "We present the first protocols for private information retrieval that allow fast (sublinear-time) database lookups without increasing the server-side storage requirements."
 
 ### Core Idea
 
 CK20 presents the first PIR protocols with *sublinear* online server time while requiring *no extra server storage* beyond the database itself. Prior work either required the server to scan the entire database per query (Omega(n) time) or required the server to store a blowup of the database in encoded form.&#8201;[^2] CK20 achieves this by introducing a new cryptographic primitive called a *puncturable pseudorandom set*, which allows the client to compactly represent a pseudorandom subset S of the database that can be "punctured" at any element to hide the punctured element's identity. In the offline phase, the server precomputes parities of shifted versions of S; in the online phase, the client sends a punctured set key, and the server computes the parity of the remaining elements in sublinear time. A lower bound (Theorem 23) proves these constructions achieve the optimal communication-time tradeoff (up to polylog factors) for PIR schemes where the server stores the database unencoded.&#8201;[^3]
 
 [^2]: Section 1 (p.2): "In particular, in all existing PIR schemes, the work at the servers grows linearly with the database size."
-[^3]: Section 6 (p.28): "(C+1)(T+1) = Omega-tilde(n)" for any offline/online PIR scheme with C bits of offline communication and T online server probes.
+[^3]: Section 6 (p.28): "(C+1)(T+1) = Omega-tilde(n)" for any offline/online PIR scheme where the client downloads C bits in the offline phase and the online server probes T database bits.
 
 ### Formal Definitions
 
@@ -87,16 +87,16 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 | **Security definition** | Game 1 (p.14): Given a punctured key sk_p, the adversary guesses the punctured element x*. The guessing advantage is PSAdv\[A, Psi\](λ, n) := Pr\[A wins\] - 1/(n - s(n) + 1). A puncturable pseudorandom set is *computationally secure* if PSAdv <= negl(λ), and *perfectly secure* if PSAdv = 0 for all unbounded adversaries.&#8201;[^11] |
 | **Correctness definition** | With probability 1 over Gen: (1) S in binom([n], s(n)), i.e., S is a valid s(n)-subset, and (2) for all i in S, Eval(Punc(sk, i)) = S \ {i}.&#8201;[^12] |
 | **Purpose** | Compactly represent pseudorandom subsets of the database with the ability to privately puncture — enabling the online query to hide the target index by sending only a short punctured key instead of the full set |
-| **Built from** | Three constructions provided with increasing compactness: (1) Fact 2: Perfectly secure with linear-size keys (trivially store the set). (2) Theorem 3 / Construction 4: From puncturable PRFs (GGM-tree PRF from OWF), with keys of length O(λ log n) and punctured keys of length O(λ log n). (3) Theorem 7: From PRPs, with keys of length kappa(λ, n) and punctured keys of length s * O(log n), plus fast membership test InSet.&#8201;[^13] |
+| **Built from** | Three constructions provided with increasing compactness: (1) Fact 2: Perfectly secure with linear-size keys (trivially store the set). (2) Theorem 3 / Construction 4: From puncturable PRFs, with keys of length kappa(λ, n) + O(log n) and punctured keys of length kappa_p(λ, n) + O(log n); instantiated with the GGM-tree PRF (Corollary 6), this gives keys of length O(λ log n) and punctured keys of length O(λ log n). (3) Theorem 7: From PRPs, with keys of length kappa(λ, n) and punctured keys of length s * O(log n), plus fast membership test InSet.&#8201;[^13] |
 | **Standalone complexity** | Gen: O(s(n)) * poly(λ, log n). Eval: O(s(n)) * poly(λ, log n). Punc: O(s(n)) * poly(λ, log n). InSet (PRP construction only): poly(λ, log n).&#8201;[^14] |
 | **Relationship to prior primitives** | Analogous to puncturable PRFs but for *sets* rather than *functions*. A puncturable PRF key allows evaluating f at all points except x*; a puncturable pseudorandom set key allows enumerating all elements of S except x*. The punctured key also hides x*. Not equivalent to DPFs: the left key can be generated before the index i is chosen, which standard DPFs cannot achieve.&#8201;[^15] |
 
-[^10]: Section 2.1 (p.13): Formal definition of puncturable pseudorandom sets. Section 2.3 (p.16): GenWith and Shift extensions.
+[^10]: Section 2.1 (p.13): Formal definition of puncturable pseudorandom sets (for set size s with s(n) <= n). Section 2.3 (p.16): GenWith and Shift extensions.
 [^11]: Game 1 (p.14): Security game for puncturable pseudorandom sets.
 [^12]: Section 2.1 (p.13): Correctness requirements.
 [^13]: Fact 2 (p.14), Theorem 3 / Construction 4 (p.14-15), Theorem 7 (p.15-16): Three constructions of puncturable pseudorandom sets.
-[^14]: Section B.2 (p.39): Efficiency analysis of Construction 4 from puncturable PRF.
-[^15]: Section 2 (p.12-13): "A puncturable pseudorandom set is very closely related to a puncturable pseudorandom function."
+[^14]: Section B.2 (p.39): Proof of Theorem 3 (includes efficiency analysis of Construction 4 from puncturable PRF).
+[^15]: Section 2 (p.12-13): "A puncturable pseudorandom set is very closely related to a puncturable pseudorandom function ('puncturable PRF')."
 
 #### Sparse Distributed Point Functions (Appendix G)
 
@@ -108,13 +108,13 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 | **Security definition** | The right key k_right is computationally (or statistically) indistinguishable from a simulated key Sim_right(1^λ, n), hiding the special index i.&#8201;[^17] |
 | **Correctness definition** | With high probability: Eval((K_left)_j) + Eval(k_right) = e_i (the unit vector at position i).&#8201;[^18] |
 | **Purpose** | Alternative lens for viewing CK20's PIR constructions — the left keys are generated offline (independent of i), and the right key is sparse (non-zero in only s(n) positions), enabling sublinear Answer computation |
-| **Built from** | CK20's puncturable pseudorandom sets directly imply sparse DPFs. Standard DPFs (GI14) cannot achieve sparsity on both sides simultaneously (this would violate the Omega(n) server-time lower bound of BIM04).&#8201;[^19] |
+| **Built from** | CK20's puncturable pseudorandom sets directly imply sparse DPFs. Standard DPFs [GI14, BGI15, BGI16] cannot achieve sparsity on both sides simultaneously (this would violate the Omega(n) server-time lower bound of BIM04).&#8201;[^19] |
 | **Relationship to prior primitives** | A relaxation of standard DPFs: in standard DPFs, both keys evaluate to dense vectors; in sparse DPFs, the right key evaluates to a sparse vector, but the left key family must be generated before the index is chosen.&#8201;[^20] |
 
 [^16]: Appendix G (p.68): Formal definition of sparse DPFs.
 [^17]: Appendix G (p.68): Security property of sparse DPFs.
 [^18]: Appendix G (p.68): Correctness of sparse DPFs.
-[^19]: Appendix G (p.67): "Unfortunately, such a construction is impossible" (both sides sparse), citing BIM04.
+[^19]: Appendix G (p.66-67): DPFs referenced via [GI14, BGI15, BGI16]. "Unfortunately, such a construction is impossible" (both sides sparse), citing BIM04.
 [^20]: Appendix G (p.67): Discussion of the relaxation from standard DPFs to sparse DPFs.
 
 ### Cryptographic Foundation
@@ -130,7 +130,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 ### Key Data Structures
 
 - **Database:** x in {0,1}^n stored in unmodified form on both servers (two-server) or the single server. No encoding, no extra storage.
-- **Client hint (single-query):** A set key sk in K, shift vector delta = (delta_1, ..., delta_m) in [n]^m, and parity bits h = (h_1, ..., h_m) in {0,1}^m, where m = (n/s) log n. Total client storage: O(λ * kappa + (λ * n / s(n)) * log^2 n) bits.&#8201;[^22]
+- **Client hint (single-query):** A set key sk in K, shift vector delta = (delta_1, ..., delta_m) in [n]^m, and parity bits h = (h_1, ..., h_m) in {0,1}^m, where m = (n/s) log n. Total client storage: O(λ * |kappa| + (λ * n / s(n)) * log^2 n) bits, where |kappa| denotes the key length.&#8201;[^22]
 - **Client hint (multi-query):** m = (2n/s) log n independent set keys (sk_1, ..., sk_m) in K^m plus m parity bits. Total storage: Õ_λ(n^{1/2}) bits with s = sqrt(n).&#8201;[^23]
 
 [^22]: Appendix C.2 (p.50): Client storage claim for the single-query scheme.
@@ -207,7 +207,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 
 [^26]: Appendix C.2 (p.49): Failure probability analysis of Construction 16.
 [^27]: Appendix C.2 (p.49-50): Amplification via λ parallel repetitions.
-[^28]: Appendix D.2 (p.57): Multi-query failure probability via union bound.
+[^28]: Appendix D.2 (p.57-58): Multi-query failure probability via union bound (analysis begins p.57, T/2^lambda result on p.58).
 [^29]: Appendix C.2 (p.49-50): "By running λ instances of the scheme in parallel, using independent randomness for each instance, we can drive the overall failure probability (when the puncturable pseudorandom set is perfectly secure) to 2^{-λ}."
 
 ### Complexity
@@ -228,7 +228,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 | Offline server computation | Õ_λ(n) | N/A (no implementation) | Offline (per-query for single-query; once for multi-query) |
 | Offline communication (total) | O(λ * sqrt(n) * log^2 n) [Thm 11] / O(λ * sqrt(n) * log n) [Thm 14] | N/A (no implementation) | Offline |
 | Online communication (total) | O(λ * sqrt(n) * log n) [Thm 11] / O(λ^2 * log n) [Thm 14] | N/A (no implementation) | Online |
-| Client persistent storage | O(λ * kappa + (λ * n/s(n)) * log^2 n) bits | N/A (no implementation) | Between offline and online |
+| Client persistent storage | O(λ * |kappa| + (λ * n/s(n)) * log^2 n) bits | N/A (no implementation) | Between offline and online |
 | Server extra storage | **0** (database stored in unmodified form) | 0 | Persistent |
 
 [^30]: Theorem 11 (p.18) and Theorem 14 (p.19): Main complexity results for two-server constructions.
@@ -271,7 +271,7 @@ No implementation. Analytical estimates:
 - Offline communication: O(λ * sqrt(n) * log n) bits
 - Online communication: O(λ^2 * log n) bits
 - Online server time: sqrt(n) * poly(λ, log n)
-- Client storage: O(λ * kappa + λ * sqrt(n) * log^2 n) bits, where kappa = O(λ) (PRF key length)
+- Client storage: O(λ * |kappa| + λ * sqrt(n) * log^2 n) bits, where |kappa| = O(λ) (PRF key length)
 
 **Remark 12 (Concrete efficiency, p.18):** The poly(λ, log n) factors hidden in Õ notation can be made as small as O(λ * log n) with careful implementation.&#8201;[^37]
 
@@ -305,7 +305,7 @@ Table 2 in the paper provides a comprehensive comparison. Key entries for CK20's
 
 | Metric | Thm 11 (2-server, stat.) | Thm 14 (2-server, comp.) | Thm 17 (2-server, multi-query) | Thm 20 (1-server, LHE) | Thm 22 (1-server, FHE) | BIM04 (2-server, encoded DB) | DIO01 (extra storage) |
 |--------|--------------------------|--------------------------|-------------------------------|------------------------|------------------------|-----------------------------|-----------------------|
-| Assumption | None | OWF | None | Lin. hom. enc. | FHE | None | OWF |
+| Assumption | None | OWF | OWF | Lin. hom. enc. | FHE | None | OWF |
 | Offline comm | n^{1/2} | n^{1/2} | n^{1/2}/q | n^{2/3} | n^{1/2} | 0 | 0 |
 | Online server time | n^{1/2} | n^{1/2} | n^{1/2} | n^{2/3} | n^{1/2} | n^{0.6} | log n |
 | Online comm | n^{1/2} | log n | n^{1/2} | n^{1/3} | n^{1/2} | n^{0.6} | log n |

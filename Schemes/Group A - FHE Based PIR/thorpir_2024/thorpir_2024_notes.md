@@ -88,12 +88,12 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ### Key Data Structures
 
-- **Database encoding**: DB in {0,1}^N split into K = N/Q partitions db_1,...,db_K, each of size K = 2^20 elements. Elements addressed as tuples (q,k) in [Q] x [K].&#8201;[^8]
+- **Database encoding**: DB in {0,1}^N split into Q partitions db_1,...,db_Q, each of size K = N/Q elements. Elements addressed as tuples (q,k) in [Q] x [K].&#8201;[^8]
 - **Hints**: K = N/Q XOR-parity hints h_1,...,h_K where h_j = XOR_{i in [Q]} db_i[tau_i(j)] for Q Thorp shuffle permutations tau_1,...,tau_Q.
 - **Client state (st)**: Hints H = (h_1,...,h_K), per-query Used dictionaries (Used_i for i in [Q]), and Thorp shuffle seeds (s_1,...,s_Q). Total storage: O(N/Q + T*Q) = 377 MB for benchmark parameters.
 - **USED dictionaries**: Track which partition indices have been queried for each permutation, enabling dummy-query resampling for privacy.
 
-[^8]: With N = 2^30 entries of 360 bytes = 2880 bits each, and Q = 2^10, each of the K = 2^20 partitions contains Q = 2^10 elements. Each BFV ciphertext can hold D = 32768 slots, so 2880/3 = 960 ciphertexts per partition (3 bits per slot).
+[^8]: With N = 2^30 entries of 360 bytes = 2880 bits each, and Q = 2^10, there are Q = 2^10 partitions each containing K = 2^20 elements. Each BFV ciphertext can hold D = 32768 slots, so 2880/3 = 960 ciphertexts per partition (3 bits per slot).
 
 ---
 

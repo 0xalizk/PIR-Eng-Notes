@@ -160,9 +160,9 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 | Client query computation | O(1) (single vector add) | 0.34 ms | Online |
 | Client output computation | O(omega) | 0.43 ms | Online |
 | Response overhead | < 3.6x | 3.556x (over 1 KB element) | -- |
-| Throughput | O(m * w / server_time) | ~1.27 GB/s | Online[^throughput] |
+| Throughput | O(m * w / server_time) | ~1.21 GB/s | Online[^throughput] |
 
-[^throughput]: Throughput from Table 7 (p. 26): for 2^20 x 256B DB, FrodoPIR achieves 1.56 GB/s on c5n.2xlarge. For 1 KB elements, derived from server response time of 825 ms processing a 1 GB DB.
+[^throughput]: Throughput from Table 7 (p. 26): for 2^20 x 256B DB, FrodoPIR achieves 1.56 GB/s on c5n.2xlarge. For 1 KB elements, derived from server response time of 825.37 ms processing a 1 GB DB (1 GB / 0.825 s ≈ 1.21 GB/s).
 
 #### Preprocessing metrics
 
@@ -254,7 +254,7 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 - **Certificate revocation (OCSP):** Replace OCSP queries that reveal certificate identity to CAs (Section 7.1, p. 27-28).
 - **PIR for streaming:** Sharding enables chunk-based private retrieval of large data (video); FrodoPIR can serve as a building block (Section 7.1, p. 28).
 
-[^safebrowsing]: Appendix B (p. 35-36) provides a detailed analysis. Current SafeBrowsing: browser stores a compressed probabilistic data structure locally (described as "8x smaller" than the >90 MB blocklist), queries API on hits. With FrodoPIR: offline download of ~6 MB of public parameters, then per-query cost of a single PIR interaction with ~3.2 KB response.
+[^safebrowsing]: Appendix B (p. 35-38) provides a detailed analysis. Current SafeBrowsing: browser stores a compressed probabilistic data structure locally (described as "8x smaller" than the >90 MB blocklist), queries API on hits. With FrodoPIR (SafeBrowsing-specific config: w = 256 bits, m = 2^18 per shard, rho = 2^10, s = 16 shards): offline download of 180 KB per shard (~2.81 MB total for 16 shards), then per-query cost of a single PIR interaction with 0.1 KB response per shard (Table 8, p. 38).
 
 ### Deployment Considerations
 
@@ -268,7 +268,7 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^update]: Section 5.4, p. 17. With s shards, updating one shard requires only 1/(kappa * s) of the full DB to be reprocessed and re-downloaded. For large DBs, this fraction is very small.
 
-[^shard]: Section 5.4, p. 16-17. Sharding also addresses RAM constraints: the t2.2xlarge instance cannot process m = 2^24 in a single instance, but 16 shards of 2^20 elements each would work.
+[^shard]: Section 5.4, p. 16-17 (general sharding discussion) and Section 6.2, p. 21 (specific example). Sharding also addresses RAM constraints: the t2.2xlarge instance cannot process m = 2^24 in a single instance, but 16 shards of 2^20 elements each would work (Section 6.2, p. 21).
 
 [^rotation]: Section 5.2, p. 15. The bound ell = 2^52 queries is set conservatively. The concrete security is λ = nu - log(ell) via Corollary 1 (p. 10). Less conservative analyses (Appendix C) suggest the number of queries may not significantly impact security.
 

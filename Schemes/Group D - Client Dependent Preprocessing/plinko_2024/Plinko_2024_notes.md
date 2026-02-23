@@ -161,7 +161,7 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 [^26]: Theorem 5.3 (p.20): "Each online query uses Õ(n/r) bits of communication."
 
-[^27]: Theorem 5.3 (p.20): Each online query runs in Õ(n/r) time (paraphrase; the theorem does not explicitly break down the computation as "n/r parities per block").
+[^27]: Theorem 5.3 (p.20): "Each online query runs in Õ(n/r) time." Note: the theorem states total (client + server) query time; server-specific Õ(n/r) is inferred from the server computing one parity per block across n/r blocks.
 
 [^28]: Section 5.2, "Efficiency" (p.23): "As the first step, the client searches for a hint containing the query index x using our iPRF construction... the client's query time becomes Õ(n/r) with the main cost coming from enumerating the n/r offsets."
 
@@ -210,9 +210,9 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 [^36]: Section 5.2, "Update Algorithm" (p.22): "To update an x-th entry of the database from u to u', the server just needs to send (x, u XOR u') to the client."
 
-[^37]: Section 5.2, "Additions and Deletions" (p.9): "To delete, we can overwrite elements with random information or a canonical 'deleted' value."
+[^37]: Section 1, "Additions and Deletions" (p.9): "To delete, we can overwrite elements with random information or a canonical 'deleted' value."
 
-[^38]: Section 5.2, "Additions and Deletions" (p.9): "One can also consider the more general keyword-PIR (key-value) where it makes sense to add/delete new entries. A standard cuckoo-hashing technique (see [ZPZS24, ALP+21]) can reduce keyword-PIR to standard PIR."
+[^38]: Section 1, "Additions and Deletions" (p.9): "One can also consider the more general keyword-PIR (key-value) where it makes sense to add/delete new entries. A standard cuckoo-hashing technique (see [ZPZS24, ALP+21]) can reduce keyword-PIR to standard PIR."
 
 ### Mutation Model
 

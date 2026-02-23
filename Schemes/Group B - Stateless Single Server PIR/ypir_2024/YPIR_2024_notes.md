@@ -37,7 +37,7 @@ YPIR eliminates the offline hint download required by SimplePIR/DoublePIR by com
 YPIR+SP applies the CDKS packing to the SimplePIR output (an entire column of the database) rather than the DoublePIR output, naturally encoding large records.&#8201;[^3] For large records (32--64 KB), YPIR+SP achieves 7--14x smaller responses than HintlessPIR with similar query size and only 5% less throughput.&#8201;[^4]
 
 [^3]: Section 4.6 (p.28): "We consider a variant of YPIR where we apply the LWE-to-RLWE packing procedure to the SimplePIR output rather than the DoublePIR output."
-[^4]: Table 7 (p.28): YPIR+SP achieves 444 KB download vs. 724 KB for HintlessPIR at 32 GB x 64 KB records.
+[^4]: Table 7 (p.28): YPIR+SP achieves 444 KB download vs. 3.2 MB for HintlessPIR at 32 GB x 64 KB records (SimplePIR is 724 KB).
 
 ### Cryptographic Foundation
 
@@ -242,7 +242,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | Offline Compute | -- | 2012 ms | -- | 1029 ms |
 | Online Compute | 594 ms | 141 ms | 340 ms | 52 ms |
 
-[^27]: Table 5 (p.25): CDKS approach with preprocessing achieves 7.5x smaller output than HintlessPIR, 15x higher rate, and 2.7x faster total computation.
+[^27]: Table 5 (p.25): CDKS approach with preprocessing achieves 7.5x smaller output than HintlessPIR, 15x higher rate, and 2.7x faster online computation.
 
 ### Application Scenarios
 

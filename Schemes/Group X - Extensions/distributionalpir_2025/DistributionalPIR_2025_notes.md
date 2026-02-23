@@ -296,13 +296,13 @@ Where Q and R abbreviate the full expected communication and runtime expressions
 [^13]: Experiment A.1, Section A.1.1 (p. 18): Formal security experiment defining DistAdv[A, Pi] = |Pr[Sec_Pi(A, 0) = 1] - Pr[Sec_Pi(A, 1) = 1]|.
 [^14]: Construction 3.1 / Construction B.7, Dist.Query (p. 5, 23): The routing bit b is sampled as Bernoulli(kappa_worst), independent of the requested index I.
 [^15]: Section 2.1, "Correctness" (p. 3-4): "We define three correctness notions for distributional PIR, capturing three types of correctness failure."
-[^16]: Section 2.1 (p. 4): "We always have that kappa_worst <= kappa_avg <= kappa_exp since an explicit correctness failure is also an average-case correctness failure, and an average-case correctness failure is also a worst-case correctness failure."
+[^16]: Section 2.1 (p. 4): "We always have that kappa_worst <= kappa_avg <= kappa_exp since an explicit correctness failure is also a worst-case correctness failure, and a worst-case correctness failure is also an average-case correctness failure."
 [^17]: Section 2.1, "Efficiency" (p. 4) and Section A.1.3 (p. 19): Formal definitions of expected server time and expected communication cost.
 [^18]: Section 2.1 (p. 4): "We can interpret any standard PIR scheme with correctness kappa as a distributional-PIR scheme in which all three correctness parameters are kappa."
 [^19]: Section 1 (p. 2): "a generic compiler that lifts a standard PIR scheme into a distributional-PIR scheme." Also Theorem 3.3 (p. 5).
 [^20]: Theorem 3.3 (p. 5): Expected server runtime is Õ(k*(1-kappa_worst) + N*kappa_worst).
 [^21]: Theorem 3.3 (p. 5): Expected communication is k*log N + C(k)*(1-kappa_worst) + C(N)*kappa_worst.
-[^22]: Section 9.1, Table 12 (p. 14): CrowdSurf total cost $0.0057 vs. baseline $0.046, an 8x reduction.
+[^22]: Section 7.2.1 (p. 11) and Section 9.1, Table 12 (p. 14): Server work and communication improvements (5-77x less server work, 4.8-9.7x less communication) from Section 7.2.1; 8x total cost reduction ($0.0057 vs. $0.046) from Table 12.
 [^23]: Section 7.2.1 (p. 11): "When using Respire, our construction increases the queries-per-second by 6.7-12.8x and reduces communication by 2.3-117x."
 [^24]: Section 8, Table 11 (p. 12): Distributional PIR achieves 91 core-ms server CPU and 561 KB communication vs. PIR's 1130 core-ms and 1534 KB.
 [^25]: Section 6 (p. 8): "our scheme performs preprocessing and encryption using a RingLWE-based encryption scheme, then converts the preprocessed state and ciphertext into forms that are compatible with SimplePIR."
@@ -325,6 +325,6 @@ Where Q and R abbreviate the full expected communication and runtime expressions
 [^42]: Section 9.1 (p. 14): "the cost of hint-compression greatly diminishes the gains from our techniques. Thus, improvements to hint-compression performance will immediately increase the relative improvement of CrowdSurf compared to the baseline."
 [^43]: Section 5 (p. 7): "Pre-processing PIR schemes [...] can subvert our lower bound, though these schemes are, as of now, very far from practical [86]."
 [^44]: Section 11 (p. 15): "An exciting direction of future work would be to explore whether we can gain analogous speedups in other cryptographic protocols — secure multiparty computation, fully homomorphic encryption, etc."
-[^45]: Appendix E, Theorem E.1 (p. 27): "for any linear utility function and batch size 1, average-case utility reduces to average-case correctness."
+[^45]: Appendix E, Theorem E.1 (p. 27): For any linear utility function U and batch size 1, there exists a modified distribution P' (the normalized product of P and U) such that if the scheme has average-case correctness kappa_avg on P', it also achieves average-case utility kappa_avg on P — reducing utility to correctness on a reweighted distribution.
 [^46]: Section 7 (p. 9): "We implemented our distributional-PIR construction, PIR optimizations, and system for private Twitter feeds, CrowdSurf, in approximately 3000 lines of Go and 1000 lines of C++."
 [^47]: Section 7.1 (p. 9): "We parameterize our linearly homomorphic encryption with preprocessing to satisfy 128-bits of computational security and 40-bits of statistical correctness [...] sigma = 3.2."

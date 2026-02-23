@@ -30,8 +30,8 @@ The paper constructs a single-server cPIR by evaluating the arithmetic retrieval
 |-------|--------|
 | **Hardness assumption** | Ring Learning With Errors (RLWE), via the Stehle-Steinfeld reduction from NTRU to RLWE [^4] |
 | **Encryption/encoding scheme** | Stehle-Steinfeld NTRU variant [12] — leveled SWHE with modulus reduction technique from [10]. No relinearization or key switching needed (single-user, tree-structured circuit). [^5] |
-| **Ring / Field** | R\_{q\_i} = Z\_{q\_i}[x] / (Phi\_m(x)) where Phi\_m(x) is the m-th cyclotomic polynomial of degree n = phi(m). Decreasing prime moduli chain q\_0 > q\_1 > ... > q\_d with q\_i \| q\_{i+1}. [^6] |
-| **Key structure** | Per-level keys: for each level i, sample u^(i), g^(i) from distribution chi, set f^(i) = 2u^(i) + 1, h^(i) = 2g^(i)(f^(i))^{-1} in R\_{q\_i}. Public key = (h^(0), q\_0). Evaluation keys not needed due to q\_i \| q\_{i+1} specialization. [^7] |
+| **Ring / Field** | R\_{q\_i} = Z\_{q\_i}[x] / (Phi\_m(x)) where Phi\_m(x) is the m-th cyclotomic polynomial of degree n = phi(m). Decreasing prime moduli chain q\_0 > q\_1 > ... > q\_d with q\_{i+1} \| q\_i. [^6] |
+| **Key structure** | Per-level keys: for each level i, sample u^(i), g^(i) from distribution chi, set f^(i) = 2u^(i) + 1, h^(i) = 2g^(i)(f^(i))^{-1} in R\_{q\_i}. Public key = (h^(0), q\_0). Evaluation keys not needed due to q\_{i+1} \| q\_i specialization. [^7] |
 | **Correctness condition** | \|\|c^{2^d} f^{2^d}\|\|\_inf < q\_d / 2, with noise growth c^{2^d} f^{2^d} = (...((c^2 kappa + p\_1)^2 kappa + p\_2)^2 ... + p\_{2^i}) f^{2^d} where kappa = q\_{i+1}/q\_i is the modulus reduction rate [^8] |
 
 ### Key Data Structures
@@ -39,7 +39,7 @@ The paper constructs a single-server cPIR by evaluating the arithmetic retrieval
 - **Database:** Matrix M of size 2^{l/2} x 2^{l/2} where N = 2^l is the number of single-bit entries. Index i is split: first l/2 bits select row, last l/2 bits select column.&#8201;[^9]
 - **Query:** Vector of l encrypted index bits Q = [xi\_0(x), ..., xi\_{l-1}(x)], each an NTRU ciphertext polynomial in R\_{q\_0}. In Bundled Query mode, epsilon index bits are CRT-packed into each ciphertext.&#8201;[^10]
 - **Response:** A single ciphertext polynomial R encoding the result (or epsilon results in bundled mode).&#8201;[^11]
-- **Modulus chain:** Decreasing sequence of odd primes q\_0 > q\_1 > ... > q\_d with divisibility condition q\_i \| q\_{i+1}.&#8201;[^6]
+- **Modulus chain:** Decreasing sequence of odd primes q\_0 > q\_1 > ... > q\_d with divisibility condition q\_{i+1} \| q\_i.&#8201;[^6]
 
 ### Database Encoding
 
@@ -154,7 +154,7 @@ Security is parameterized via the Hermite factor gamma. The feasibility boundary
 
 - **Language / Library:** C++ with Shoup's NTL library version 6.0 [17] for lattice/polynomial operations.&#8201;[^18]
 - **Polynomial arithmetic:** Cyclotomic polynomial ring arithmetic via NTL. The paper uses Phi\_m(x) (not necessarily x^n + 1), requiring m to satisfy m \| (2^λ - 1) for CRT batching to produce enough slots.&#8201;[^12]
-- **Modulus chain:** Specialized: q\_i \| q\_{i+1}, which eliminates the need for key switching and public evaluation keys. This reduces key size significantly but constrains the modulus chain to a divisibility tower.&#8201;[^6]
+- **Modulus chain:** Specialized: q\_{i+1} \| q\_i, which eliminates the need for key switching and public evaluation keys. This reduces key size significantly but constrains the modulus chain to a divisibility tower.&#8201;[^6]
 - **No relinearization:** The circuit is a perfect binary tree (depth d), so secret key grows as f^{2^d}. This avoids the expensive relinearization step but means the secret key power grows exponentially, constraining achievable depth.&#8201;[^5]
 - **Batching:** CRT-based SIMD using the factorization of Phi\_m(x) mod 2 into epsilon irreducible factors of degree λ. Requires m such that 2 has multiplicative order λ mod m (i.e., λ is the smallest integer with m \| (2^λ - 1)).&#8201;[^12]
 - **SIMD / vectorization:** Not mentioned. Single-threaded implementation on Intel Pentium.
@@ -174,7 +174,7 @@ Security is parameterized via the Hermite factor gamma. The feasibility boundary
 
 - **CRT batching for PIR:** Packing multiple independent index bits (or multiple queries) into SIMD slots of a single ciphertext via the Chinese Remainder Theorem. This technique was later adopted widely in BFV-based PIR (SealPIR, FastPIR/Addra).&#8201;[^12]
 - **Arithmetic retrieval formulation:** Expressing the PIR retrieval function as f(x) = SUM (x == y) D\_y with the equality test decomposed as PROD (x\_i + y\_i + 1). This formulation generalizes to any HE scheme supporting XOR and AND.&#8201;[^25]
-- **Modulus chain with divisibility:** The q\_i \| q\_{i+1} specialization eliminates key switching entirely. Applicable to any NTRU-based leveled scheme in a single-user setting where relinearization is not needed.&#8201;[^6]
+- **Modulus chain with divisibility:** The q\_{i+1} \| q\_i specialization eliminates key switching entirely. Applicable to any NTRU-based leveled scheme in a single-user setting where relinearization is not needed.&#8201;[^6]
 
 ### Uncertainties
 
@@ -193,7 +193,7 @@ Security is parameterized via the Hermite factor gamma. The feasibility boundary
 [^3]: Abstract, p. 1 — "our implementation achieves a significantly lower bandwidth cost (more than 1000 times smaller)"
 [^4]: Section 4, p. 5 — "We make use of the modified NTRU scheme introduced by Stehle and Steinfeld [12]... Stehle and Steinfeld formalized the security setting and reduced the security of their NTRU variant to the ring learning with error (RLWE) problem"
 [^5]: Section 4, p. 6 — "we do not use relinearizations as proposed in [11] since we are in a single user setting and we have a shallow well structured circuit (a perfect binary tree) to evaluate"
-[^6]: Section 4, p. 6 — "We use a decreasing sequence of odd prime moduli q\_0 > q\_1 > ... > q\_d... we specialize the prime moduli q\_i by requiring q\_i | q\_{i+1} as was proposed in [16]. This allows us to eliminate the need for key switching"
+[^6]: Section 4, p. 6 — "We use a decreasing sequence of odd prime moduli q\_0 > q\_1 > ... > q\_d... we specialize the prime moduli q\_i by requiring q\_{i+1} | q\_i as was proposed in [16]. This allows us to eliminate the need for key switching." The PDF prints "q\_i|q\_{k+1}" with an ambiguous subscript; the mathematically correct direction for a decreasing chain is q\_{i+1} | q\_i (smaller divides larger), which yields the integer ratio used in modulus reduction.
 [^7]: Section 4, p. 6 — KeyGen description: "We choose a decreasing sequence of primes q\_0 > q\_1 > ... > q\_d and a polynomial Phi\_m(x)... set f^(i) = 2u^(i) + 1 and h^(i) = 2g^(i)(f^(i))^{-1}"
 [^8]: Section 4.1, p. 7 — "With modulus reduction rate of kappa ≈ q\_{i+1}/q\_i the following equation holds c^{2^d} f^{2^d} = (...((c^2 kappa + p\_1)^2 kappa + p\_2)^2... + p\_{2^i})f^{2^d}"
 [^9]: Section 2.1, p. 3 — "Bob stores D in a matrix M of size 2^{h/2} x 2^{h/2}"
