@@ -191,10 +191,8 @@ h4 {
 /* ── Chart Containers ───────────────────────────────── */
 .chart-container {
   background: var(--bg-card);
-  border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 1px 3px var(--shadow);
   margin: 16px 0;
   min-height: 350px;
   min-width: 0;
@@ -265,10 +263,8 @@ h4 {
 }
 .radar-cell {
   background: var(--bg-card);
-  border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 1px 3px var(--shadow);
   min-height: 300px;
   min-width: 0;
 }
