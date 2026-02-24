@@ -1,48 +1,8 @@
-<details>
-<summary>Scripts</summary>
 
-#### Quick Start
-
-```bash
-cd data/  # (formerly Visualization/)
-uv venv && uv pip install matplotlib seaborn pandas numpy adjustText
-uv run scripts/generate_all.py
-```
-
-All outputs go to `output/`.
-
-#### Structure
-
-```
-data/
-  pir_data.json              # Master curated data (source of truth for all plots)
-  scripts/
-    plot_config.py           # Colors, markers, fonts, group names
-    plot_utils.py            # Shared plotting utilities
-    plot_toplevel.py         # T1-T6: cross-group comparison plots
-    plot_group_a.py          # A1-A3: FHE-based group plots
-    plot_group_b.py          # B1-B3: Stateless group plots
-    plot_group_c.py          # C1-C3: Client-indep. preprocessing plots
-    plot_group_d.py          # D1-D4: Client-dep. preprocessing plots
-    plot_group_x.py          # X1: Extensions narrative table
-    generate_tables.py       # Markdown summary tables
-    generate_all.py          # Master runner
-    extract_data.py          # Data extraction helpers (reference)
-  output/
-    top_level/               # T1-T6 PNGs
-    group_a/                 # A1-A3 PNGs
-    group_b/                 # B1-B3 PNGs
-    group_c/                 # C1-C3 PNGs
-    group_d/                 # D1-D4 PNGs
-    group_x/                 # X1 PNG
-    tables/                  # Markdown summary tables
-```
-
-</details>
 
 ### Plots
 
-See [also](https://0xalizk.github.io/PIR-Eng-Notes/#overview) which reads off of pir_data.json
+If you just wanna to see the plots please [see this](https://0xalizk.github.io/PIR-Eng-Notes/#overview) which reads off of the same `pir_data.json`
 
 <details>
 <summary>Top-Level (Cross-Group)</summary>
@@ -134,7 +94,4 @@ Benchmark numbers in `pir_data.json` are **not normalized** to a common database
 | XPIR (2016) | - | [reference_db: "various, pre-processed static"](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2016/xpir_2016_notes.md#complexity) |
 | CwPIR | - | [reference_db: "k=2, n=16384, 1 plaintext"](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/cwpir_2022/cwpir_2022_notes.md#complexity) |
 
-### Dependencies
 
-- Python 3.10+
-- matplotlib, seaborn, pandas, numpy, adjustText
