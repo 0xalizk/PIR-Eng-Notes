@@ -133,20 +133,23 @@
 
   function isMobile() { return window.innerWidth <= 900; }
 
-  function dbSizeLabel(s) {
+  function dbSizeBytes(s) {
     var c = s.concrete;
-    var bytes = null;
-    if (c.num_entries && c.entry_size_bytes) {
-      bytes = c.num_entries * c.entry_size_bytes;
-    } else if (c.reference_db) {
+    if (c.num_entries && c.entry_size_bytes) return c.num_entries * c.entry_size_bytes;
+    if (c.reference_db) {
       var m = c.reference_db.match(/([\d.]+)\s*(TB|GB|GiB|MB|KB)/i);
       if (m) {
         var v = parseFloat(m[1]);
         var u = m[2].toUpperCase();
         var mult = { TB: 1e12, GB: 1e9, GIB: 1073741824, MB: 1e6, KB: 1e3 };
-        bytes = v * (mult[u] || 1);
+        return v * (mult[u] || 1);
       }
     }
+    return null;
+  }
+
+  function dbSizeLabel(s) {
+    var bytes = dbSizeBytes(s);
     if (bytes === null) return null;
     if (bytes >= 1e12) return (bytes / 1e12).toFixed(1) + ' TB';
     if (bytes >= 1e9) return (bytes / 1e9).toFixed(1) + ' GB';
@@ -833,7 +836,14 @@
       gridEl.innerHTML = '';
 
       var schemes = data.filter(function (s) { return s.group === groupKey; })
-        .sort(function (a, b) { return a._composite - b._composite; });
+        .sort(function (a, b) {
+          var da = dbSizeBytes(a);
+          var db = dbSizeBytes(b);
+          if (da === null && db === null) return 0;
+          if (da === null) return 1;
+          if (db === null) return -1;
+          return db - da;
+        });
 
       var t = themeColors();
       var color = GROUP_COLORS[groupKey];
