@@ -608,7 +608,7 @@
     }), plotConfig());
   }
 
-  // ── 4. Client Cost Bars ───────────────────────────────
+  // ── 4. Client Compute Bars ───────────────────────────────
   function renderClientCost(data) {
     var el = document.getElementById('chart-client-cost');
     if (!el) return;
