@@ -755,7 +755,7 @@
       xaxis: { title: 'Total Communication (KB)', type: 'log', gridcolor: t.grid },
       yaxis: { title: 'Server Time (ms)', type: 'log', gridcolor: t.grid },
       margin: { t: 48, r: 48, b: 100, l: 60 },
-      legend: { orientation: 'h', y: -0.12 },
+      legend: { orientation: 'h', y: -0.2 },
       height: 550
     }), plotConfig());
   }
