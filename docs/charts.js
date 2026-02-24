@@ -884,12 +884,12 @@
           paper_bgcolor: 'rgba(0,0,0,0)',
           font: { color: t.text, family: t.font.family, size: 11 },
           showlegend: false,
-          margin: { t: 72, r: 30, b: 20, l: 30 },
-          height: 352,
+          margin: { t: 80, r: 30, b: 20, l: 30 },
+          height: 360,
           title: {
             text: '<b>' + s.display_name + '</b>' + (dbSizeLabel(s) ? '<br><span style="font-size:11px;font-weight:normal;color:' + t.muted + '">' + dbSizeLabel(s) + ' DB</span>' : ''),
             font: { size: 15.4, color: t.text },
-            y: 0.99
+            y: 0.97
           },
           annotations: s.has_implementation ? [] : [{
             text: '(no impl)',
