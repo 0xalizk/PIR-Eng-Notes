@@ -1,5 +1,3 @@
-See [also](https://0xalizk.github.io/PIR-Eng-Notes/#overview) which reads off of pir_data.json
-
 <details>
 <summary>Scripts</summary>
 
@@ -44,7 +42,10 @@ data/
 
 ### Plots
 
-#### Top-Level (Cross-Group)
+See [also](https://0xalizk.github.io/PIR-Eng-Notes/#overview) which reads off of pir_data.json
+
+<details>
+<summary>Top-Level (Cross-Group)</summary>
 
 | Plot | Description |
 |------|-------------|
@@ -55,7 +56,10 @@ data/
 | [**T5**](output/top_level#online-vs-offline-cost-split) | Online vs offline cost split: stacked bars |
 | [**T6**](output/top_level#pir-throughput-evolution-over-time) | Timeline: throughput evolution by publication year |
 
-#### Per-Group
+</details>
+
+<details>
+<summary>Per-Group</summary>
 
 | Plot | Group | Description |
 |------|-------|-------------|
@@ -73,6 +77,8 @@ data/
 | [**D3**](output/group_d#client-storage-vs-server-computation-tradeoff) | Client-Dep. | Client storage vs server time |
 | [**D4**](output/group_d#asymptotic-classification--theory-only-schemes) | Client-Dep. | Asymptotic classification table (theory-only) |
 | [**X1**](output/group_x#extensions--narrative-comparison) | Extensions | Narrative comparison table |
+
+</details>
 
 ### Data
 
