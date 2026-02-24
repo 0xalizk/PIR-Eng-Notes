@@ -502,7 +502,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   font-size: 15px;
   color: var(--text-muted);
   margin-bottom: 20px;
-  max-width: 72ch;
+  max-width: 82ch;
   line-height: 1.7;
 }
 .links {
