@@ -86,6 +86,48 @@ data/
 
 Data was extracted from the group README.md comparison tables (which were audited against individual scheme notes.md files with zero discrepancies found).
 
+#### Reference DB Sizes
+
+Benchmark numbers in `pir_data.json` are **not normalized** to a common database size — each scheme's concrete metrics come from whatever configuration the paper reported. The table below documents each scheme's reference DB size and where it was sourced from.
+
+| Scheme | DB Size | Source |
+|--------|---------|--------|
+| [SealPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md#complexity) | 302 MB | num_entries × entry_size_bytes (1,048,576 × 288B) |
+| [MulPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/mulpir_2019/mulpir_2019_notes.md#complexity) | 268 MB | num_entries × entry_size_bytes (1,048,576 × 256B) |
+| [OnionPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpir_2021/onionpir_2021_notes.md#complexity) | 30.7 GB | num_entries × entry_size_bytes (1,000,000 × 30720B) |
+| [Addra/FastPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/addra_2021/addra_2021_notes.md#complexity) | 3.1 MB | num_entries × entry_size_bytes (32,768 × 96B) |
+| [Spiral](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/spiral_2022/spiral_2022_notes.md#variants) | 8.1 GB | num_entries × entry_size_bytes (262,144 × 30720B) |
+| [FrodoPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/frodopir_2022/frodopir_2022_notes.md#complexity) | 1.1 GB | num_entries × entry_size_bytes (1,048,576 × 1024B) |
+| [ThorPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md#complexity) | 386.5 GB | num_entries × entry_size_bytes (1,073,741,824 × 360B) |
+| [OnionPIRv2](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpirv2_2025/onionpirv2_2025_notes.md#complexity) | ~1 GB | reference_db field: "n=2048, ~1 GB DB" |
+| [HintlessPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/hintlesspir_2023/HintlessPIR_2023_notes.md#variants) | 1.1 GB | num_entries × entry_size_bytes (1,073,741,824 × 1B) |
+| [YPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/ypir_2024/YPIR_2024_notes.md#variants) | 32 GB | reference_db field: "32 GB, 1-bit records" |
+| [Respire](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#variants) | 268 MB | num_entries × entry_size_bytes (1,048,576 × 256B) |
+| [WhisPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/whispir_2024/WhisPIR_2024_notes.md#complexity) | 1 / 8 / 16 / 32 GiB | Figure 4 benchmark DB sizes |
+| [Pirouette](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#variants) | 8.6 GB | num_entries × entry_size_bytes (33,554,432 × 256B) |
+| [InsPIRe](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md#variants) | 1 GB | reference_db field: "1 GB, 64B entries" |
+| [NPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#variants) | 8 GB | reference_db field: "8 GB, 32 KB records" |
+| [VIA](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md#variants) | 32 GB | reference_db field: "32 GB" |
+| [SimplePIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#variants) | 1 GB | reference_db field: "1 GB, 1-bit entries" |
+| [DoublePIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#variants) | 1 GB | reference_db field: "1 GB, 1-bit entries" |
+| [VeriSimplePIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/verisimplepir_2024/VeriSimplePIR_2024_notes.md#complexity) | 4–256 GiB | Figure 7, Figure 8 (range) |
+| [BarelyDoublyEfficient](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/barelydoublyefficient_2025/BarelyDoublyEfficient_2025_notes.md#complexity) | 1 GB | reference_db field: "1 GB (estimated, theoretical)" |
+| [IncrementalPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md#complexity) | 1 GB | reference_db field: "1 GB, 1-bit entries" |
+| [CK20](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ck20_2019/CK20_2019_notes.md#variants) | 33.6 MB | num_entries × entry_size_bytes (1,048,576 × 32B) |
+| [IncPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/incpir_2021/IncPIR_2021_notes.md#complexity) | 33.6 MB | num_entries × entry_size_bytes (1,048,576 × 32B) |
+| [Piano](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/piano_2023/Piano_2023_notes.md#variants) | 107.5 GB | num_entries × entry_size_bytes (1,680,000,000 × 64B) |
+| [TreePIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/treepir_2023/TreePIR_2023_notes.md#variants) | 512 MB | N=2^32 × 1 bit |
+| [RMS24](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#variants) | 8.6 GB | num_entries × entry_size_bytes (268,435,456 × 32B) |
+| [IshaiShiWichs](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md#complexity) | 33.6 MB | num_entries × entry_size_bytes (1,048,576 × 32B) |
+| [Plinko](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/plinko_2024/Plinko_2024_notes.md#complexity) | 33.6 MB | num_entries × entry_size_bytes (1,048,576 × 32B) |
+| [SinglePass](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/singlepass_2024/SinglePass_2024_notes.md#complexity) | 96 MB | num_entries × entry_size_bytes (3,000,000 × 32B) |
+| [WangRen](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/wangren_2024/WangRen_2024_notes.md#complexity) | 33.6 MB | num_entries × entry_size_bytes (1,048,576 × 32B) |
+| [KeywordPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20X%20-%20Extensions/keywordpir_2019/KeywordPIR_2019_notes.md#complexity) | 302 MB | num_entries × entry_size_bytes (1,048,576 × 288B) |
+| [DistributionalPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20X%20-%20Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md#complexity) | 38 GB | reference_db field: "38 GB Twitter DB, B=24" |
+| [XPIR (2014)](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2014/xpir_2014_notes.md#complexity) | - | reference_db: "N=2^32, d=5, bundled" |
+| [XPIR (2016)](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2016/xpir_2016_notes.md#complexity) | - | reference_db: "various, pre-processed static" |
+| [CwPIR](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/cwpir_2022/cwpir_2022_notes.md#complexity) | - | reference_db: "k=2, n=16384, 1 plaintext" |
+
 ### Dependencies
 
 - Python 3.10+
