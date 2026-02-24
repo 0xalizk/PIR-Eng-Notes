@@ -96,6 +96,44 @@
     return SCHEME_LINKS[id] ? BASE_URL + SCHEME_LINKS[id] : '#';
   }
 
+  var DB_SIZE_SOURCES = {
+    sealpir_2018: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 288B)' },
+    mulpir_2019: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/mulpir_2019/mulpir_2019_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 256B)' },
+    onionpir_2021: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpir_2021/onionpir_2021_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,000,000 \u00d7 30720B)' },
+    addra_2021: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/addra_2021/addra_2021_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (32,768 \u00d7 96B)' },
+    spiral_2022: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/spiral_2022/spiral_2022_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (262,144 \u00d7 30720B)' },
+    frodopir_2022: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/frodopir_2022/frodopir_2022_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 1024B)' },
+    thorpir_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/thorpir_2024/thorpir_2024_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,073,741,824 \u00d7 360B)' },
+    onionpirv2_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/onionpirv2_2025/onionpirv2_2025_notes.md#complexity', tip: 'reference_db field: "n=2048, ~1 GB DB"' },
+    hintlesspir_2023: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/hintlesspir_2023/HintlessPIR_2023_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (1,073,741,824 \u00d7 1B)' },
+    ypir_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/ypir_2024/YPIR_2024_notes.md#variants', tip: 'reference_db field: "32 GB, 1-bit records"' },
+    respire_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/respire_2024/Respire_2024_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 256B)' },
+    whispir_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/whispir_2024/WhisPIR_2024_notes.md#complexity', tip: 'Figure 4 benchmark DB sizes' },
+    pirouette_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/pirouette_2025/Pirouette_2025_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (33,554,432 \u00d7 256B)' },
+    inspire_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/inspire_2025/InsPIRe_2025_notes.md#variants', tip: 'reference_db field: "1 GB, 64B entries"' },
+    npir_2026: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/npir_2026/NPIR_2026_notes.md#variants', tip: 'reference_db field: "8 GB, 32 KB records"' },
+    via_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20B%20-%20Stateless%20Single%20Server%20PIR/via_2025/VIA_2025_notes.md#variants', tip: 'reference_db field: "32 GB"' },
+    simplepir_2022: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#variants', tip: 'reference_db field: "1 GB, 1-bit entries"' },
+    doublepir_2022: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#variants', tip: 'reference_db field: "1 GB, 1-bit entries"' },
+    verisimplepir_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/verisimplepir_2024/VeriSimplePIR_2024_notes.md#complexity', tip: 'Figure 7, Figure 8 (range)' },
+    barelydoublyefficient_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/barelydoublyefficient_2025/BarelyDoublyEfficient_2025_notes.md#complexity', tip: 'reference_db field: "1 GB (estimated, theoretical)"' },
+    incrementalpir_2026: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20C%20-%20Client%20Independent%20Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md#complexity', tip: 'reference_db field: "1 GB, 1-bit entries"' },
+    ck20_2019: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ck20_2019/CK20_2019_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 32B)' },
+    incpir_2021: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/incpir_2021/IncPIR_2021_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 32B)' },
+    piano_2023: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/piano_2023/Piano_2023_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (1,680,000,000 \u00d7 64B)' },
+    treepir_2023: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/treepir_2023/TreePIR_2023_notes.md#variants', tip: 'N=2^32 \u00d7 1 bit' },
+    rms24_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/rms24_2024/RMS24_2024_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (268,435,456 \u00d7 32B)' },
+    ishaishiwichs_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 32B)' },
+    plinko_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/plinko_2024/Plinko_2024_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 32B)' },
+    singlepass_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/singlepass_2024/SinglePass_2024_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (3,000,000 \u00d7 32B)' },
+    wangren_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20D%20-%20Client%20Dependent%20Preprocessing/wangren_2024/WangRen_2024_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 32B)' },
+    keywordpir_2019: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20X%20-%20Extensions/keywordpir_2019/KeywordPIR_2019_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 288B)' },
+    distributionalpir_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20X%20-%20Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md#complexity', tip: 'reference_db field: "38 GB Twitter DB, B=24"' },
+    xpir_2014: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2014/xpir_2014_notes.md#complexity', tip: 'reference_db: "N=2^32, d=5, bundled"' },
+    xpir_2016: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/xpir_2016/xpir_2016_notes.md#complexity', tip: 'reference_db: "various, pre-processed static"' },
+    cwpir_2022: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/Schemes/Group%20A%20-%20FHE%20Based%20PIR/cwpir_2022/cwpir_2022_notes.md#complexity', tip: 'reference_db: "k=2, n=16384, 1 plaintext"' }
+  };
+
   // ── Helpers ────────────────────────────────────────────
   function getVal(s, metric) {
     return s.concrete ? s.concrete[metric] : null;
@@ -853,6 +891,28 @@
         cell.className = 'radar-cell';
         gridEl.appendChild(cell);
 
+        // HTML title with hyperlink
+        var titleEl = document.createElement('div');
+        titleEl.style.textAlign = 'center';
+        titleEl.style.padding = '12px 0 0';
+        var url = schemeUrl(s.id);
+        var nameHtml = url
+          ? '<a href="' + url + '" target="_blank" style="color:' + t.text + ';text-decoration:none;font-weight:bold;font-size:15.4px">' + s.display_name + '</a>'
+          : '<span style="font-weight:bold;font-size:15.4px;color:' + t.text + '">' + s.display_name + '</span>';
+        var sizeLabel = dbSizeLabel(s);
+        var sizeSource = DB_SIZE_SOURCES[s.id];
+        var sizeHtml = '';
+        if (sizeLabel && sizeSource) {
+          sizeHtml = '<br><a href="' + sizeSource.url + '" target="_blank" title="' + sizeSource.tip.replace(/"/g, '&quot;') + '" style="font-size:11px;color:' + t.muted + ';text-decoration:none">' + sizeLabel + ' db</a>';
+        } else if (sizeLabel) {
+          sizeHtml = '<br><span style="font-size:11px;color:' + t.muted + '">' + sizeLabel + ' db</span>';
+        }
+        titleEl.innerHTML = nameHtml + sizeHtml;
+        cell.appendChild(titleEl);
+
+        var plotDiv = document.createElement('div');
+        cell.appendChild(plotDiv);
+
         var r = radarMetrics.map(function (m) {
           return s._ranks[m] !== null ? s._ranks[m] : 1;
         });
@@ -894,13 +954,8 @@
           paper_bgcolor: 'rgba(0,0,0,0)',
           font: { color: t.text, family: t.font.family, size: 11 },
           showlegend: false,
-          margin: { t: 80, r: 30, b: 20, l: 30 },
-          height: 360,
-          title: {
-            text: '<b>' + s.display_name + '</b>' + (dbSizeLabel(s) ? '<br><span style="font-size:11px;font-weight:normal;color:' + t.muted + '">' + dbSizeLabel(s) + ' db</span>' : ''),
-            font: { size: 15.4, color: t.text },
-            y: 0.97
-          },
+          margin: { t: 16, r: 30, b: 20, l: 30 },
+          height: 300,
           annotations: s.has_implementation ? [] : [{
             text: '(no impl)',
             showarrow: false,
@@ -910,7 +965,7 @@
           }]
         };
 
-        Plotly.newPlot(cell, [trace], layout, plotConfig());
+        Plotly.newPlot(plotDiv, [trace], layout, plotConfig());
       });
     }
 
