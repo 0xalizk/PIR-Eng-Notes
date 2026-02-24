@@ -884,8 +884,8 @@
           paper_bgcolor: 'rgba(0,0,0,0)',
           font: { color: t.text, family: t.font.family, size: 11 },
           showlegend: false,
-          margin: { t: 56, r: 30, b: 20, l: 30 },
-          height: 336,
+          margin: { t: 72, r: 30, b: 20, l: 30 },
+          height: 352,
           title: {
             text: '<b>' + s.display_name + '</b>' + (dbSizeLabel(s) ? '<br><span style="font-size:11px;font-weight:normal;color:' + t.muted + '">' + dbSizeLabel(s) + ' DB</span>' : ''),
             font: { size: 15.4, color: t.text },
