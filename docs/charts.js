@@ -132,6 +132,28 @@
   }
 
   function isMobile() { return window.innerWidth <= 900; }
+
+  function dbSizeLabel(s) {
+    var c = s.concrete;
+    var bytes = null;
+    if (c.num_entries && c.entry_size_bytes) {
+      bytes = c.num_entries * c.entry_size_bytes;
+    } else if (c.reference_db) {
+      var m = c.reference_db.match(/([\d.]+)\s*(TB|GB|GiB|MB|KB)/i);
+      if (m) {
+        var v = parseFloat(m[1]);
+        var u = m[2].toUpperCase();
+        var mult = { TB: 1e12, GB: 1e9, GIB: 1073741824, MB: 1e6, KB: 1e3 };
+        bytes = v * (mult[u] || 1);
+      }
+    }
+    if (bytes === null) return null;
+    if (bytes >= 1e12) return (bytes / 1e12).toFixed(1) + ' TB';
+    if (bytes >= 1e9) return (bytes / 1e9).toFixed(1) + ' GB';
+    if (bytes >= 1e6) return (bytes / 1e6).toFixed(0) + ' MB';
+    if (bytes >= 1e3) return (bytes / 1e3).toFixed(0) + ' KB';
+    return bytes + ' B';
+  }
   function barLeftMargin() { return isMobile() ? 110 : 140; }
 
   function plotConfig() {
@@ -865,7 +887,7 @@
           margin: { t: 56, r: 30, b: 20, l: 30 },
           height: 336,
           title: {
-            text: '<b>' + s.display_name + '</b>',
+            text: '<b>' + s.display_name + '</b>' + (dbSizeLabel(s) ? '<br><span style="font-size:11px;font-weight:normal;color:' + t.muted + '">' + dbSizeLabel(s) + ' DB</span>' : ''),
             font: { size: 15.4, color: t.text },
             y: 0.99
           },
