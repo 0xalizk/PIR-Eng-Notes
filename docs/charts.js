@@ -887,7 +887,7 @@
           margin: { t: 80, r: 30, b: 20, l: 30 },
           height: 360,
           title: {
-            text: '<b>' + s.display_name + '</b>' + (dbSizeLabel(s) ? '<br><span style="font-size:11px;font-weight:normal;color:' + t.muted + '">' + dbSizeLabel(s) + ' DB</span>' : ''),
+            text: '<b>' + s.display_name + '</b>' + (dbSizeLabel(s) ? '<br><span style="font-size:11px;font-weight:normal;color:' + t.muted + '">' + dbSizeLabel(s) + ' db</span>' : ''),
             font: { size: 15.4, color: t.text },
             y: 0.97
           },
