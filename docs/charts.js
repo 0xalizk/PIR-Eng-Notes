@@ -305,8 +305,12 @@
         row.push(rank !== null ? rank : NaN);
         var raw = getVal(s, m);
         tRow.push(raw !== null ? formatNum(raw) + TIER_BADGE[s.data_tier] : '');
-        var hover = s.display_name + '<br>' + METRIC_LABELS[m] + ': ' +
-          (raw !== null ? formatNum(raw) : 'N/A') +
+        var lbl = METRIC_LABELS[m];
+        var lblMatch = lbl.match(/^(.+?) \((.+)\)$/);
+        var hoverVal = raw !== null
+          ? (lblMatch ? formatNum(raw) + ' ' + lblMatch[2] : formatNum(raw))
+          : 'N/A';
+        var hover = s.display_name + '<br>' + (lblMatch ? lblMatch[1] : lbl) + ': ' + hoverVal +
           '<br>Tier: ' + TIER_LABELS[s.data_tier] +
           '<br>Group: ' + s.group + ' (' + GROUP_NAMES[s.group] + ')' +
           '<br>Composite: ' + s._composite.toFixed(3) +
