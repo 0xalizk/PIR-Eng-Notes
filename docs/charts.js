@@ -1077,13 +1077,13 @@
           '<td><a href="' + link + '" target="_blank">' + s.display_name + '</a></td>' +
           '<td><span class="group-dot" style="background:' + GROUP_COLORS[s.group] + '"></span> ' + s.group + '</td>' +
           '<td>' + s.year + '</td>' +
+          '<td>' + (s.has_implementation ? (IMPL_URLS[s.id] ? '<a href="' + IMPL_URLS[s.id] + '" target="_blank">Yes</a>' : 'Yes') : 'No') + '</td>' +
           '<td class="num">' + formatNum(getVal(s, 'query_size_kb')) + '</td>' +
           '<td class="num">' + formatNum(getVal(s, 'response_size_kb')) + '</td>' +
           '<td class="num">' + formatNum(getVal(s, 'server_time_ms')) + '</td>' +
           '<td class="num">' + formatNum(getVal(s, 'throughput_gbps')) + '</td>' +
           '<td class="num">' + formatNum(getVal(s, 'client_time_ms')) + '</td>' +
-          '<td>' + TIER_LABELS[s.data_tier] + '</td>' +
-          '<td>' + (s.has_implementation ? (IMPL_URLS[s.id] ? '<a href="' + IMPL_URLS[s.id] + '" target="_blank">Yes</a>' : 'Yes') : 'No') + '</td>';
+          '<td>' + TIER_LABELS[s.data_tier] + '</td>';
         el.appendChild(tr);
       });
     }
@@ -1093,13 +1093,13 @@
       { key: 'display_name', label: 'Scheme' },
       { key: 'group', label: 'Group' },
       { key: 'year', label: 'Year' },
+      { key: 'has_implementation', label: 'Impl?' },
       { key: 'query_size_kb', label: 'Query KB', metric: true },
       { key: 'response_size_kb', label: 'Response KB', metric: true },
       { key: 'server_time_ms', label: 'Server ms', metric: true },
       { key: 'throughput_gbps', label: 'Throughput GB/s', metric: true },
       { key: 'client_time_ms', label: 'Client ms', metric: true },
-      { key: 'data_tier', label: 'Tier' },
-      { key: 'has_implementation', label: 'Impl?' }
+      { key: 'data_tier', label: 'Tier' }
     ];
 
     headerRow.innerHTML = '';
