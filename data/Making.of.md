@@ -1,7 +1,7 @@
 ## Making of this directory
 
 <details>
-<summary><strong>Tier 1</strong> (~74%) Exact — direct benchmarks from an implementation (26 schemes)</summary>
+<summary><strong>Tier 1</strong> (~74%) Exact — from reported benchmarks in the paper (26 schemes)</summary>
 
 | Scheme | Source |
 |--------|--------|
