@@ -4,31 +4,31 @@
 
 **Table of Contents**
 
-<table><tr><td style="font-size:30%">
+<table><tr><td>
 
-1. <a href="#lineage">Lineage</a><br>
-2. <a href="#core-idea">Core Idea</a><br>
-3. <a href="#warmup">Warm-up</a><br>
-4. <a href="#crypto-foundation">Crypto Foundation</a><br>
-5. <a href="#ring-architecture">Ring Architecture</a><br>
-6. <a href="#key-data-structures">Key Data Structures</a><br>
-7. <a href="#database-encoding">DB Encoding</a><br>
-8. <a href="#protocol-phases">Protocol Phases</a><br>
-9. <a href="#query-structure">Query Structure</a><br>
-10. <a href="#correctness-analysis">Correctness</a>
+<sub>1.</sub> <sub><a href="#lineage">Lineage</a></sub><br>
+<sub>2.</sub> <sub><a href="#core-idea">Core Idea</a></sub><br>
+<sub>3.</sub> <sub><a href="#warmup">Warm-up</a></sub><br>
+<sub>4.</sub> <sub><a href="#crypto-foundation">Crypto Foundation</a></sub><br>
+<sub>5.</sub> <sub><a href="#ring-architecture">Ring Architecture</a></sub><br>
+<sub>6.</sub> <sub><a href="#key-data-structures">Key Data Structures</a></sub><br>
+<sub>7.</sub> <sub><a href="#database-encoding">DB Encoding</a></sub><br>
+<sub>8.</sub> <sub><a href="#protocol-phases">Protocol Phases</a></sub><br>
+<sub>9.</sub> <sub><a href="#query-structure">Query Structure</a></sub><br>
+<sub>10.</sub> <sub><a href="#correctness-analysis">Correctness</a></sub>
 
-</td><td style="font-size:30%">
+</td><td>
 
-11. <a href="#complexity">Complexity</a><br>
-12. <a href="#optimization-catalog">Optimization Catalog</a><br>
-13. <a href="#perf-benchmarks">Performance</a><br>
-14. <a href="#server-computation">Server Computation</a><br>
-15. <a href="#comparison">Prior Work</a><br>
-16. <a href="#portable-optimizations">Portable Optimizations</a><br>
-17. <a href="#implementation-notes">Implementation</a><br>
-18. <a href="#tradeoffs">Tradeoffs</a><br>
-19. <a href="#open-problems">Open Problems</a><br>
-20. <a href="#uncertainties">Uncertainties</a>
+<sub>11.</sub> <sub><a href="#complexity">Complexity</a></sub><br>
+<sub>12.</sub> <sub><a href="#optimization-catalog">Optimization Catalog</a></sub><br>
+<sub>13.</sub> <sub><a href="#perf-benchmarks">Performance</a></sub><br>
+<sub>14.</sub> <sub><a href="#server-computation">Server Computation</a></sub><br>
+<sub>15.</sub> <sub><a href="#comparison">Prior Work</a></sub><br>
+<sub>16.</sub> <sub><a href="#portable-optimizations">Portable Optimizations</a></sub><br>
+<sub>17.</sub> <sub><a href="#implementation-notes">Implementation</a></sub><br>
+<sub>18.</sub> <sub><a href="#tradeoffs">Tradeoffs</a></sub><br>
+<sub>19.</sub> <sub><a href="#open-problems">Open Problems</a></sub><br>
+<sub>20.</sub> <sub><a href="#uncertainties">Uncertainties</a></sub>
 
 </td></tr></table>
 
