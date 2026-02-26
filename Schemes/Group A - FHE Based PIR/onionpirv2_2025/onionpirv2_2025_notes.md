@@ -2,33 +2,7 @@
 
 <a id="toc"></a>
 
-**Table of Contents**
-- [Lineage](#lineage)
-- [Core Idea](#core-idea)
-- [Warm-up / Strawman Protocol](#warmup)
-- [Cryptographic Foundation](#crypto-foundation)
-- [Ring Architecture / Modulus Chain](#ring-architecture)
-- [Key Data Structures](#key-data-structures)
-- [Database Encoding](#database-encoding)
-- [Protocol Phases](#protocol-phases)
-- [Query Structure](#query-structure)
-- [Correctness Analysis](#correctness-analysis)
-  - [Option A2: Library-based noise management](#option-a2)
-- [Complexity](#complexity)
-  - [Core metrics](#core-metrics)
-  - [FHE-specific metrics](#fhe-metrics)
-- [Optimization Catalog](#optimization-catalog)
-- [Performance Benchmarks](#perf-benchmarks)
-  - [~1 GB Database](#perf-1gb)
-  - [~8 GB Database](#perf-8gb)
-- [Server Computation Breakdown](#server-computation)
-  - [Initial dimension throughput analysis](#initial-dim-throughput)
-- [Comparison with Prior Work](#comparison)
-- [Portable Optimizations](#portable-optimizations)
-- [Implementation Notes](#implementation-notes)
-- [Key Tradeoffs & Limitations](#tradeoffs)
-- [Open Problems](#open-problems)
-- [Uncertainties](#uncertainties)
+<sub>**Table of Contents** &ensp; [1. Lineage](#lineage) · [2. Core Idea](#core-idea) · [3. Warm-up](#warmup) · [4. Crypto Foundation](#crypto-foundation) · [5. Ring Architecture](#ring-architecture) · [6. Key Data Structures](#key-data-structures) · [7. DB Encoding](#database-encoding) · [8. Protocol Phases](#protocol-phases) · [9. Query Structure](#query-structure) · [10. Correctness](#correctness-analysis) · [11. Complexity](#complexity) · [12. Optimization Catalog](#optimization-catalog) · [13. Performance](#perf-benchmarks) · [14. Server Computation](#server-computation) · [15. Prior Work](#comparison) · [16. Portable Optimizations](#portable-optimizations) · [17. Implementation](#implementation-notes) · [18. Tradeoffs](#tradeoffs) · [19. Open Problems](#open-problems) · [20. Uncertainties](#uncertainties)</sub>
 
 | Field | Value |
 |-------|-------|
