@@ -2,7 +2,7 @@
 
 <a id="toc"></a>
 
-<table><tr><td>
+<table cellpadding="20"><tr><td>
 
 <sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
 <sub><nobr>2. <a href="#core-idea">Core Idea</a></nobr></sub><br>
