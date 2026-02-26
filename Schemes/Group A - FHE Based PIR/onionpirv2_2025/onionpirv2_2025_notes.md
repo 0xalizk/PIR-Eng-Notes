@@ -9,7 +9,7 @@
 <sub><nobr>3. <a href="#warmup">Warm-up</a></nobr></sub><br>
 <sub><nobr>4. <a href="#crypto-foundation">Crypto Foundation</a></nobr></sub><br>
 <sub><nobr>5. <a href="#ring-architecture">Ring Architecture</a></nobr></sub><br>
-<sub><nobr>6. <a href="#key-data-structures">Key Data Structures</a></nobr></sub><br>
+<sub><nobr>6. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
 <sub><nobr>7. <a href="#database-encoding">DB Encoding</a></nobr></sub><br>
 <sub><nobr>8. <a href="#protocol-phases">Protocol Phases</a></nobr></sub><br>
 <sub><nobr>9. <a href="#query-structure"><b>Query Structure</b></a></nobr></sub><br>
