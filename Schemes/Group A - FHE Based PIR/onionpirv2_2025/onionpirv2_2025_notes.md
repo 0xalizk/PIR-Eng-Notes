@@ -2,9 +2,7 @@
 
 <a id="toc"></a>
 
-**Table of Contents**
-
-<table><tr><td>
+<table border="0" cellspacing="0" cellpadding="4"><tr><td>
 
 <sub>1.</sub> <sub><a href="#lineage">Lineage</a></sub><br>
 <sub>2.</sub> <sub><a href="#core-idea">Core Idea</a></sub><br>
