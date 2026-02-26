@@ -48,7 +48,7 @@
 
 <a id="lineage"></a>
 
-### Lineage <a href="#toc">↩</a>
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -61,7 +61,7 @@
 
 <a id="core-idea"></a>
 
-### Core Idea <a href="#toc">↩</a>
+### Core Idea <a href="#toc">⤴</a>
 
 OnionPIRv2 is an engineering-focused re-implementation of OnionPIR that achieves state-of-the-art single-server PIR performance by combining known techniques overlooked in the original prototype with novel implementation-level optimizations. The key insight is that after NTT-transforming the database, the initial-dimension dot product reduces to standard integer matrix multiplication — enabling memory-bandwidth-limited throughput — while multi-base RGSW decomposition and modulus switching reduce response overhead to 2.5–3.6x.&#8201;[^4]
 
@@ -69,7 +69,7 @@ OnionPIRv2 is an engineering-focused re-implementation of OnionPIR that achieves
 
 <a id="warmup"></a>
 
-### Warm-up / Strawman Protocol (Section 3.1) <a href="#toc">↩</a>
+### Warm-up / Strawman Protocol (Section 3.1) <a href="#toc">⤴</a>
 
 The paper first describes a **warm-up protocol** to motivate the OnionPIR design:&#8201;[^5]
 
@@ -86,7 +86,7 @@ OnionPIR's solution: keep BFV plaintext-ciphertext multiplication for the *initi
 
 <a id="crypto-foundation"></a>
 
-### Cryptographic Foundation <a href="#toc">↩</a>
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -100,7 +100,7 @@ OnionPIR's solution: keep BFV plaintext-ciphertext multiplication for the *initi
 
 <a id="ring-architecture"></a>
 
-### Ring Architecture / Modulus Chain <a href="#toc">↩</a>
+### Ring Architecture / Modulus Chain <a href="#toc">⤴</a>
 
 | Setting | Ring Degree n | Ciphertext Modulus q (bits) | Plaintext Modulus t (bits) | Response Modulus q' (bits) | RGSW Decomposition l (unpack) | RGSW Decomposition l (subsequent) |
 |---------|--------------|---------------------------|--------------------------|--------------------------|------------------------------|----------------------------------|
@@ -113,7 +113,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="key-data-structures"></a>
 
-### Key Data Structures <a href="#toc">↩</a>
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Database:** Hypercube with initial dimension N_0 = 512 and d-1 subsequent binary dimensions; total dimensions d = 1 + ceil(log_2(N/N_0))&#8201;[^9]
 - **NTT-preprocessed database:** Database entries encoded as polynomials in R mod t, then NTT-transformed for the initial dimension. Stored in NTT domain on server. Storage expansion factor: log q / log t (3.75x for n=2048, 2.6x for n=4096)&#8201;[^10]
@@ -126,7 +126,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="database-encoding"></a>
 
-### Database Encoding <a href="#toc">↩</a>
+### Database Encoding <a href="#toc">⤴</a>
 
 - **Representation:** Hypercube (N/N_0) x N_0 matrix, where each entry is a polynomial in R mod t
 - **Record addressing:** Multi-dimensional: index idx decomposed into (i_0, i_1, ..., i_{d-1}) where i_0 in {0,...,N_0-1} and i_j in {0,1} for j >= 1
@@ -137,7 +137,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="protocol-phases"></a>
 
-### Protocol Phases <a href="#toc">↩</a>
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -153,7 +153,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="query-structure"></a>
 
-### Query Structure <a href="#toc">↩</a>
+### Query Structure <a href="#toc">⤴</a>
 
 | Component | Type | Size | Purpose |
 |-----------|------|------|---------|
@@ -165,11 +165,11 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="correctness-analysis"></a>
 
-### Correctness Analysis <a href="#toc">↩</a>
+### Correctness Analysis <a href="#toc">⤴</a>
 
 <a id="option-a2"></a>
 
-#### Option A2: Library-based noise management <a href="#toc">↩</a>
+#### Option A2: Library-based noise management <a href="#toc">⤴</a>
 
 - **Library / version:** Microsoft SEAL 4.1
 - **Noise growth model:** External product noise is *additive*: O(B * Err(C) + |m_C| * Err(d)), where m_C is typically a single bit.&#8201;[^15] BFV multiplication noise is *multiplicative*. This is the fundamental reason OnionPIR uses external products for subsequent dimensions.
@@ -188,11 +188,11 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="complexity"></a>
 
-### Complexity <a href="#toc">↩</a>
+### Complexity <a href="#toc">⤴</a>
 
 <a id="core-metrics"></a>
 
-#### Core metrics <a href="#toc">↩</a>
+#### Core metrics <a href="#toc">⤴</a>
 
 | Metric | Asymptotic | Concrete (n=2048, ~1 GB DB) | Concrete (n=4096, ~8 GB DB) | Phase |
 |--------|-----------|---------------------------|---------------------------|-------|
@@ -205,7 +205,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="fhe-metrics"></a>
 
-#### FHE-specific metrics <a href="#toc">↩</a>
+#### FHE-specific metrics <a href="#toc">⤴</a>
 
 | Metric | Concrete (n=2048) | Concrete (n=4096) |
 |--------|-------------------|-------------------|
@@ -218,7 +218,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="optimization-catalog"></a>
 
-### Optimization Catalog <a href="#toc">↩</a>
+### Optimization Catalog <a href="#toc">⤴</a>
 
 | # | Optimization | Known/Novel | Source | Improvement | Applicable to |
 |---|-------------|-------------|--------|-------------|---------------|
@@ -240,7 +240,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="perf-benchmarks"></a>
 
-### Performance Benchmarks <a href="#toc">↩</a>
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 **Hardware:** AWS EC2 c5n.9xlarge, Intel Xeon Platinum 8124M @ 3.00 GHz, 96 GB RAM. Single-threaded. Ubuntu 22.04, GCC 11.0.4. AVX2 + AVX512 enabled (via Intel HEXL in SEAL).&#8201;[^23]
 
@@ -248,7 +248,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="perf-1gb"></a>
 
-#### Table 2 (reproduced from paper) — ~1 GB Database <a href="#toc">↩</a>
+#### Table 2 (reproduced from paper) — ~1 GB Database <a href="#toc">⤴</a>
 
 | Metric | OnionPIRv1 | Spiral | KsPIR | OnionPIRv2 (n=2048) | OnionPIRv2 (n=4096) |
 |--------|-----------|--------|-------|---------------------|---------------------|
@@ -262,7 +262,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="perf-8gb"></a>
 
-#### Table 2 (reproduced from paper) — ~8 GB Database <a href="#toc">↩</a>
+#### Table 2 (reproduced from paper) — ~8 GB Database <a href="#toc">⤴</a>
 
 | Metric | OnionPIRv1 | Spiral | KsPIR | OnionPIRv2 (n=2048) | OnionPIRv2 (n=4096) |
 |--------|-----------|--------|-------|---------------------|---------------------|
@@ -280,7 +280,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="server-computation"></a>
 
-### Server Computation Breakdown <a href="#toc">↩</a>
+### Server Computation Breakdown <a href="#toc">⤴</a>
 
 The server performs three tasks per query:&#8201;[^25]
 
@@ -293,7 +293,7 @@ The server performs three tasks per query:&#8201;[^25]
 
 <a id="initial-dim-throughput"></a>
 
-#### Initial dimension throughput analysis <a href="#toc">↩</a>
+#### Initial dimension throughput analysis <a href="#toc">⤴</a>
 
 | Setting | log q | Initial dim throughput | Overall throughput | Bottleneck |
 |---------|-------|----------------------|-------------------|------------|
@@ -304,7 +304,7 @@ The server performs three tasks per query:&#8201;[^25]
 
 <a id="comparison"></a>
 
-### Comparison with Prior Work <a href="#toc">↩</a>
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 | Metric | OnionPIRv2 (n=2048) | OnionPIRv2 (n=4096) | OnionPIRv1 | Spiral | KsPIR |
 |--------|---------------------|---------------------|-----------|--------|-------|
@@ -323,7 +323,7 @@ The server performs three tasks per query:&#8201;[^25]
 
 <a id="portable-optimizations"></a>
 
-### Portable Optimizations <a href="#toc">↩</a>
+### Portable Optimizations <a href="#toc">⤴</a>
 
 1. **NTT-domain database storage + matrix multiplication reinterpretation** — applicable to any RLWE-based PIR where the dominant cost is plaintext-ciphertext polynomial multiplication in an initial dimension. Transforms the computation into cache-friendly integer matrix multiplication that can approach memory bandwidth limits.
 2. **Tree trimming in query expansion** — applicable to any PIR scheme using binary-tree ciphertext expansion (SealPIR, Spiral family). Saves computation when the number of needed ciphertexts is not a power of 2.
@@ -332,7 +332,7 @@ The server performs three tasks per query:&#8201;[^25]
 
 <a id="implementation-notes"></a>
 
-### Implementation Notes <a href="#toc">↩</a>
+### Implementation Notes <a href="#toc">⤴</a>
 
 - **Language / Library:** C++ atop Microsoft SEAL Homomorphic Encryption Library version 4.1&#8201;[^28]
 - **Polynomial arithmetic:** NTT-based (SEAL uses Intel HEXL for AVX-512 accelerated NTT)&#8201;[^29]
@@ -348,7 +348,7 @@ The server performs three tasks per query:&#8201;[^25]
 
 <a id="tradeoffs"></a>
 
-### Key Tradeoffs & Limitations <a href="#toc">↩</a>
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **Entry size sensitivity:** Response overhead is fixed (determined by q'/t), so it is optimal for entries at or above the native size (3.75 KB or 22.5 KB). For smaller entries, overhead is worse.&#8201;[^31]
 - **Two parameter regimes with different tradeoffs:** n=2048 gives smaller request/key material but 3.6x response overhead; n=4096 gives better 2.53x overhead but 4x larger requests and keys.
@@ -364,7 +364,7 @@ The server performs three tasks per query:&#8201;[^25]
 
 <a id="open-problems"></a>
 
-### Open Problems (stated by authors) <a href="#toc">↩</a>
+### Open Problems (stated by authors) <a href="#toc">⤴</a>
 
 - **Reaching memory bandwidth limit:** The initial-dimension matrix multiplication achieves ~50% of peak bandwidth. Closing this gap would improve throughput further.&#8201;[^35]
 - **Better RNS engineering:** Improving RNS ↔ standard integer conversion for external products would bring overall throughput closer to initial-dimension throughput for the large-modulus setting.&#8201;[^36]
@@ -376,7 +376,7 @@ The server performs three tasks per query:&#8201;[^25]
 
 <a id="uncertainties"></a>
 
-### Uncertainties <a href="#toc">↩</a>
+### Uncertainties <a href="#toc">⤴</a>
 
 - The paper does not provide explicit query unpacking or subsequent-dimension timing breakdowns — only states they are "logarithmic" and "insensitive to the database size." The overall throughput numbers bundle all three phases.
 - Entry sizes differ across schemes in Table 2, making direct throughput comparison imprecise. The paper acknowledges this but does not normalize.
