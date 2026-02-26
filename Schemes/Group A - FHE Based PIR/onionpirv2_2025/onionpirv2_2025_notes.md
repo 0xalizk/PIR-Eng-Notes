@@ -167,7 +167,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="option-a2"></a>
 
-#### Option A2: Library-based noise management <a href="#toc">⤴</a>
+#### Option A2: Library-based noise management
 
 - **Library / version:** Microsoft SEAL 4.1
 - **Noise growth model:** External product noise is *additive*: O(B * Err(C) + |m_C| * Err(d)), where m_C is typically a single bit.&#8201;[^15] BFV multiplication noise is *multiplicative*. This is the fundamental reason OnionPIR uses external products for subsequent dimensions.
@@ -190,7 +190,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="core-metrics"></a>
 
-#### Core metrics <a href="#toc">⤴</a>
+#### Core metrics
 
 | Metric | Asymptotic | Concrete (n=2048, ~1 GB DB) | Concrete (n=4096, ~8 GB DB) | Phase |
 |--------|-----------|---------------------------|---------------------------|-------|
@@ -203,7 +203,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="fhe-metrics"></a>
 
-#### FHE-specific metrics <a href="#toc">⤴</a>
+#### FHE-specific metrics
 
 | Metric | Concrete (n=2048) | Concrete (n=4096) |
 |--------|-------------------|-------------------|
@@ -246,7 +246,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="perf-1gb"></a>
 
-#### Table 2 (reproduced from paper) — ~1 GB Database <a href="#toc">⤴</a>
+#### Table 2 (reproduced from paper) — ~1 GB Database
 
 | Metric | OnionPIRv1 | Spiral | KsPIR | OnionPIRv2 (n=2048) | OnionPIRv2 (n=4096) |
 |--------|-----------|--------|-------|---------------------|---------------------|
@@ -260,7 +260,7 @@ Both settings use N_0 = 512 for the initial dimension. Security: ~113 bits (LWE 
 
 <a id="perf-8gb"></a>
 
-#### Table 2 (reproduced from paper) — ~8 GB Database <a href="#toc">⤴</a>
+#### Table 2 (reproduced from paper) — ~8 GB Database
 
 | Metric | OnionPIRv1 | Spiral | KsPIR | OnionPIRv2 (n=2048) | OnionPIRv2 (n=4096) |
 |--------|-----------|--------|-------|---------------------|---------------------|
@@ -291,7 +291,7 @@ The server performs three tasks per query:&#8201;[^25]
 
 <a id="initial-dim-throughput"></a>
 
-#### Initial dimension throughput analysis <a href="#toc">⤴</a>
+#### Initial dimension throughput analysis
 
 | Setting | log q | Initial dim throughput | Overall throughput | Bottleneck |
 |---------|-------|----------------------|-------------------|------------|
