@@ -2,7 +2,35 @@
 
 <a id="toc"></a>
 
-<sub>**Table of Contents** &ensp; [1. Lineage](#lineage) · [2. Core Idea](#core-idea) · [3. Warm-up](#warmup) · [4. Crypto Foundation](#crypto-foundation) · [5. Ring Architecture](#ring-architecture) · [6. Key Data Structures](#key-data-structures) · [7. DB Encoding](#database-encoding) · [8. Protocol Phases](#protocol-phases) · [9. Query Structure](#query-structure) · [10. Correctness](#correctness-analysis) · [11. Complexity](#complexity) · [12. Optimization Catalog](#optimization-catalog) · [13. Performance](#perf-benchmarks) · [14. Server Computation](#server-computation) · [15. Prior Work](#comparison) · [16. Portable Optimizations](#portable-optimizations) · [17. Implementation](#implementation-notes) · [18. Tradeoffs](#tradeoffs) · [19. Open Problems](#open-problems) · [20. Uncertainties](#uncertainties)</sub>
+<table><tr><td><sub>
+
+**Table of Contents**
+1. [Lineage](#lineage)
+2. [Core Idea](#core-idea)
+3. [Warm-up](#warmup)
+4. [Crypto Foundation](#crypto-foundation)
+5. [Ring Architecture](#ring-architecture)
+6. [Key Data Structures](#key-data-structures)
+7. [DB Encoding](#database-encoding)
+8. [Protocol Phases](#protocol-phases)
+9. [Query Structure](#query-structure)
+10. [Correctness](#correctness-analysis)
+
+</sub></td><td><sub>
+
+&nbsp;
+11. [Complexity](#complexity)
+12. [Optimization Catalog](#optimization-catalog)
+13. [Performance](#perf-benchmarks)
+14. [Server Computation](#server-computation)
+15. [Prior Work](#comparison)
+16. [Portable Optimizations](#portable-optimizations)
+17. [Implementation](#implementation-notes)
+18. [Tradeoffs](#tradeoffs)
+19. [Open Problems](#open-problems)
+20. [Uncertainties](#uncertainties)
+
+</sub></td></tr></table>
 
 | Field | Value |
 |-------|-------|
