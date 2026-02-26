@@ -1,5 +1,40 @@
 ## Pirouette: Query Efficient Single-Server PIR -- Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#variants">Variants</a></nobr></sub><br>
+<sub><nobr>4. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>5. <a href="#ring-architecture-modulus-chain">Ring Architecture / Modulus Chain</a></nobr></sub><br>
+<sub><nobr>6. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#database-encoding">Database Encoding</a></nobr></sub><br>
+<sub><nobr>8. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>9. <a href="#query-structure"><b>Query Structure</b></a></nobr></sub><br>
+<sub><nobr>10. <a href="#communication-breakdown">Communication Breakdown</a></nobr></sub><br>
+<sub><nobr>11. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
+<sub><nobr>12. <a href="#complexity"><b>Complexity</b></a></nobr></sub><br>
+<sub><nobr>13. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>14. <a href="#novel-primitives-abstractions">Novel Primitives / Abstractions</a></nobr></sub><br>
+<sub><nobr>15. <a href="#v-1-bit-selector-construction">v_1-bit Selector Construction</a></nobr></sub><br>
+<sub><nobr>16. <a href="#lwetorgsw-conversion">LWEtoRGSW Conversion</a></nobr></sub><br>
+<sub><nobr>17. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>18. <a href="#portable-optimizations"><b>Portable Optimizations</b></a></nobr></sub><br>
+<sub><nobr>19. <a href="#implementation-notes"><b>Implementation Notes</b></a></nobr></sub><br>
+<sub><nobr>20. <a href="#deployment-considerations">Deployment Considerations</a></nobr></sub><br>
+<sub><nobr>21. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>22. <a href="#application-scenarios">Application Scenarios</a></nobr></sub><br>
+<sub><nobr>23. <a href="#open-problems">Open Problems</a></nobr></sub><br>
+<sub><nobr>24. <a href="#related-papers-in-collection">Related Papers in Collection</a></nobr></sub><br>
+<sub><nobr>25. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [Pirouette: Query Efficient Single-Server PIR](https://doi.org/10.56553/popets-2025-0038) (2025) |
@@ -16,7 +51,9 @@
 
 ---
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -27,7 +64,9 @@
 
 ---
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting a single high-precision LWE ciphertext LWE(idx, Delta) instead of RLWE ciphertexts or transciphered symmetric encryptions.&#8201;[^1] The server homomorphically bit-decomposes this LWE ciphertext using blind rotation (from TFHE/FHEW bootstrapping), producing ceil(log_2 N) LWE ciphertexts that encrypt individual index bits, and then converts these into RGSW ciphertexts via a separate LWEtoRGSW step.&#8201;[^2] These RGSW ciphertexts then drive the same hypercube record-selection pipeline as Respire (first-dimension processing via RLWE' selectors, folding via CMUX, rotation via CMUX). The result is a 9.3x query-size reduction over T-Respire and 420x over Respire, while server computation is only 2x slower than Respire.&#8201;[^3]
 
@@ -39,7 +78,9 @@ Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting
 
 ---
 
-### Variants
+<a id="variants"></a>
+
+### Variants <a href="#toc">⤴</a>
 
 | Variant | Key Difference | Query Size | Offline Comm | Throughput (seq.) | Best For |
 |---------|---------------|-----------|-------------|-------------------|----------|
@@ -56,7 +97,9 @@ Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting
 
 ---
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -74,7 +117,9 @@ Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting
 
 ---
 
-### Ring Architecture / Modulus Chain
+<a id="ring-architecture-modulus-chain"></a>
+
+### Ring Architecture / Modulus Chain <a href="#toc">⤴</a>
 
 | Ring | Dimension | Modulus (bits) | Role / Phase |
 |------|-----------|---------------|--------------|
@@ -96,7 +141,9 @@ Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting
 
 ---
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Database:** N records of size kappa bits, arranged as a (1 + v_2 + v_3)-dimensional hypercube with dimensions 2^{v_1} x 2^{v_2} x 2^{v_3}. Each plaintext element in R_{N,p} packs N/N_1 records. The preprocessed database db = {db_i in R_{N,p}}_{i in [0, 2^{v_1+v_2} - 1]} consists of 2^{v_1+v_2} ring elements.&#8201;[^12]
 - **Preprocessed database:** Ring elements stored in NTT domain after SetupDB. Preprocessing cost: O(N log N) arithmetic operations per ring element. Approximately 128 GB RAM for an 8 GB database.&#8201;[^13]
@@ -113,7 +160,9 @@ Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting
 
 ---
 
-### Database Encoding
+<a id="database-encoding"></a>
+
+### Database Encoding <a href="#toc">⤴</a>
 
 - **Representation:** (1 + v_2 + v_3)-dimensional hypercube. First dimension has 2^{v_1} entries, remaining v_2 dimensions have size 2 (binary folding), and v_3 rotation dimensions have size 2.
 - **Record addressing:** Index idx in [N] decomposed as (alpha, beta_1, ..., beta_{v_2+v_3}) where alpha in [2^{v_1}] and beta_i in {0, 1}.
@@ -124,7 +173,9 @@ Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting
 
 ---
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -142,7 +193,9 @@ Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting
 
 ---
 
-### Query Structure
+<a id="query-structure"></a>
+
+### Query Structure <a href="#toc">⤴</a>
 
 | Component | Type | Size | Purpose |
 |-----------|------|------|---------|
@@ -156,7 +209,9 @@ For Pirouette^H, the query instead consists of log(N) separate (n+1)-th LWE comp
 
 ---
 
-### Communication Breakdown
+<a id="communication-breakdown"></a>
+
+### Communication Breakdown <a href="#toc">⤴</a>
 
 | Component | Direction | Size | Reusable? | Notes |
 |-----------|-----------|------|-----------|-------|
@@ -168,7 +223,9 @@ For Pirouette^H, the query instead consists of log(N) separate (n+1)-th LWE comp
 
 ---
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 #### FHE Noise Analysis
 
@@ -198,7 +255,9 @@ Pirouette's correctness relies on bounding the noise variance through a cascade 
 
 ---
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core metrics
 
@@ -229,7 +288,9 @@ Pirouette's correctness relies on bounding the noise variance through a cascade 
 
 ---
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 **Hardware:** Intel Xeon Gold 6248R CPU, 512 GB RAM, 32 cores. Sequential and 32-core parallel settings.&#8201;[^23]
 
@@ -268,7 +329,9 @@ Pirouette's correctness relies on bounding the noise variance through a cascade 
 
 ---
 
-### Novel Primitives / Abstractions
+<a id="novel-primitives-abstractions"></a>
+
+### Novel Primitives / Abstractions <a href="#toc">⤴</a>
 
 #### High-Precision Homomorphic Bit Decomposition
 
@@ -308,7 +371,9 @@ Pirouette's correctness relies on bounding the noise variance through a cascade 
 
 ---
 
-### v_1-bit Selector Construction
+<a id="v-1-bit-selector-construction"></a>
+
+### v_1-bit Selector Construction <a href="#toc">⤴</a>
 
 The selector is the mechanism that maps encrypted index bits to a one-hot encrypted selection vector for the first dimension of the hypercube.
 
@@ -322,7 +387,9 @@ The construction uses a binary-tree approach (Algorithm 21): starting from RLWE'
 
 ---
 
-### LWEtoRGSW Conversion
+<a id="lwetorgsw-conversion"></a>
+
+### LWEtoRGSW Conversion <a href="#toc">⤴</a>
 
 A critical server-side operation that converts LWE ciphertexts (output of bit decomposition) to RGSW ciphertexts needed for CMUX operations. Implemented as Algorithm 15 in the appendix.&#8201;[^28]
 
@@ -341,7 +408,9 @@ Steps:
 
 ---
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 | Metric | Pirouette | Pirouette^H | Respire | T-Respire | SimplePIR | Spiral |
 |--------|-----------|-------------|---------|-----------|-----------|--------|
@@ -358,7 +427,9 @@ Steps:
 
 ---
 
-### Portable Optimizations
+<a id="portable-optimizations"></a>
+
+### Portable Optimizations <a href="#toc">⤴</a>
 
 - **High-precision LWE bit decomposition via blind rotation:** The technique of using TFHE/FHEW blind rotation to homomorphically decompose a high-precision LWE plaintext into individual bits is not specific to PIR. It can benefit any FHE application requiring server-side expansion of compact ciphertexts (e.g., private database lookups, oblivious RAM, secure function evaluation).&#8201;[^31]
 - **Binary-tree selector construction:** The O(2^v - 1) RGSW-RLWE' multiplication tree for v-bit selectors (Algorithm 21) is 1/v more efficient than the naive product approach and is applicable to any scheme using CMUX-based selection.
@@ -368,7 +439,9 @@ Steps:
 
 ---
 
-### Implementation Notes
+<a id="implementation-notes"></a>
+
+### Implementation Notes <a href="#toc">⤴</a>
 
 - **Language / Library:** C++ with OpenFHE library; manually optimized routines for time-critical sections.&#8201;[^32]
 - **Polynomial arithmetic:** NTT-based. CRT decomposition with Q = product of two primes for fast 32-bit modular arithmetic.
@@ -388,7 +461,9 @@ Steps:
 
 ---
 
-### Deployment Considerations
+<a id="deployment-considerations"></a>
+
+### Deployment Considerations <a href="#toc">⤴</a>
 
 - **Database updates:** Server must re-preprocess modified records (re-NTT the affected polynomial). Appending data can exploit recursive NTT/FFT structure without full re-computation.&#8201;[^36]
 - **Offline cost amortization:** The 1.2 GB evaluation key upload is a one-time cost per client, reusable across all queries to any database. However, the paper notes that "effective amortization is impractical due to the prohibitively large number of queries required to offset the offline expense" for small numbers of queries.&#8201;[^37]
@@ -406,7 +481,9 @@ Steps:
 
 ---
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **Query size vs offline communication:** Pirouette achieves the smallest known query size (36 B) but at the cost of the largest offline communication among compared schemes (1.2 GB vs 4 MB for Respire, 91 MB for T-Respire).&#8201;[^39]
 - **Computation overhead:** Single-core computation is 2x slower than Respire (60 s vs 30 s for 8 GB) due to the expensive blind-rotation-based bit decomposition in Phase 0. However, Phase 0 is highly parallelizable.&#8201;[^40]
@@ -424,7 +501,9 @@ Steps:
 
 ---
 
-### Application Scenarios
+<a id="application-scenarios"></a>
+
+### Application Scenarios <a href="#toc">⤴</a>
 
 - **Satellite-to-ground PIR:** Query size is critical for uplink-constrained satellite communication channels (mentioned in abstract and introduction).&#8201;[^43]
 - **Bandwidth-constrained mobile devices:** Asymmetric networks where upload is expensive but download/offline capacity is available (e.g., wired device initialization followed by wireless queries).
@@ -434,7 +513,9 @@ Steps:
 
 ---
 
-### Open Problems
+<a id="open-problems"></a>
+
+### Open Problems <a href="#toc">⤴</a>
 
 - **NTRU-based blind rotation:** Incorporating NTRU-based blind rotation methods [21, 64] into Pirouette could substantially reduce computation time, as NTRU replaces RGSW samples with half-sized ciphertexts and reduces NTT bottleneck proportionally.&#8201;[^44]
 - **Server-to-client response reduction:** The 2 KB response dominates online communication; further compression is noted as future work.
@@ -446,7 +527,9 @@ Steps:
 
 ---
 
-### Related Papers in Collection
+<a id="related-papers-in-collection"></a>
+
+### Related Papers in Collection <a href="#toc">⤴</a>
 
 - **Respire [Group B]:** Direct predecessor. Pirouette uses Respire's hypercube structure, record selection via RLWE' selectors, and response compression via ModSwitch + RingSwitch. Pirouette replaces Respire's RLWE query with a single high-precision LWE ciphertext.
 - **Spiral [Group A]:** Shares the Regev+GSW composition paradigm and ciphertext translation ideas. Pirouette's selector construction is conceptually similar to Spiral's GSW-based dimension folding. Compared in Figure 4.
@@ -455,7 +538,9 @@ Steps:
 
 ---
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - **Response size "2 KB":** Table 7 does not list exact response sizes per configuration. The text states "around 3 KB" (Section 5.2, p.10) and "nearly constant response sizes" (same section), but the Communication Breakdown on p.10 says "2 KB." Used 2 KB as the primary figure.
 - **Parameter table naming:** Table 3 parameters are for "bit decomposition" (Phase 0 internal), Table 4 for "scheme-switching" (Phases 1--3). The two tables use different LWE dimensions (n_in = 1300 vs n = 512) and moduli, which could be confused.

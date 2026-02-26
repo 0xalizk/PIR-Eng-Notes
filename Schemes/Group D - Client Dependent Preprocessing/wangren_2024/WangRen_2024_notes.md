@@ -1,5 +1,33 @@
 ## WangRen — Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#novel-primitives-abstractions">Novel Primitives / Abstractions</a></nobr></sub><br>
+<sub><nobr>4. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>5. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>6. <a href="#database-encoding">Database Encoding</a></nobr></sub><br>
+<sub><nobr>7. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>8. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
+<sub><nobr>9. <a href="#complexity"><b>Complexity</b></a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>10. <a href="#lower-bounds">Lower Bounds</a></nobr></sub><br>
+<sub><nobr>11. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub><br>
+<sub><nobr>12. <a href="#deployment-considerations">Deployment Considerations</a></nobr></sub><br>
+<sub><nobr>13. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>14. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>15. <a href="#portable-optimizations"><b>Portable Optimizations</b></a></nobr></sub><br>
+<sub><nobr>16. <a href="#open-problems-as-discussed-by-the-authors">Open Problems (as discussed by the authors)</a></nobr></sub><br>
+<sub><nobr>17. <a href="#related-papers-in-collection">Related Papers in Collection</a></nobr></sub><br>
+<sub><nobr>18. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [Single-Server Client Preprocessing PIR with Tight Space-Time Trade-off](https://eprint.iacr.org/2024/1845) (2024) |
@@ -17,7 +45,9 @@
 
 [^3]: Section 1.1 (p.3): The tight tradeoff ST = O(nw) holds when w = Omega(log n), which the authors note "is the most natural setting as it takes log n bits to represent the index of a database with n entries."
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -26,13 +56,17 @@
 | **Superseded by** | N/A |
 | **Concurrent work** | N/A |
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage and T = O(sqrt(n)) server probes, yielding ST = O(λ * n * w) — a factor λ away from the Omega(nw) lower bound. The extra λ comes from the coupon-collector duplication inherent in independently sampled hint sets. This paper adapts the permutation-based hint table of [LP24] to work with a single server by introducing a novel relocation data structure. Each query consumes one column of the hint table; entries in that column are relocated to random empty positions in the same row, maintaining the invariant that each DB entry appears exactly once per row. A small-domain PRP compresses the permutation state, reducing client storage from O(n) to O(n/T * (log n + w)). The resulting scheme achieves ST = O(nw) when w = Omega(log n), matching the lower bound up to constant factors.&#8201;[^4]
 
 [^4]: Theorem 1.1 (p.2): Client storage O(Qw + Q log n) bits, amortized communication O(Tw + T log n) bits, amortized server computation O(T) accesses, amortized client computation O(T) XORs and O(T) small-domain PRP calls, over Q = n/T queries.
 
-### Novel Primitives / Abstractions
+<a id="novel-primitives-abstractions"></a>
+
+### Novel Primitives / Abstractions <a href="#toc">⤴</a>
 
 #### Relocation Data Structure
 
@@ -75,7 +109,9 @@ Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage a
 
 [^12]: Construction 3.4 (p.14–15): Hist stores array C and hash map M. All operations are O(1). Storage is O(m log m) bits in total for the array and hash map when m' = O(m) (p.15).
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -88,7 +124,9 @@ Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage a
 
 [^14]: Construction 4.2 (p.18): "The client stores a key ck_hat, the history of consumed columns Hist, and hints h = (h_0, h_1, ..., h_{m'-1})." Initially ck = (ck_hat, Hist); after each query, the updated key is ck' = (ck_hat, Hist) with the appended consumed column.
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Hint table:** Imaginary T x m' matrix (T rows, m' = 2m = 2n/T columns). Row j is managed by DS_j. Each row contains m database entries from DB_j placed at random positions determined by PRP, plus m empty positions. Column c in row j holds DB_j[DS_j.Access(c)] if the position contains an element, and is empty (bottom = 0^w) otherwise. [^15]
 - **Hint parities:** Array h = (h_0, ..., h_{m'-1}) of m' XOR sums, each w bits. h_c = XOR_{j in [T]} DB_j[DS_j.Access(c)], i.e., the XOR of all entries in column c across all T rows. [^16]
@@ -101,7 +139,9 @@ Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage a
 
 [^17]: Section 1.2 (p.5): "A consumed column will not be replenished as in all previous schemes, and the hint table now has one fewer column. Naturally, a hint table can only support a limited number of queries."
 
-### Database Encoding
+<a id="database-encoding"></a>
+
+### Database Encoding <a href="#toc">⤴</a>
 
 - **Representation:** DB is divided into T rows of m = n/T entries each. DB_j = DB[j*m : (j+1)*m] is the j-th row of size m. [^18]
 - **Record addressing:** Entry i resides in row j = floor(i/m) at position c = DS_j.Locate(i mod m) within that row. [^19]
@@ -111,7 +151,9 @@ Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage a
 
 [^19]: Construction 4.2, Query step (p.18): "Let j* <- floor(i/m) and c <- DS_{j*}.Locate(i mod m)."
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -123,7 +165,9 @@ Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage a
 
 [^20]: Section 4.3 (p.21): "The client performs the O(nw) preprocessing step per m = n/T queries, so the amortized communication cost from preprocessing is O(Tw)."
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 Deterministic correctness -- the scheme always returns the correct answer, with probability 1.
 
@@ -133,7 +177,9 @@ The key invariant is maintained by induction (Lemma 4.3, p.19): after every quer
 
 Correctness of answer reconstruction: the client computes DB[i] = h[c] XOR (XOR_{j in [T], j != j*} a[j]). Since h[c] = XOR_{j in [T]} DB_j[DS_j.Access(c)] and a[j] = DB_j[DS_j.Access(c)] for j != j*, the XOR cancels all terms except DB_{j*}[DS_{j*}.Access(c)] = DB[i]. (Lemma 4.4, p.19).&#8201;[^2]
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core metrics
 
@@ -180,7 +226,9 @@ The scheme achieves any point on the tradeoff curve S * T = O(nw) by varying the
 
 [^25]: Theorem 4.1 (p.17) and Theorem 1.1 (p.2): For any T, client storage is O(Qw + Q log n) where Q = n/T. Thus S * T = O((n/T)(w + log n)) * T = O(n(w + log n)) = O(nw) when w = Omega(log n).
 
-### Lower Bounds
+<a id="lower-bounds"></a>
+
+### Lower Bounds <a href="#toc">⤴</a>
 
 #### ST = Omega(nw) for single-query
 
@@ -228,7 +276,9 @@ The scheme achieves any point on the tradeoff curve S * T = O(nw) by varying the
 
 [^32]: Theorem B.4 (p.29): Extends the barrier to account for amortized communication from preprocessing. "Any database-oblivious client preprocessing PIR scheme with S bits of storage, (worst case) online communication cost of less than 1/9 * nw^2/S bits, and amortized communication of less than 1/18 * nw^2/S implies an average-case hard promise problem in SZK."
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 No implementation. Analytical estimates from Theorem 4.1 (p.17):
 
@@ -244,7 +294,9 @@ Server performs no computation beyond retrieving the T requested entries, distin
 
 [^33]: Section 1.1 (p.3): "The server performs no extra computation aside from retrieving the T entries requested by the client."
 
-### Deployment Considerations
+<a id="deployment-considerations"></a>
+
+### Deployment Considerations <a href="#toc">⤴</a>
 
 - **Database updates:** Supported efficiently. For updating entry i, the server sends the old and new values; the client computes j = floor(i/m), c = DS_j.Locate(i mod m), and updates h_c <- h_c XOR DB[i] XOR DB'[i]. Cost: O(1) expected PRP calls and 2 XORs. Each entry contributes to exactly one hint, so updates are O(1). [^34]
 - **Sharding:** Not explicitly discussed, but the row-based DB partitioning (T rows of m entries) is naturally compatible with sharding each row to a separate shard.
@@ -255,7 +307,9 @@ Server performs no computation beyond retrieving the T requested entries, distin
 
 [^34]: Section 4.3 (p.22): "Our scheme additionally supports efficient updates to the database, where updating a random database entry takes O(1) expected PRP calls and two XORs."
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **Tight ST = O(nw) tradeoff is the main contribution**: this is the first scheme matching the Omega(nw) lower bound up to constant factors (for w = Omega(log n)), resolving a central open question in client preprocessing PIR.
 - **No implementation**: the paper is theory-only; no benchmarks or concrete performance measurements are provided. Practical constants (e.g., PRP evaluation cost, hash map overhead) are not measured.
@@ -264,7 +318,9 @@ Server performs no computation beyond retrieving the T requested entries, distin
 - **Requires client-dependent preprocessing**: not suitable for anonymous access or scenarios where clients cannot maintain persistent state.
 - **Single-pass streaming**: HintConstruct processes the DB in a single pass, making it compatible with streaming delivery but requiring the full hint array in memory during preprocessing.
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 | Metric | WangRen (this) | State-of-art [LP23b, ZPZS24, GZS24, HPPY24] | CGK20/CGHK22 |
 |--------|---------------|----------------------------------------------|--------------|
@@ -278,7 +334,9 @@ Server performs no computation beyond retrieving the T requested entries, distin
 
 **Key takeaway:** WangRen is the first single-server client preprocessing PIR scheme achieving a tight space-time tradeoff ST = O(nw), eliminating the λ factor present in all prior constructions. It does so via a deterministic permutation-based approach with a novel relocation data structure. The absence of an implementation means practical competitiveness with schemes like Piano remains an open question.
 
-### Portable Optimizations
+<a id="portable-optimizations"></a>
+
+### Portable Optimizations <a href="#toc">⤴</a>
 
 - **Relocation data structure (DS):** The PRP-backed relocation data structure is a general-purpose primitive for maintaining a dynamic bijection between elements and positions with perfect security. It could replace explicit permutation arrays in any scheme that needs to track element positions through consume-and-relocate operations (e.g., LP24, or any scheme using hint tables with column consumption).
 - **Shared Hist across DS instances:** The observation that all T DS instances share the same Hist (because all rows consume the same column at each query) reduces storage from T separate consumed-column sets to a single global one. Applicable to any multi-row hint table scheme.
@@ -286,13 +344,17 @@ Server performs no computation beyond retrieving the T requested entries, distin
 
 [^35]: Appendix A.2 (p.27): "At the beginning of the protocol, the client chooses a PRP P: [n] -> [n] over domain [n] of database indices and sends the PRP key to the server... For every query, the client uses permutation P to transform the desired index into the index of the same entry in the permuted database."
 
-### Open Problems (as discussed by the authors)
+<a id="open-problems-as-discussed-by-the-authors"></a>
+
+### Open Problems (as discussed by the authors) <a href="#toc">⤴</a>
 
 - Can the tight ST = O(nw) tradeoff be achieved for 1-bit entries (w = 1), i.e., can the log n factor gap be closed when w = o(log n)?
 - Can a scheme simultaneously achieve the tight ST tradeoff and meet the communication barrier (Theorem B.4), i.e., achieve both O(w) online communication and ST = O(nw)?
 - Can the scheme be implemented practically and compete with Piano/RMS24 at concrete parameter sizes?
 
-### Related Papers in Collection
+<a id="related-papers-in-collection"></a>
+
+### Related Papers in Collection <a href="#toc">⤴</a>
 
 - **Piano [Group D]:** Practical single-server preprocessing PIR with O(sqrt(n)) server probes and O(λ * sqrt(n) * w) client storage. Has λ factor in ST product. Probabilistic correctness.
 - **Plinko [Group D]:** Theory-only construction using invertible PRFs for O(1) amortized updates. Different technique (puncturable/invertible PRFs vs. relocation).
@@ -301,7 +363,9 @@ Server performs no computation beyond retrieving the T requested entries, distin
 - **SinglePass [Group D]:** Two-server scheme with single-pass streaming preprocessing using Fisher-Yates shuffle. Different model (2-server).
 - **IshaiShiWichs [Group D]:** Information-theoretic PIR constructions and lower bounds. Communication barrier [ISW24] is extended by this paper's Appendix B.2.
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - The paper uses n for database size (number of entries) throughout; no notation collision with ring dimension (no lattice/FHE primitives are used).
 - The paper does not give a branded scheme name. "WangRen" is a community-assigned name from the authors' surnames.

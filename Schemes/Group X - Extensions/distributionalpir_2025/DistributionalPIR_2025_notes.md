@@ -1,5 +1,30 @@
 ## Distributional PIR — Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#formal-definitions">Formal Definitions</a></nobr></sub><br>
+<sub><nobr>4. <a href="#compiler-interface">Compiler Interface</a></nobr></sub><br>
+<sub><nobr>5. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>6. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#complexity"><b>Complexity</b></a></nobr></sub><br>
+<sub><nobr>8. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>9. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>10. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>11. <a href="#robustness-against-distribution-shift">Robustness Against Distribution Shift</a></nobr></sub><br>
+<sub><nobr>12. <a href="#deployment-strategies-for-public-parameters-table-1">Deployment Strategies for Public Parameters (Table 1)</a></nobr></sub><br>
+<sub><nobr>13. <a href="#open-problems">Open Problems</a></nobr></sub><br>
+<sub><nobr>14. <a href="#implementation-notes"><b>Implementation Notes</b></a></nobr></sub><br>
+<sub><nobr>15. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [Distributional Private Information Retrieval](https://eprint.iacr.org/2025/132) (2025) |
@@ -11,7 +36,9 @@
 | **Rounds (online)** | Inherits from underlying PIR scheme (1 round when using SimplePIR) |
 | **Record-size regime** | General (evaluated with 560-byte tweets in CrowdSurf) |
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -20,13 +47,17 @@
 | **Superseded by** | N/A (first paper to define this model, as of 2025) |
 | **Concurrent work** | Lam et al. (2023) explore "hot indices" in the two-server setting with a stronger correctness notion but no implementation.&#8201;[^2] Gomez-Leos & Heidarzadeh (2022) study side information in the information-theoretic PIR setting, focusing on communication rather than computation.&#8201;[^3] |
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 Distributional PIR exploits the fact that real-world database access patterns are heavily skewed: a small fraction of records account for the vast majority of queries (e.g., the top 1% of Twitter accounts have the vast majority of followers&#8201;[^4]). The construction copies the k most-popular database entries into a separate small "popular" database. When a client queries, the scheme probabilistically routes the query to either the popular database (fast) or the full database (slow), with the routing decision independent of the requested index — preserving standard PIR security.&#8201;[^5] Concretely, with probability kappa_worst the client and server run an errorless batch-PIR over all N records, and with probability (1 - kappa_worst) they run a fast-but-errorful PIR scheme over only the top k = cdf_P^{-1}((kappa_avg - kappa_worst)/(1 - kappa_worst)) most popular records.&#8201;[^6] For a power-law distribution (alpha > 1), the expected server runtime converges to a constant independent of N as N grows large.&#8201;[^7]
 
 The paper also contributes a new RingLWE-based encryption optimization for SimplePIR that reduces client encryption time by 128-349x and server preprocessing by 116-351x via modulus switching, plus GPU offloading for server-side matrix-vector products.&#8201;[^8]
 
-### Formal Definitions
+<a id="formal-definitions"></a>
+
+### Formal Definitions <a href="#toc">⤴</a>
 
 #### Model Name
 
@@ -75,7 +106,9 @@ Two main cost metrics, both in expectation over the distribution P:&#8201;[^17]
 
 Every standard PIR scheme with correctness kappa is a distributional-PIR scheme where all three correctness parameters equal kappa.&#8201;[^18] The power of distributional PIR is that, depending on P, distributional schemes can have the same average-case correctness with significantly reduced server-side cost.
 
-### Compiler Interface
+<a id="compiler-interface"></a>
+
+### Compiler Interface <a href="#toc">⤴</a>
 
 The distributional-PIR construction is a **generic compiler** that lifts any standard batch-PIR scheme into a distributional-PIR scheme.&#8201;[^19]
 
@@ -96,7 +129,9 @@ The distributional-PIR construction is a **generic compiler** that lifts any sta
 | Respire [15] | Twitter feed | 1 GB subset | 6.7-12.8x more queries/sec, 2.3-117x less communication vs. no batching&#8201;[^23] |
 | YPIR [79] | SCT auditing | 5 billion SCTs | 12x less server CPU, 3x less communication vs. PIR-based approaches&#8201;[^24] |
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -106,7 +141,9 @@ The distributional-PIR construction is a **generic compiler** that lifts any sta
 | **Key structure** | Standard LWE/RingLWE secret key; SimplePIR hint matrix D (preprocessed database) |
 | **Modulus switching** | Client encrypts under RingLWE with prime modulus q_1, reinterprets the RingLWE ciphertext as an LWE ciphertext via negacyclic matrix, and switches modulus to q_2 — achieving fast RingLWE encryption + cheap LWE homomorphic evaluation&#8201;[^27] |
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -128,7 +165,9 @@ The distributional-PIR construction is a **generic compiler** that lifts any sta
 | Second bucket | Answered via distributional PIR |
 | Hint compression | RingLWE-based encryption (Section 6); parallelized across CPUs for hint-compression, GPUs for PIR evaluation&#8201;[^29] |
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core Metrics
 
@@ -164,7 +203,9 @@ where W = delta + (1 - kappa_exp) / (|M| - 1)
 
 On real-world distributions, the construction's runtime is within ~1.4x of this lower bound.&#8201;[^36]
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 #### Distributional PIR vs. Batch Codes (Section 7.2.1)
 
@@ -220,7 +261,9 @@ For a batch of 50 concurrent requests, one GPU processes roughly 3x more request
 
 Distributional PIR reduces computation by 12x and communication by 3x compared to PIR-based SCT auditing, while adding cryptographic privacy that Chrome's approach lacks.&#8201;[^24]
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 | Dimension | Distributional PIR | Standard batch-PIR (Hash/Cuckoo) | Frequency smoothing (Pancake [37]) | DP-PIR [5, 95] |
 |-----------|-------------------|----------------------------------|-----------------------------------|----------------|
@@ -231,7 +274,9 @@ Distributional PIR reduces computation by 12x and communication by 3x compared t
 | Composability | Yes (with DP-PIR for further relaxation) | N/A | No (security depends on accuracy of P) | Yes (with distributional PIR) |
 | Black-box use of PIR | Yes | N/A | No | No |
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **Requires distribution knowledge:** The server must have a good approximation of the popularity distribution P. If P is unknown or hard to estimate, the scheme cannot provide its speedups. Measuring P can itself leak information about aggregate user behavior.&#8201;[^38]
 - **Relaxed correctness:** Out-of-distribution queries (records not in the popular set) fail with probability (1 - kappa_worst). This is unsuitable for applications requiring deterministic retrieval. The failure disproportionately affects users whose interests deviate from the majority, raising fairness concerns.&#8201;[^39]
@@ -241,11 +286,15 @@ Distributional PIR reduces computation by 12x and communication by 3x compared t
 - **Hint-compression dominance:** In the CrowdSurf deployment, hint-compression (preprocessing) accounts for the majority of cost. Distributional PIR reduces PIR cost by 40x but hint-compression only by 6.4x, limiting total improvement to 8x.&#8201;[^42]
 - **No database encoding in lower bound:** The lower bound (Theorem 5.1) only applies to schemes without database encoding. Schemes with sophisticated preprocessing could potentially do better, though such preprocessing is currently impractical.&#8201;[^43]
 
-### Robustness Against Distribution Shift
+<a id="robustness-against-distribution-shift"></a>
+
+### Robustness Against Distribution Shift <a href="#toc">⤴</a>
 
 Proposition 2.1 provides a formal guarantee:&#8201;[^40] if a distributional-PIR scheme has average-case correctness kappa_avg under P and batch size B, then under a shifted distribution P-hat it has average-case correctness at least kappa_avg - B * Delta(P, P-hat). This means the scheme degrades gracefully with statistical distance between estimated and true distributions.
 
-### Deployment Strategies for Public Parameters (Table 1)
+<a id="deployment-strategies-for-public-parameters-table-1"></a>
+
+### Deployment Strategies for Public Parameters (Table 1) <a href="#toc">⤴</a>
 
 | Strategy | Params size | Per-query communication | Per-query server runtime |
 |----------|------------|------------------------|------------------------|
@@ -256,14 +305,18 @@ Proposition 2.1 provides a formal guarantee:&#8201;[^40] if a distributional-PIR
 
 Where Q and R abbreviate the full expected communication and runtime expressions from Theorem 3.3.&#8201;[^41]
 
-### Open Problems
+<a id="open-problems"></a>
+
+### Open Problems <a href="#toc">⤴</a>
 
 1. **Extending to other cryptographic protocols:** The authors note that distributional speedups could apply to secure multiparty computation, fully homomorphic encryption, and other privacy-preserving protocols that currently treat all inputs uniformly.&#8201;[^44]
 2. **Better distribution estimation:** Private measurement of P without leaking user information remains an open challenge. The paper sketches approaches (private aggregation [22, 31, 88], multi-party computation [25, 101]) but does not solve this.&#8201;[^38]
 3. **Generalized utility functions:** Appendix E introduces "average-case utility" using linear utility functions U, allowing applications where not all failures are equally costly (e.g., SCT auditing wants failures on popular sites, ad serving wants failures on low-revenue ads). Theorem E.1 shows average-case utility reduces to average-case correctness on a modified distribution.&#8201;[^45]
 4. **Composing with DP-PIR:** The paper notes that distributional PIR can be composed with differentially-private PIR [5, 95] to relax both correctness and security simultaneously for even greater speedups.
 
-### Implementation Notes
+<a id="implementation-notes"></a>
+
+### Implementation Notes <a href="#toc">⤴</a>
 
 - **Language:** Approximately 3000 lines of Go + 1000 lines of C++&#8201;[^46]
 - **Open source:** CrowdSurf available at https://github.com/ryanleh/crowdsurf
@@ -273,7 +326,9 @@ Where Q and R abbreviate the full expected communication and runtime expressions
 - **Benchmarking platform:** c7.2xlarge AWS (8 vCPUs, 16 GB) for CPU; p3.2xlarge (V100, 16 GB) for GPU. GPU instance costs ~8x the CPU instance.
 - **Security parameters:** 128-bit computational security, 40-bit statistical correctness. Lattice parameters: n in {2048, 4096}, q in {2^32, 2^64}, sigma = 3.2 (discrete Gaussian).&#8201;[^47]
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - **Power-law assumption:** The constant-runtime result (Claim B.3) relies on P following a power-law distribution. Real distributions (e.g., Twitter followers) follow a *truncated* power-law (Figure 6, alpha = 2.1). The paper validates empirically that the approximation holds well for 1 million Twitter users (Figure 7), but the gap between the theoretical model and real data may widen for other application domains.
 - **Batch size dependence:** Performance gains do not scale linearly with batch size because each batch size uses a different popularity distribution (Section 7.2). The cutoff point k varies significantly: for users making 16-24 queries, the cutoff is 8x smaller than for users making 56-64 queries. This makes it difficult to predict performance without knowing the exact application workload.

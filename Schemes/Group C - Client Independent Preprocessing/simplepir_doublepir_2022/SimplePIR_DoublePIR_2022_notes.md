@@ -1,5 +1,33 @@
 ## SimplePIR / DoublePIR — Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#variants">Variants</a></nobr></sub><br>
+<sub><nobr>4. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>5. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>6. <a href="#database-encoding">Database Encoding</a></nobr></sub><br>
+<sub><nobr>7. <a href="#protocol-phases-simplepir"><b>Protocol Phases — SimplePIR</b></a></nobr></sub><br>
+<sub><nobr>8. <a href="#protocol-phases-doublepir"><b>Protocol Phases — DoublePIR</b></a></nobr></sub><br>
+<sub><nobr>9. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>10. <a href="#complexity"><b>Complexity</b></a></nobr></sub><br>
+<sub><nobr>11. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub><br>
+<sub><nobr>12. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>13. <a href="#implementation-notes"><b>Implementation Notes</b></a></nobr></sub><br>
+<sub><nobr>14. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>15. <a href="#novel-primitives-abstractions">Novel Primitives / Abstractions</a></nobr></sub><br>
+<sub><nobr>16. <a href="#application-certificate-transparency-auditing">Application: Certificate Transparency Auditing</a></nobr></sub><br>
+<sub><nobr>17. <a href="#open-problems">Open Problems</a></nobr></sub><br>
+<sub><nobr>18. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [One Server for the Price of Two: Simple and Fast Single-Server Private Information Retrieval](https://eprint.iacr.org/2022/949) (2022) |
@@ -11,7 +39,9 @@
 | **Rounds (online)** | 1 (non-interactive) |
 | **Record-size regime** | Small (1-bit to 1 KB in benchmarks; supports larger via column retrieval) |
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -23,7 +53,9 @@
 [^1]: Abstract (p.1): SimplePIR achieves 10 GB/s/core throughput approaching memory bandwidth; DoublePIR shrinks the hint to roughly 16 MB independent of database size.
 [^2]: Section 2, "Concurrent work: FrodoPIR" (p.4): FrodoPIR is independent concurrent work that constructs a PIR scheme essentially identical to SimplePIR.
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 SimplePIR exploits the structure of Regev's LWE-based encryption to shift the vast majority of PIR server computation into a client-independent offline phase. The key insight is that in a Regev encryption Enc(mu) = (A, A^T * s + e + floor(q/p) * mu), the matrix A is independent of the encrypted message.&#8201;[^3] The server represents the database as a sqrt(N)-by-sqrt(N) matrix D over Z_p and precomputes the hint matrix D * A, which it distributes to all clients. To answer a query, the server computes only D * c (a matrix-vector product with the query vector c), requiring just 2N integer multiplications and additions over Z_q — nearly the cost of reading the database from memory.&#8201;[^4] This yields 10 GB/s/core throughput (81% of memory bandwidth), roughly 8x faster than the best prior single-server PIR and approaching the throughput of two-server schemes.&#8201;[^5] DoublePIR applies SimplePIR recursively: the client runs a second level of SimplePIR over the hint matrix and answer vector to retrieve the needed row of the hint and the corresponding answer element, reducing the hint from approximately 121 MB to approximately 16 MB at the cost of slightly lower throughput (7.4 GB/s/core).&#8201;[^6]
 
@@ -32,14 +64,18 @@ SimplePIR exploits the structure of Regev's LWE-based encryption to shift the va
 [^5]: Table 1 (p.3) and Section 1 (p.1): SimplePIR achieves 10 GB/s/core; the fastest prior single-server scheme (Spiral family [76]) achieves 1,314 MB/s.
 [^6]: Section 5 (p.7): DoublePIR reduces the hint to roughly n^2 on lattice dimension n = 2^10, concretely 16 MB.
 
-### Variants
+<a id="variants"></a>
+
+### Variants <a href="#toc">⤴</a>
 
 | Variant | Hint Size | Online Upload | Online Download | Throughput | Best For |
 |---------|-----------|---------------|-----------------|------------|----------|
 | **SimplePIR** (Section 4) | n * sqrt(N) elements in Z_q (approximately 121 MB for 1 GB DB) | sqrt(N) elements in Z_q (approximately 120 KB) | sqrt(N) elements in Z_q (approximately 120 KB) | 10.0 GB/s/core | Maximum throughput; amortized over many queries |
 | **DoublePIR** (Section 5) | kappa * n^2 elements in Z_q (approximately 16 MB, independent of N) | 2 * sqrt(N) elements in Z_q (approximately 313 KB) | kappa * (2n + 1) elements in Z_q (approximately 32 KB) | 7.4 GB/s/core | Smaller hint; fewer queries to amortize |
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -54,7 +90,9 @@ SimplePIR exploits the structure of Regev's LWE-based encryption to shift the va
 [^9]: Section 4.1, point 3 (p.7): "we compress A using pseudorandomness... the server and the clients can derive A as the output of a public hash function."
 [^10]: Theorem C.1, Equation (2) (p.20): The correctness condition for SimplePIR.
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Database matrix D:** sqrt(N)-by-sqrt(N) matrix over Z_p, where N is the number of records. Each entry is a single Z_p element (approximately 8–10 bits with benchmark parameters).&#8201;[^11]
 - **LWE matrix A:** sqrt(N)-by-n matrix over Z_q, serving as the public parameter for Regev encryption. Compressed to a short seed in practice.
@@ -64,7 +102,9 @@ SimplePIR exploits the structure of Regev's LWE-based encryption to shift the va
 [^11]: Section 4 (p.5–6), Figure 2: The database is represented as a matrix in Z_p^{sqrt(N) x sqrt(N)}.
 [^12]: Section 5.1 (p.8) and Section 8.2 (p.14): DoublePIR's hint is 16 MB for a database of 2^36 1-bit entries.
 
-### Database Encoding
+<a id="database-encoding"></a>
+
+### Database Encoding <a href="#toc">⤴</a>
 
 - **Representation:** sqrt(N)-by-sqrt(N) matrix over Z_p. For DoublePIR, the matrix dimensions are ell-by-m (rectangular, not necessarily square) so that the first level of PIR dominates computation.&#8201;[^13]
 - **Record addressing:** Two-dimensional index (i_row, i_col) in [sqrt(N)]^2 decomposed from the linear index i in [N].
@@ -75,7 +115,9 @@ SimplePIR exploits the structure of Regev's LWE-based encryption to shift the va
 [^14]: Section 8, "Implementation" (p.12): "We store the database in memory in packed form and decompress it into Z_p elements on-the-fly, as otherwise the Answer routine is memory-bandwidth-bound."
 [^15]: Section 4.3, "Supporting databases with larger record sizes" (p.7): Retrieve an entire column of the database matrix with a single online query.
 
-### Protocol Phases — SimplePIR
+<a id="protocol-phases-simplepir"></a>
+
+### Protocol Phases — SimplePIR <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -85,7 +127,9 @@ SimplePIR exploits the structure of Regev's LWE-based encryption to shift the va
 | Answer | Server | Compute ans = D * qu in Z_q^{sqrt(N)} (2N operations in Z_q) | ans: sqrt(N) elements in Z_q downward (approximately 120 KB) | Per query |
 | Recover | Client | Compute d_hat = ans[i_row] - hint_c[i_row, :] * s. Round to nearest multiple of Delta and divide. | — | Per query |
 
-### Protocol Phases — DoublePIR
+<a id="protocol-phases-doublepir"></a>
+
+### Protocol Phases — DoublePIR <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -98,7 +142,9 @@ SimplePIR exploits the structure of Regev's LWE-based encryption to shift the va
 [^16]: Section 5.1 (p.8): Concrete costs of DoublePIR preprocessing.
 [^17]: Section 5.1 (p.8): Per-query server work is 2N + 2(2n+1) * sqrt(N) * kappa operations in Z_q.
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 #### FHE Noise Analysis (Option A — plain LWE, single correctness inequality)
 
@@ -149,7 +195,9 @@ which is slightly more conservative than SimplePIR due to the union bound over k
 
 [^20]: Section 4.2 (p.7): "we set the secret dimension n = 2^10, use modulus q = 2^32... and allow correctness error delta = 2^{-40}."
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core metrics
 
@@ -190,7 +238,9 @@ which is slightly more conservative than SimplePIR due to the union bound over k
 [^26]: Section 1 (p.1): "SimplePIR achieves 10 GB/s/core server throughput, which approaches the memory bandwidth of the machine... roughly 12.4 GB/s/core on our machine."
 [^27]: Section 8.1 (p.13): Per-query cost computation using AWS pricing.
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 #### Hardware
 
@@ -250,7 +300,9 @@ SimplePIR's amortized communication is nearly constant across entry sizes. Doubl
 
 [^30]: Table 16 (p.31) and Figure 20 (p.30): "As soon as the entry size exceeds roughly 100 bits, SimplePIR incurs less communication than DoublePIR."
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 SimplePIR and DoublePIR achieve a novel point in the PIR design space: substantially higher throughput than all prior single-server PIR schemes, and competitive with two-server PIR schemes, at the cost of a large offline download (the hint).&#8201;[^31]
 
@@ -264,7 +316,9 @@ SimplePIR and DoublePIR achieve a novel point in the PIR design space: substanti
 
 [^31]: Section 8.1 (p.12): "SimplePIR and DoublePIR achieve throughputs of 10.0 GB/s and 7.4 GB/s respectively, which is roughly 8x faster than the best prior single-server PIR scheme."
 
-### Implementation Notes
+<a id="implementation-notes"></a>
+
+### Implementation Notes <a href="#toc">⤴</a>
 
 - **Language:** Go (1,400 lines for SimplePIR and DoublePIR combined) + C (200 lines for performance-critical matrix multiplication routines). No external libraries.&#8201;[^32]
 - **Arithmetic:** Native uint32 for q = 2^32 operations. Database stored in packed form, decompressed on-the-fly during Answer to avoid memory-bandwidth bottleneck.
@@ -278,7 +332,9 @@ SimplePIR and DoublePIR achieve a novel point in the PIR design space: substanti
 [^32]: Section 8 (p.12): "We implement SimplePIR in fewer than 1,200 lines of Go code, along with 200 lines of C, and DoublePIR in 210 additional lines of Go code."
 [^33]: Appendix H (p.30): "Both the server time and the client time are measured using a single thread of execution (and are fully parallelizable)."
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **Large hint (SimplePIR):** The client must download approximately 121 MB for a 1 GB database (4 * sqrt(N) KB for N bytes). If the client makes only a single query, this hint download dominates communication and makes SimplePIR uncompetitive. The scheme is designed for the amortized setting.&#8201;[^34]
 - **Online communication approximately 10x larger than best prior work:** Per-query online communication is on the order of hundreds of kilobytes, compared to tens of kilobytes for Spiral/OnionPIR. This is an inherent cost of using plain LWE with large expansion factor F = n approximately 1024.&#8201;[^34]
@@ -293,7 +349,9 @@ SimplePIR and DoublePIR achieve a novel point in the PIR design space: substanti
 [^36]: Appendix C.3, "Handling database updates" (p.22) and Appendix E.3, "Handling database updates" (p.27).
 [^37]: Appendix B (p.18): "we demonstrate that several recent PIR schemes, including SealPIR and its descendants, are insecure against a certain type of active attack that enables the server to recover a client's long-term, secret state."
 
-### Novel Primitives / Abstractions
+<a id="novel-primitives-abstractions"></a>
+
+### Novel Primitives / Abstractions <a href="#toc">⤴</a>
 
 | Field | Detail |
 |-------|--------|
@@ -311,7 +369,9 @@ SimplePIR and DoublePIR achieve a novel point in the PIR design space: substanti
 [^39]: Appendix D.2 (p.23): "we construct a linear homomorphic encryption scheme with preprocessing from Regev encryption."
 [^40]: Table 11 (p.23): Comparison of linearly homomorphic encryption schemes. The LWE-based construction achieves hint size λ, ciphertext size 1 per bit, Apply time 1, and Dec time λ — all linear or constant in the security parameter.
 
-### Application: Certificate Transparency Auditing
+<a id="application-certificate-transparency-auditing"></a>
+
+### Application: Certificate Transparency Auditing <a href="#toc">⤴</a>
 
 SimplePIR and DoublePIR are applied to private SCT (Signed Certificate Timestamp) auditing, using a novel approximate set-membership data structure (Section 6).&#8201;[^41]
 
@@ -327,7 +387,9 @@ SimplePIR and DoublePIR are applied to private SCT (Signed Certificate Timestamp
 
 [^41]: Sections 6–7 (p.9–12) and Section 8.2 (p.14): The application to Certificate Transparency auditing.
 
-### Open Problems
+<a id="open-problems"></a>
+
+### Open Problems <a href="#toc">⤴</a>
 
 1. **Reduce communication cost:** The authors note that combining their preprocessing ideas with sublinear-time PIR [30, 31] to reduce computation beyond the linear-server-time barrier is an exciting direction.&#8201;[^42]
 2. **Recursive PIR with more than two levels:** After r levels of recursion, communication scales as r * N^{1/r} upload and n^{r-1} download. For r > 2, the communication is "likely too large for databases of interest." Constructing recursive LWE-based PIR with total communication n * N^{1/r} is an open question.&#8201;[^43]
@@ -340,7 +402,9 @@ SimplePIR and DoublePIR are applied to private SCT (Signed Certificate Timestamp
 [^44]: Appendix C.3, "Decreasing the online download with local rounding" (p.22): Decreases download by approximately 3x at the expense of smaller p and thus faster-decreasing correctness margins.
 [^45]: Appendix C.3, "Faster preprocessing" (p.22): Subcubic matrix multiplication could improve asymptotic preprocessing time.
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - **Notation:** The paper uses n for the LWE secret dimension (2^10) and N for the database size. This is consistent with standard LWE notation but differs from some RLWE-based PIR papers where n is the ring dimension and N is the database size. Throughout these notes, n = LWE dimension = 1024, N = database record count.
 - **Throughput measurement methodology:** Throughput is defined as database size divided by server online time per query, measured single-threaded. This does not include preprocessing time. The "effective throughput" with batching (Table 19) includes the amortized preprocessing cost and assumes the client recovers a constant fraction of the batch.

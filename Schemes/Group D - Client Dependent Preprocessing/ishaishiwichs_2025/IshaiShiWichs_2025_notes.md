@@ -1,5 +1,35 @@
 ## IshaiShiWichs — Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#formal-definitions">Formal Definitions</a></nobr></sub><br>
+<sub><nobr>4. <a href="#novel-primitives-abstractions">Novel Primitives / Abstractions</a></nobr></sub><br>
+<sub><nobr>5. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>6. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#database-encoding">Database Encoding</a></nobr></sub><br>
+<sub><nobr>8. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>9. <a href="#reconstruction-algorithm-section-4-1">Reconstruction Algorithm</a></nobr></sub><br>
+<sub><nobr>10. <a href="#resample-operation-section-4-1">Resample Operation</a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>11. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
+<sub><nobr>12. <a href="#complexity"><b>Complexity</b></a></nobr></sub><br>
+<sub><nobr>13. <a href="#lower-bounds">Lower Bounds</a></nobr></sub><br>
+<sub><nobr>14. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>15. <a href="#explicit-adaptive-correctness-attack-on-prior-schemes-section-1-3">Explicit Adaptive Correctness Attack on Prior Schemes</a></nobr></sub><br>
+<sub><nobr>16. <a href="#application-scenarios">Application Scenarios</a></nobr></sub><br>
+<sub><nobr>17. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>18. <a href="#open-problems">Open Problems</a></nobr></sub><br>
+<sub><nobr>19. <a href="#related-papers-in-collection">Related Papers in Collection</a></nobr></sub><br>
+<sub><nobr>20. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [PIR with Client-Side Preprocessing: Information-Theoretic Constructions and Lower Bounds](https://eprint.iacr.org/2024/976) (2025) |
@@ -11,7 +41,9 @@
 | **Rounds (online)** | 1 (single round-trip) |
 | **Record-size regime** | Parameterized (bit-string database x in {0,1}^n; each record is 1 bit) |
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -20,11 +52,15 @@
 | **Superseded by** | N/A |
 | **Concurrent work** | Ghoshal, Zhou, Shi [GZS24a] (efficient preprocessing PIR without public-key crypto); Mughees, Ren [MIR23] (simple and practical sublinear PIR) |
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 This paper is the first to study information-theoretic single-server preprocessing PIR, making contributions on both upper and lower bounds. On the upper-bound side, it constructs IT preprocessing PIR schemes by (1) adapting the Dvir-Gopi 2-server PIR to a single-server setting with nearly optimal client space and bandwidth tradeoff (Theorem 3.1), and (2) building a novel single-server construction using cross-product sets over a 3-dimensional database representation with sublinear server computation (Theorem 4.4/A.3). On the lower-bound side, it proves that any IT preprocessing PIR scheme with both client space and per-query bandwidth o(sqrt(n)) implies the existence of one-way functions (Theorem 5.1), and that for database-oblivious schemes, breaking this tradeoff implies a hard problem in SZK (Theorem 1.2/Corollary 5.8). The lower bounds are proven via a new intermediate primitive called Mutual Information Amplification (MIA).
 
-### Formal Definitions
+<a id="formal-definitions"></a>
+
+### Formal Definitions <a href="#toc">⤴</a>
 
 #### Preprocessing PIR (Section 2, p.8)
 
@@ -62,7 +98,9 @@ A database-oblivious scheme restricts Definition 1 so that: (1) the database is 
 
 [^6]: Definition 3 (p.25): All known constructions (CK20, Piano, MIR23, etc.) are database-oblivious, making the SZK barrier widely applicable.
 
-### Novel Primitives / Abstractions
+<a id="novel-primitives-abstractions"></a>
+
+### Novel Primitives / Abstractions <a href="#toc">⤴</a>
 
 #### Mutual Information Amplification (MIA)
 
@@ -107,7 +145,9 @@ A database-oblivious scheme restricts Definition 1 so that: (1) the database is 
 
 [^9]: Definition 5 (p.26): The vanilla SSB hash relaxes the standard SSB notion in two ways — no efficient local decommitment and the binding requirement assumes the hash key is chosen independently of the input.
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -117,7 +157,9 @@ A database-oblivious scheme restricts Definition 1 so that: (1) the database is 
 
 [^10]: Section 4.2/4.5 (p.14, 17-19): The base scheme achieves correctness probability >= 0.1 per query (derived in Section 4.5); amplification to 1 - negl(n) uses omega(log n) independent parallel instances sharing the same streaming pass.
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Database representation:** n-bit string x in {0,1}^n reshaped as a 3-dimensional m x m x m array where m = n^{1/3}, with DB[x,y,z] = DB[id] for id = (x,y,z) in base-m representation.&#8201;[^11]
 - **Cross-product sets:** Each hint entry is S = X x Y x Z where X, Y, Z are subsets of {0,...,m-1}, described in O(n^{1/6}) bits.&#8201;[^8]
@@ -130,13 +172,17 @@ A database-oblivious scheme restricts Definition 1 so that: (1) the database is 
 
 [^13]: Section 4.2 (p.15): Planar sets have size n^{1/3}; each hint has an expected n^{1/6} planar sets per dimension (3 dimensions), enabling cumulative parity updates during streaming.
 
-### Database Encoding
+<a id="database-encoding"></a>
+
+### Database Encoding <a href="#toc">⤴</a>
 
 - **Representation:** 3-dimensional m x m x m array (m = n^{1/3}) over bits
 - **Record addressing:** Base-m decomposition of index id yields (x,y,z) coordinates
 - **Preprocessing required:** None on the server side; server stores original database only
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 #### Construction 1: Nearly Optimal Client Space/Bandwidth Tradeoff (Theorem 3.1)
 
@@ -177,7 +223,9 @@ This is the paper's main novel construction using cross-product sets.
 
 [^16]: Appendix B / Theorem B.1 (p.38-39): In the 2-server variant, preprocessing is performed with the left server and queries with the right server, yielding O_tilde(n^{1/3}) online bandwidth per Theorem 1.5 (p.5).
 
-### Reconstruction Algorithm (Section 4.1)
+<a id="reconstruction-algorithm-section-4-1"></a>
+
+### Reconstruction Algorithm (Section 4.1) <a href="#toc">⤴</a>
 
 Given a cross-product set S = X x Y x Z containing query point (x,y,z), the client needs 8 parities corresponding to all subsets formed by including or excluding x from X, y from Y, and z from Z:
 
@@ -194,13 +242,17 @@ Then DB[x,y,z] = XOR_{i,j,k in {0,1}} p_{ijk}. This works because every element 
 
 [^17]: Section 4.1 (p.13-14): The reconstruction identity DB[x,y,z] = XOR_{i,j,k} p_{ijk} holds because for any element (x',y',z') != (x,y,z), it appears in an even number of the 8 sub-cross-products, so its contribution cancels.
 
-### Resample Operation (Section 4.1)
+<a id="resample-operation-section-4-1"></a>
+
+### Resample Operation (Section 4.1) <a href="#toc">⤴</a>
 
 Given set S = X x Y x Z and point (x,y,z) in S, Resample(S, (x,y,z)) produces S' = X' x Y' x Z' by re-sampling each element's membership (independently with probability 1/n^{1/6}) while forcing x in X', y in Y', z in Z'. This preserves the distribution of S' as identical to a fresh sample from D, hiding which point was queried.&#8201;[^18]
 
 [^18]: Section 4.1 (p.13): The Resample operation re-randomizes the set while keeping the queried point, ensuring the query sent to the server is indistinguishable from a fresh random set.
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 #### Option B: Probabilistic Correctness Analysis
 
@@ -229,7 +281,9 @@ The key property: for distinct points v, v', if (x,y,z) = pi_r(v) and (x',y',z')
 
 [^22]: Proposition A.2 (p.35): The counterpart of Proposition 4.2 for arbitrary queries: for any fixed original coordinates, the probability that a distinct point lands in the same set is at most 4.1/sqrt(n).
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Construction 1: Nearly Optimal Tradeoff (Theorem 3.1)
 
@@ -291,7 +345,9 @@ The key property: for distinct points v, v', if (x,y,z) = pi_r(v) and (x',y',z')
 
 [^27]: Section 4.3 (p.16): Amortizing the O(n) preprocessing cost over sqrt(n) queries yields O(sqrt(n)) amortized bandwidth and client work, and O(n^{2/3}) amortized server work per query.
 
-### Lower Bounds
+<a id="lower-bounds"></a>
+
+### Lower Bounds <a href="#toc">⤴</a>
 
 #### Lower Bound 1: OWF Implication (Theorem 5.1 / Theorem 1.1)
 
@@ -341,7 +397,9 @@ The lower bound extends along several dimensions:
 
 [^34]: Section 5.2 (p.28): The proofs fully relativize: if the database-oblivious PIR has access to an oracle O, then it implies an SSB hash with access to O, which separates CEA^O (in SZK^O) from BPP^O. This gives a barrier even for random oracle constructions.
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 #### Information-Theoretic Preprocessing PIR Schemes (from Table 1, p.3)
 
@@ -360,13 +418,17 @@ The lower bound extends along several dimensions:
 
 **Key takeaway:** This paper establishes the first information-theoretic single-server preprocessing PIR, achieving nearly optimal client-space and bandwidth tradeoff (tight to within n^{o(1)} factors per the lower bound). The constructions are purely theoretical with no implementation, but demonstrate that the OWF assumption in Piano is unnecessary for achieving the same asymptotic guarantees. The lower bounds show that significantly improving the sqrt(n) tradeoff requires "cryptomania" assumptions (beyond OWFs and even SZK-hard problems).
 
-### Explicit Adaptive Correctness Attack on Prior Schemes (Section 1.3)
+<a id="explicit-adaptive-correctness-attack-on-prior-schemes-section-1-3"></a>
+
+### Explicit Adaptive Correctness Attack on Prior Schemes (Section 1.3) <a href="#toc">⤴</a>
 
 The paper identifies an explicit adaptive correctness attack against Piano [ZPSZ24] and Ghoshal et al. [GZS24a]. These schemes use a single public PRP to permute database indices for load balancing, with O_tilde(1) replacement entries per chunk. The attack: after observing the PRP, adaptively choose sqrt(n) queries that all land in the same chunk, exhausting its replacement entries and causing correctness failure.&#8201;[^36]
 
 [^36]: Section 1.3 (p.7-8): The attack exploits that Piano's load balancing uses a public PRP with O_tilde(1) replacement entries per chunk; choosing all queries in one chunk breaks correctness.
 
-### Application Scenarios
+<a id="application-scenarios"></a>
+
+### Application Scenarios <a href="#toc">⤴</a>
 
 - **Secure multiparty computation:** Information-theoretic PIR protocols can be distributed among two or more parties making only black-box use of cryptography (or none at all in honest-majority settings), avoiding the non-black-box overhead of OWF-based protocols.&#8201;[^37]
 - **Information-theoretic ORAM:** The lower bound also applies to "truly information-theoretic" ORAM where encryption is not free, ruling out certain constructions.&#8201;[^38]
@@ -375,7 +437,9 @@ The paper identifies an explicit adaptive correctness attack against Piano [ZPSZ
 
 [^38]: Section 1.1 (p.2): The lower bound implies a fundamental tradeoff for truly information-theoretic ORAM where encryption is not considered a free assumption.
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **No implementation:** All constructions are theory-only; no benchmarks or concrete parameter instantiations are provided.
 - **Super-logarithmic overhead:** The O_tilde(.) notation hides a super-logarithmic alpha(n) factor from omega(log n)-wise parallel repetition needed for negligible failure probability.
@@ -387,7 +451,9 @@ The paper identifies an explicit adaptive correctness attack against Piano [ZPSZ
 
 [^39]: Appendix B (p.39): The 2-server scheme cannot benefit from the adaptive correctness techniques of Appendix A because the preprocessing phase leaks the random set choices to the left server.
 
-### Open Problems
+<a id="open-problems"></a>
+
+### Open Problems <a href="#toc">⤴</a>
 
 - Can we simultaneously achieve O_tilde(n^{1/2}) client space, bandwidth, AND server computation in a single-server IT preprocessing PIR?&#8201;[^40]
 - Can we achieve a 2-server IT preprocessing PIR scheme with adaptive correctness and the same efficiency as Theorem B.1?&#8201;[^39]
@@ -397,14 +463,18 @@ The paper identifies an explicit adaptive correctness attack against Piano [ZPSZ
 
 [^41]: Section 5.2 (p.28): A ROM construction breaking the O(sqrt(n)) barrier would settle the natural open question of whether (promise) SZK can be separated from BPP relative to a random oracle.
 
-### Related Papers in Collection
+<a id="related-papers-in-collection"></a>
+
+### Related Papers in Collection <a href="#toc">⤴</a>
 
 - **Piano [Group D]:** OWF-based single-server preprocessing PIR with O_tilde(sqrt(n)) bandwidth and client space; this paper proves Piano's tradeoff is nearly optimal in Minicrypt and identifies an adaptive correctness attack.
 - **CK20 [Group D]:** First sublinear-server cPIR without extra server storage; introduced the puncturable pseudorandom set paradigm that this paper combines with classical IT-PIR techniques.
 - **Mughees-Ren / MIR23 [Group D]:** Practical sublinear PIR with adaptive correctness; this paper derives a naive IT construction from MIR23 (Theorem 3.2) and uses it as a baseline.
 - **WangRen [Group D]:** Proves tight space-time tradeoff ST = O(nw) for computational preprocessing PIR; this paper's lower bounds are complementary (tradeoff between client space and bandwidth rather than space and time).
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - The Dvir-Gopi PIR [DG16] is cited as having query length k = exp(O(sqrt(log n * log log n))), but the exact constant in the exponent is not specified in this paper; the notation n^{o(1)} subsumes this.
 - The paper uses O_tilde(.) in two different ways: sometimes hiding polylog(n) factors, sometimes hiding a super-logarithmic alpha(n) from parallel repetition. Theorem A.3 and 4.4 use it for the latter (p.20, p.37). This is explicitly noted by the authors: "O_tilde(.) hides a multiplicative log n * alpha(n) factor for an arbitrary super-constant function alpha(n)" (Theorem 1.4, p.5).

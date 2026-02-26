@@ -1,5 +1,36 @@
 ## InsPIRe: Communication-Efficient PIR with Server-side Preprocessing -- Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#variants">Variants</a></nobr></sub><br>
+<sub><nobr>4. <a href="#novel-primitives-abstractions">Novel Primitives / Abstractions</a></nobr></sub><br>
+<sub><nobr>5. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>6. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#database-encoding">Database Encoding</a></nobr></sub><br>
+<sub><nobr>8. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>9. <a href="#query-structure"><b>Query Structure</b></a></nobr></sub><br>
+<sub><nobr>10. <a href="#communication-breakdown">Communication Breakdown</a></nobr></sub><br>
+<sub><nobr>11. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>12. <a href="#complexity"><b>Complexity</b></a></nobr></sub><br>
+<sub><nobr>13. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub><br>
+<sub><nobr>14. <a href="#application-scenarios">Application Scenarios</a></nobr></sub><br>
+<sub><nobr>15. <a href="#deployment-considerations">Deployment Considerations</a></nobr></sub><br>
+<sub><nobr>16. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>17. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>18. <a href="#portable-optimizations"><b>Portable Optimizations</b></a></nobr></sub><br>
+<sub><nobr>19. <a href="#implementation-notes"><b>Implementation Notes</b></a></nobr></sub><br>
+<sub><nobr>20. <a href="#open-problems">Open Problems</a></nobr></sub><br>
+<sub><nobr>21. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [InsPIRe: Communication-Efficient PIR with Server-side Preprocessing](https://eprint.iacr.org/2025/1352) (2025) |
@@ -11,7 +42,9 @@
 | **Rounds (online)** | 1 (non-interactive: client sends query, server responds) |
 | **Record-size regime** | Parameterized (1-bit to 32 KB demonstrated; interpolation degree t trades communication vs computation) |
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -20,7 +53,9 @@
 | **Superseded by** | N/A |
 | **Concurrent work** | KSPIR [58] (also CRS-model PIR with low communication) |
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 InsPIRe addresses the fundamental tension in single-server PIR between high throughput and low query communication without requiring offline communication. Prior CRS-model schemes like YPIR achieve high throughput but sacrifice online communication (up to megabytes per query). InsPIRe resolves this by introducing InspiRING, a novel ring packing algorithm that transforms d LWE ciphertexts into a single RLWE ciphertext using only two key-switching matrices (versus lg(d) in CDKS), with smaller noise growth and most computation deferrable to an offline preprocessing phase.&#8201;[^1] Additionally, InsPIRe encodes database columns as polynomials and uses homomorphic polynomial evaluation with RGSW-encrypted unit monomials to compress the second-dimension PIR response to a single ciphertext, incurring only additive noise per multiplication.&#8201;[^2]
 
@@ -30,7 +65,9 @@ InsPIRe addresses the fundamental tension in single-server PIR between high thro
 
 ---
 
-### Variants
+<a id="variants"></a>
+
+### Variants <a href="#toc">⤴</a>
 
 | Variant | Key Difference | Offline Comm | Online Comm | Best For |
 |---------|---------------|-------------|-------------|----------|
@@ -48,7 +85,9 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 ---
 
-### Novel Primitives / Abstractions
+<a id="novel-primitives-abstractions"></a>
+
+### Novel Primitives / Abstractions <a href="#toc">⤴</a>
 
 #### InspiRING (Full Packing)
 
@@ -117,7 +156,9 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 ---
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -133,7 +174,9 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 ---
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Database:** D in Z_p^{td x N/t}, a matrix where each column corresponds to t database entries, each entry an element of Z_p^d. For InsPIRe, entries are further encoded as polynomials: each column i is represented by h^(i)(Z) in R_p[Z] of degree t-1, with h^(i)(z_j) = y_j^(i). The encoded database D' in Z_p^{td x N/t} stores the polynomial coefficients c_j^(i) in R_p.&#8201;[^18]
 - **Key-switching matrices:** K_g = KS.Setup(tau_g(s_bar), s_bar) and K_h = KS.Setup(tau_h(s_bar), s_bar) in R_q^{ell x 2} each. For InsPIRe: two KS matrices for InspiRING packing. Total key material: 2 * d * ell_ks * log_2(q) bits.
@@ -144,7 +187,9 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 ---
 
-### Database Encoding
+<a id="database-encoding"></a>
+
+### Database Encoding <a href="#toc">⤴</a>
 
 - **Representation:** Matrix D in Z_p^{td x N/t}. Each column holds t entries, each entry in Z_p^d. For InsPIRe, each column is further encoded as a degree-(t-1) polynomial h^(i)(Z) over R_p whose evaluation at t unit monomial points z_0, ..., z_{t-1} yields the t entries.
 - **Record addressing:** Two-level index (i, j): column i = target column (selected by LWE indicator vector), row j = target entry within column (selected by polynomial evaluation at z_j = omega^j).
@@ -155,7 +200,9 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 ---
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -169,7 +216,9 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 ---
 
-### Query Structure
+<a id="query-structure"></a>
+
+### Query Structure <a href="#toc">⤴</a>
 
 | Component | Type | Size | Purpose |
 |-----------|------|------|---------|
@@ -179,7 +228,9 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 ---
 
-### Communication Breakdown
+<a id="communication-breakdown"></a>
+
+### Communication Breakdown <a href="#toc">⤴</a>
 
 | Component | Direction | Size (concrete, 1 GB / 64 B) | Reusable? | Notes |
 |-----------|-----------|------|-----------|-------|
@@ -190,7 +241,9 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 
 ---
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 #### Option A: FHE Noise Analysis
 
@@ -216,7 +269,9 @@ The noise analysis tracks sub-Gaussian parameters through three sources, combine
 
 ---
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core metrics
 
@@ -246,7 +301,9 @@ The noise analysis tracks sub-Gaussian parameters through three sources, combine
 
 ---
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 **Hardware:** Intel Xeon CPU @ 2.6 GHz, single-threaded. Offline runtimes measured once; online runtimes averaged over 5 runs (standard deviation < 5%).&#8201;[^23]
 
@@ -319,7 +376,9 @@ InspiRING achieves 84% less key material than CDKS and 76% less than HintlessPIR
 
 ---
 
-### Application Scenarios
+<a id="application-scenarios"></a>
+
+### Application Scenarios <a href="#toc">⤴</a>
 
 #### Private Queries in IPFS (Section 8.1)
 
@@ -341,7 +400,9 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 
 ---
 
-### Deployment Considerations
+<a id="deployment-considerations"></a>
+
+### Deployment Considerations <a href="#toc">⤴</a>
 
 - **Database updates:** Server re-encodes database (polynomial interpolation) on change. No per-client state to update. Server-side preprocessing of InspiRING can be re-executed independently.&#8201;[^29]
 - **Cold start suitability:** Excellent -- no offline communication needed. CRS model means clients can issue queries immediately.&#8201;[^30]
@@ -356,7 +417,9 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 
 ---
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **Communication vs computation tradeoff via interpolation degree t:** Larger t reduces query size (fewer rows N/t in the indicator vector) but increases polynomial evaluation cost (t-1 external products). Optimal total communication at t = sqrt(N), but server runtime increases.&#8201;[^31]
 - **Offline preprocessing cost:** InspiRING's offline phase has cubic dependence on d (O(d^3)), which is slower than CDKS's offline for large d. The online savings compensate in PIR applications.
@@ -370,7 +433,9 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 
 ---
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 **1 GB database, 64 B entries (Table 3):**
 
@@ -387,7 +452,9 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 
 ---
 
-### Portable Optimizations
+<a id="portable-optimizations"></a>
+
+### Portable Optimizations <a href="#toc">⤴</a>
 
 - **InspiRING ring packing:** Applicable to any RLWE-based PIR in the CRS model that needs LWE-to-RLWE conversion. Can directly replace CDKS packing in YPIR for improved key material and online time.&#8201;[^34]
 - **Homomorphic polynomial evaluation with unit monomials:** Applicable to any scheme needing homomorphic evaluation of a polynomial over R_p. The additive-only noise property from unit monomial evaluation points is a general technique independent of PIR.
@@ -398,7 +465,9 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 
 ---
 
-### Implementation Notes
+<a id="implementation-notes"></a>
+
+### Implementation Notes <a href="#toc">⤴</a>
 
 - **Language / Library:** Rust, building on spiral-rs (YPIR implementation [3]) for RLWE operations.
 - **Polynomial arithmetic:** NTT-based (standard for RLWE operations).
@@ -409,7 +478,9 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 
 ---
 
-### Open Problems
+<a id="open-problems"></a>
+
+### Open Problems <a href="#toc">⤴</a>
 
 - **Multivariate polynomial evaluation:** Extending to t > 2d via multivariate interpolation (Appendix G.2) with alpha variables, requiring alpha RGSW ciphertexts. Full analysis of the communication-computation tradeoff in this regime is left open.&#8201;[^35]
 - **Non-power-of-two t:** Lagrange interpolation (Appendix G.3) supports arbitrary t at O(t^2) cost instead of O(t*log(t)). Whether more efficient approaches exist for specific non-power-of-two t values is open.
@@ -419,7 +490,9 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 
 ---
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - The paper uses d to denote both the LWE dimension and the ring degree interchangeably (stated explicitly on p.6: "Throughout the paper, we use d to denote both the dimension of LWE samples and the degree of RLWE samples").
 - The variable p is used for both the plaintext modulus and as a generic polynomial symbol. Context disambiguates but may cause confusion.

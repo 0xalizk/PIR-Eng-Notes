@@ -1,5 +1,37 @@
 ## WhisPIR -- Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>4. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>5. <a href="#database-encoding">Database Encoding</a></nobr></sub><br>
+<sub><nobr>6. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#query-structure"><b>Query Structure</b></a></nobr></sub><br>
+<sub><nobr>8. <a href="#communication-breakdown">Communication Breakdown</a></nobr></sub><br>
+<sub><nobr>9. <a href="#non-compact-bgv-key-innovation">Non-Compact BGV: Key Innovation</a></nobr></sub><br>
+<sub><nobr>10. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
+<sub><nobr>11. <a href="#complexity"><b>Complexity</b></a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>12. <a href="#optimization-catalog"><b>Optimization Catalog</b></a></nobr></sub><br>
+<sub><nobr>13. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub><br>
+<sub><nobr>14. <a href="#application-scenarios">Application Scenarios</a></nobr></sub><br>
+<sub><nobr>15. <a href="#deployment-considerations">Deployment Considerations</a></nobr></sub><br>
+<sub><nobr>16. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>17. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>18. <a href="#portable-optimizations"><b>Portable Optimizations</b></a></nobr></sub><br>
+<sub><nobr>19. <a href="#implementation-notes"><b>Implementation Notes</b></a></nobr></sub><br>
+<sub><nobr>20. <a href="#open-problems-stated-by-authors">Open Problems</a></nobr></sub><br>
+<sub><nobr>21. <a href="#related-papers-in-collection">Related Papers in Collection</a></nobr></sub><br>
+<sub><nobr>22. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [WhisPIR: Stateless Private Information Retrieval with Low Communication](https://eprint.iacr.org/2024/266) (2024) |
@@ -11,7 +43,9 @@
 | **Rounds (online)** | 1 (non-interactive: client sends query, server returns response) |
 | **Record-size regime** | Small to Moderate (optimized for entries up to a few KB; large entries handled by splitting across R_p elements) |
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -20,7 +54,9 @@
 | **Superseded by** | N/A |
 | **Concurrent work** | HintlessPIR [LMRSW23] is noted as a concurrent stateless PIR protocol that also transfers FHE evaluation keys with the query; WhisPIR's computation is Spiral-like while HintlessPIR's is SimplePIR/TipToe-like |
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 WhisPIR is a fully stateless single-server PIR protocol that achieves low per-query communication by bundling compressed evaluation keys with the query itself, eliminating any offline phase or persistent client state.&#8201;[^1] The key technical insight is to use the non-compact variant of the BGV homomorphic encryption scheme -- allowing ciphertexts to grow beyond the standard 2-component form during homomorphic multiplications -- which eliminates the need for relinearization keys and reduces both communication and computation.&#8201;[^2] WhisPIR further optimizes the index expansion algorithm (inherited from SealPIR/OnionPIR) for the single-rotation-key setting by carefully choosing the generator for substitution operations, reducing the number of rotations by 2--50x over the naive choice, and introduces iterative precomputed key switching that rotates the key instead of the ciphertext.&#8201;[^3]
 
@@ -32,7 +68,9 @@ WhisPIR is a fully stateless single-server PIR protocol that achieves low per-qu
 
 ---
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -54,7 +92,9 @@ WhisPIR is a fully stateless single-server PIR protocol that achieves low per-qu
 
 ---
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Database:** D in Z_t^N, indexed by i in [N]. Digitized into k digits in base l, so i = (i_1, ..., i_k) with each i_j in [l], where l^k >= N. Packed into (R_p)^(l^k) ring elements, each holding n * floor(log_2(p)) bits.&#8201;[^9]
 - **Public parameters (pp):** Tuple (sigma, pi, k, l, n, q, B, p, N, t) -- just the PRG seed and basic parameters. Fits in a few hundred bits.&#8201;[^10]
@@ -74,7 +114,9 @@ WhisPIR is a fully stateless single-server PIR protocol that achieves low per-qu
 
 ---
 
-### Database Encoding
+<a id="database-encoding"></a>
+
+### Database Encoding <a href="#toc">⤴</a>
 
 - **Representation:** k-dimensional hypercube of dimensions [l] x [l] x ... x [l] (k times), where l is the digit base and l^k >= N.&#8201;[^14]
 - **Record addressing:** Each index i in [N] represented as k digits (i_1, ..., i_k) in base l. Each digit encoded as a length-l one-hot binary vector, concatenated across k sets to form a k*l binary vector.&#8201;[^15]
@@ -91,7 +133,9 @@ WhisPIR is a fully stateless single-server PIR protocol that achieves low per-qu
 
 ---
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -102,7 +146,9 @@ WhisPIR is a fully stateless single-server PIR protocol that achieves low per-qu
 
 ---
 
-### Query Structure
+<a id="query-structure"></a>
+
+### Query Structure <a href="#toc">⤴</a>
 
 | Component | Type | Size | Purpose |
 |-----------|------|------|---------|
@@ -115,7 +161,9 @@ Total upload size = (w+1) * n * ceil(log_2(q)) / 8 bytes, where w = ceil(log_B(q
 
 ---
 
-### Communication Breakdown
+<a id="communication-breakdown"></a>
+
+### Communication Breakdown <a href="#toc">⤴</a>
 
 | Component | Direction | Size | Reusable? | Notes |
 |-----------|-----------|------|-----------|-------|
@@ -125,7 +173,9 @@ Total upload size = (w+1) * n * ceil(log_2(q)) / 8 bytes, where w = ceil(log_B(q
 
 ---
 
-### Non-Compact BGV: Key Innovation
+<a id="non-compact-bgv-key-innovation"></a>
+
+### Non-Compact BGV: Key Innovation <a href="#toc">⤴</a>
 
 Standard BGV ciphertexts have 2 components (c_0, c_1) in R_q^2. After multiplying two such ciphertexts, the result has 3 components (c_0, c_1, c_2) in R_q^3, requiring a relinearization step to reduce back to 2 components. Relinearization requires a relinearization key of size comparable to the switching key.&#8201;[^19]
 
@@ -144,7 +194,9 @@ WhisPIR's insight is to skip relinearization entirely. After k levels of homomor
 
 ---
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 #### Option A: FHE Noise Analysis
 
@@ -171,7 +223,9 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 
 ---
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core metrics
 
@@ -200,7 +254,9 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 
 ---
 
-### Optimization Catalog
+<a id="optimization-catalog"></a>
+
+### Optimization Catalog <a href="#toc">⤴</a>
 
 | Optimization | Known/Novel | Source | Improvement | Applicable to |
 |-------------|-------------|--------|-------------|---------------|
@@ -234,7 +290,9 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 
 ---
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 **Hardware:** Intel i7 core at 2.5 GHz, 32 GB RAM, Ubuntu 20, clang++ v10. Single-threaded. 128-bit security [ACC+18].&#8201;[^38]
 
@@ -329,7 +387,9 @@ The number of queries before Spiral outperforms WhisPIR in total communication: 
 
 ---
 
-### Application Scenarios
+<a id="application-scenarios"></a>
+
+### Application Scenarios <a href="#toc">⤴</a>
 
 #### Secure Blocklist Checking in E2E Encrypted Messaging
 
@@ -349,7 +409,9 @@ WhisPIR is applied to URL blocklist checking in end-to-end encrypted messaging a
 
 ---
 
-### Deployment Considerations
+<a id="deployment-considerations"></a>
+
+### Deployment Considerations <a href="#toc">⤴</a>
 
 - **Database updates:** Server precomputation (Algorithm 2 rotations) can be reused as long as DB size remains stable. The precomputed a_k coefficient must be updated when the DB changes, but the paper notes this is practical for most applications where updates are less frequent than queries.&#8201;[^47]
 - **Sharding:** Not discussed explicitly, but the chunking optimization (splitting DB into c chunks) naturally supports sharding.
@@ -371,7 +433,9 @@ WhisPIR is applied to URL blocklist checking in end-to-end encrypted messaging a
 
 ---
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **Communication-computation tradeoff is continuous:** WhisPIR supports a wide range of operating points via parameters (c, p, B, number of index ciphertexts). The tradeoff curve has a "1/x" shape -- minimum communication is relatively slow, but an order-of-magnitude computation reduction costs only ~2x more communication.&#8201;[^52]
 - **Computation not competitive with SimplePIR:** SimplePIR's plain-LWE matrix-vector multiply (~0.125s for 1 GB) remains faster, but SimplePIR's communication (126 MB per query) is prohibitive in stateless settings.&#8201;[^53]
@@ -389,7 +453,9 @@ WhisPIR is applied to URL blocklist checking in end-to-end encrypted messaging a
 
 ---
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 All values approximate (chart-derived). 1 GiB database, single-threaded.
 
@@ -406,7 +472,9 @@ All values approximate (chart-derived). 1 GiB database, single-threaded.
 
 ---
 
-### Portable Optimizations
+<a id="portable-optimizations"></a>
+
+### Portable Optimizations <a href="#toc">⤴</a>
 
 - **Optimal generator selection for single-key expansion (Section 3.2, Table 1):** The technique of selecting g in Z_{2n}* to minimize total rotations in the coefficient expansion tree is applicable to any PIR scheme that performs oblivious expansion with a single automorphism key. Could benefit Spiral, SealPIR, OnionPIR in constrained settings.
 - **Iterative precomputed key switching (Algorithms 2--3):** The "rotate the key, not the ciphertext" approach -- precomputing key permutations offline and performing only a single inner product online -- is applicable to any BGV/BFV scheme that computes iterated automorphisms. The technique enables SIMD-friendly inner-product computation.
@@ -414,7 +482,9 @@ All values approximate (chart-derived). 1 GiB database, single-threaded.
 
 ---
 
-### Implementation Notes
+<a id="implementation-notes"></a>
+
+### Implementation Notes <a href="#toc">⤴</a>
 
 - **Language / Library:** C++ (custom implementation), compiled with clang++ v10&#8201;[^56]
 - **Polynomial arithmetic:** RNS representation of RLWE modulus [GHS12, KPZ21] for ciphertext moduli larger than 64 bits&#8201;[^57]
@@ -430,7 +500,9 @@ All values approximate (chart-derived). 1 GiB database, single-threaded.
 
 ---
 
-### Open Problems (stated by authors)
+<a id="open-problems-stated-by-authors"></a>
+
+### Open Problems (stated by authors) <a href="#toc">⤴</a>
 
 - Closed-form expression for the optimal generator in the index expansion algorithm, and closed-form solutions when multiple generators are available.&#8201;[^59]
 - Parallel performance characterization and optimization.&#8201;[^60]
@@ -447,7 +519,9 @@ All values approximate (chart-derived). 1 GiB database, single-threaded.
 
 ---
 
-### Related Papers in Collection
+<a id="related-papers-in-collection"></a>
+
+### Related Papers in Collection <a href="#toc">⤴</a>
 
 | Paper | Group | Relationship |
 |-------|-------|-------------|
@@ -459,7 +533,9 @@ All values approximate (chart-derived). 1 GiB database, single-threaded.
 
 ---
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - **Chart-derived values:** All benchmark numbers are approximate (read from charts in Figures 1--6). The paper contains no benchmark tables with exact values. Accuracy estimated at +/-10%.
 - **Notation: n vs ring dimension:** The paper uses n for ring dimension (degree of the cyclotomic polynomial). This is consistent with standard BGV convention but differs from some PIR papers that use n for database size.

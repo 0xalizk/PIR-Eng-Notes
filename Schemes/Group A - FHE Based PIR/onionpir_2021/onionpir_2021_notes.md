@@ -1,5 +1,35 @@
 ## OnionPIR — Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>4. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>5. <a href="#database-encoding">Database Encoding</a></nobr></sub><br>
+<sub><nobr>6. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#query-structure"><b>Query Structure</b></a></nobr></sub><br>
+<sub><nobr>8. <a href="#novel-primitives-abstractions">Novel Primitives / Abstractions</a></nobr></sub><br>
+<sub><nobr>9. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
+<sub><nobr>10. <a href="#complexity"><b>Complexity</b></a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>11. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub><br>
+<sub><nobr>12. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>13. <a href="#portable-optimizations"><b>Portable Optimizations</b></a></nobr></sub><br>
+<sub><nobr>14. <a href="#implementation-notes"><b>Implementation Notes</b></a></nobr></sub><br>
+<sub><nobr>15. <a href="#variants">Variants</a></nobr></sub><br>
+<sub><nobr>16. <a href="#application-scenarios">Application Scenarios</a></nobr></sub><br>
+<sub><nobr>17. <a href="#deployment-considerations">Deployment Considerations</a></nobr></sub><br>
+<sub><nobr>18. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>19. <a href="#open-problems">Open Problems</a></nobr></sub><br>
+<sub><nobr>20. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [OnionPIR: Response Efficient Single-Server PIR](https://eprint.iacr.org/2021/1081) (2021) |
@@ -13,7 +43,9 @@
 [^circular]: RGSW encryption of the secret key A = RGSW(-s) is provided to the server for query expansion (Algorithm 2, line 13: `externalProduct(A, c[...])`). This implicitly requires a circular-security assumption (editorial inference — the paper does not explicitly mention circular security). Note: line numbering may vary by PDF rendering.
 [^recordsize]: Section 6.2, p.10: "We set each database entry to be 30 KB."
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -26,13 +58,17 @@
 [^concurrent]: Section 7, p.12: "Park and Tibouchi present a construction based on external products that improve the response overhead to 16x; but their computation cost more than doubled compared to SealPIR."
 [^concurrent2]: Section 7, p.12: "Ali et al. also gives a protocol... to retrieve 60 KB entry from a database with one million entries requires around 900 seconds of server computation."
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 OnionPIR achieves a 4.2x response overhead (vs. the insecure baseline of downloading the raw entry), compared to SealPIR's ~100x, by replacing BFV ciphertext multiplications with external products (RGSW x BFV). External products grow noise only additively (O(B * Err(C) + Err(d))) rather than multiplicatively (O(t * (Err(ct1) + Err(ct2)))), which allows: (1) representing the database as a higher-dimensional hypercube (d = 1 + ceil(log_4(N/128)) dimensions instead of 2), (2) using a larger plaintext modulus t = 60 bits (vs. SealPIR's 12 bits), and (3) reducing the ciphertext expansion factor F from ~10 to ~4.2.[^coreidea] A secondary technique, DecompMul, handles the first dimension using decomposed ciphertext-plaintext multiplication to balance noise and computation.
 
 [^coreidea]: Abstract, p.1: "OnionPIR achieves a response overhead of just 4.2x over the insecure baseline, in contrast to the 100x response overhead of state-of-the-art schemes."
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -48,7 +84,9 @@ OnionPIR achieves a 4.2x response overhead (vs. the insecure baseline of downloa
 [^keystructure]: Algorithm 2, p.7: "A = RGSW(-s), RGSW encryption of the client's secret key."
 [^correctness]: Section 2.1, p.2: "Since the message is encoded in the most significant bits and the noise e is small, rounding mu recovers m." The specific inequality Err(ct_resp) < floor(q/t)/2 is an editorial formalization of this correctness condition; the paper does not state it in this form.
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Database as hypercube:** N entries organized as N_1 x N_2 x ... x N_d where N_1 = 128 and N_2 = N_3 = ... = N_d = 4. Total dimensions d = 1 + ceil(log_4(N/128)).[^hypercube]
 - **Decomposed database:** Each 30 KB entry is decomposed into two halves of log(t)/2 = 30 bits each via DecompPlain(pt) before first-dimension processing.[^decomp]
@@ -58,7 +96,9 @@ OnionPIR achieves a 4.2x response overhead (vs. the insecure baseline of downloa
 [^decomp]: Section 4.2, p.6, Figure 4: "DecompPlain(pt): Decompose input pt into two parts each of size log(t)/2 bits."
 [^querypacking]: Section 4.4, p.7: "We pack two values for each query bit, hence, in total 256 values for the first dimension... a total of 386 values will be packed."
 
-### Database Encoding
+<a id="database-encoding"></a>
+
+### Database Encoding <a href="#toc">⤴</a>
 
 - **Representation:** d-dimensional hypercube with N_1 = 128 along the first axis and N_i = 4 for i >= 2.[^dbenc1]
 - **Record addressing:** Multi-index (i_1, ..., i_d) where i_j is the position in the j-th dimension of the hypercube.[^dbenc2]
@@ -70,7 +110,9 @@ OnionPIR achieves a 4.2x response overhead (vs. the insecure baseline of downloa
 [^dbenc3]: Algorithm 3, p.8, line 1: "Server computes {pt_j} = {DecompPlain(DB_j)}."
 [^dbenc4]: Section 6.2, p.10: "With n = 4096 and 60-bit t, 30 KB of plaintext data can fit in a single ciphertext."
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -85,7 +127,9 @@ OnionPIR achieves a 4.2x response overhead (vs. the insecure baseline of downloa
 [^querysize]: Section 4.4, p.8: "Using the pseudorandom seed optimization... the request size is 64 KB."
 [^respsize]: Section 4.4, p.8: "We set the ciphertext modulus q to 124 bits (padded to 128 bits in the implementation). The plaintext modulus t is set to 60 bits. This gives a ciphertext expansion factor F ≈ 4.2." The concrete 128 KB response figure comes from Section 6.3, p.11: "the response size is only 128 KB" and Table 3, p.11. Editorial calculation: 30 KB * 4.2 ≈ 126 KB, padded to 128 KB.
 
-### Query Structure
+<a id="query-structure"></a>
+
+### Query Structure <a href="#toc">⤴</a>
 
 | Component | Type | Size | Purpose |
 |-----------|------|------|---------|
@@ -96,7 +140,9 @@ OnionPIR achieves a 4.2x response overhead (vs. the insecure baseline of downloa
 [^qstruct1]: Section 4.4, p.8: "the request size is 64 KB."
 [^qstruct2]: Section 4.3, p.7: "instead of sending a truly random c_0, the client can generate a pseudorandom c_0 from a short random seed and send the seed to the server. This optimization reduces the request size in half."
 
-### Novel Primitives / Abstractions
+<a id="novel-primitives-abstractions"></a>
+
+### Novel Primitives / Abstractions <a href="#toc">⤴</a>
 
 #### DecompMul (Decomposed Ciphertext-Plaintext Multiplication)
 
@@ -131,7 +177,9 @@ OnionPIR achieves a 4.2x response overhead (vs. the insecure baseline of downloa
 [^benes_built]: Section 5.2, p.9: "It is a N x N interconnection network with 2 log N - 1 stages. Each stage contains N/2 nodes where each node is a 2 x 2 switch."
 [^benes_noise]: Section 5.2, p.9: "Each input to the copy network passes through 2 log N - 1 switches, so the noise in the output ciphertext only increases logarithmically in N."
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 #### Option A: FHE Noise Analysis
 
@@ -159,7 +207,9 @@ External products have noise growth O(B * Err(C) + Err(d)), which is additive in
 [^noise_comparison_exp]: Section 4.4, p.8: "had we used BFV ciphertext multiplications instead of external products, the noise in the output ciphertext would have grown exponentially to Err(ct_resp.) <= O(t^d * N) * Err(BFV). This noise grows too fast with the number of dimensions d, which is why prior works were limited to d = 2."
 [^noise_comparison_add]: Section 2.2, p.3, Table 1: "the noise growth in the external product is additive, which allows the evaluation of deeper circuits." Section 3, p.3: "external product operations increase noise additively."
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core metrics
 
@@ -209,7 +259,9 @@ External products have noise growth O(B * Err(C) + Err(d)), which is additive in
 [^cost_large]: Table 3, p.11.
 [^cost_huge]: Table 3, p.11. OnionPIR's server cost is $1.792 vs SealPIR's $1.818 — nearly identical for large N because computation dominates and both have similar computation costs.
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 **Hardware:** Amazon EC2 t2.2xlarge, 32 GB RAM, 8 CPU cores with AVX.[^hardware]
 **Threading model:** Not specified (results are averages over 10 runs).[^threading]
@@ -271,7 +323,9 @@ Key observations from Table 4:
 [^stat_patel]: Section 6.4, p.11: "the amortized response size of stateful OnionPIR is only 256 KB, which is a reduction of 27 ~ 3,900x compared to Patel et al."
 [^stat_cost]: Section 6.4, p.11: "Overall, the stateful OnionPIR has around 10 ~ 107x cheaper monetary cost than Patel et al."
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 | Metric | OnionPIR | SealPIR | XPIR | Ali et al. | SHECS-PIR |
 |--------|----------|---------|------|-----------|-----------|
@@ -291,7 +345,9 @@ Key observations from Table 4:
 
 **Key takeaway:** OnionPIR is the preferred choice when response size (bandwidth) is the primary concern and computation cost comparable to SealPIR is acceptable. For databases up to ~10^6 entries, OnionPIR achieves 25x smaller responses than SealPIR with virtually identical server computation time. The crossover point where SealPIR's request size exceeds OnionPIR's occurs around N = 4 million entries.
 
-### Portable Optimizations
+<a id="portable-optimizations"></a>
+
+### Portable Optimizations <a href="#toc">⤴</a>
 
 1. **External products for higher-dimensional hypercubes:** The substitution of BFV ciphertext multiplication with GSW x Regev external products to enable d > 2 dimensions is applicable to any BFV-based PIR scheme that processes databases as hypercubes. The additive noise growth property is the key enabler.[^port_ext]
 
@@ -306,7 +362,9 @@ Key observations from Table 4:
 [^port_benes]: Section 5.2, p.9.
 [^port_pack]: Section 4.3, Algorithm 1.
 
-### Implementation Notes
+<a id="implementation-notes"></a>
+
+### Implementation Notes <a href="#toc">⤴</a>
 
 - **Language / Library:** C++ built on Microsoft SEAL Homomorphic Encryption Library version 3.5.1.[^impl_seal]
 - **Polynomial arithmetic:** NTT-based. The paper identified SEAL's NTT implementation as a bottleneck (>80% of server time) and replaced it with NFLLib, which uses "several arithmetic optimizations and AVX2 specialization for arithmetic operations over polynomials." NFLLib's NTT is 2-3x faster than SEAL's.[^impl_ntt]
@@ -322,7 +380,9 @@ Key observations from Table 4:
 [^impl_avx]: Section 6.1, p.10: "AVX2 specialization."
 [^impl_loc]: Section 6.1, p.10: "our modifications consist of around 3000 lines of C++ code."
 
-### Variants
+<a id="variants"></a>
+
+### Variants <a href="#toc">⤴</a>
 
 | Variant | Key Difference | Response Size | Computation | Best For |
 |---------|---------------|---------------|-------------|----------|
@@ -331,7 +391,9 @@ Key observations from Table 4:
 
 [^var_stat]: Section 6.4, p.11.
 
-### Application Scenarios
+<a id="application-scenarios"></a>
+
+### Application Scenarios <a href="#toc">⤴</a>
 
 - **Private media streaming** — mentioned as motivation (Popcorn, ref [40]): large-record regime where response overhead dominates costs.[^app_media]
 - **Private ad delivery** (ref [39]).[^app_ad]
@@ -341,7 +403,9 @@ Key observations from Table 4:
 [^app_ad]: Section 1, p.1.
 [^app_anon]: Section 1, p.1.
 
-### Deployment Considerations
+<a id="deployment-considerations"></a>
+
+### Deployment Considerations <a href="#toc">⤴</a>
 
 - **Database updates:** Not addressed for stateless OnionPIR. Stateful OnionPIR "currently only applies to the static database" — updates are listed as an open problem.[^deploy_update]
 - **Sharding:** Not discussed.
@@ -352,7 +416,9 @@ Key observations from Table 4:
 
 [^deploy_update]: Section 8, p.13: "it currently only applies to the static database. An interesting direction is to explore how to support updates to the database in stateful PIR."
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 1. **Request size 2x larger than SealPIR** for small databases (64 KB vs 32 KB), because the larger q (124-bit vs 60-bit) makes each BFV ciphertext 4x larger, partially offset by packing all dimensions into one ciphertext.[^tradeoff_req]
 
@@ -370,7 +436,9 @@ Key observations from Table 4:
 [^tradeoff_static]: Section 8, p.13.
 [^tradeoff_security]: Section 6.2, p.10: "about 111 bits of computational security." SealPIR uses n = 2048 with q = 60 bits and provides 115 bits. Editorial note: The characterization "below the typical 128-bit target" is the notes author's interpretation; the paper does not mention a 128-bit target.
 
-### Open Problems
+<a id="open-problems"></a>
+
+### Open Problems <a href="#toc">⤴</a>
 
 1. **GPU/FPGA acceleration:** "Recent research efforts have demonstrated that GPU and FPGA can significantly speed up polynomial multiplications. An interesting future direction is to integrate them into PIR."[^open_gpu]
 2. **Removing public-key operations from stateful PIR online phase:** "try to get rid of the expensive public-key operations in the online phase of stateful PIR."[^open_stateful]
@@ -380,7 +448,9 @@ Key observations from Table 4:
 [^open_stateful]: Section 8, p.13.
 [^open_updates]: Section 8, p.13.
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - **Security level:** The paper reports ~111 bits of security for their parameter choice (n = 4096, q = 124 bits). This is below the standard 128-bit target. The paper also states "115 bits" in Section 6.2 when setting q = 60 bits and n = 2048 (SealPIR's parameters). There may be some inconsistency in how the LWE estimator was applied across different parameter sets.
 - **Stateful OnionPIR's batched PIR:** The offline phase computation cost is "simulated" (Section 6.2: "We have not implemented batched PIR, so the offline phase computation cost is simulated"), meaning the stateful variant's benchmarks are partially estimated rather than fully measured.

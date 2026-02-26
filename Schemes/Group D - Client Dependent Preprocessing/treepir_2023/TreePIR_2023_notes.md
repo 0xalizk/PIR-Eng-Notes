@@ -1,5 +1,35 @@
 ## TreePIR -- Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#novel-primitives-abstractions">Novel Primitives / Abstractions</a></nobr></sub><br>
+<sub><nobr>4. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>5. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>6. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#two-server-protocol-details">Two-Server Protocol Details</a></nobr></sub><br>
+<sub><nobr>8. <a href="#variants">Variants</a></nobr></sub><br>
+<sub><nobr>9. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
+<sub><nobr>10. <a href="#complexity"><b>Complexity</b></a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>11. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub><br>
+<sub><nobr>12. <a href="#application-scenarios">Application Scenarios</a></nobr></sub><br>
+<sub><nobr>13. <a href="#deployment-considerations">Deployment Considerations</a></nobr></sub><br>
+<sub><nobr>14. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>15. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>16. <a href="#portable-optimizations"><b>Portable Optimizations</b></a></nobr></sub><br>
+<sub><nobr>17. <a href="#implementation-notes"><b>Implementation Notes</b></a></nobr></sub><br>
+<sub><nobr>18. <a href="#open-problems">Open Problems</a></nobr></sub><br>
+<sub><nobr>19. <a href="#related-papers-in-collection">Related Papers in Collection</a></nobr></sub><br>
+<sub><nobr>20. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [TreePIR: Sublinear-Time and Polylog-Bandwidth Private Information Retrieval from DDH](https://eprint.iacr.org/2023/204) (2023) |
@@ -21,7 +51,9 @@
 
 ---
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -34,7 +66,9 @@
 
 ---
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear amortized server computation and sublinear bandwidth. The key insight is a new cryptographic primitive called a *weak privately puncturable PRF* (wpPRF), built from the GGM-tree PRF construction using only one-way functions. The wpPRF allows the client to construct pseudorandom sets that (1) have compact key representation (λ bits), (2) support private puncturing -- removing an element without revealing which element or even which "chunk" it belonged to, and (3) support efficient full evaluation -- enumerating all input-output pairs for every possible puncture guess in O(N log N) time by exploiting shared structure in the GGM tree. During the offline phase, the client sends M = λ * sqrt(N) wpPRF keys to server_0, which computes XOR parities of the corresponding pseudorandom sets. Online, the client punctures two keys (one fresh, one from its table) and sends the punctured keys to the two servers, which each compute sqrt(N) parity values. The client reconstructs the answer by XORing its stored parity with the server's response. This reduces PIR on N elements to PIR on sqrt(N) elements, which can be further resolved by downloading sqrt(N) values or recursing with a single-server PIR scheme.&#8201;[^6]
 
@@ -42,7 +76,9 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 ---
 
-### Novel Primitives / Abstractions
+<a id="novel-primitives-abstractions"></a>
+
+### Novel Primitives / Abstractions <a href="#toc">⤴</a>
 
 #### Weak Privately Puncturable PRF (wpPRF)
 
@@ -75,7 +111,9 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 ---
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -93,7 +131,9 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 ---
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Client table T**: M = λ * sqrt(N) entries, each containing a wpPRF key k_j and a parity value p_j = XOR_{i in S_j} DB[i]. Total client storage: O(sqrt(N)) entries (each entry is λ + w bits, where w is element size).&#8201;[^17]
 - **Pseudorandom set S_i**: Defined as S_i = {v || F.Eval(k_i, v) : v in [sqrt(N)]}. Contains exactly sqrt(N) elements, one per chunk of size sqrt(N) within [N]. Each element is determined by concatenating the chunk index with the wpPRF output.&#8201;[^18]
@@ -108,7 +148,9 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 ---
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -121,7 +163,9 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 ---
 
-### Two-Server Protocol Details
+<a id="two-server-protocol-details"></a>
+
+### Two-Server Protocol Details <a href="#toc">⤴</a>
 
 | Aspect | Server 0 | Server 1 |
 |--------|----------|----------|
@@ -141,7 +185,9 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 ---
 
-### Variants
+<a id="variants"></a>
+
+### Variants <a href="#toc">⤴</a>
 
 | Variant | Key Difference | Server Time* | Client Storage | Online Bandwidth* | Assumption |
 |---------|---------------|-------------|---------------|-------------------|------------|
@@ -156,7 +202,9 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 ---
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 #### Option B: Probabilistic Correctness Analysis
 
@@ -182,7 +230,9 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 ---
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core metrics
 
@@ -227,7 +277,9 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 
 ---
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 **Hardware:** Amazon Web Services EC2 instance m5d.8xlarge, single-threaded.&#8201;[^34]
 
@@ -277,7 +329,9 @@ Query time amortized over 2000 queries.&#8201;[^37]
 
 ---
 
-### Application Scenarios
+<a id="application-scenarios"></a>
+
+### Application Scenarios <a href="#toc">⤴</a>
 
 - **Secure Certificate Transparency (SCT) auditing:** Database of 2^33 one-bit elements (certificate presence flags). Requires two-server model. TreePIR without recursion is optimal here because elements are 1 bit -- downloading sqrt(N) bits is cheaper than recursing with a single-server PIR scheme that has fixed baseline communication overhead.&#8201;[^38]
 - **Compromised credential checking:** Large databases of 1-bit entries where the query must be private (e.g., checking if a password hash appears in a breach database).&#8201;[^39]
@@ -288,7 +342,9 @@ Query time amortized over 2000 queries.&#8201;[^37]
 
 ---
 
-### Deployment Considerations
+<a id="deployment-considerations"></a>
+
+### Deployment Considerations <a href="#toc">⤴</a>
 
 - **Database updates:** Supported via a waterfall / layered approach (Section 5.3). Initialize log(N) subdatabases of sizes 2^0, 2^1, ..., 2^{log N}. Updates go to the smallest empty layer; when a layer overflows, merge into the next. Client queries all layers. Amortized update cost is manageable; N updates trigger full re-preprocessing.&#8201;[^40]
 - **Sharding:** Not discussed, but the two-server model naturally supports sharding by having each server hold the same shard.
@@ -304,7 +360,9 @@ Query time amortized over 2000 queries.&#8201;[^37]
 
 ---
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **Requires two non-colluding servers** -- not suitable for single-server deployments without recursion to a single-server PIR (which adds DDH or RLWE assumptions and 61 ms overhead).
 - **Client-dependent preprocessing** -- not suitable for anonymous access; each client must run an expensive offline phase.
@@ -318,7 +376,9 @@ Query time amortized over 2000 queries.&#8201;[^37]
 
 ---
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 | Metric | TreePIR (base) | TreePIR + SPIRAL | Checklist [33] | PRP-PIR [15] | Shi et al. [43] |
 |--------|---------------|-----------------|----------------|-------------|----------------|
@@ -336,7 +396,9 @@ Query time amortized over 2000 queries.&#8201;[^37]
 
 ---
 
-### Portable Optimizations
+<a id="portable-optimizations"></a>
+
+### Portable Optimizations <a href="#toc">⤴</a>
 
 - **Shift-based deterministic client time (Appendix A.1):** Adding a random shift s in [sqrt(N)] to each pseudorandom set S_i guarantees that the client can always find a covering set with a single key sample (rather than expected sqrt(N) samples). This technique is applicable to any PRF-based client-preprocessing PIR scheme using partitioned pseudorandom sets.&#8201;[^45]
 - **Efficient full evaluation via GGM tree sharing:** The observation that adjacent puncture guesses share GGM tree structure, enabling O(N log N) total evaluation instead of O(N^2), may be applicable to other constructions that enumerate over tree-structured PRF evaluations.
@@ -346,7 +408,9 @@ Query time amortized over 2000 queries.&#8201;[^37]
 
 ---
 
-### Implementation Notes
+<a id="implementation-notes"></a>
+
+### Implementation Notes <a href="#toc">⤴</a>
 
 - **Language / Library:** 530 lines of C++ (core wpPRF and parity computation) + 470 lines of Go (protocol orchestration).&#8201;[^46]
 - **Polynomial arithmetic:** N/A (no polynomial operations; scheme is PRF-based).
@@ -358,7 +422,9 @@ Query time amortized over 2000 queries.&#8201;[^37]
 
 ---
 
-### Open Problems
+<a id="open-problems"></a>
+
+### Open Problems <a href="#toc">⤴</a>
 
 - Can wpPRFs be strengthened to full privately puncturable PRFs from weaker assumptions than LWE with superpolynomial modulus?
 - Can the D = 1/2 tradeoff point be improved -- i.e., can one achieve better than O(sqrt(N)) simultaneously for server time and client storage?
@@ -369,7 +435,9 @@ Query time amortized over 2000 queries.&#8201;[^37]
 
 ---
 
-### Related Papers in Collection
+<a id="related-papers-in-collection"></a>
+
+### Related Papers in Collection <a href="#toc">⤴</a>
 
 - **CK20 [Group D]:** First sublinear-server cPIR; uses puncturable pseudorandom sets from standard puncturable PRFs. TreePIR's wpPRF is a simpler alternative achieving similar functionality from weaker assumptions.
 - **Piano [Group D]:** PRF-only practical sublinear PIR; single-server model (different from TreePIR's 2-server). Uses PRF-based partitioned sets without private puncturing.
@@ -379,7 +447,9 @@ Query time amortized over 2000 queries.&#8201;[^37]
 
 ---
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - **N = 2^n assumption:** The paper assumes N is an even power of two for exposition (Section 4.2, p.17). Appendix A.2 generalizes to arbitrary N by replacing concatenation with multiplication by sqrt(N) plus addition. The benchmarks appear to use power-of-two sizes.
 - **Amortization window:** The paper amortizes over "2000 queries" in benchmarks but the theoretical amortization window is sqrt(N) queries. At N = 2^32, sqrt(N) = 2^16 = 65,536 >> 2000. The relationship between the benchmark amortization count and the theoretical window is not explicitly discussed.

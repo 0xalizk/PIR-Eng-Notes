@@ -1,5 +1,35 @@
 ## Plinko — Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#novel-primitives-abstractions">Novel Primitives / Abstractions</a></nobr></sub><br>
+<sub><nobr>4. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>5. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>6. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
+<sub><nobr>8. <a href="#complexity"><b>Complexity</b></a></nobr></sub><br>
+<sub><nobr>9. <a href="#mutation-model">Mutation Model</a></nobr></sub><br>
+<sub><nobr>10. <a href="#variants">Variants</a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>11. <a href="#lower-bounds">Lower Bounds</a></nobr></sub><br>
+<sub><nobr>12. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub><br>
+<sub><nobr>13. <a href="#composability">Composability</a></nobr></sub><br>
+<sub><nobr>14. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>15. <a href="#portable-optimizations"><b>Portable Optimizations</b></a></nobr></sub><br>
+<sub><nobr>16. <a href="#deployment-considerations">Deployment Considerations</a></nobr></sub><br>
+<sub><nobr>17. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>18. <a href="#open-problems">Open Problems</a></nobr></sub><br>
+<sub><nobr>19. <a href="#related-papers-in-collection">Related Papers in Collection</a></nobr></sub><br>
+<sub><nobr>20. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [Plinko: Single-Server PIR with Efficient Updates via Invertible PRFs](https://eprint.iacr.org/2024/318) (Hoover et al., 2024) |
@@ -11,7 +41,9 @@
 | **Rounds (online)** | 2 (client sends query, server responds) |
 | **Record-size regime** | Single-bit retrieval (extends to B-bit entries) |
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -22,7 +54,9 @@
 
 [^1]: Section 1 (p.5): "We note that independent, concurrent work [LP24, FLLP24] additionally achieves efficient updates, but uses different techniques from us. Their work either uses 2 servers [LP24] or public-key operations [FLLP24]."
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve sub-linear query time t = Õ(r + n/r) where r is client storage, but always require Õ(r) client time to search for a relevant hint among the client's r stored hints.&#8201;[^2] This means the total query time is Õ(r + n/r), which is only optimal when r = O(sqrt(n)). Plinko introduces a novel cryptographic primitive called an invertible pseudorandom function (iPRF) that allows the client to efficiently invert the PRF used for hint generation, finding all hints containing a given index x in Õ(1) time.&#8201;[^3] This reduces total query time to Õ(n/r) for any choice of client storage r, matching the known lower bound r * t = Omega(n) up to polylogarithmic factors for all parameterizations.&#8201;[^4] As a direct consequence, the iPRF inversion also enables worst-case Õ(1) database updates, since the client can immediately identify all hints affected by a changed entry.&#8201;[^5]
 
@@ -34,7 +68,9 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 [^5]: Abstract (p.1): "Plinko is also the first updateable PIR scheme where an entry can be updated in worst-case Õ(1) time."
 
-### Novel Primitives / Abstractions
+<a id="novel-primitives-abstractions"></a>
+
+### Novel Primitives / Abstractions <a href="#toc">⤴</a>
 
 #### Invertible Pseudorandom Function (iPRF)
 
@@ -83,7 +119,9 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 [^15]: Theorem 4.7 (p.16-17): "S is efficient and only requires O(log m) time and log m calls to the F."
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -98,7 +136,9 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 [^18]: Section 5.2, "Correctness" (p.23): "As iPRFs are also indistinguishable from random functions, we note that our hint distribution is identical to [RMS24]. As a result, we can directly use the correctness arguments from [RMS24]."
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Database:** n entries of B bits each, partitioned into c = n/w blocks of w consecutive entries each, where w is the block size parameter. Index i is decomposed as i = alpha * w + beta, where alpha is the block index and beta is the intra-block offset.&#8201;[^19]
 - **Regular hint table H:** λ * w entries stored in H[0], ..., H[λ*w - 1]. Each entry H[j] = (P_j, p_j) consists of a partition P_j (subset of c/2 + 1 blocks) and a parity p_j (XOR of selected entries).&#8201;[^20]
@@ -116,7 +156,9 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 [^23]: Section 5.2 (p.21): "For each block alpha in P_j, we select entry i = alpha*w + iF.F(k_alpha, j), where k_alpha is the seed for block alpha."
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -127,7 +169,9 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 | **UpdateDB** | Server | Set D[i] <- d. Compute delta = (i, D[i] XOR d). Send (x, u XOR u') to client. | O(log n) bits | Per DB mutation |
 | **UpdateHint** | Client | Invert iPRF at the updated index to find all Õ(1) hints containing x. XOR the update delta into each affected hint's parity. Also update Cache and hints under construction. | -- | Per DB mutation |
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 #### Option B: Probabilistic Correctness Analysis
 
@@ -147,7 +191,9 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 [^25]: Section 5.2, "Efficiency" (p.23): "By Chernoff's bound, we know that the x-th entry will not appear in more than max{O(λ + log n), Õ(r/w)} except with probability 2^{-λ - log n}."
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core metrics
 
@@ -214,7 +260,9 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 [^38]: Section 1, "Additions and Deletions" (p.9): "One can also consider the more general keyword-PIR (key-value) where it makes sense to add/delete new entries. A standard cuckoo-hashing technique (see [ZPZS24, ALP+21]) can reduce keyword-PIR to standard PIR."
 
-### Mutation Model
+<a id="mutation-model"></a>
+
+### Mutation Model <a href="#toc">⤴</a>
 
 | Aspect | Detail |
 |--------|--------|
@@ -226,7 +274,9 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 [^39]: Section 2, "Efficient Database Updates" (p.8): "Our efficient hint searching algorithm has the benefit of not only giving one candidate hint but all hints that contain the specified index. So, when a client is told to perform an update, they can just do a single call to the iPRF in use, find the hints containing the index, and then update those parities immediately."
 
-### Variants
+<a id="variants"></a>
+
+### Variants <a href="#toc">⤴</a>
 
 | Variant | Key Difference | Base Scheme | Client Query Time | Update (worst-case) |
 |---------|---------------|-------------|-------------------|---------------------|
@@ -237,7 +287,9 @@ The Plinko-Piano variant (Appendix B) uses Piano's set structure (sets of size n
 
 [^40]: Appendix B (p.30): "In this section, we show how we can use invertible PRFs (iPRFs) to improve the client-side computation for queries and updates in Piano [ZPZS24]."
 
-### Lower Bounds
+<a id="lower-bounds"></a>
+
+### Lower Bounds <a href="#toc">⤴</a>
 
 | Field | Detail |
 |-------|--------|
@@ -253,7 +305,9 @@ The Plinko-Piano variant (Appendix B) uses Piano's set structure (sets of size n
 
 [^42]: Section 1 (p.4): "Plinko obtains optimal query time t = Õ(n/r) for any choice of client storage size r."
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 No implementation. Analytical estimates from Figure 1 (p.3) and Figure 6 (p.30), setting r = sqrt(n):
 
@@ -270,7 +324,9 @@ All entries hide polylog factors. The key advantage of Plinko is visible in the 
 
 [^43]: Figure 1 (p.3): Comparison table of amortized query time and query communication for existing single-server offline/online PIR schemes, with client storage r = sqrt(n).
 
-### Composability
+<a id="composability"></a>
+
+### Composability <a href="#toc">⤴</a>
 
 | Base Scheme | Integration Point | Improvement | Limitations |
 |------------|-------------------|-------------|-------------|
@@ -281,7 +337,9 @@ All entries hide polylog factors. The key advantage of Plinko is visible in the 
 
 [^45]: Appendix B (p.30-32): Plinko-Piano pseudocode and description showing how iPRFs improve Piano.
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 #### Query Time Tradeoff (at r = n^{2/3})
 
@@ -313,7 +371,9 @@ Plinko achieves logarithmic worst-case for both time and communication, matching
 
 **Key takeaway:** Plinko is the preferred scheme when (1) optimal space-time tradeoffs are needed for arbitrary client storage sizes (especially r >> sqrt(n)), and (2) worst-case Õ(1) database update efficiency is required. It achieves both properties using only one-way functions, at the cost of being theory-only with no implementation.
 
-### Portable Optimizations
+<a id="portable-optimizations"></a>
+
+### Portable Optimizations <a href="#toc">⤴</a>
 
 - **iPRF-based hint searching:** The technique of replacing PRFs with iPRFs for Õ(1) hint lookups is applicable to any OO-PIR scheme that uses PRF-compressed random sets (demonstrated on both RMS24 and Piano). Could potentially extend to other Group D schemes using similar hint structures.&#8201;[^48]
 - **PMNS construction:** The pseudorandom multinomial sampler is a standalone primitive with potential applications beyond PIR wherever one needs to efficiently simulate the pre-image distribution of a random function.&#8201;[^49]
@@ -322,7 +382,9 @@ Plinko achieves logarithmic worst-case for both time and communication, matching
 
 [^49]: Section 6 (p.24): "By introducing this notion, we leave open the possibility of finding other applications for iPRFs in cryptography for either efficiency or security improvements."
 
-### Deployment Considerations
+<a id="deployment-considerations"></a>
+
+### Deployment Considerations <a href="#toc">⤴</a>
 
 - **Database updates:** Worst-case Õ(1) per update -- a significant advantage for mutable databases. Server sends O(log n) bits per mutation; client updates in-place.
 - **Sharding:** Not discussed, but the block-based structure (c = n/w blocks) is naturally amenable to sharding.
@@ -334,7 +396,9 @@ Plinko achieves logarithmic worst-case for both time and communication, matching
 
 [^50]: Section 5.2, "Necessity of Database Streaming" (p.23-24): "If one constructs a single-server PIR with sub-linear offline phase communication and sub-linear query communication, it is easy to see that this can be used to build oblivious transfer (OT) following the reduction in [DMO00]. Given that OT requires public-key operations [IR89], the offline phase must use linear communication."
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **Theory-only:** No implementation or benchmarks; practical constants hidden in Õ notation are unknown. The PMNS construction involves log m recursive binomial samples, each requiring a PRF evaluation and a binomial sampling step.
 - **Client-dependent preprocessing:** Each client must independently stream the entire database and compute personalized hints. Not suitable for anonymous access patterns.
@@ -344,7 +408,9 @@ Plinko achieves logarithmic worst-case for both time and communication, matching
 
 [^51]: Section 5.2, "Invertible PRF Requirements" (p.23): "It is clear to see that our usage of iPRF requires security for both small domains and ranges as the number of hints is similar to the size of client storage meaning truncated PRPs cannot be used."
 
-### Open Problems
+<a id="open-problems"></a>
+
+### Open Problems <a href="#toc">⤴</a>
 
 - **iPRFs from other assumptions:** The current iPRF construction uses only OWF. Can iPRFs be built from assumptions that also provide puncturability? A puncturable iPRF would enable communication-efficient query protocols for PIR schemes that rely on puncturable PRFs.&#8201;[^52]
 - **Client online time:** Current lower bounds do not separately bound client query time vs. server query time. Some schemes (SACM21, LP23b, LP23a, ZLTS23) achieve nearly-constant online client time after a hint is found. Combining efficient hint finding (iPRFs) with these schemes could yield better asymptotic results.&#8201;[^53]
@@ -356,7 +422,9 @@ Plinko achieves logarithmic worst-case for both time and communication, matching
 
 [^54]: Section 6 (p.24): "We leave open the possibility of finding other applications for iPRFs in cryptography for either efficiency or security improvements."
 
-### Related Papers in Collection
+<a id="related-papers-in-collection"></a>
+
+### Related Papers in Collection <a href="#toc">⤴</a>
 
 - **Piano [ZPZS24, Group D]:** Direct predecessor. Plinko-Piano (Appendix B) applies iPRFs to Piano's construction.
 - **RMS24 [Group D]:** Direct predecessor. The primary Plinko construction (Section 5.2) is built on top of RMS24.
@@ -365,7 +433,9 @@ Plinko achieves logarithmic worst-case for both time and communication, matching
 - **WangRen [Group D]:** Theory-only scheme achieving tight ST = O(nw) space-time tradeoff via relocation. Different approach (deterministic correctness, permutation-based).
 - **SinglePass [LP24, Group D]:** Concurrent work achieving efficient updates via 2-server model; different approach from iPRFs.
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - **Notation for Õ:** The paper defines Õ to hide "multiplicative factors which are poly-logarithmic in the main variables" (p.9), treating λ as constant. This differs from the standard convention where Õ hides polylog factors in the argument. The paper explicitly notes this deviation.
 - **Concrete query overhead:** The iPRF inversion involves O(log m) calls to the PMNS inverse, each of which involves O(log m) binomial samples seeded by a PRF. The total number of PRF calls per iPRF inversion is O(log^2 m) = O(log^2 n). The practical impact of this overhead is unknown without benchmarks.

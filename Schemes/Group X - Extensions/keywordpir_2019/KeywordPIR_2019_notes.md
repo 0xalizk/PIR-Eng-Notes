@@ -1,5 +1,29 @@
 ## Communication-Computation Trade-offs in PIR — Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#cross-paradigm-comparison">Cross-Paradigm Comparison</a></nobr></sub><br>
+<sub><nobr>4. <a href="#cryptographic-foundations">Cryptographic Foundations</a></nobr></sub><br>
+<sub><nobr>5. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>6. <a href="#complexity"><b>Complexity</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>8. <a href="#novel-constructions-and-techniques">Novel Constructions and Techniques</a></nobr></sub><br>
+<sub><nobr>9. <a href="#keyword-pir-for-sparse-databases-section-5">Keyword PIR for Sparse Databases</a></nobr></sub><br>
+<sub><nobr>10. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>11. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>12. <a href="#implementation-notes"><b>Implementation Notes</b></a></nobr></sub><br>
+<sub><nobr>13. <a href="#open-problems">Open Problems</a></nobr></sub><br>
+<sub><nobr>14. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [Communication-Computation Trade-offs in PIR](https://eprint.iacr.org/2019/1483) (2019) |
@@ -11,7 +35,9 @@
 | **Rounds (online)** | 1 (non-interactive) for all constructions |
 | **Record-size regime** | 288B (Pung-style), 8kB, 2MB, 40kB, 307kB benchmarked |
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -20,7 +46,9 @@
 | **Superseded by** | OnionPIR (2021, builds on MulPIR with external products); Spiral (2022, further optimizes FHE-based PIR communication); SimplePIR/DoublePIR (2023, lattice-based with preprocessing) |
 | **Concurrent work** | SHECS-PIR (Park and Tibouchi, ESORICS 2020) — also uses GSW-style multiplicative homomorphism for PIR&#8201;[^1] |
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 This paper presents a systematic study of *communication-computation trade-offs* across three fundamentally different PIR paradigms: additive HE (SealPIR), somewhat HE with multiplicative homomorphism (MulPIR), and number-theoretic (Gentry-Ramzan).&#8201;[^2] The central insight is that no single construction dominates across all settings — the optimal choice depends on database shape (number and size of entries) and the relative costs of computation versus communication.&#8201;[^3]
 
@@ -32,7 +60,9 @@ For **Gentry-Ramzan PIR**, the paper provides the first practically efficient im
 
 Finally, the paper introduces **keyword PIR** for sparse databases via two hashing-based constructions (simple hashing and cuckoo hashing), enabling PIR with server computation proportional to actual database size rather than the index domain size.&#8201;[^7]
 
-### Cross-Paradigm Comparison
+<a id="cross-paradigm-comparison"></a>
+
+### Cross-Paradigm Comparison <a href="#toc">⤴</a>
 
 | Approach | Paradigm | Upload (kB) | Download (kB) | Server Time (ms) | Server Cost (US cents) | Best For |
 |----------|----------|-------------|---------------|-------------------|----------------------|----------|
@@ -46,7 +76,9 @@ Finally, the paper introduces **keyword PIR** for sparse databases via two hashi
 
 All values from Table 5 (p. 13) for the 1MB database (5,000 elements of 288B) without recursion. Server costs from Table 3 (p. 12) for 288B entries with n=2^20 use recursion d=2.
 
-### Cryptographic Foundations
+<a id="cryptographic-foundations"></a>
+
+### Cryptographic Foundations <a href="#toc">⤴</a>
 
 #### 1. Fan-Vercauteren (FV/BFV) — used by SealPIR and MulPIR
 
@@ -78,7 +110,9 @@ All values from Table 5 (p. 13) for the 1MB database (5,000 elements of 288B) wi
 | **Damgard-Jurik** | Additive HE | >= 1 + 1/s (approaches 1) | RSA modulus N = pq; parameterized by s; uniquely achieves F close to 1, simplifying recursion&#8201;[^17] |
 | **FV (as SHE)** | Somewhat HE | >= 2 | Supports bounded-depth multiplication; used by MulPIR |
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 #### Optimized SealPIR (Section 3)
 
@@ -134,7 +168,9 @@ All values from Table 5 (p. 13) for the 1MB database (5,000 elements of 288B) wi
 | Response | Server | Run kappa PIR responses | kappa PIR responses | -- |
 | Extract | Client | Decrypt all kappa responses; output item if found, else bottom | -- | Correctness guaranteed by cuckoo hashing properties |
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core metrics — SealPIR variants and MulPIR (d=2, n=262,144, 288B entries)
 
@@ -191,7 +227,9 @@ Where A = addition, S = scalar multiplication, M = ciphertext multiplication.&#8
 
 MulPIR's download advantage grows dramatically with entry size because its response does not scale with F^{d-1}.&#8201;[^29]
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 #### Hardware and Setup
 
@@ -253,7 +291,9 @@ Values from Table 5 (p. 13). Timings marked with "approximately" are estimated o
 
 GR achieves best communication (10.4 kB constant) but client computation is orders of magnitude higher. MulPIR outperforms GR in total server cost for bucket sizes >= 200k.&#8201;[^34]
 
-### Novel Constructions and Techniques
+<a id="novel-constructions-and-techniques"></a>
+
+### Novel Constructions and Techniques <a href="#toc">⤴</a>
 
 #### 1. Optimized Oblivious Expansion (Algorithms 6-7)
 
@@ -273,7 +313,9 @@ The CRT encoding E = sum(D_k * a_k * M_k) naively requires Omega(n^2) time becau
 
 The server rewrites the exponent E in base b >= 2: E = E_0 + E_1*b + E_2*b^2 + ... + E_l*b^l. The client precomputes g, g^b, g^{b^2}, ..., g^{b^l} using Euler's theorem to efficiently reduce exponents modulo phi(m). The server then computes g^E = g^{E_0} * (g^b)^{E_1} * ... * (g^{b^l})^{E_l} as a product of l+1 multi-exponentiations using Straus's algorithm.&#8201;[^38] The security argument is that revealing powers of g leaks no information since the server could compute them itself (just not as fast, since the server does not know phi(m)).
 
-### Keyword PIR for Sparse Databases (Section 5)
+<a id="keyword-pir-for-sparse-databases-section-5"></a>
+
+### Keyword PIR for Sparse Databases (Section 5) <a href="#toc">⤴</a>
 
 #### Problem Setting
 
@@ -287,7 +329,9 @@ Server selects hash function H mapping keys to m bins. Each database element (i,
 
 Server builds a cuckoo hash table with kappa hash functions, guaranteeing each element is in exactly one of kappa possible locations. Table size is proportional to |D| with constant multiplicative overhead. Client makes kappa PIR queries (one per hash function). This construction ensures each bucket contains at most one element, making it ideal for Gentry-Ramzan (small plaintext) and enabling CRT batching of the kappa queries into a single Gentry-Ramzan query.&#8201;[^40]
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 #### HE-based PIR schemes (Table 5, p. 13; 1MB database, 5,000 entries of 288B)
 
@@ -311,7 +355,9 @@ Key findings: Client-Aided GR (50 generators) achieves the lowest server cost fo
 
 For databases where downloading everything is viable, PIR becomes worthwhile when communication cost exceeds computation cost. At Google Cloud Platform prices ($0.01/CPU-hour, $0.08/GB), the paper shows PIR is cost-effective for databases above a few thousand entries.
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 1. **MulPIR computation vs communication**: MulPIR achieves dramatically better communication for large entries but requires larger parameters (N=8192 vs 2048) and costlier ciphertext multiplication, yielding approximately 2x higher server computation than SealPIR for 288B entries.&#8201;[^44]
 
@@ -327,7 +373,9 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 
 7. **No malicious security**: All constructions assume semi-honest servers. The SPIR extension (Appendix E.1) provides database privacy via OPRFs but does not handle malicious servers.
 
-### Implementation Notes
+<a id="implementation-notes"></a>
+
+### Implementation Notes <a href="#toc">⤴</a>
 
 - **Language / Libraries**: C++ using SEAL 3.2.0 (SealPIR) and SEAL 3.5.4 (MulPIR); OpenSSL for BigNum and elliptic curve operations (ElGamal, Damgard-Jurik, Gentry-Ramzan)&#8201;[^50]
 - **SealPIR implementation**: Based on Microsoft's open-source SealPIR (https://github.com/microsoft/SealPIR)
@@ -336,7 +384,9 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 - **Parallelism**: Single-threaded benchmarks throughout
 - **Precomputation**: GR supermoduli M_1, M_2 and inverses a_k are precomputed and reusable when moduli set is unchanged
 
-### Open Problems
+<a id="open-problems"></a>
+
+### Open Problems <a href="#toc">⤴</a>
 
 1. **Closing the communication gap**: MulPIR achieves O(log n) communication asymptotically but the constants (large N, q for multiplicative depth) remain high. Can parameters be reduced while maintaining security?&#8201;[^51]
 
@@ -350,7 +400,9 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 
 6. **Beyond semi-honest security**: Extending the constructions to handle malicious servers, particularly for the password checkup application where server integrity is important.
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - **Exact parameter selection for MulPIR**: The paper states "polynomial of dimension 8192 with 50 + 2 * 55 bit modulus, modulus switching to 50 bits, and plaintext modulus t = 2^20 + 2^19 + 2^17 + 2^16 + 2^14 + 1" (Table 1 footnote, p. 7) but does not fully justify why this specific plaintext modulus was chosen or how it was determined to support exactly the required multiplicative depth.
 

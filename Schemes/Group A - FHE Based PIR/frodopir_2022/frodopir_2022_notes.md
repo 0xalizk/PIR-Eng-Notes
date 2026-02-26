@@ -1,5 +1,34 @@
 ## FrodoPIR -- Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>4. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>5. <a href="#database-encoding">Database Encoding</a></nobr></sub><br>
+<sub><nobr>6. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#query-structure"><b>Query Structure</b></a></nobr></sub><br>
+<sub><nobr>8. <a href="#communication-breakdown">Communication Breakdown</a></nobr></sub><br>
+<sub><nobr>9. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
+<sub><nobr>10. <a href="#complexity"><b>Complexity</b></a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>11. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub><br>
+<sub><nobr>12. <a href="#application-scenarios">Application Scenarios</a></nobr></sub><br>
+<sub><nobr>13. <a href="#deployment-considerations">Deployment Considerations</a></nobr></sub><br>
+<sub><nobr>14. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>15. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>16. <a href="#portable-optimizations"><b>Portable Optimizations</b></a></nobr></sub><br>
+<sub><nobr>17. <a href="#implementation-notes"><b>Implementation Notes</b></a></nobr></sub><br>
+<sub><nobr>18. <a href="#open-problems">Open Problems</a></nobr></sub><br>
+<sub><nobr>19. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [FrodoPIR: Simple, Scalable, Single-Server Private Information Retrieval](https://eprint.iacr.org/2022/981) (2022) |
@@ -19,7 +48,9 @@
 
 [^regime]: Online query size is m*log(q) bits -- linear in the number of DB elements m. For m = 2^20 with 1 KB elements, the query reaches approximately 4 MB (Table 6, p. 19). This is the scheme's main bandwidth limitation.
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -32,13 +63,17 @@
 
 [^concurrent]: Section 7.2 (p. 28) compares: SimplePIR uses n = 1024, Gaussian error (sigma = 6.4), and assumes a square DB matrix, leading to 124 MB hint download for a 1 GB DB vs ~6 MB for FrodoPIR. SimplePIR achieves smaller online query (242 KB vs ~4 MB) but larger hint.
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 FrodoPIR constructs a stateful single-server PIR scheme built entirely on plain LWE (not Ring-LWE), where the server's offline preprocessing is completely client-independent. The server compresses the database **D** into a global hint matrix **M** = **A** * **D** (where **A** is pseudorandomly derived from a public seed mu), which all clients download. Each client independently generates LWE-masked query states from **M** and **A**, then forms online queries by adding an indicator vector to the LWE mask. The server computes a simple matrix-vector product to answer each query. This design shifts the bottleneck from per-client preprocessing (O(m) per client in SOnionPIR) to a single global setup, making the scheme dramatically cheaper at scale when serving many clients.[^core]
 
 [^core]: The financial advantage is quantified in Table 1 (p. 6): FrodoPIR's amortized financial cost is $(1.9/C * 10^{-2} + 1.3 * 10^{-3}) per query for C clients, compared to $8.8 * 10^{-5} per query for SOnionPIR (which scales with C).
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -58,7 +93,9 @@ FrodoPIR constructs a stateful single-server PIR scheme built entirely on plain 
 
 [^correctcond]: The proof (Appendix A.1, p. 33-34) uses Corollary 2: for m ternary samples, the sum is bounded by 4*sqrt(m) with all but negligible probability. Since each entry of D is at most rho, the noise magnitude is bounded by 4*rho*sqrt(m). The rounding step requires this to be < q/(2*rho), yielding q >= 8*rho^2*sqrt(m).
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Database matrix D**: The raw DB (m elements of w bits each) is parsed into D in Z_rho^{m x omega}, where omega = ceil(w / log(rho)). Each row D[i] stores one DB element split into omega chunks of log(rho) bits.[^ds1]
 - **Public matrix A**: Pseudorandomly expanded from seed mu via PRG(mu, n, m, q), producing A in Z_q^{n x m}. Shared across all clients; never stored explicitly -- rederived from mu.[^ds2]
@@ -73,7 +110,9 @@ FrodoPIR constructs a stateful single-server PIR scheme built entirely on plain 
 
 [^ds4]: Section 4.2, p. 12. Each pair occupies (m + omega) * log(q) bits. For c = 500 preprocessed queries with m = 2^20, client storage reaches approximately 2 GB (Figure 4, p. 22). Without preprocessing (log(m) mode), client stores only (mu, M) totaling λ + n*omega*log(q) bits.
 
-### Database Encoding
+<a id="database-encoding"></a>
+
+### Database Encoding <a href="#toc">⤴</a>
 
 - **Representation:** Matrix D in Z_rho^{m x omega}. Each row is one DB element. The database is interpreted as m rows, each consisting of omega entries in Z_rho.[^dbenc1]
 - **Record addressing:** Row indexing -- the i-th DB element is row D[i].
@@ -84,7 +123,9 @@ FrodoPIR constructs a stateful single-server PIR scheme built entirely on plain 
 
 [^dbenc2]: Section 2.3, p. 8: "the server database matrix is 3x as large as the original database." This is because each log(rho)-bit chunk of the original data is stored as a log(q) = 32-bit integer in D.
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -103,7 +144,9 @@ FrodoPIR constructs a stateful single-server PIR scheme built entirely on plain 
 
 [^phase4]: Server response computation is b_tilde^T * D, a vector-matrix multiply over Z_q: m*omega multiplications and (m-1)*omega additions. Response size: omega*log(q) bits = 3.2--3.6 KB for 1 KB elements (Table 6, p. 19). Response overhead: < 3.6x.
 
-### Query Structure
+<a id="query-structure"></a>
+
+### Query Structure <a href="#toc">⤴</a>
 
 | Component | Type | Size | Purpose |
 |-----------|------|------|---------|
@@ -111,7 +154,9 @@ FrodoPIR constructs a stateful single-server PIR scheme built entirely on plain 
 
 [^qs1]: Section 4.3, p. 12. The query b_tilde = s^T*A + e^T + f_i is indistinguishable from uniform by the decisional LWE assumption (Theorem 3, p. 13). The server sees only a uniformly random-looking vector in Z_q^m.
 
-### Communication Breakdown
+<a id="communication-breakdown"></a>
+
+### Communication Breakdown <a href="#toc">⤴</a>
 
 | Component | Direction | Size | Reusable? | Notes |
 |-----------|-----------|------|-----------|-------|
@@ -122,7 +167,9 @@ FrodoPIR constructs a stateful single-server PIR scheme built entirely on plain 
 
 [^comm1]: Table 2, p. 14. The hint download is static for a given (mu, DB) pair. It changes only when the server rotates A (after up to 2^52 queries observed globally) or when the DB is updated.
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 #### Option A: Plain LWE Noise Analysis (additive-only, no homomorphic multiplication)
 
@@ -148,7 +195,9 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^paramcheck]: Table 5 (p. 16) shows the parameter settings. For m = 2^20, rho = 2^9 (not 2^10), which is needed to satisfy the correctness bound. For m <= 2^18, rho = 2^10 can be used since 8 * 2^20 * 2^9 = 2^32 = q.
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core metrics
 
@@ -205,7 +254,9 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^aws]: Section 6, p. 18. All experiments are single-threaded on this instance. Data transfer costs: $0.09/GB server-to-client, $0 client-to-server.
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 **Hardware:** Amazon t2.2xlarge EC2 instance, 8 CPU cores, 32 GB RAM. All experiments single-threaded.[^bench_hw]
 
@@ -247,7 +298,9 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 | | Rate | 0.5307 | 0.3125 |
 | | Throughput | 358 MB/s | 1.76 GB/s |
 
-### Application Scenarios
+<a id="application-scenarios"></a>
+
+### Application Scenarios <a href="#toc">⤴</a>
 
 - **Google SafeBrowsing API (Appendix B, p. 35):** The SafeBrowsing blocklist has > 90 MB of entries. Browsers currently store a compressed probabilistic data structure and query Google's API for false-positive checks -- revealing browsing patterns. FrodoPIR can replace this with private lookups. The DB is approximately 2^20 entries of 32-byte hash prefixes.[^safebrowsing]
 - **Certificate Transparency auditing:** Clients check certificate inclusion in CT logs without revealing which certificates they are interested in (Section 7.1, p. 27).
@@ -256,7 +309,9 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^safebrowsing]: Appendix B (p. 35-38) provides a detailed analysis. Current SafeBrowsing: browser stores a compressed probabilistic data structure locally (described as "8x smaller" than the >90 MB blocklist), queries API on hits. With FrodoPIR (SafeBrowsing-specific config: w = 256 bits, m = 2^18 per shard, rho = 2^10, s = 16 shards): offline download of 180 KB per shard (~2.81 MB total for 16 shards), then per-query cost of a single PIR interaction with 0.1 KB response per shard (Table 8, p. 38).
 
-### Deployment Considerations
+<a id="deployment-considerations"></a>
+
+### Deployment Considerations <a href="#toc">⤴</a>
 
 - **Database updates:** Require re-running spreproc (server preprocessing) and all clients re-downloading (mu, M). Sharding mitigates this: if updates are confined to one shard, only that shard's parameters need refreshing, costing 1/(kappa * s) of the full database.[^update]
 - **Sharding:** Explicitly recommended for large databases (Section 5.4, p. 16-17). Database is split into s parallel instances of size m/s each. Each instance processes the same query. Reduces online query size from m to m/s but increases client download by factor s. Also enables parallelism.[^shard]
@@ -274,7 +329,9 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^crossover]: Figure 7, p. 25. FrodoPIR is compared against an online-free PIR scheme with zero online costs and SOnionPIR offline costs. FrodoPIR is cheaper for DB sizes <= 2^18 at any C, and approximately equal at 2^20.
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **Linear online query size:** The query is m * log(q) bits -- linear in the number of DB elements. For m = 2^20, this is 4 MB. This is the primary bandwidth limitation and is much larger than RLWE-based schemes (e.g., Spiral: 14 KB). Sharding can reduce this at the cost of increased offline download.[^tradeoff1]
 - **Large client storage with preprocessing:** With c = 500 preprocessed queries and m = 2^20, client storage reaches ~2 GB (Figure 4, p. 22). Without preprocessing, storage drops to ~6.3 MB but each online query incurs 0.5--9.25s of computation to derive A.[^tradeoff2]
@@ -288,7 +345,9 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^tradeoff3]: Section 2.3, p. 8. This 3x overhead is comparable to RLWE schemes that store DB in NTT form (typically 2x overhead).
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 #### vs. Stateful PIR Schemes (Table 1, p. 6; Figure 6, p. 24)
 
@@ -322,7 +381,9 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^takeaway]: Section 6.2, p. 22-25 and Section 8, p. 29. FrodoPIR's niche is high-client-count deployments with small records (e.g., SafeBrowsing, DNS). Spiral is preferred when record sizes are large or client upload bandwidth is constrained.
 
-### Portable Optimizations
+<a id="portable-optimizations"></a>
+
+### Portable Optimizations <a href="#toc">⤴</a>
 
 - **Client-independent hint via seed-expanded LWE matrix:** The technique of publishing (seed, M = A * D) where A = PRG(seed) is applicable to any LWE-based PIR scheme. SimplePIR independently uses the same technique.[^portable1]
 - **Ternary secret/error distribution:** Using chi = Uniform({-1, 0, 1}) for both secret and error vectors simplifies sampling and enables the CLT-based noise bound (Corollary 2). Applicable to any plain-LWE construction.[^portable2]
@@ -334,7 +395,9 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^portable3]: Section 5.2, p. 15 and Section 6, p. 18. The Rust implementation uses the standard library u32 type with wrapping arithmetic.
 
-### Implementation Notes
+<a id="implementation-notes"></a>
+
+### Implementation Notes <a href="#toc">⤴</a>
 
 - **Language / Library:** Rust. Open-source at https://github.com/brave-experiments/frodo-pir.[^impl1]
 - **Polynomial arithmetic:** N/A -- plain LWE, no polynomial operations, no NTT.
@@ -351,7 +414,9 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^impl3]: Section 6, p. 18: "All modular arithmetic is implemented using instructions associated with the 32-bit unsigned integer type included in the Rust standard library."
 
-### Open Problems
+<a id="open-problems"></a>
+
+### Open Problems <a href="#toc">⤴</a>
 
 - Can the DoublePIR optimization (running the scheme twice -- once on DB, once on M -- as SimplePIR does to reduce its 124 MB hint to ~16 MB) be applied to FrodoPIR to reduce online query size? FrodoPIR's hint is already ~6 MB, so the benefit would target query size rather than hint size. The authors note the philosophy is applicable but do not present results (Section 7.2, p. 28).[^open1]
 - Sub-cubic matrix multiplication algorithms (Strassen, Coppersmith-Winograd) could improve server preprocessing from O(n*m*omega) -- not explored in the paper (Section 7, p. 27).[^open2]
@@ -366,7 +431,9 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^open4]: Appendix C discusses that the number of queries may not significantly impact security in practice. Setting ell = 2^20 instead of 2^52 would allow n to decrease, improving the kappa compression ratio.
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - The paper uses rho for both the plaintext packing parameter (entries of D are in Z_rho) and as ||D||_inf in the correctness proof (Appendix A.1). These are consistent only if all DB entries are packed at maximum -- the correctness bound is worst-case.[^unc1]
 - The improvement factor kappa = log(rho)*m / (n*log(q)) is defined on p. 16 as the ratio of offline download to original DB size. The reported values in Table 5 range from 13 to 188, meaning the hint is 13x--188x smaller than the raw DB.[^unc2]

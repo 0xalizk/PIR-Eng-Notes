@@ -1,5 +1,29 @@
 ## Barely Doubly-Efficient SimplePIR — Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#formal-definitions">Formal Definitions</a></nobr></sub><br>
+<sub><nobr>4. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>5. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>6. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#simplepir-as-a-building-block-section-2-4-fig-1">SimplePIR as a Building Block</a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>8. <a href="#williams-fast-matrix-vector-multiplication-section-2-5">Williams' Fast Matrix-Vector Multiplication</a></nobr></sub><br>
+<sub><nobr>9. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
+<sub><nobr>10. <a href="#complexity"><b>Complexity</b></a></nobr></sub><br>
+<sub><nobr>11. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>12. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>13. <a href="#open-problems-section-4">Open Problems</a></nobr></sub><br>
+<sub><nobr>14. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [Barely Doubly-Efficient SimplePIR](https://eprint.iacr.org/2025/1305) (Keewoo Lee, 2025) |
@@ -11,7 +35,9 @@
 | **Rounds (online)** | 1 (non-interactive) |
 | **Record-size regime** | Single-bit retrieval (DB in {0,1}^N) |
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -20,7 +46,9 @@
 | **Superseded by** | N/A (as of May 2025, this is the state-of-the-art for plain-LWE-based DEPIR) |
 | **Concurrent work** | CIMR25 (Chen-Ishai-Mour-Rosen): sk-DEPIR from the Learning Subspace with Noise (LSN) assumption, also achieving barely doubly-efficient O(N/log N) server computation&#8201;[^2] |
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 This paper presents the first construction of Doubly-Efficient Private Information Retrieval (DEPIR) from the plain LWE assumption. Prior to this work, the only known DEPIR construction was that of Lin-Mook-Wichs (LMW23, STOC 2023), which requires the Ring-LWE assumption. Whether DEPIR could be built from plain (unstructured) LWE — or indeed from any alternative foundation — was a major open problem.&#8201;[^3]
 
@@ -30,7 +58,9 @@ The resulting scheme is only *barely* doubly-efficient: the server's online comp
 
 The CRS is essential for sublinear online computation. Without it, the server would need to compute **D-hat** * **A** online (where **A** is the LWE matrix with n = polylog(N) columns), which would nullify the O(log^2 N)-factor savings from Williams' preprocessing.&#8201;[^6]
 
-### Formal Definitions
+<a id="formal-definitions"></a>
+
+### Formal Definitions <a href="#toc">⤴</a>
 
 #### Definition 2.1 — DEPIR (Unkeyed)
 
@@ -62,7 +92,9 @@ The keyed variant adds a KeyGen algorithm and provides the key k to Prep, Query,
 
 Keyed DEPIR with public preprocessing => pk-DEPIR => sk-DEPIR. The construction in this paper achieves the strongest level (unkeyed DEPIR in CRS / keyed with public preprocessing).
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -72,7 +104,9 @@ Keyed DEPIR with public preprocessing => pk-DEPIR => sk-DEPIR. The construction 
 | **Trust model** | Common Random String (CRS) model: A <- Z_q^{m x n} sampled uniformly as public parameter; alternatively, standard model with keyed DEPIR |
 | **Why plain LWE matters** | RLWE enjoys worst-case to average-case reduction to ideal lattice problems; plain LWE reduces to general lattice problems. Some community members express reservations about RLWE's long-term security due to its additional algebraic structure. Constructing DEPIR from plain LWE was an explicit open problem.&#8201;[^11] |
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 | Structure | Description | Size |
 |-----------|-------------|------|
@@ -83,7 +117,9 @@ Keyed DEPIR with public preprocessing => pk-DEPIR => sk-DEPIR. The construction 
 | **v** (query) | LWE sample v = A * s + e + floor(q/p) * u_j-hat, where s <- Z_q^n, e <- chi^m | m-dimensional vector over Z_q |
 | **st** (client state) | Tuple (s, i-hat, k-hat) — the LWE secret key and the decomposed index coordinates | O(n * log q + log N) bits |
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -93,7 +129,9 @@ Keyed DEPIR with public preprocessing => pk-DEPIR => sk-DEPIR. The construction 
 | Answer | Server | Parse DB-tilde as (D-hat, H) and q as v. Evaluate w <- D-hat * v using preprocessed D-hat (Lemma 3.1). Output a = (w, H). | |a| = m * log q + m * n * log q bits downward | Per query |
 | Extract | Client | Parse st as (s, i-hat, k-hat) and a as (w, H). Compute z <- w - H * s. Output the k-hat-th bit of round(p/q * z[i-hat]).&#8201;[^15] | -- | Per query |
 
-### SimplePIR as a Building Block (Section 2.4, Fig. 1)
+<a id="simplepir-as-a-building-block-section-2-4-fig-1"></a>
+
+### SimplePIR as a Building Block (Section 2.4, Fig. 1) <a href="#toc">⤴</a>
 
 The construction builds directly on SimplePIR. In SimplePIR, the server computes D-hat * v naively (O(m^2) time) and sends the hint H = D-hat * A to the client during an offline phase. The key observation enabling DEPIR is:&#8201;[^16]
 
@@ -101,7 +139,9 @@ The construction builds directly on SimplePIR. In SimplePIR, the server computes
 2. **D-hat * v is a matrix-vector product with a fixed matrix** — after preprocessing D-hat via Williams' technique, each subsequent multiplication takes O(m^2 / log^2 m) time, which is sublinear in m^2 (hence sublinear in N).
 3. **H is moved from offline hint to online answer** — the server includes H in the answer a = (w, H), eliminating the need for client-specific offline preprocessing.
 
-### Williams' Fast Matrix-Vector Multiplication (Section 2.5)
+<a id="williams-fast-matrix-vector-multiplication-section-2-5"></a>
+
+### Williams' Fast Matrix-Vector Multiplication (Section 2.5) <a href="#toc">⤴</a>
 
 **Theorem 2.1 (Williams, SODA 2007):** For any finite (semi-)ring R, any m x m matrix over R can be preprocessed in O(m^{2+epsilon} * |R|) time so that subsequent matrix-vector multiplications take O(m^2 / (epsilon * log m)^2) steps.&#8201;[^17]
 
@@ -112,7 +152,9 @@ The construction builds directly on SimplePIR. In SimplePIR, the server computes
 - Preprocessing time: Õ(m^{2+epsilon}) * polylog(q)
 - Evaluation time: O(m^2 / (epsilon * log m)^2) * Õ(log m + log q) + Õ(m) * polylog(q)
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 Correctness follows from SimplePIR's correctness analysis. The key computation is:
 
@@ -126,7 +168,9 @@ Rounding recovers D[i-hat, j-hat] (mod p) provided the noise is bounded: the mod
 
 The only modification from SimplePIR is that w is computed via Lemma 3.1 (fast preprocessed multiplication) rather than naive multiplication, which produces an identical result.
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Main Theorem (Theorem 3.1)
 
@@ -170,7 +214,9 @@ The server's online runtime is O(N / log^2 N) (ignoring polyloglog and poly(λ) 
 
 No implementation. Analytical estimates: Server online computation is O(N / (epsilon * log N)^2) * polyloglog(N) * poly(λ), which for epsilon = 1/4 and ignoring lower-order terms gives roughly O(N / log^2 N) work. The preprocessing cost is Õ(N^{1+epsilon}) * poly(λ), which for epsilon = 1/4 is Õ(N^{5/4}). Communication is Õ(sqrt(N)) per query. All estimates are asymptotic with no concrete instantiation provided by the authors.
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 | Scheme | Assumption | Model | Server Online | Preprocessing | Communication | Privacy Level |
 |--------|-----------|-------|---------------|---------------|---------------|---------------|
@@ -187,7 +233,9 @@ No implementation. Analytical estimates: Server online computation is O(N / (eps
 3. **CRS model requirement:** The CRS (matrix A) is essential. Without it, the server would need to compute D-hat * A online, which costs O(m^2 * n) and nullifies the Williams speedup.&#8201;[^26]
 4. **Strongest privacy level for plain LWE:** Via Remark 2.1, the CRS-model construction implies keyed DEPIR with public preprocessing — stronger than both sk-DEPIR and pk-DEPIR.
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 1. **Barely sublinear server computation:** The O(N/log^2 N) online server cost is only a polylogarithmic improvement over O(N). For practical database sizes (say N = 2^30), log^2 N = 900, giving roughly a 900x speedup — meaningful but far from the polylog(N) achieved by Ring-LWE-based DEPIR.&#8201;[^27]
 
@@ -203,7 +251,9 @@ No implementation. Analytical estimates: Server online computation is O(N / (eps
 
 7. **No concrete parameter instantiation:** The paper provides no concrete parameter choices, making it impossible to estimate real-world performance. The poly(λ) and polylog factors hidden in asymptotic notation could be substantial.
 
-### Open Problems (Section 4)
+<a id="open-problems-section-4"></a>
+
+### Open Problems (Section 4) <a href="#toc">⤴</a>
 
 The paper identifies three open problems, framed as intermediate steps toward LWE-based DEPIR with O(N^{1-epsilon}) server computation:&#8201;[^29]
 
@@ -213,7 +263,9 @@ The paper identifies three open problems, framed as intermediate steps toward LW
 
 3. **LWE-based sk-DEPIR with O(N^{1-epsilon}) server computation** for some constant epsilon > 0 — even the weaker secret-key variant remains open for polynomial savings from plain LWE.
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - **Tightness of poly(λ) factors:** The analysis hides potentially large polynomial factors in λ throughout (in preprocessing, communication, and server online time). Since n = poly(λ, log(1/alpha)) and q = poly(λ, 1/alpha), the concrete overhead from the security parameter could dominate for practical database sizes. No guidance is given on what λ values would be needed.
 

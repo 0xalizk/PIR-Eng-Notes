@@ -1,5 +1,30 @@
 ## Bandwidth Efficient PIR from NTRU (XPIR-2014) — Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>4. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>5. <a href="#database-encoding">Database Encoding</a></nobr></sub><br>
+<sub><nobr>6. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
+<sub><nobr>8. <a href="#complexity"><b>Complexity</b></a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>9. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub><br>
+<sub><nobr>10. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>11. <a href="#implementation-notes"><b>Implementation Notes</b></a></nobr></sub><br>
+<sub><nobr>12. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>13. <a href="#portable-optimizations"><b>Portable Optimizations</b></a></nobr></sub><br>
+<sub><nobr>14. <a href="#uncertainties">Uncertainties</a></nobr></sub><br>
+<sub><nobr>15. <a href="#footnotes">Footnotes</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [Bandwidth Efficient PIR from NTRU](https://eprint.iacr.org/2014/232) (2014) |
@@ -11,7 +36,9 @@
 | **Rounds (online)** | 1 (non-interactive: client sends query, server sends response) |
 | **Record-size regime** | Small (single-bit entries; extendable to w-bit via parallel evaluations) [^2] |
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -20,11 +47,15 @@
 | **Superseded by** | XPIR-2016 (Aguilar-Melchor et al., ePrint 2014/1025) — Ring-LWE-based with auto-optimization; SealPIR [Group A] — BFV with oblivious expansion |
 | **Concurrent work** | Doroz, Hu, Sunar, "Homomorphic AES Evaluation using NTRU" [16] (same group, same NTRU SWHE implementation) |
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 The paper constructs a single-server cPIR by evaluating the arithmetic retrieval function f(x) = SUM\_{y in [2^l]} (x == y) \* D\_y (mod 2) homomorphically using a leveled Somewhat Homomorphic Encryption (SWHE) scheme based on the Stehle-Steinfeld variant of NTRU. The key insight is that the equality-comparison circuit has depth only ceil(log\_2(l)) where l = log\_2(N), so a depth-5 SWHE suffices for databases up to 2^32 (4 billion) entries. By combining CRT-based SIMD batching (encoding epsilon independent index bits into one ciphertext), the scheme achieves query sizes as small as 32 KB for 4 billion entries in bundled mode — over 1000x smaller than BGN and K-O schemes.&#8201;[^3]
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -34,21 +65,27 @@ The paper constructs a single-server cPIR by evaluating the arithmetic retrieval
 | **Key structure** | Per-level keys: for each level i, sample u^(i), g^(i) from distribution chi, set f^(i) = 2u^(i) + 1, h^(i) = 2g^(i)(f^(i))^{-1} in R\_{q\_i}. Public key = (h^(0), q\_0). Evaluation keys not needed due to q\_{i+1} \| q\_i specialization. [^7] |
 | **Correctness condition** | \|\|c^{2^d} f^{2^d}\|\|\_inf < q\_d / 2, with noise growth c^{2^d} f^{2^d} = (...((c^2 kappa + p\_1)^2 kappa + p\_2)^2 ... + p\_{2^i}) f^{2^d} where kappa = q\_{i+1}/q\_i is the modulus reduction rate [^8] |
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Database:** Matrix M of size 2^{l/2} x 2^{l/2} where N = 2^l is the number of single-bit entries. Index i is split: first l/2 bits select row, last l/2 bits select column.&#8201;[^9]
 - **Query:** Vector of l encrypted index bits Q = [xi\_0(x), ..., xi\_{l-1}(x)], each an NTRU ciphertext polynomial in R\_{q\_0}. In Bundled Query mode, epsilon index bits are CRT-packed into each ciphertext.&#8201;[^10]
 - **Response:** A single ciphertext polynomial R encoding the result (or epsilon results in bundled mode).&#8201;[^11]
 - **Modulus chain:** Decreasing sequence of odd primes q\_0 > q\_1 > ... > q\_d with divisibility condition q\_{i+1} \| q\_i.&#8201;[^6]
 
-### Database Encoding
+<a id="database-encoding"></a>
+
+### Database Encoding <a href="#toc">⤴</a>
 
 - **Representation:** Database D of N = 2^l single-bit entries stored as matrix M of dimension 2^{l/2} x 2^{l/2}.&#8201;[^9]
 - **Record addressing:** Index x is split into l bits; first l/2 bits -> row selector A (one-hot encoded), last l/2 bits -> column selector B (one-hot encoded).&#8201;[^9]
 - **Batching (Bundled Query):** Database row bits {D\_y[1], ..., D\_y[epsilon]} are encoded as polynomials via inverse CRT: D\_y(x) = CRT^{-1}(D\_y[1], ..., D\_y[epsilon]) using the factorization of Phi\_m(x) into irreducible factors mod 2.&#8201;[^12]
 - **Batching (Single Query):** Row index bits {y\_i[1], ..., y\_i[epsilon]} and data bits {D\_y[1], ..., D\_y[epsilon]} are both CRT-packed for parallel comparison across epsilon slots.&#8201;[^13]
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -58,7 +95,9 @@ The paper constructs a single-server cPIR by evaluating the arithmetic retrieval
 | **Response** | Server | Send single resulting ciphertext R = r(xi\_0(x),...,xi\_{l-1}(x)) | 1 ciphertext downward | Per query |
 | **Decode** | Client | Decrypt: compute m = c^(i) f^(i) (mod 2) via modular reductions. For bundled mode, extract each slot z\_i = dec(r) (mod F\_i(x)). | — | Per query |
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 #### Option A: FHE Noise Analysis
 
@@ -78,7 +117,9 @@ The NTRU SWHE uses modulus reduction (not relinearization) to control noise grow
 
 Deterministic correctness — the retrieval function f(x) is an exact arithmetic identity (equality check via product of XOR comparisons). When the noise condition is satisfied, decryption is exact. No probabilistic failure mode.&#8201;[^1]
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core metrics
 
@@ -101,7 +142,9 @@ Deterministic correctness — the retrieval function f(x) is an exact arithmetic
 | Expansion factor (F) | Not directly stated | Response 784 KB for 1024 bits retrieved = ~6272x per bit; ~6.1x per retrieval in bundled mode | inferred |
 | Batching capacity (epsilon) | Number of irreducible factors of Phi\_m(x) mod 2 | 1024 (d=5), 630 (d=4), 256 (d=3) | exact [^14] |
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 **Hardware:** Intel Pentium @ 3.5 GHz (single-threaded). NTL 6.0 library for lattice operations.&#8201;[^18]
 
@@ -131,7 +174,9 @@ Deterministic correctness — the retrieval function f(x) is an exact arithmetic
 
 Security is parameterized via the Hermite factor gamma. The feasibility boundary for current lattice reduction is delta^n <= 1.01^n.&#8201;[^20]
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 #### Table 4: Query size comparison for various database sizes [^21]
 
@@ -150,7 +195,9 @@ Security is parameterized via the Hermite factor gamma. The feasibility boundary
 
 **Key takeaway:** This scheme achieves dramatically lower bandwidth than prior HE-based PIR (BGN, K-O) by leveraging NTRU SWHE with O(log N) communication complexity instead of O(sqrt(N)). The tradeoff is significantly higher server computation, approximately 8x slower than K-O for d=4 with 1 GB rows.&#8201;[^24]
 
-### Implementation Notes
+<a id="implementation-notes"></a>
+
+### Implementation Notes <a href="#toc">⤴</a>
 
 - **Language / Library:** C++ with Shoup's NTL library version 6.0 [17] for lattice/polynomial operations.&#8201;[^18]
 - **Polynomial arithmetic:** Cyclotomic polynomial ring arithmetic via NTL. The paper uses Phi\_m(x) (not necessarily x^n + 1), requiring m to satisfy m \| (2^λ - 1) for CRT batching to produce enough slots.&#8201;[^12]
@@ -160,7 +207,9 @@ Security is parameterized via the Hermite factor gamma. The feasibility boundary
 - **SIMD / vectorization:** Not mentioned. Single-threaded implementation on Intel Pentium.
 - **Parallelism:** The server computation (iterating over each database row) is embarrassingly parallel but no multi-threading was implemented.&#8201;[^18]
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **Bandwidth vs. computation:** The scheme achieves >1000x bandwidth improvement over BGN/K-O at the cost of significantly higher server computation. At d=4, processing time is ~8x slower than K-O for 1 GB rows.&#8201;[^24]
 - **Single-bit entries:** The base scheme retrieves single-bit entries. Multi-bit entries (w-bit) require w parallel evaluations of the PIR function, each on independent batched data. Data aggregation cost is proportional to w (polynomial multiplication per additional bit in Single Query mode).&#8201;[^2]
@@ -170,13 +219,17 @@ Security is parameterized via the Hermite factor gamma. The feasibility boundary
 - **No key switching / no relinearization** simplifies the implementation but limits the maximum circuit depth (practically d <= 6) because the secret key power f^{2^d} grows exponentially.&#8201;[^5]
 - **Security estimation via Hermite factor** is a pre-2016 methodology; modern lattice estimator tools may yield different security levels for the same parameters.&#8201;[^20]
 
-### Portable Optimizations
+<a id="portable-optimizations"></a>
+
+### Portable Optimizations <a href="#toc">⤴</a>
 
 - **CRT batching for PIR:** Packing multiple independent index bits (or multiple queries) into SIMD slots of a single ciphertext via the Chinese Remainder Theorem. This technique was later adopted widely in BFV-based PIR (SealPIR, FastPIR/Addra).&#8201;[^12]
 - **Arithmetic retrieval formulation:** Expressing the PIR retrieval function as f(x) = SUM (x == y) D\_y with the equality test decomposed as PROD (x\_i + y\_i + 1). This formulation generalizes to any HE scheme supporting XOR and AND.&#8201;[^25]
 - **Modulus chain with divisibility:** The q\_{i+1} \| q\_i specialization eliminates key switching entirely. Applicable to any NTRU-based leveled scheme in a single-user setting where relinearization is not needed.&#8201;[^6]
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - **Security level in bits:** The paper uses Hermite factor gamma as the security metric rather than concrete bit-security. For (n=16384, log q=512), gamma = 1.00538, yielding security t(gamma) = log(T(gamma)) = 1.8/log(gamma) - 110 which gives approximately 225 bits of security by the Lindner-Peikert estimate [15]. However, this estimate is from 2011 and may not reflect modern lattice attack improvements. Confidence: **inferred**.&#8201;[^20]
 - **Ciphertext size alpha units:** Table 4 gives alpha in number of ciphertexts (not bytes). The paper states "alpha is the ciphertext size that differs in each scheme." For this scheme, one ciphertext is a polynomial of degree n with log\_2(q)-bit coefficients, so one ciphertext is n * log\_2(q) / 8 bytes. At d=5: 16384 * 512 / 8 = 1 MB per ciphertext. The Bundled Query sends l = 32 ciphertexts = 32 MB, which matches Table 2. The "32 KB" bundled query size in Table 4 appears to be after normalizing by epsilon = 1024. **This normalization is critical for the 1000x claim.**&#8201;[^22]
@@ -186,7 +239,9 @@ Security is parameterized via the Hermite factor gamma. The feasibility boundary
 
 ---
 
-### Footnotes
+<a id="footnotes"></a>
+
+### Footnotes <a href="#toc">⤴</a>
 
 [^1]: Section 4.1, p. 7 — "we can express the correctness condition as ||c^{2^d} f^{2^d}||\_inf < q\_d/2"
 [^2]: Section 3, p. 5, footnote 3 — "we restricted the database entries D\_i to be bits but a w-bit entry can also easily be handled by considering w parallel and independent function evaluations"

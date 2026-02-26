@@ -1,5 +1,33 @@
 ## ThorPIR -- Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#novel-primitives-abstractions">Novel Primitives / Abstractions</a></nobr></sub><br>
+<sub><nobr>4. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>5. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>6. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#preprocessing-metrics-group-d-style">Preprocessing Metrics (Group D style)</a></nobr></sub><br>
+<sub><nobr>8. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
+<sub><nobr>9. <a href="#complexity"><b>Complexity</b></a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>10. <a href="#online-phase-detail">Online Phase Detail</a></nobr></sub><br>
+<sub><nobr>11. <a href="#bfv-operation-costs-measured-on-gcp-n2-intel-xeon-gold-6268-d-32768">BFV Operation Costs (measured on GCP N2, Intel Xeon Gold 6268, D=32768)</a></nobr></sub><br>
+<sub><nobr>12. <a href="#preprocessing-runtime-estimation-detail">Preprocessing Runtime Estimation Detail</a></nobr></sub><br>
+<sub><nobr>13. <a href="#conjectured-security-variant">Conjectured Security Variant</a></nobr></sub><br>
+<sub><nobr>14. <a href="#dynamic-databases-and-updates">Dynamic Databases and Updates</a></nobr></sub><br>
+<sub><nobr>15. <a href="#security-analysis-summary">Security Analysis Summary</a></nobr></sub><br>
+<sub><nobr>16. <a href="#comparison-why-not-sorting-networks">Comparison: Why Not Sorting Networks?</a></nobr></sub><br>
+<sub><nobr>17. <a href="#uncertainties-and-open-questions">Uncertainties and Open Questions</a></nobr></sub><br>
+<sub><nobr>18. <a href="#key-takeaways-for-engineering">Key Takeaways for Engineering</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [ThorPIR: Single Server PIR via Homomorphic Thorp Shuffles](https://eprint.iacr.org/2024/482) (2024) |
@@ -17,7 +45,9 @@
 
 ---
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -28,7 +58,9 @@
 
 ---
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear offline bandwidth and a low-depth FHE preprocessing circuit. The key insight is replacing the random permutation used in prior hint-based PIR constructions&#8201;[^3] with a **Thorp shuffle** -- a card-shuffling algorithm that can be evaluated as an O(λ)-depth circuit (vs. O(N) depth for Fisher-Yates or O(λ * log N) depth for sorting networks). The client sends encrypted PRG seeds to the server, which homomorphically generates pseudorandom bits via a novel LWR-based PRG, homomorphically performs the Thorp shuffle on the encrypted database, and returns encrypted hints. The client decrypts to obtain hints identical in structure to the two-server scheme of [55], enabling sublinear online queries.
 
@@ -36,7 +68,9 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-### Novel Primitives / Abstractions
+<a id="novel-primitives-abstractions"></a>
+
+### Novel Primitives / Abstractions <a href="#toc">⤴</a>
 
 #### 1. LWR-based FHE-friendly PRG
 
@@ -67,7 +101,9 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -86,7 +122,9 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Database encoding**: DB in {0,1}^N split into Q partitions db_1,...,db_Q, each of size K = N/Q elements. Elements addressed as tuples (q,k) in [Q] x [K].&#8201;[^8]
 - **Hints**: K = N/Q XOR-parity hints h_1,...,h_K where h_j = XOR_{i in [Q]} db_i[tau_i(j)] for Q Thorp shuffle permutations tau_1,...,tau_Q.
@@ -97,7 +135,9 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -116,7 +156,9 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-### Preprocessing Metrics (Group D style)
+<a id="preprocessing-metrics-group-d-style"></a>
+
+### Preprocessing Metrics (Group D style) <a href="#toc">⤴</a>
 
 | Metric | Proven Security (Thm 4.5) | Conjectured Security (Conj 3.3) |
 |--------|---------------------------|----------------------------------|
@@ -134,7 +176,9 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 #### Option C: Deterministic Correctness
 
@@ -144,7 +188,9 @@ Deterministic correctness follows from: (1) BFV decryption correctness (uncondit
 
 ---
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Asymptotic Complexity (Table 1 from paper)
 
@@ -193,7 +239,9 @@ Deterministic correctness follows from: (1) BFV decryption correctness (uncondit
 
 ---
 
-### Online Phase Detail
+<a id="online-phase-detail"></a>
+
+### Online Phase Detail <a href="#toc">⤴</a>
 
 **Query time breakdown** (per query):
 - Client: 1 inverse Thorp shuffle evaluation + (Q-1) forward Thorp shuffle evaluations + Q resampling checks against USED dictionaries. Total: O_λ(Q) = O(λ * Q) Thorp shuffle operations at ~O(λ) each. Concretely: ~3.6 ms.&#8201;[^16]
@@ -207,7 +255,9 @@ Deterministic correctness follows from: (1) BFV decryption correctness (uncondit
 
 ---
 
-### BFV Operation Costs (measured on GCP N2, Intel Xeon Gold 6268, D=32768)
+<a id="bfv-operation-costs-measured-on-gcp-n2-intel-xeon-gold-6268-d-32768"></a>
+
+### BFV Operation Costs (measured on GCP N2, Intel Xeon Gold 6268, D=32768) <a href="#toc">⤴</a>
 
 | Operation | Time (single-thread CPU) |
 |-----------|-------------------------|
@@ -221,7 +271,9 @@ Deterministic correctness follows from: (1) BFV decryption correctness (uncondit
 
 ---
 
-### Preprocessing Runtime Estimation Detail
+<a id="preprocessing-runtime-estimation-detail"></a>
+
+### Preprocessing Runtime Estimation Detail <a href="#toc">⤴</a>
 
 **PRG evaluation (single-thread CPU)**: n=220 plaintext multiplications (seed expansion) + 16 ciphertext multiplications (squaring for Fermat) + 4 additional ciphertext multiplications (k-1=4 repetitions) + 7 levels of ciphertext multiplication (modulus switching overhead). Total: ~23 seconds per PRG call, reducible to ~12.3 seconds with input Q reduced from 860 to 680 bits.&#8201;[^18]
 
@@ -233,7 +285,9 @@ Deterministic correctness follows from: (1) BFV decryption correctness (uncondit
 
 ---
 
-### Conjectured Security Variant
+<a id="conjectured-security-variant"></a>
+
+### Conjectured Security Variant <a href="#toc">⤴</a>
 
 Under Conjecture 3.3, the Thorp shuffle requires only λ = 45 rounds (instead of 480) for 128-bit security against computational adversaries making q = sqrt(N) queries.&#8201;[^19] This eliminates bootstrapping entirely and enables:
 
@@ -257,7 +311,9 @@ The conjectured parameters use D = 2^17 (SEAL library does not support this; run
 
 ---
 
-### Dynamic Databases and Updates
+<a id="dynamic-databases-and-updates"></a>
+
+### Dynamic Databases and Updates <a href="#toc">⤴</a>
 
 ThorPIR handles database updates in O_λ(1) time per element:
 1. Server streams the update (index, old value, new value) to all clients.
@@ -271,7 +327,9 @@ This is one inverse Thorp shuffle evaluation, two XORs, and a hash table update 
 
 ---
 
-### Security Analysis Summary
+<a id="security-analysis-summary"></a>
+
+### Security Analysis Summary <a href="#toc">⤴</a>
 
 **Privacy** (Theorem 7.1): Proven via simulation. In the preprocessing phase, the client downloads the entire database (linear-bandwidth variant) or sends only encrypted parameters (sublinear variant), leaking nothing about future queries. In the online phase, the Q indices o_1,...,o_Q sent to the server are each uniformly distributed in [K] from the server's perspective, by the CCA security of the Thorp shuffle and the resampling of already-used indices from [K]\USED_i.&#8201;[^22]
 
@@ -284,7 +342,9 @@ This is one inverse Thorp shuffle evaluation, two XORs, and a hash table update 
 
 ---
 
-### Comparison: Why Not Sorting Networks?
+<a id="comparison-why-not-sorting-networks"></a>
+
+### Comparison: Why Not Sorting Networks? <a href="#toc">⤴</a>
 
 The paper explicitly addresses this alternative (Section 9.1). Two reasons:
 1. **Depth**: The best O(log N)-depth sorting networks (AKS [1]) have constant factor ~1800. Practical O(log^2 N)-depth networks are still asymptotically worse and concretely far deeper than Thorp shuffles. Under FHE, each comparison requires O(λ) depth (to compare λ-bit random tags), giving total depth Omega(λ * log N) vs. O(λ) for the Thorp shuffle.
@@ -292,7 +352,9 @@ The paper explicitly addresses this alternative (Section 9.1). Two reasons:
 
 ---
 
-### Uncertainties and Open Questions
+<a id="uncertainties-and-open-questions"></a>
+
+### Uncertainties and Open Questions <a href="#toc">⤴</a>
 
 1. **LWR parameter security is heuristic.** No concrete LWR security estimators exist. The reduction LWR -> LWE uses two unproven assumptions (footnote 6, p.25). The actual security level may be lower than 128 bits.&#8201;[^23]
 2. **Conjecture 3.3 is unproven.** The >100x preprocessing improvement relies on an unproven conjecture about the Thorp shuffle's mixing time for computational adversaries. The known lower bound on distinguishing rounds is omega(log N); the conjecture asserts λ rounds suffice for 2^{-c*λ} advantage. There is a known attack for t <= log N rounds but no known attack for t > λ.
@@ -305,7 +367,9 @@ The paper explicitly addresses this alternative (Section 9.1). Two reasons:
 
 ---
 
-### Key Takeaways for Engineering
+<a id="key-takeaways-for-engineering"></a>
+
+### Key Takeaways for Engineering <a href="#toc">⤴</a>
 
 1. **The Thorp shuffle is the key enabler.** Its O(λ)-depth circuit is what makes FHE-based preprocessing practical. The 2.5x improvement in mixing bound (Theorem 3.2) directly reduces preprocessing cost by 2.5x.
 2. **The LWR-based PRG is independently useful.** At 0.4 ms/bit vs. 672 ms/bit for homomorphic AES, it is a 1680x improvement applicable to any FHE application needing pseudorandom bit generation.

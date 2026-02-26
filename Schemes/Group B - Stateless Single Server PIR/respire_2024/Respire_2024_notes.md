@@ -1,5 +1,36 @@
 ## Respire: High-Rate PIR for Databases with Small Records -- Engineering Notes
 
+<a id="toc"></a>
+
+<table><tr><td>
+
+<sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
+<sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
+<sub><nobr>3. <a href="#variants">Variants</a></nobr></sub><br>
+<sub><nobr>4. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
+<sub><nobr>5. <a href="#ring-architecture-modulus-chain">Ring Architecture / Modulus Chain</a></nobr></sub><br>
+<sub><nobr>6. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
+<sub><nobr>7. <a href="#database-encoding">Database Encoding</a></nobr></sub><br>
+<sub><nobr>8. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
+<sub><nobr>9. <a href="#communication-breakdown">Communication Breakdown</a></nobr></sub><br>
+<sub><nobr>10. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
+<sub><nobr>11. <a href="#complexity"><b>Complexity</b></a></nobr></sub>
+
+</td><td>
+
+<sub><nobr>12. <a href="#batch-pir-construction-3-3">Batch PIR (Construction 3.3)</a></nobr></sub><br>
+<sub><nobr>13. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub><br>
+<sub><nobr>14. <a href="#portable-optimizations"><b>Portable Optimizations</b></a></nobr></sub><br>
+<sub><nobr>15. <a href="#implementation-notes"><b>Implementation Notes</b></a></nobr></sub><br>
+<sub><nobr>16. <a href="#application-scenarios">Application Scenarios</a></nobr></sub><br>
+<sub><nobr>17. <a href="#deployment-considerations">Deployment Considerations</a></nobr></sub><br>
+<sub><nobr>18. <a href="#key-tradeoffs-limitations"><b>Key Tradeoffs & Limitations</b></a></nobr></sub><br>
+<sub><nobr>19. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
+<sub><nobr>20. <a href="#open-problems">Open Problems</a></nobr></sub><br>
+<sub><nobr>21. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+
+</td></tr></table>
+
 | Field | Value |
 |-------|-------|
 | **Paper** | [Respire: High-Rate PIR for Databases with Small Records](https://eprint.iacr.org/2024/1165) (2024) |
@@ -16,7 +47,9 @@
 
 ---
 
-### Lineage
+<a id="lineage"></a>
+
+### Lineage <a href="#toc">⤴</a>
 
 | Field | Value |
 |-------|--------|
@@ -27,7 +60,9 @@
 
 ---
 
-### Core Idea
+<a id="core-idea"></a>
+
+### Core Idea <a href="#toc">⤴</a>
 
 Existing lattice-based PIR protocols have high communication overhead because RLWE ciphertexts require ring dimension d >= 2048 and modulus q >= 2^32, meaning even a single ring element is >= 8 KB. For databases with small records (e.g., 256 bytes), this is the dominant cost. Respire addresses this by working over *subrings*: the server performs most computation on the large ring R_{d1} (d1=2048) but projects the response onto a subring R_{d2} (d2=512) via dimension reduction (ring switching), achieving a 4x compression of the response.&#8201;[^1] For query compression, Respire embeds the query into subring coefficients rather than sending a full ring element, reducing query size from 14 KB to 4 KB.&#8201;[^2] On a 256 MB database with 256-byte records, Respire achieves 6.1 KB total online communication -- a 5.9x reduction over Spiral -- with comparable throughput (200-400 MB/s).&#8201;[^3]
 
@@ -39,7 +74,9 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 
 ---
 
-### Variants
+<a id="variants"></a>
+
+### Variants <a href="#toc">⤴</a>
 
 | Variant | Key Difference | Offline Comm | Online Comm | Best For |
 |---------|---------------|-------------|-------------|----------|
@@ -48,7 +85,9 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 
 ---
 
-### Cryptographic Foundation
+<a id="cryptographic-foundation"></a>
+
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 | Layer | Detail |
 |-------|--------|
@@ -66,7 +105,9 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 
 ---
 
-### Ring Architecture / Modulus Chain
+<a id="ring-architecture-modulus-chain"></a>
+
+### Ring Architecture / Modulus Chain <a href="#toc">⤴</a>
 
 | Ring | Dimension | Modulus (bits) | Role / Phase |
 |------|-----------|---------------|--------------|
@@ -82,7 +123,9 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 
 ---
 
-### Key Data Structures
+<a id="key-data-structures"></a>
+
+### Key Data Structures <a href="#toc">⤴</a>
 
 - **Database:** N = 2^{v1+v2+v3} records, each an element of R_{d3,p} = Z_p[x]/(x^{d3} + 1). Arranged as a (1+v2+v3)-dimensional hypercube: first dimension 2^{v1}, next v2 dimensions of size 2, and v3 "folding" dimensions of size 2. In the single-query case d3 = d2 = 512, so v3 = log2(d1/d2) = 2.&#8201;[^8]
 - **Packed database elements:** Each entry in the preprocessed database db is a packed representation r_tilde_{alpha,beta} = Pi(r_{alpha,beta,1}, ..., r_{alpha,beta,2^{v3}}) in R_{d1,p}, packing k = d1/d2 = 4 individual records into one large-ring element via the ring packing function Pi (Eq. 3.3).&#8201;[^9]
@@ -100,7 +143,9 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 
 ---
 
-### Database Encoding
+<a id="database-encoding"></a>
+
+### Database Encoding <a href="#toc">⤴</a>
 
 - **Representation:** (1+v2+v3)-dimensional hypercube. Each record is an element of R_{d3,p}. For the single-query case, d3 = d2 = 512 and p = 16, so each record holds 512 * log2(16) = 2048 bits = 256 bytes.
 - **Record addressing:** Triple (alpha, beta, gamma) where alpha in [2^{v1}], beta in [2^{v2}], gamma in [2^{v3}]. Alpha indexes the first dimension (linear scan), beta indexes the "folding" dimensions, gamma indexes positions within a packed element.
@@ -111,7 +156,9 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 
 ---
 
-### Protocol Phases
+<a id="protocol-phases"></a>
+
+### Protocol Phases <a href="#toc">⤴</a>
 
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
@@ -127,7 +174,9 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 
 ---
 
-### Communication Breakdown
+<a id="communication-breakdown"></a>
+
+### Communication Breakdown <a href="#toc">⤴</a>
 
 | Component | Direction | Size | Reusable? | Notes |
 |-----------|-----------|------|-----------|-------|
@@ -143,7 +192,9 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 
 ---
 
-### Correctness Analysis
+<a id="correctness-analysis"></a>
+
+### Correctness Analysis <a href="#toc">⤴</a>
 
 #### Option A: FHE Noise Analysis (subgaussian variance tracking)
 
@@ -171,7 +222,9 @@ Respire tracks noise growth via subgaussian variance parameters (sigma^2) throug
 
 ---
 
-### Complexity
+<a id="complexity"></a>
+
+### Complexity <a href="#toc">⤴</a>
 
 #### Core metrics
 
@@ -207,7 +260,9 @@ Respire tracks noise growth via subgaussian variance parameters (sigma^2) throug
 
 ---
 
-### Batch PIR (Construction 3.3)
+<a id="batch-pir-construction-3-3"></a>
+
+### Batch PIR (Construction 3.3) <a href="#toc">⤴</a>
 
 #### Cuckoo hashing
 
@@ -247,7 +302,9 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 ---
 
-### Performance Benchmarks
+<a id="performance-benchmarks"></a>
+
+### Performance Benchmarks <a href="#toc">⤴</a>
 
 **Hardware:** AWS EC2 r7i.8xlarge (Intel Xeon Platinum 8488C @ 2.4GHz), 32 vCPUs, 256 GB RAM, Ubuntu 22.04.4. Single-threaded execution. rustc 1.77.0, gcc 11.4.0. AVX2 enabled (not AVX-512).&#8201;[^23]
 
@@ -277,7 +334,9 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 ---
 
-### Portable Optimizations
+<a id="portable-optimizations"></a>
+
+### Portable Optimizations <a href="#toc">⤴</a>
 
 1. **Subring query embedding:** When the number of values h to pack into an RLWE encoding is much smaller than the ring dimension d, embed h values into the coefficients of a subring R_{d2} subset R_{d1} and send only ~h coefficients instead of a full ring element. Applicable to any RLWE-based PIR using query packing (ACLS18, CCR19) with small inputs. Concretely reduces query size by a factor of d/h ≈ 3.5 (e.g., from 14 KB to 4 KB in Respire).&#8201;[^25]
 
@@ -297,7 +356,9 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 ---
 
-### Implementation Notes
+<a id="implementation-notes"></a>
+
+### Implementation Notes <a href="#toc">⤴</a>
 
 - **Language / Library:** Rust (~8,000 LOC). No external FHE library -- custom implementation.&#8201;[^29]
 - **Polynomial arithmetic:** NTT-based. q1 = q_{1,1} * q_{1,2} (two 28-bit primes), q2 = 1 mod 2*d2 for NTT over the small ring. Arithmetic on 64-bit integers via native AVX2 (not AVX-512).&#8201;[^30]
@@ -313,7 +374,9 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 ---
 
-### Application Scenarios
+<a id="application-scenarios"></a>
+
+### Application Scenarios <a href="#toc">⤴</a>
 
 - **Metadata-hiding communication:** Anonymous messaging, private DNS -- databases of 10^6+ small records (e.g., 256-byte hash values). Respire is well-suited because records are small and the client makes a handful of queries at a time (e.g., blocklist lookup, DNS query).&#8201;[^31]
 - **Password breach checking:** Databases of hash prefixes, each a few hundred bytes. Communication-sensitive setting where low query/response overhead matters more than throughput.
@@ -323,7 +386,9 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 ---
 
-### Deployment Considerations
+<a id="deployment-considerations"></a>
+
+### Deployment Considerations <a href="#toc">⤴</a>
 
 - **Database updates:** Requires re-running SetupDB (re-packing and NTT). Cost: 16.8 s for 256 MB, 569 s for 8 GB. No incremental update mechanism discussed.
 - **Key rotation / query limits:** Public parameters are reusable across all queries. Security proof (Theorem D.4) holds for any polynomial number Q of queries.&#8201;[^32]
@@ -337,7 +402,9 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 ---
 
-### Key Tradeoffs & Limitations
+<a id="key-tradeoffs-limitations"></a>
+
+### Key Tradeoffs & Limitations <a href="#toc">⤴</a>
 
 - **Small-record niche:** Respire's subring techniques only help when records fit in d2 < d1 coefficients. For records > ~2 KB, Respire reduces to Spiral with no advantage.&#8201;[^33]
 - **Throughput penalty vs Spiral:** Respire is ~26% slower than Spiral on an 8 GB database because the smaller plaintext modulus (p=16 vs p=256) increases the number of RLWE encodings the server must process in the first-dimension scan.&#8201;[^34]
@@ -353,7 +420,9 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 ---
 
-### Comparison with Prior Work
+<a id="comparison-with-prior-work"></a>
+
+### Comparison with Prior Work <a href="#toc">⤴</a>
 
 | Metric | Respire | Spiral | SimplePIR | YPIR |
 |--------|---------|--------|-----------|------|
@@ -371,7 +440,9 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 ---
 
-### Open Problems
+<a id="open-problems"></a>
+
+### Open Problems <a href="#toc">⤴</a>
 
 - Can subring techniques be extended to achieve similar communication savings for *moderate*-size records (1-10 KB)?
 - Can the offline parameter upload be eliminated while retaining Respire's communication efficiency? (This would move Respire from client-hint-upload to hintless.)
@@ -379,7 +450,9 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 
 ---
 
-### Uncertainties
+<a id="uncertainties"></a>
+
+### Uncertainties <a href="#toc">⤴</a>
 
 - **Notation: d vs d:** The paper uses d generically for ring dimension and also d1, d2, d3 for specific ring dimensions. In Section 2, generic d is used; in Section 3+, the subscripted versions are used consistently.
 - **q2 value:** For the single-query case, q2 = 16760833 ~ 2^{24} (Table 3 states q2 explicitly). For the batch case, q2 = 249857 ~ 2^{18} (Table 4). The paper states "q2 ~ 2^24" and "q2 ~ 2^18" respectively.
