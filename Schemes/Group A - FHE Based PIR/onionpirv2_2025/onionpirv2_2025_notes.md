@@ -2,33 +2,33 @@
 
 <a id="toc"></a>
 
+**Table of Contents**
+
 <table><tr><td><sub>
 
-**Table of Contents**
-1. [Lineage](#lineage)
-2. [Core Idea](#core-idea)
-3. [Warm-up](#warmup)
-4. [Crypto Foundation](#crypto-foundation)
-5. [Ring Architecture](#ring-architecture)
-6. [Key Data Structures](#key-data-structures)
-7. [DB Encoding](#database-encoding)
-8. [Protocol Phases](#protocol-phases)
-9. [Query Structure](#query-structure)
-10. [Correctness](#correctness-analysis)
+1. <a href="#lineage">Lineage</a><br>
+2. <a href="#core-idea">Core Idea</a><br>
+3. <a href="#warmup">Warm-up</a><br>
+4. <a href="#crypto-foundation">Crypto Foundation</a><br>
+5. <a href="#ring-architecture">Ring Architecture</a><br>
+6. <a href="#key-data-structures">Key Data Structures</a><br>
+7. <a href="#database-encoding">DB Encoding</a><br>
+8. <a href="#protocol-phases">Protocol Phases</a><br>
+9. <a href="#query-structure">Query Structure</a><br>
+10. <a href="#correctness-analysis">Correctness</a>
 
 </sub></td><td><sub>
 
-&nbsp;
-11. [Complexity](#complexity)
-12. [Optimization Catalog](#optimization-catalog)
-13. [Performance](#perf-benchmarks)
-14. [Server Computation](#server-computation)
-15. [Prior Work](#comparison)
-16. [Portable Optimizations](#portable-optimizations)
-17. [Implementation](#implementation-notes)
-18. [Tradeoffs](#tradeoffs)
-19. [Open Problems](#open-problems)
-20. [Uncertainties](#uncertainties)
+11. <a href="#complexity">Complexity</a><br>
+12. <a href="#optimization-catalog">Optimization Catalog</a><br>
+13. <a href="#perf-benchmarks">Performance</a><br>
+14. <a href="#server-computation">Server Computation</a><br>
+15. <a href="#comparison">Prior Work</a><br>
+16. <a href="#portable-optimizations">Portable Optimizations</a><br>
+17. <a href="#implementation-notes">Implementation</a><br>
+18. <a href="#tradeoffs">Tradeoffs</a><br>
+19. <a href="#open-problems">Open Problems</a><br>
+20. <a href="#uncertainties">Uncertainties</a>
 
 </sub></td></tr></table>
 
