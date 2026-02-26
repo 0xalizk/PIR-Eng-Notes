@@ -169,34 +169,6 @@ h4 {
   margin: 24px 0 8px;
 }
 
-/* ── Stat Cards ──────────────────────────────────────── */
-.stat-cards {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 28px;
-  flex-wrap: wrap;
-}
-.stat-card {
-  flex: 1;
-  min-width: 140px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px 20px;
-  text-align: center;
-  box-shadow: 0 1px 3px var(--shadow);
-}
-.stat-card .num {
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--link);
-  display: block;
-}
-.stat-card .label {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
 /* ── Chart Containers ───────────────────────────────── */
 .chart-container {
   background: var(--bg-card);
@@ -400,6 +372,27 @@ tbody tr:nth-child(even) { background: var(--bg-alt); }
 tbody tr:hover { background: var(--nav-hover); }
 td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
+/* ── Inline Table (no outer border) ──────────────────── */
+.inline-table {
+  width: auto;
+  margin: 8px 0 4px;
+  border: none;
+}
+.inline-table thead th {
+  background: transparent;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  cursor: default;
+}
+.inline-table thead th:hover {
+  background: transparent;
+}
+.inline-table tbody td {
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+.inline-table tbody tr:nth-child(even) { background: transparent; }
+.inline-table tbody tr:last-child td { border-bottom: none; }
+
 /* ── Group Dot (catalog) ────────────────────────────── */
 .group-dot {
   display: inline-block;
@@ -408,27 +401,6 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   border-radius: 50%;
   vertical-align: middle;
   margin-right: 4px;
-}
-
-/* ── Tier Definitions ───────────────────────────────── */
-/* ── Tier Banner (homepage top) ─────────────────────── */
-.tier-banner {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  padding: 12px 16px;
-  background: var(--bg-alt);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  margin-bottom: 24px;
-  font-size: 13px;
-  line-height: 1.6;
-}
-.tier-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-muted);
 }
 
 /* ── Tier Legend (inline, catalog) ───────────────────── */
@@ -441,19 +413,6 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   margin: 8px 0 16px;
 }
 .tier-legend-inline strong {
-  color: var(--text);
-  margin-right: 3px;
-}
-
-.tier-legend-stacked {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 14px;
-  color: var(--text-muted);
-  margin: 8px 0 28px;
-}
-.tier-legend-stacked strong {
   color: var(--text);
   margin-right: 3px;
 }
@@ -479,32 +438,6 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .data-sources-toggle .table-wrap {
   margin: 8px 0 4px;
 }
-
-.tier-defs {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 12px 0 20px;
-}
-.tier-def {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px;
-}
-.tier-badge {
-  font-size: 12px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 12px;
-  color: #fff;
-  white-space: nowrap;
-  min-width: 60px;
-  text-align: center;
-}
-.tier-badge.t1 { background: #22c55e; }
-.tier-badge.t2 { background: #eab308; color: #1f2328; }
-.tier-badge.t3 { background: #ef4444; }
 
 /* ── Description ─────────────────────────────────────── */
 .desc {
@@ -554,15 +487,6 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     min-height: 400px;
-  }
-  .stat-cards {
-    flex-direction: column;
-  }
-  .radar-controls {
-    flex-direction: column;
-  }
-  .radar-controls select {
-    min-width: 100%;
   }
   /* Larger touch targets for filter pills & tabs */
   .filter-pill {

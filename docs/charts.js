@@ -421,7 +421,7 @@
         z: nhd.z, x: nhd.metricLabels, y: newSchemes,
         type: 'heatmap',
         colorscale: [[0, '#22c55e'], [0.5, '#eab308'], [1, '#ef4444']],
-        text: nhd.text, texttemplate: '%{text}', textfont: { size: 10 },
+        text: nhd.text, texttemplate: '%{text}', textfont: { size: isMobile() ? 8 : 10 },
         hovertext: nhd.hoverText, hoverinfo: 'text',
         showscale: true,
         colorbar: { title: { text: 'Rank', font: { size: 11 } }, tickvals: [0, 0.5, 1], ticktext: ['Best', 'Mid', 'Worst'], len: 0.4 },
@@ -672,7 +672,7 @@
       y: schemes,
       x: items.map(function (s) { return getVal(s, 'offline_hint_mb'); }),
       type: 'bar', orientation: 'h',
-      name: 'Offline Hint',
+      name: 'Offline',
       marker: { color: HINT_COLOR, opacity: 0.85 },
       text: items.map(function (s) {
         var v = getVal(s, 'offline_hint_mb');
@@ -682,7 +682,7 @@
       cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'offline_hint_mb');
-        return v !== null ? s.display_name + '<br>Offline Hint: ' + formatNum(v) + ' MB' : '';
+        return v !== null ? s.display_name + '<br>Offline: ' + formatNum(v) + ' MB' : '';
       }),
       hoverinfo: 'text'
     });
@@ -707,7 +707,7 @@
       hoverinfo: 'text'
     });
 
-    Plotly.newPlot(el, traces, baseLayout('Offline Hints & Client Storage', {
+    Plotly.newPlot(el, traces, baseLayout('Offline & Client Storage', {
       barmode: 'group',
       xaxis: { title: 'Size (MB)', gridcolor: t.grid },
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
