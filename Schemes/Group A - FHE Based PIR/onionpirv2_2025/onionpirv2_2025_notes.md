@@ -2,7 +2,7 @@
 
 <a id="toc"></a>
 
-<table border="0" cellspacing="0" cellpadding="4"><tr><td>
+<table border="0" cellspacing="0" cellpadding="4"><tr><td width="50%">
 
 <sub>1.</sub> <sub><a href="#lineage">Lineage</a></sub><br>
 <sub>2.</sub> <sub><a href="#core-idea">Core Idea</a></sub><br>
@@ -15,7 +15,7 @@
 <sub>9.</sub> <sub><a href="#query-structure">Query Structure</a></sub><br>
 <sub>10.</sub> <sub><a href="#correctness-analysis">Correctness</a></sub>
 
-</td><td>
+</td><td width="50%">
 
 <sub>11.</sub> <sub><a href="#complexity">Complexity</a></sub><br>
 <sub>12.</sub> <sub><a href="#optimization-catalog">Optimization Catalog</a></sub><br>
