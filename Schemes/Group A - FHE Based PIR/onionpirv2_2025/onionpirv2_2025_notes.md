@@ -4,7 +4,7 @@
 
 **Table of Contents**
 
-<table><tr><td style="font-size:85%">
+<table><tr><td style="font-size:75%">
 
 1. <a href="#lineage">Lineage</a><br>
 2. <a href="#core-idea">Core Idea</a><br>
@@ -17,7 +17,7 @@
 9. <a href="#query-structure">Query Structure</a><br>
 10. <a href="#correctness-analysis">Correctness</a>
 
-</td><td style="font-size:85%">
+</td><td style="font-size:75%">
 
 11. <a href="#complexity">Complexity</a><br>
 12. <a href="#optimization-catalog">Optimization Catalog</a><br>
