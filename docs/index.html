@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The State of PIR</title>
+  <title>PIR Benchs</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
@@ -18,9 +18,9 @@
 
 <!-- Sidebar -->
 <aside class="sidebar">
-  <a href="#overview" class="sidebar-title">The State of PIR</a>
+  <a href="#overview" class="sidebar-title">PIR Benchs</a>
   <nav>
-    <a href="#radar">Overview</a>
+    <a href="#overview">Overview</a>
     <div class="divider"></div>
     <a href="#communication">Communication</a>
     <a href="#server-perf">Server</a>
@@ -40,7 +40,7 @@
 
 <!-- 1. Overview / Hero -->
 <section id="overview">
-  <h2>The State of PIR</h2>
+  <h2>PIR Benchs</h2>
   <details class="data-sources-toggle">
     <summary><strong>Tier 1</strong> (26) Exact &mdash; from reported benchmarks in the paper</summary>
     <div class="table-wrap">
@@ -109,7 +109,7 @@
 
   <!-- Scheme Comparison — tabbed: All (heatmap) + per-group radars -->
   <div id="radar">
-    <h3>Overview</h3>
+    <h3><a href="#overview">Overview</a></h3>
     <div class="radar-tabs" id="radar-tabs"></div>
     <div class="radar-tier-legend" id="radar-tier-legend"></div>
     <div id="radar-all-panel">
@@ -127,14 +127,14 @@
 
 <!-- 2. Communication -->
 <section id="communication">
-  <h2>Communication</h2>
+  <h2><a href="#communication">Communication</a></h2>
   <p class="desc">Dot size = server time (larger = slower).</p>
   <div class="chart-container" id="chart-communication"></div>
 </section>
 
 <!-- 3. Server Performance -->
 <section id="server-perf">
-  <h2>Server Performance</h2>
+  <h2><a href="#server-perf">Server Performance</a></h2>
   <p class="subtitle">Throughput and server computation time</p>
 
   <div class="chart-pair">
@@ -145,14 +145,14 @@
 
 <!-- 4. Client Compute -->
 <section id="client-cost">
-  <h2>Client Compute</h2>
+  <h2><a href="#client-cost">Client Compute</a></h2>
   <p class="subtitle">Client-side computation time (only ~15 schemes report this metric)</p>
   <div class="chart-container" id="chart-client-cost"></div>
 </section>
 
 <!-- 5. Offline & Storage -->
 <section id="offline-storage">
-  <h2>Offline &amp; Storage</h2>
+  <h2><a href="#offline-storage">Offline &amp; Storage</a></h2>
   <p class="desc">
     <b>Offline Hint</b> — data the server precomputes and sends to the client before queries begin.<br>
     <b>Client Storage</b> — persistent state the client must maintain to issue queries.
@@ -162,7 +162,7 @@
 
 <!-- 6. Pareto Frontiers -->
 <section id="pareto">
-  <h2>Pareto Frontiers</h2>
+  <h2><a href="#pareto">Pareto Frontiers</a></h2>
   <p class="desc">
     Total communication (query + response) vs server time. Starred points are Pareto-optimal
     (no other scheme is better on both axes). Purple step-line connects the frontier.
@@ -172,7 +172,7 @@
 
 <!-- 7. Timeline -->
 <section id="timeline">
-  <h2>Timeline</h2>
+  <h2><a href="#timeline">Timeline</a></h2>
   <p class="desc">
     Throughput evolution by year.<br>
     Bubble size inversely proportional to total communication (smaller bubble = more bandwidth-efficient). Color = group.
@@ -182,7 +182,7 @@
 
 <!-- 7. Scheme Catalog -->
 <section id="catalog">
-  <h2>Scheme Catalog</h2>
+  <h2><a href="#catalog">Scheme Catalog</a></h2>
 
   <div class="tier-legend-inline">
     <span><strong>Tier 1:</strong> Exact benchmarks</span>
@@ -202,7 +202,7 @@
 
 <!-- References -->
 <section id="references">
-  <h2>References</h2>
+  <h2><a href="#references">References</a></h2>
   <div class="links">
     <a href="https://github.com/0xalizk/PIR-Eng-Notes" target="_blank">GitHub Repo</a>
     <a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/data/pir_data.json" target="_blank">Raw Data</a>

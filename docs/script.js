@@ -38,6 +38,7 @@ document.querySelectorAll('.sidebar nav a[href^="#"]').forEach(function (link) {
     var target = document.getElementById(this.getAttribute('href').slice(1));
     if (target) {
       e.preventDefault();
+      history.pushState(null, '', this.getAttribute('href'));
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       document.querySelector('.sidebar').classList.remove('open');
       document.querySelector('.sidebar-overlay').classList.remove('open');
