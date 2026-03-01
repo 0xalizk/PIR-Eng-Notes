@@ -1,6 +1,10 @@
 ### 3rd Pass — Issues Found
 
-Each of the 34 engineering notes files was fact-checked against its source PDF. One subagent per scheme read the full notes file and PDF, verified every claim (footnoted and unfootnoted — tables, protocol descriptions, complexity expressions, benchmarks, quotes), and classified discrepancies as Incorrect or Minor. A second reviewer agent then independently verified each reported finding against the PDF, rejecting false positives and reclassifying severity where warranted. The process was guided by the [3rd-pass instructions](INSTRUCTIONS.md) and supplemented by the [validate-footnotes](../../.claude/skills/validate-footnotes/SKILL.md) skill.
+- fact-checked all 34 notes files against source PDFs (one agent per scheme)
+- verified every claim: footnoted citations, tables, protocol descriptions, complexity expressions, benchmarks, quotes
+- classified discrepancies as Incorrect or Minor
+- a second reviewer agent independently re-verified each finding, rejecting false positives and reclassifying severity
+- guided by [3rd-pass instructions](INSTRUCTIONS.md) and the [validate-footnotes](../../.claude/skills/validate-footnotes/SKILL.md) skill
 
 | Group | Claims | ${\color{green}\textsf{Confirmed}}$ | ${\color{orange}\textsf{Minor}}$ | ${\color{red}\textsf{Incorrect}}$ | ${\color{gray}\textsf{Rejected}}$ | Papers | Checkup Reports |
 |-------|--------|-----------|-------|-----------|----------|--------|-----------------|
