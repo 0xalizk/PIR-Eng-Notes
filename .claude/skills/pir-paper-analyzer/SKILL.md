@@ -259,12 +259,15 @@ For papers whose Related Work section exceeds 1.5 pages, scan for:
 - **Multi-level subscripts:** Papers like VIA use R_{n_1,q_1}, theta_{ctrl,1}. Verify each subscript level.
 - **Chart data:** Prefer table values over chart readings. For chart-derived values, report ranges and mark as "approximate."
 - **Log-scale charts:** Halfway between 10² and 10³ ≈ 300, not 550. Check axis labels carefully.
+- **Math garbling in text layer:** For expressions with fraction bars, multi-level subscripts, or decorated operators (hat, tilde, norm bars), verify against the visual page rendering. Common failures: ⌊q/p⌋ loses floor brackets → `q/p`; R_{n,q} collapses subscript levels → `R_q`; ‖v‖_∞ loses double bars → `|v|∞`; `mod q` drops silently.
+- **Figure downscaling:** Academic paper pages are automatically downscaled for processing; two-column figures are especially affected. When axis labels or legend text appear unclear, fall back to the paper's prose description of the same figure or adjacent tables.
+- **Landscape pages:** Wide comparison tables or parameter tables may be landscape-oriented. If a table's column headers appear garbled or truncated, consider that the page may be rotated.
 
 ---
 
 ## 3. Mathematical Expression Extraction
 
-Rely on Claude's native PDF math rendering. Extract expressions directly from the visual representation.
+For complex math (nested fractions, multi-level subscripts, decorated operators), the rendered page image is authoritative — the text-extraction layer may garble these. For simple expressions (single-level subscripts, standard operators), text extraction is reliable. When an expression looks syntactically incomplete, cross-reference against surrounding text and flag in ## Uncertainties.
 
 **Group-based routing:** Consult §0 to determine which subsections to read. Group A/B/C papers primarily need §3.1. Group D papers primarily need §3.2. Theory/survey papers may need §3.3. All papers benefit from §3.4 and §3.7.
 

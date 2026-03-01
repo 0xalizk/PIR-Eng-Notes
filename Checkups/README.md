@@ -15,3 +15,7 @@
 **[Issues](2nd_pass/issues#2nd-pass--issues-found) found:** Group [A](2nd_pass/issues/Group%20A#group-a--fhe-based-pir) - [B](2nd_pass/issues/Group%20B#group-b--stateless-single-server-pir) - [C](2nd_pass/issues/Group%20C#group-c--client-independent-preprocessing) - [D](2nd_pass/issues/Group%20D#group-d--client-dependent-preprocessing) - [X](2nd_pass/issues/Group%20X#group-x--extensions)
 
 **[Fixes](2nd_pass/fixes#2nd-pass--fixes-applied) applied:** Group [A](2nd_pass/fixes/Fixes_groupA.md) - [B](2nd_pass/fixes/Fixes_groupB.md) - [D](2nd_pass/fixes/Fixes_groupD.md) - [X](2nd_pass/fixes/Fixes_groupX.md)
+
+### 3rd Pass
+
+**[Issues](3rd_pass#3rd-pass--issues-found) found:** [All 34 schemes](3rd_pass/README.md) (fact-check + independent reviewer per scheme)
