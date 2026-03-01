@@ -901,13 +901,13 @@
         titleEl.style.padding = '12px 0 0';
         var url = schemeUrl(s.id);
         var nameHtml = url
-          ? '<a href="' + url + '" target="_blank" style="color:' + t.text + ';text-decoration:none;font-weight:bold;font-size:15.4px">' + s.display_name + '</a>'
+          ? '<a href="' + url + '" target="_blank" rel="noopener noreferrer" style="color:' + t.text + ';text-decoration:none;font-weight:bold;font-size:15.4px">' + s.display_name + '</a>'
           : '<span style="font-weight:bold;font-size:15.4px;color:' + t.text + '">' + s.display_name + '</span>';
         var sizeLabel = dbSizeLabel(s);
         var sizeSource = DB_SIZE_SOURCES[s.id];
         var sizeHtml = '';
         if (sizeLabel && sizeSource) {
-          sizeHtml = '<br><a href="' + sizeSource.url + '" target="_blank" title="' + sizeSource.tip.replace(/"/g, '&quot;') + '" style="font-size:11px;color:' + t.muted + ';text-decoration:none">' + sizeLabel + ' db</a>';
+          sizeHtml = '<br><a href="' + sizeSource.url + '" target="_blank" rel="noopener noreferrer" title="' + sizeSource.tip.replace(/"/g, '&quot;') + '" style="font-size:11px;color:' + t.muted + ';text-decoration:none">' + sizeLabel + ' db</a>';
         } else if (sizeLabel) {
           sizeHtml = '<br><span style="font-size:11px;color:' + t.muted + '">' + sizeLabel + ' db</span>';
         }
@@ -1078,10 +1078,10 @@
         var tr = document.createElement('tr');
         var link = schemeUrl(s.id);
         tr.innerHTML =
-          '<td><a href="' + link + '" target="_blank">' + s.display_name + '</a></td>' +
+          '<td><a href="' + link + '" target="_blank" rel="noopener noreferrer">' + s.display_name + '</a></td>' +
           '<td><span class="group-dot" style="background:' + GROUP_COLORS[s.group] + '"></span> ' + s.group + '</td>' +
           '<td>' + s.year + '</td>' +
-          '<td>' + (s.has_implementation ? (IMPL_URLS[s.id] ? '<a href="' + IMPL_URLS[s.id] + '" target="_blank">Yes</a>' : 'Yes') : 'No') + '</td>' +
+          '<td>' + (s.has_implementation ? (IMPL_URLS[s.id] ? '<a href="' + IMPL_URLS[s.id] + '" target="_blank" rel="noopener noreferrer">Yes</a>' : 'Yes') : 'No') + '</td>' +
           '<td class="num">' + formatNum(getVal(s, 'query_size_kb')) + '</td>' +
           '<td class="num">' + formatNum(getVal(s, 'response_size_kb')) + '</td>' +
           '<td class="num">' + formatNum(getVal(s, 'server_time_ms')) + '</td>' +

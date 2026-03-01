@@ -100,11 +100,6 @@ a:hover { text-decoration: underline; }
   background: var(--border);
   margin: 8px 20px;
 }
-.sidebar nav a.external {
-  font-size: 12px;
-  opacity: 0.8;
-}
-.sidebar nav a.external::after { content: " \2197"; }
 
 /* ── Hamburger ───────────────────────────────────────── */
 .hamburger {
@@ -421,9 +416,6 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .data-sources-toggle {
   margin: 0 0 4px;
   font-size: 14px;
-}
-.data-sources-toggle + .links {
-  margin-top: 32px;
 }
 .data-sources-toggle summary {
   cursor: pointer;
