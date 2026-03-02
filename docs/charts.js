@@ -802,7 +802,7 @@
     });
     traces.push({
       x: [null], y: [null], mode: 'markers', type: 'scatter',
-      name: 'Tier 3 (asymptotic)',
+      name: 'Tier 3 (from asymptotics)',
       marker: { symbol: 'diamond-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
       hoverinfo: 'skip'
     });
