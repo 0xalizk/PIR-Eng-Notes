@@ -797,13 +797,13 @@
     traces.push({
       x: [null], y: [null], mode: 'markers', type: 'scatter',
       name: 'Tier 1 (exact)',
-      marker: { symbol: 'circle', size: 8, color: t.muted, line: { width: 1, color: t.text } },
+      marker: { symbol: 'circle-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
       hoverinfo: 'skip'
     });
     traces.push({
       x: [null], y: [null], mode: 'markers', type: 'scatter',
       name: 'Tier 3 (asymptotic)',
-      marker: { symbol: 'diamond', size: 8, color: t.muted, line: { width: 1, color: t.text } },
+      marker: { symbol: 'diamond-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
       hoverinfo: 'skip'
     });
 
