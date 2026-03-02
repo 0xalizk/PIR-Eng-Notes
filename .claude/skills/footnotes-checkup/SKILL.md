@@ -4,11 +4,17 @@ description: Validate footnoted citations in PIR engineering notes against sourc
 argument-hint: "[group or scheme name]"
 ---
 
-# Validate Footnotes
+# Footnotes Checkup
 
-Verify every footnoted citation in engineering notes against the source PDF. Supports two scopes: an entire group or a single scheme. NEVER enter plan mode. Execute directly.
+Verify every `[^N]` footnoted citation in engineering notes against the source PDF. Scope is strictly footnotes — for a full validation including unfootnoted tables, protocol descriptions, and complexity expressions, use `/full-checkup` instead. Supports two scopes: an entire group or a single scheme. NEVER enter plan mode. Execute directly.
 
-## 1. Locate inputs
+## 1. Critical rules
+
+- Be PRECISE. Only flag genuine, verifiable discrepancies confirmed from the PDF.
+- Do NOT flag stylistic choices, editorial decisions, or reasonable simplifications — unless the simplification introduces a factual error or omits a qualifier that changes the scope of the claim (e.g., dropping "for some parameter sets" makes a conditional claim unconditional).
+- Do NOT include a "Verified Footnotes" table — report only issues.
+
+## 2. Locate inputs
 
 - **Notes files**: `Schemes/<Group Directory>/<scheme>/<scheme>_notes.md`
 - **Source PDFs**: in the same directory as the notes file (one PDF per scheme)
@@ -17,25 +23,27 @@ Verify every footnoted citation in engineering notes against the source PDF. Sup
 - **Whole group**: process all schemes in the specified group (A, B, C, D, or X)
 - **Single scheme**: process only the specified scheme's notes file
 
-## 2. For each notes file
+## 3. For each notes file
 
-Read the markdown and extract every `[^N]` footnote definition. For each footnote, check **all** of the following against the source PDF:
+Read the markdown and extract every `[^N]` footnote definition. Read the PDF using the Read tool with the `pages` parameter (e.g., pages "1-20", then "21-40", etc.). Read the ENTIRE paper — do not skip sections.
+
+For each footnote, check **all** of the following against the source PDF:
 
 | Check | What to verify |
 |-------|---------------|
 | **Page number** | Cited page matches where the content actually appears (off-by-one is the most common error) |
 | **Section/figure/table number** | Cited section, figure, or table is correct |
-| **Quoted text** | If the footnote quotes the paper, verify it's verbatim — flag omitted qualifiers ("roughly", "approximately"), inserted words, or truncated context that changes meaning |
-| **Numerical values** | Numbers match the paper exactly — check for swapped table rows/columns, wrong parameter sets, or misattributed values from adjacent entries |
+| **Quoted text** | If the footnote quotes the paper, verify it's verbatim — flag omitted qualifiers ("roughly", "approximately"), inserted words, truncated context that changes meaning, or blended quotes (text spliced from non-adjacent locations presented as a single continuous quotation) |
+| **Numerical values** | Numbers match the paper exactly — check for swapped table rows/columns, wrong parameter sets, or misattributed values from adjacent entries — see Section 5 |
 | **Units** | Bits vs bytes, KB vs KiB, ms vs s — unit errors propagate into order-of-magnitude discrepancies |
 | **Arithmetic** | If the footnote derives a value (e.g., "9 * 46 * 4096 bits = ~27 KB"), verify the math |
 | **Attribution** | The claim is attributed to the correct paper, not to an external document or a paper that postdates the source |
 | **Editorial vs citation** | Flag when subjective commentary (e.g., "below the typical 128-bit target") is mixed into what appears to be a cited claim |
-| **Figures and plots** | If the footnote cites a figure, verify data points against axis labels, legend entries, and units — see Section 6 |
-| **Table values** | Verify the correct row, column, and parameter set — watch for multi-level headers and adjacent-row swaps — see Section 6 |
-| **Mathematical notation** | Verify asymptotic expressions, variable definitions, theorem statements, and concrete vs asymptotic claims — see Section 6 |
+| **Figures and plots** | If the footnote cites a figure, verify data points against axis labels, legend entries, and units — see Section 5 |
+| **Table values** | Verify the correct row, column, and parameter set — watch for multi-level headers and adjacent-row swaps — see Section 5 |
+| **Mathematical notation** | Verify asymptotic expressions, variable definitions, theorem statements, and concrete vs asymptotic claims — see Section 5 |
 
-## 3. Classify each footnote
+## 4. Classify each footnote
 
 Use exactly these three categories:
 
@@ -43,90 +51,17 @@ Use exactly these three categories:
 |---------|----------|----------|
 | **Correct** | Claim, location, and values all match the PDF | — |
 | **Minor** | Core claim is right but has a small error that doesn't change the technical meaning | Wrong page (off by 1-2), truncated quote missing a qualifier, slightly imprecise section reference, close paraphrase labeled as quote |
-| **Incorrect** | Factual error that misrepresents what the paper says | Fabricated data point, wrong numerical value (>2x off), bits/bytes confusion, claim attributed to wrong source, arithmetic error in derived value |
+| **Incorrect** | Factual error that misrepresents what the paper says | Fabricated data point, wrong numerical value (>2× off), bits/bytes confusion, claim attributed to wrong source, arithmetic error in derived value |
 
-## 4. Output format
+If a seemingly small error changes the value by more than 2× or changes the asymptotic class (e.g., O(log n) vs O(log log n)), classify it as INCORRECT even if the surrounding claim structure is correct.
 
-**One file per scheme.** Every scheme gets its own checkup file, even when validating a whole group. This keeps files focused and makes hyperlinking from READMEs clean.
+## 5. Reading figures, tables, math, and PDFs
 
-**File naming** — one file per scheme, stored under the pass directory:
-- `Checkups/<pass>/issues/Checkup_<scheme>.md`
+### PDF parsing caveats
 
-Examples: `Checkups/1st_pass/issues/Checkup_sealpir.md`, `Checkups/2nd_pass/issues/Checkup_sealpir.md`
-
-**When validating a whole group**, create one file per scheme in that group (e.g., 11 files for Group A).
-
-Use this exact structure for each per-scheme file:
-
-```markdown
-## <Scheme> (<Year>) — Footnote Validation
-
-**Notes:** [<scheme>_notes.md](<relative-path-to-notes-file>)
-**PDF:** [<Paper>.pdf](<relative-path-to-pdf>)
-**Total footnotes:** <N> | **Correct:** <N> | **Minor:** <N> | **Incorrect:** <N>
-
----
-
-### INCORRECT Findings
-
-#### [^N]: <Short description>
-
-- **Statement in notes:** "<exact text from the notes>"
-- **Cited location:** <what the footnote claims>
-- **What the PDF actually says:** <what you found>
-- **Problem:** <precise explanation of the error>
-
----
-
-### MINOR Issues
-
-**[^N]** — <One-line explanation of the issue.>
-
-**[^N]** — <One-line explanation of the issue.>
-```
-
-Key formatting rules:
-- INCORRECT findings come first, with full detail (statement / cited location / actual / problem)
-- MINOR issues come second, one line each
-- Correct footnotes are not listed — only counted in the header stats
-- If there are no INCORRECT findings, write `None.` under the heading
-- If there are no MINOR issues, write `None.` under the heading
-- Every `[^N]` must be hyperlinked per Section 5
-
-## 5. Always hyperlink to the body of the footnotes (i.e. the bottom of the file, not the body text where the footnote appears)
-
-**Every mention of a footnote** (`[^N]`) in any output file (checkup reports, fix reports, or any other file that references a footnote) **must** be a clickable hyperlink that goes directly to the **footnote definition** rendered at the bottom of the GitHub page — not to the in-text superscript where the footnote is cited in the body. Never leave a bare `[^N]` reference unhyperlinked.
-
-GitHub renders footnote bodies with anchors in the format:
-
-```
-#user-content-fn-NAME-HASH
-```
-
-where `HASH` is a 32-character hex string unique to each file (same hash for all footnotes within one file, but different across files). This hash is **not deterministic from local data** — it must be scraped from the rendered GitHub page. It is stable across page loads but changes when file content changes.
-
-**To create a footnote hyperlink:**
-
-1. Get the per-file hash by curling the file's GitHub page and extracting it:
-   ```
-   curl -s https://github.com/<REPO>/blob/main/<PATH> | grep -oP 'user-content-fn-\w+-\K[a-f0-9]{32}' | head -1
-   ```
-2. Build the link: `[\[^N\]](../../../<URL-encoded-path>#user-content-fn-N-HASH)`
-   - Escape the brackets (`\[^N\]`) so GitHub doesn't treat it as footnote syntax
-   - URL-encode spaces as `%20` in the path
-   - Use the correct relative path prefix for the fix file's location
-
-**Example:**
-```markdown
-[\[^36\]](../../../Schemes/Group%20A%20-%20FHE%20Based%20PIR/sealpir_2018/sealpir_2018_notes.md#user-content-fn-36-e88a300f49f79b7b67cb031ed32aaa68)
-```
-
-**Important caveats:**
-- Hashes change when file content changes, so after any edit to a notes file, re-scrape its hash and update all fix file links that reference it
-- GitHub strips `<a>` tags from inside `[^N]:` footnote definitions, so custom anchors cannot be injected
-- The hash differs between the GitHub API and the web view — always scrape from the web view
-
-## 6. Reading figures, tables, and math
+- **Math garbling in text layer:** For expressions with fraction bars, multi-level subscripts, or decorated operators (hat, tilde, norm bars), the rendered page image is authoritative — the text-extraction layer may garble these. Common failures: ⌊q/p⌋ loses floor brackets → `q/p`; R_{n,q} collapses subscript levels → `R_q`; ‖v‖_∞ loses double bars → `|v|∞`; `mod q` drops silently.
+- **Figure downscaling:** Academic paper pages are automatically downscaled for processing; two-column figures are especially affected. When axis labels or legend text appear unclear, fall back to the paper's prose description of the same figure or adjacent tables.
+- **Landscape pages:** Wide comparison tables or parameter tables may be landscape-oriented. If a table's column headers appear garbled or truncated, consider that the page may be rotated.
 
 ### Figures and plots
 
@@ -152,14 +87,73 @@ where `HASH` is a 32-character hex string unique to each file (same hash for all
 - **Subscripts and superscripts** — in markdown notes, expressions like `n^{1/3}` or `log_2(n)` may not perfectly mirror the PDF's typeset notation. Verify the mathematical content matches even if the formatting differs.
 - **Summations, products, and bounds** — when the footnote reproduces a formula, check every term: base, exponent, index range, and any floor/ceiling operators.
 
-## 7. Common pitfalls to watch for
+## 6. Common pitfalls
 
-These are the most frequent error patterns found across 1300+ validated footnotes in this repo:
+These overlap with checks in Sections 3 and 5 but are called out separately because they are the most frequent sources of confirmed errors across 1300+ validated footnotes in this repo:
 
 1. **Off-by-one page numbers** — the most common minor issue; often caused by PDF page numbers vs printed page numbers
 2. **Table row/column misattribution** — citing values from an adjacent row or the wrong parameter column
-3. **Fabricated intermediate data** — inserting a data point between two real ones that the paper doesn't provide
-4. **Bits vs bytes** — causes ~8x discrepancies; always verify units explicitly
-5. **Citing external documents** — footnotes should only reference the scheme's own paper, not SKILL files or other papers
-6. **Truncated quotes that change meaning** — omitting "roughly", "approximately", "in EXPAND", or other qualifiers
-7. **Editorial claims dressed as citations** — subjective interpretations (e.g., "below typical security targets") presented as if the paper said them
+3. **Wrong-scheme attribution** — citing a value that belongs to a different scheme in the same comparison table or benchmark set
+4. **Fabricated intermediate data** — inserting a data point between two real ones that the paper doesn't provide
+5. **Bits vs bytes** — causes ~8× discrepancies; always verify units explicitly
+6. **Formula transcription errors** — square root scope errors, wrong exponent structure, extra/missing terms, variable name swaps (k for d, N_d for N*d)
+7. **Truncated quotes that change meaning** — omitting "roughly", "approximately", "in EXPAND", or other qualifiers
+8. **Editorial claims dressed as citations** — subjective interpretations (e.g., "below typical security targets") presented as if the paper said them
+9. **Citing external documents** — footnotes should only reference the scheme's own paper, not SKILL files or other papers
+10. **O(n) vs Õ(n) tilde omission** — dropping polylog factors changes the asymptotic claim
+
+## 7. Output format
+
+**One file per scheme.** Every scheme gets its own checkup file, even when validating a whole group.
+
+**File naming:** `Checkups/<pass>/issues/Checkup_<scheme>.md`
+
+**When validating a whole group**, create one file per scheme in that group (e.g., 11 files for Group A).
+
+### Template
+
+```markdown
+## <Scheme> (<Year>) — <Pass> Footnote Checkup
+
+**Notes:** `<scheme>_notes.md`
+**PDF:** `<paper>.pdf`
+**Total footnotes:** <N> | **Correct:** <N> | **Minor:** <N> | **Incorrect:** <N>
+
+---
+
+### INCORRECT Findings
+
+**1. [^N]: <Short description>**
+
+- **Statement in notes:** "<exact text from the notes>"
+- **Cited location:** <what the footnote claims>
+- **What the PDF actually says:** <what you found>
+- **Problem:** <precise explanation of the error>
+
+---
+
+### MINOR Issues
+
+**1. [^N]** — <Explanation of the issue.>
+```
+
+### Formatting rules
+
+- INCORRECT findings come first, with full detail (statement / cited location / actual / problem)
+- MINOR issues come second, with a brief explanation each
+- Correct footnotes are not listed — only counted in the header stats
+- If there are no INCORRECT findings, write `None.` under the heading
+- If there are no MINOR issues, write `None.` under the heading
+- When multiple findings share the same root cause (e.g., a systematic page-number offset affecting many footnotes), combine them into a single finding with a summary table listing affected instances
+
+### Reviewer Verdict section
+
+When a separate reviewer agent verifies findings, append a `### Reviewer Verdict` section to the checkup file:
+
+- Each finding gets a **CONFIRMED** or **REJECTED** verdict with a one-line evidence sentence
+- If severity was upgraded (e.g., MINOR → INCORRECT), note the change and reason
+- Add `**Rejected:** <N>` to the header stats if any findings are rejected; the header counts should reflect only confirmed findings
+
+### Footnote hyperlinks
+
+Every `[^N]` reference in output files should be hyperlinked to the footnote definition in the notes file when feasible. Use the anchor format `#user-content-fn-N` (e.g., `[\[^N\]](path/to/notes.md#user-content-fn-N)`). This is a best-effort convention — bare `[^N]` references are acceptable when constructing links is impractical.

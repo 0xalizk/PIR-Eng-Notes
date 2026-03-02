@@ -4,7 +4,7 @@ description: Full validation of PIR engineering notes against source PDFs — ch
 argument-hint: "[group or scheme name]"
 ---
 
-# Validate Research
+# Full Checkup
 
 Verify every claim in engineering notes against the source PDF — footnoted citations, unfootnoted table values, protocol descriptions, complexity expressions, benchmarks, and quoted text. Supports two scopes: an entire group or a single scheme. NEVER enter plan mode. Execute directly.
 
