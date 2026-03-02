@@ -128,7 +128,7 @@ These overlap with checks in Sections 3 and 6 but are called out separately beca
 
 **One file per scheme.** Every scheme gets its own checkup file, even when validating a whole group.
 
-**File naming:** `Checkups/<pass>/issues/Checkup_<scheme>.md`
+**File naming:** `checkups/<pass>/issues/Checkup_<scheme>.md`
 
 **When validating a whole group**, create one file per scheme in that group (e.g., 11 files for Group A).
 
@@ -189,8 +189,8 @@ Every `[^N]` reference in output files should be hyperlinked to the footnote def
 
 After checkup files are produced, the typical workflow is:
 
-1. **Fix step**: Apply corrections to the notes files for all confirmed findings. Fixes are documented in `Checkups/<pass>/fixes/Fixes_<group>.md`. When correcting a value, search the entire notes file for ALL occurrences (tables, prose, footnotes) to avoid the incomplete-fix pattern.
+1. **Fix step**: Apply corrections to the notes files for all confirmed findings. Fixes are documented in `checkups/<pass>/fixes/Fixes_<group>.md`. When correcting a value, search the entire notes file for ALL occurrences (tables, prose, footnotes) to avoid the incomplete-fix pattern.
 
-2. **Review step**: An independent agent re-reads each fixed notes file and PDF to verify correctness, completeness, and absence of regressions. Reviews are documented in `Checkups/<pass>/fixes/Review_<group>.md`.
+2. **Review step**: An independent agent re-reads each fixed notes file and PDF to verify correctness, completeness, and absence of regressions. Reviews are documented in `checkups/<pass>/fixes/Review_<group>.md`.
 
-3. **Aggregate**: A `Checkups/<pass>/fixes/README.md` summarizes fix counts and review outcomes per group.
+3. **Aggregate**: A `checkups/<pass>/fixes/README.md` summarizes fix counts and review outcomes per group.
