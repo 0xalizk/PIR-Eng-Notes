@@ -51,13 +51,13 @@
 
 ### Core Idea <a href="#toc">⤴</a>
 
-iSimplePIR (Entry-level) introduces *entry-level incremental preprocessing* for SimplePIR: when individual database entries are inserted, modified, or deleted, the server computes a compact *difference* for the affected entry and sends it to the client, who locally updates the corresponding row of the hint matrix **H** via a single vector-scalar multiplication and addition.&#8201;[^3] The key observation is that the hint **H** = **D** . **A**, so **H'** = **D'** . **A** = **D** . **A** + (**D'** - **D**) . **A**. For a single modified entry at position (i, j), the difference delta = d'_{i,j} - d_{i,j} is a scalar, and the hint update reduces to adding delta . **A**[j] to the i-th row of **H** — requiring only O(n) integer multiplications and additions instead of the O(n * sqrt(N)) operations needed by the row-level strategy.&#8201;[^4] For scenarios with many updates in the same row, a *communication-optimized row aggregation* mechanism switches to row-level transmission when the per-entry communication exceeds the per-row cost, controlled by a threshold t = ceil((n * log q + log sqrt(N)) / (log p + log sqrt(N))).&#8201;[^5] The online phase is completely unchanged from SimplePIR, preserving its throughput and communication properties.
+iSimplePIR (Entry-level) introduces *entry-level incremental preprocessing* for SimplePIR: when individual database entries are inserted, modified, or deleted, the server computes a compact *difference* for the affected entry and sends it to the client, who locally updates the corresponding row of the hint matrix **H** via a single vector-scalar multiplication and addition.&#8201;[^3] The key observation is that the hint **H** = **D** . **A**, so **H'** = **D'** . **A** = **D** . **A** + (**D'** - **D**) . **A**. For a single modified entry at position (i, j), the difference delta = d'_{i,j} - d_{i,j} is a scalar, and the hint update reduces to adding delta . **A**[j] to the i-th row of **H** — requiring only O(n) integer multiplications and additions instead of the O(n * sqrt(N)) operations needed by the row-level strategy.&#8201;[^4] For scenarios with many updates in the same row, a *communication-optimized row aggregation* mechanism switches to row-level transmission when the per-entry communication exceeds the per-row cost, controlled by a threshold t = ceil(n * log q / (log p + log sqrt(N))).&#8201;[^5] The online phase is completely unchanged from SimplePIR, preserving its throughput and communication properties.
 
 [^1]: Section 3.1 (p. 8): SimplePIR scheme description with H = D . A as the hint.
 [^2]: Section 1 (p. 2): "Ma et al. [33] propose the concept of incremental preprocessing."
 [^3]: Figure 2 (p. 10): Construction 1, entry-level real-time updates step 2 and StateUpdate step 2.
 [^4]: Table 1 (p. 14): Before combination SimplePIR requires n*sqrt(N) multiplications and additions; after combination with iSimplePIR (Entry-level), it requires only n multiplications and n additions.
-[^5]: Section 4.1 (p. 11): "Let t = ceil((n log q + log sqrt(N)) / (log p + log sqrt(N))). When M' > t, the server computes the differences... and sums the results into an intermediate vector."
+[^5]: Section 4.1 (p. 11): "Let t = ceil(n log q / (log p + log sqrt(N))). When M' > t, the server computes the differences... and sums the results into an intermediate vector."
 
 <a id="cryptographic-foundation"></a>
 
@@ -167,7 +167,7 @@ When the number of modified/deleted entries M' in a row exceeds the threshold t:
 | **Preprocessing communication (entry-level)** | O(M * (log p + log sqrt(N))) per entry, or O(n * log q + log sqrt(N)) per row-aggregated | 28.50 MB [^17] | Offline |
 | **Preprocessing communication (row-level)** | O(M_r * n * log q) per M_r modified rows | 120.75 MB [^17] | Offline |
 | **Hint size (client storage)** | sqrt(N) * n * log q bits | 241 MB (for 4GB password DB) [^18] | Stored |
-| **Amortization window** | Per-entry (real-time) or per-row (when M' > t in a row) | t = ceil((n log q + log sqrt(N)) / (log p + log sqrt(N))) | -- |
+| **Amortization window** | Per-entry (real-time) or per-row (when M' > t in a row) | t = ceil(n log q / (log p + log sqrt(N))) | -- |
 
 [^16]: Table 2 (p. 18): Row-major scenario, iSimplePIR (Entry-level) column. Online comm. 240 KB, server comp. 94.62 ms (row-major) / 95.63 ms (col-major), throughput 10.6 / 10.5 GB/s.
 [^17]: Table 2 (p. 18): Column-major scenario. Entry-level offline comp. 0.77s vs Row-level 172.45s (224x reduction). Entry-level offline comm. 28.50 MB vs Row-level 120.75 MB (4.2x reduction).
@@ -183,7 +183,7 @@ When the number of modified/deleted entries M' in a row exceeds the threshold t:
 | **Cost per DB update (amortized, entry-level)** | O(n) — one vector-scalar multiply of A[j] by delta, one vector addition to H[i] [^4] |
 | **Communication per update (entry-level)** | log p + log sqrt(N) bits per entry (difference + row/column indices + version) [^19] |
 | **Communication per update (row-aggregated)** | n * log q + log sqrt(N) bits per row [^19] |
-| **Aggregation threshold t** | t = ceil((n * log q + log sqrt(N)) / (log p + log sqrt(N))) — when M' > t modifications in a row, switch to row aggregation [^5] |
+| **Aggregation threshold t** | t = ceil(n * log q / (log p + log sqrt(N))) — when M' > t modifications in a row, switch to row aggregation [^5] |
 | **Deletion semantics** | Weak deletion only. Deleted entry replaced with random r; new clients cannot retrieve. Existing clients who retained prior hints or difference values can potentially recover deleted entries. Strong deletion is impossible in SimplePIR's preprocessing model. [^20] |
 | **Supported mutation types** | Insertion (append-only, at end of DB), modification (arbitrary entry), deletion (replaced with random) [^21] |
 
@@ -216,7 +216,7 @@ When the number of modified/deleted entries M' in a row exceeds the threshold t:
 | **Base scheme** | SimplePIR (Henzinger et al., USENIX Security 2023) [^1] |
 | **Integration point** | The hint H = D . A is a matrix product. Any scheme whose offline phase computes a product of the database matrix with a public matrix can use entry-level incremental updates. [^24] |
 | **Improvement** | Reduces preprocessing from O(n * sqrt(N)) to O(n) per single-entry update. Table 1 shows reductions across all compatible schemes. [^4] |
-| **Compatible schemes** | DoublePIR [26] (nm -> n operations), APIR [16] (n*sqrt(N) -> n), VeriSimplePIR [14] ((n+λ)(m+λ) -> (n+λ)), YPIR [38] (d_1 * l_1 -> d_1) [^24] |
+| **Compatible schemes** | DoublePIR [26] (nm -> n operations), APIR [16] (n*sqrt(N) -> n), VeriSimplePIR [14] (nm+λl -> (n+λ)), YPIR [38] (d_1 * l_1 -> d_1) [^24] |
 | **Limitations** | Only applicable to schemes whose hint is a matrix product of DB and a public matrix. Schemes using fundamentally different preprocessing (e.g., FHE-based, PRF-based) are not compatible. The technique is specific to the SimplePIR family. [^25] |
 
 [^24]: Table 1 (p. 14): Operation counts before and after combination with iSimplePIR (Entry-level) for five schemes.
@@ -334,7 +334,7 @@ Database: ~4GB of SHA256 hashes from the Blyss implementation [7, 35], ~1.3 mill
 
 ### Uncertainties <a href="#toc">⤴</a>
 
-- **Exact threshold t values:** The aggregation threshold t = ceil((n log q + log sqrt(N)) / (log p + log sqrt(N))) depends on the specific parameter choices. The paper does not explicitly compute t for the benchmark parameters (n = 2^10, q = 2^32). For these parameters, t is approximately ceil((10 * 32 + 0.5 * log_2(N)) / (log_2(p) + 0.5 * log_2(N))), which depends on p and N.
+- **Exact threshold t values:** The aggregation threshold t = ceil(n log q / (log p + log sqrt(N))) depends on the specific parameter choices. The paper does not explicitly compute t for the benchmark parameters (n = 2^10, q = 2^32). For these parameters, t is approximately ceil((10 * 32) / (log_2(p) + 0.5 * log_2(N))), which depends on p and N.
 
 - **Interaction with DoublePIR's decomposition:** Section 5 briefly describes how iSimplePIR (Entry-level) integrates with DoublePIR, but the update mechanism for the decomposed database (using Decomp and base-p representation) is only sketched. It is not clear whether the entry-level update preserves the same improvement ratio when applied through the decomposition layer.
 

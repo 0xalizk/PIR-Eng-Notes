@@ -160,7 +160,7 @@ NPIR addresses the high server computation cost of existing high-rate PIR scheme
 - **Preprocessing required:** Server converts the database from raw records d_i in Z_p^m into polynomial encoding {d_{i,j}} in R_p^{N*phi x ell}, then performs NTT conversion for efficient polynomial multiplication.&#8201;[^16]
 - **Record size equation:** Record size = N * phi * log_2(p) bits. For p = 256 (8 bits): record_size = N * phi bytes. With N = 2048: phi = 16 gives 32 KB, phi = 1 gives 2 KB, phi = 64 gives 128 KB.&#8201;[^17]
 
-[^16]: Section 4.1 (p.12): "the server converts the database format (polynomial encoding + NTT conversion)."
+[^16]: Section 4.1 (p.12): "the server performs database setup (polynomial encoding + NTT conversion)."
 
 [^17]: Section 5.1 (p.16): "The record size is equal to the packing number multiplied by the modulus (i.e., N*phi*log_2(p) bits). Therefore, we define the packing number phi as 16 for 32 KB."
 
@@ -341,7 +341,7 @@ NPIR achieves maximum throughput at 4 KB records. For 32 KB records, NPIR is 2.3
 
 **Key takeaway:** Prefer NPIR when server throughput for moderate-size records (10--100 KB) is the primary optimization target and communication bandwidth is not the binding constraint. NPIR has the smallest public parameter storage (0.89--1.44 MB vs 5--14.83 MB for competitors), fastest preprocessing (tied with NTRUPIR, sharing NTT conversion), and shortest client time. However, its query size (84 KB) is 5.25x larger than Spiral's (16 KB), making it less suitable for severely upload-constrained settings.&#8201;[^29]
 
-[^29]: Section 1.1 (p.4): "Limitation: query size in communication. ... it is 2.16 times greater than Spiral, primarily due to a query size that is 5.25 times larger, whereas the response size is only 1.78 times larger."
+[^29]: Section 1.1 (p.3): "Limitation: query size in communication. ... it is 2.16 times greater than Spiral, primarily due to a query size that is 5.25 times larger, whereas the response size is only 1.78 times larger."
 
 ---
 
@@ -416,7 +416,7 @@ NPIR achieves maximum throughput at 4 KB records. For 32 KB records, NPIR is 2.3
 - **Parameter optimization:** Applying NTRU parameter optimization techniques from [23] (Ducas-van Woerden, "NTRU fatigue").
 - **Extension to other NTRU-based protocols:** Applying the NTRU packing framework to privacy-enhancing protocols beyond PIR.&#8201;[^35]
 
-[^34]: Section 1.1 (p.4): Limitation discussion of query size.
+[^34]: Section 1.1 (p.3): Limitation discussion of query size.
 
 [^35]: Section 7 (p.21): "Future work will include exploring NGSW encoding compression, batch code integration, and parameter optimization following [23], as well as extending this framework to other NTRU-based privacy-enhancing protocols."
 

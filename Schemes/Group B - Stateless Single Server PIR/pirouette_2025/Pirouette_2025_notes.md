@@ -93,7 +93,7 @@ Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting
 
 [^4]: Table 7 (p.11): Pirouette offline comm = 1.2 GB; Pirouette^H offline comm = 650 MB.
 
-[^5]: Section 4.2 (p.9) and Table 7 (p.11): "Pirouette^H queries of all the bits ... requiring transmission of all their (n+1)-th components along with a PRG seed. This increases the query size from 36 B to 60 B."
+[^5]: Section 1.1 (p.2) and Table 7 (p.11): "Pirouette^H queries of all the bits ... requiring transmission of all their (n+1)-th components along with a PRG seed. This increases the query size from 36 B to 60 B."
 
 ---
 
@@ -111,7 +111,7 @@ Pirouette achieves a **36-byte query** for PIR over 2^25 records by transmitting
 
 [^6]: Section 2.4.1 (p.5): "Phase 1-3 of the Pirouette protocol operate over R and rely on the hardness of RLWE for security." Section 1.1 (p.2): "the Pirouette query is LWE(idx, Delta) ... relies on the hardness of LWE in this phase."
 
-[^7]: Definition A.21 (p.25) and Theorem A.22 (p.25--26): Security proof requires F_scal-KDM security for LWE over Z_q and KDM security for RLWE over R_Q with respect to F_quad and F_aut.
+[^7]: Definition A.21 (p.25) and Theorem A.22 (p.26): Security proof requires F_scal-KDM security for LWE over Z_q and KDM security for RLWE over R_Q with respect to F_quad and F_aut.
 
 [^8]: Section 4.1 (p.8): "a common choice of epsilon is epsilon <= 2^{-40}" and Appendix A.1 (p.16): correctness analysis via independence heuristic and atomic patterns.
 
@@ -236,7 +236,7 @@ Pirouette's correctness relies on bounding the noise variance through a cascade 
 | Input LWE query | sigma^2 = 3.19^2 | Initial | Error sampled from discrete Gaussian |
 | After blind rotation (Phase 0) | sigma^2_br | Additive (n applications of CMUX) | n CMUX gates, each contributing gadget noise sigma^2_bowtie |
 | After coefficient extraction | sigma^2_cext <= sigma^2_c + N^2 * sigma^2_autk | Additive | log_2(N) automorphism evaluations |
-| After LWEtoRGSW (Phase 0) | sigma^2_C <= N * (L^2/4) * (sigma^2_br + sigma^2_cext + sigma^2_sq) | Multiplicative in N | Theorem A.13 (p.21) |
+| After LWEtoRGSW (Phase 0) | sigma^2_C <= N * (||s||_inf^2 / 4) * (sigma^2_br + sigma^2_cext) + sigma^2_sq | Multiplicative in N | Theorem A.13 (p.21) |
 | After selector construction (Phase 1) | sigma^2_selcon <= v_1 * sigma^2_bowtie | Multiplicative in v_1 | Theorem A.19 (p.24--25): v_1 external products |
 | After folding (Phase 2) + rotation (Phase 3) | sigma^2_out | Accumulated CMUX noise | v_2 + v_3 additional CMUX operations |
 | Final output (Theorem A.20) | sigma^2_out <= (Q_1^2 / Q_2) * (2^{v_1} p L_p sigma^2_sel-con + 2^{v_2+v_3} sigma^2_switch) + sigma^2_ms1 + sigma^2_rswitch | Combined | Theorem A.20 (p.25) |
@@ -301,7 +301,7 @@ Pirouette's correctness relies on bounding the noise variance through a cascade 
 | Database | Metric | Respire | T-Respire | Pirouette | Pirouette^H |
 |----------|--------|---------|-----------|-----------|-------------|
 | 2^20 x 256 B (256 MB) | Offline Comm. | 4 MB | 91 MB | 1.2 GB | 650 MB |
-| | Query Size | 4.1 KB | 55 B | 36 B | 55 B |
+| | Query Size | 4.1 KB | 144 B | 36 B | 55 B |
 | | Computation | 1.5 s | 217 s | 19 s | 15 s |
 | | Response Size | -- | -- | 2 KB | 2 KB |
 | | Throughput | 170 MB/s | 1 MB/s | 13 MB/s | 17 MB/s |
@@ -495,9 +495,9 @@ Steps:
 
 [^40]: Table 7 (p.11): Pirouette 60 s vs Respire 30 s for sequential execution at 2^25 x 256 B.
 
-[^41]: Section 5.3 (p.13): "Pirouette shares the same theoretical objective as transciphering to reduce client-to-server communication, and does not consider the server-to-client direction."
+[^41]: Section 5.3 (p.12): "Pirouette shares the same theoretical objective as transciphering to reduce client-to-server communication, and does not consider the server-to-client direction."
 
-[^42]: Definition A.21 (p.25): KDM security definition. Theorem A.22 (p.25): "Under the standard circular security assumption ... the evaluation keys evk do not leak information about the secret key."
+[^42]: Definition A.21 (p.25): KDM security definition. Theorem A.22 (p.26): "Under the standard circular security assumption ... the evaluation keys evk do not leak information about the secret key."
 
 ---
 

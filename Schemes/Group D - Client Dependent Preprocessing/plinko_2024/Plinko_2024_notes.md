@@ -88,7 +88,7 @@ Prior single-server PIR schemes with client preprocessing (Piano, RMS24) achieve
 
 [^6]: Definition 4.1 (p.10): "An invertible pseudorandom function (iPRF) from domain D to range R with keyspace K is a triple of efficiently computable functions: a randomized key generation function Gen, a deterministic function F : K x D -> R, and a deterministic function F^{-1} : K x R -> 2^D."
 
-[^7]: Definition 4.1 (p.10): The adversarial advantage Adv^{iprf}_{iF}(λ, A) is defined as the absolute difference between Pr[A^{F_k(.), F_k^{-1}(.)}(1^λ) = 1] and Pr[A^{R(.), R^{-1}(.)}(1^λ) = 1]. "We also observe that this definition is strictly stronger than the PRF security definition."
+[^7]: Definition 4.1 (p.10-11): The adversarial advantage Adv^{iprf}_{iF}(λ, A) is defined as the absolute difference between Pr[A^{F_k(.), F_k^{-1}(.)}(1^λ) = 1] and Pr[A^{R(.), R^{-1}(.)}(1^λ) = 1]. "We also observe that this definition is strictly stronger than the PRF security definition" (p.11).
 
 [^8]: Definition 4.1 (p.10): Correctness requires Pr[F_k^{-1}(y) != {x in D : F_k(x) = y}] <= negl(λ) for all y in R.
 
@@ -322,7 +322,7 @@ No implementation. Analytical estimates from Figure 1 (p.3) and Figure 6 (p.30),
 
 All entries hide polylog factors. The key advantage of Plinko is visible in the Query Time column (n/r instead of r + n/r) and the Update Time columns (polylog(n) worst-case instead of sqrt(n) or n).&#8201;[^43]
 
-[^43]: Figure 1 (p.3): Comparison table of amortized query time and query communication for existing single-server offline/online PIR schemes, with client storage r = sqrt(n).
+[^43]: Figure 1 (p.3): Comparison table of amortized query time and query communication for existing single-server offline/online PIR schemes, with client storage r = sqrt(n). Figure 2 (p.3): Comparison table of update time and update communication (worst-case and amortized).
 
 <a id="composability"></a>
 

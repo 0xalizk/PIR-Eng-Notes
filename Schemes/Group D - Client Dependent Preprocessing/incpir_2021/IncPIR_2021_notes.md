@@ -92,7 +92,7 @@ IncPIR addresses the problem that all existing offline/online PIR schemes requir
 |-------|--------|
 | **Name** | Incremental Pseudorandom Set (Incremental PRS) |
 | **Type** | Cryptographic primitive |
-| **Interface / Operations** | Gen(1^λ, n) -> (k, aux): outputs set key and auxiliary info; Add(aux, m) -> aux': extends range by m; Eval(k, aux) -> S: outputs the set (Definition 4, p.8)&#8201;[^9] |
+| **Interface / Operations** | Gen(1^λ, n) -> (k, aux): outputs set key and auxiliary info; Add(aux, m) -> aux': extends range by m; Eval(k, aux) -> S: outputs the set (Definition 4, p.7-8)&#8201;[^9] |
 | **Security definition** | PPT adversary cannot distinguish S from a random size-s subset of [n] (or [n+m] after Add); security from PRP security&#8201;[^10] |
 | **Correctness definition** | Eval(k, aux) outputs a set S in [n] of size s; after Add(aux, m), Eval(k, aux') outputs S' in [n+m] of size s&#8201;[^9] |
 | **Purpose** | Compactly represent pseudorandom subsets whose range can be incrementally extended without re-sampling from scratch |
@@ -217,7 +217,7 @@ For a database of size 2^20 with sets of size 2^10:&#8201;[^24]
 | Metric | Asymptotic | Concrete (N=2^20, b=32B) | Phase |
 |--------|-----------|---------------------------|-------|
 | Query size | O(sqrt(n) * log(n')) | 8.18 KB | Online |
-| Response size | O(b) | 2 KB (optimal) | Online |
+| Response size | O(b) | 32 B (optimal) | Online |
 | Server computation (online) | O(sqrt(n)) XORs | < 0.1 ms | Online |
 | Client computation (query) | O(sqrt(n) * log(n)) PRP evals | 7.87 ms | Online |
 | Refresh communication | O(sqrt(n) * log(n')) | 8.18 KB | Online |
@@ -258,7 +258,7 @@ For a database of size 2^20 with sets of size 2^10:&#8201;[^24]
 
 [^30]: Theorem 10 (p.19): "the total computation to the offline server is in expectation O(bm log n)."
 [^31]: Section 3.2, Non-triviality (p.4): "the size of the update summary delta, update query u_q, and update response u_r should be sublinear in n'."
-[^32]: Section 6.2 (p.14): "the client can preprocess the database from scratch when the local storage becomes too high."
+[^32]: Section 8.3 (p.14): "the client can preprocess the database from scratch when the local storage becomes too high."
 [^33]: Section 3.3, Weak deletion (p.4): "We relax the above definition to require only that new clients do not learn any deleted items."
 [^34]: Section 3.3 (p.4): "We consider three types of mutations: addition of new objects, deletion of existing objects, and in-place edits that change the database's content but does not alter its size."
 
@@ -425,7 +425,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 - **Keyword PIR incompatibility:** Incremental preprocessing combined with keyword PIR (where clients query by keyword rather than index) remains an open problem because mutations may change keywords or add new keywords, disrupting the underlying search data structure.&#8201;[^52]
 
 [^51]: Section 3.4 (p.5): "our approach is not black-box. Instead, it requires exploiting the structure of the underlying OO-PIR protocol."
-[^52]: Section 9 (p.14): "it is unclear how to support incremental preprocessing and PIR-by-keywords given that mutations that changes the keywords of existing items or add new keywords would impact the underlying search data structure."
+[^52]: Section 9 (p.14): "designing efficient preprocessing for single-server PIR remains an open question (existing schemes rely on obfuscation [15, 18, 23])." Also: "it is unclear how to support incremental preprocessing and PIR-by-keywords given that mutations that changes the keywords of existing items or add new keywords would impact the underlying search data structure."
 
 <a id="comparison-with-prior-work"></a>
 
@@ -476,7 +476,7 @@ Client local storage grows over time due to accumulated auxiliary information in
 ### Open Problems <a href="#toc">⤴</a>
 
 - **Puncturable incremental PRS:** Designing an incremental PRS that preserves puncturability would restore CK's polylog online communication while maintaining incremental preprocessing. "Designing a puncturable incremental PRS is an interesting open question."&#8201;[^12]
-- **Single-server incremental preprocessing:** This paper addresses only two-server schemes. "designing efficient incremental preprocessing for single-server PIR remains an open question (existing schemes rely on obfuscation)."&#8201;[^52]
+- **Single-server incremental preprocessing:** This paper addresses only two-server schemes. "designing efficient preprocessing for single-server PIR remains an open question (existing schemes rely on obfuscation)."&#8201;[^52]
 - **Keyword PIR with incremental preprocessing:** Supporting mutations that change keywords or add new keywords without disrupting the search data structure is unresolved.&#8201;[^52]
 - **Server-side hint storage:** Extending incremental preprocessing to schemes where hints are stored at the servers (e.g., Beimel et al. [8]) remains open.&#8201;[^56]
 

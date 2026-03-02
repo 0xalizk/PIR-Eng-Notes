@@ -42,7 +42,7 @@
 | **Correctness model** | Probabilistic (failure prob <= 2^{-40} per query, via subgaussian tail bounds) |
 | **Rounds (online)** | 1 (non-interactive: client sends query, server returns response) |
 | **Record-size regime** | Small (<=10 KB) -- this is Respire's niche |
-| **Total pages** | 54 (23 main body + 31 pages of appendices A-E) |
+| **Total pages** | 54 (23 main body + 4 pages references + 27 pages appendices A-E) |
 | **Implementation** | Rust, ~8,000 LOC; https://github.com/AMACB/respire/ |
 
 ---
@@ -95,7 +95,7 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 | **Encryption/encoding schemes** | (1) **RLWE encoding** (scalar Regev): c = [a; sa + e + mu] in R_{d,q}^2 encodes scalar mu w.r.t. secret s. (2) **GSW encoding**: C in R_{d,q}^{2x2m} encodes bit mu via gadget matrix G_{2,z}. External product of GSW x RLWE -> RLWE implements homomorphic selection.&#8201;[^5] |
 | **Ring / Field** | Primary: R_{d1} = Z[x]/(x^{2048} + 1), q1 ~ 2^56. Subring: R_{d2} = Z[x]/(x^{512} + 1), q2 ~ 2^24. Plaintext: R_{d2,p} = Z_p[x]/(x^{512} + 1) with p = 16. |
 | **Key structure** | Two secret keys: s1 = [-s_tilde_1 | 1]^T in R_{d1,q1}^2 (query key, main ring); s2 = [-s_tilde_2 | 1]^T in R_{d2,q2}^2 (compression target key, small ring). Both uploaded as evaluation keys in the offline phase. |
-| **Correctness condition** | Subgaussian tail bound: Pr[fail] <= 1 - 2*d2*n_vec * exp(-pi*(q3/(2p) - B_final)^2 / sigma_resp^2) where sigma_resp^2 aggregates noise through all phases (Eq. D.5, p.49). Target: per-query error <= 2^{-40}.&#8201;[^6] |
+| **Correctness condition** | Subgaussian tail bound: Pr[fail] <= 2*d2*n_vec * exp(-pi*(q3/(2p) - B_final)^2 / sigma_resp^2) where sigma_resp^2 aggregates noise through all phases (Eq. D.5, p.49). Target: per-query error <= 2^{-40}.&#8201;[^6] |
 
 [^4]: Section 4.1 (p.16-17): Three RLWE assumptions with different parameters. (1) Main ring R_{d1,q1} uses uniform secret in [-7,7], Gaussian error with sigma=9.9. (2) Main ring R_{d1,q1} for vectorization uses Gaussian secret and error with sigma'_1=9.9. (3) Small ring R_{d2,q2} uses Gaussian secret and error with sigma=253.6.
 
@@ -188,7 +188,7 @@ Existing lattice-based PIR protocols have high communication overhead because RL
 
 [^13]: Section 4.1 (p.17): "We use a standard optimization...wherein the client sends a PRG seed in place of the random component of the RLWE encodings in the query. We instantiate the PRG using ChaCha20."
 
-[^14]: Table 1 (p.19) and Section 4.2 (p.18): "Notably, in Respire, the total communication is smaller than the size of even a single RLWE ciphertext in previous schemes."
+[^14]: Table 1 (p.19) and Section 1.1 (p.2): "Notably, in Respire, the total communication is smaller than the size of even a single RLWE ciphertext in previous schemes."
 
 ---
 
@@ -382,7 +382,7 @@ For batch queries of size T, Respire uses probabilistic batch codes via Cuckoo h
 - **Password breach checking:** Databases of hash prefixes, each a few hundred bytes. Communication-sensitive setting where low query/response overhead matters more than throughput.
 - **Private certificate transparency:** Retrieving certificate status (small records) from a log with millions of entries.
 
-[^31]: Section 1 (p.1) and Remark 2.2 (p.4): "Respire is well-suited for applications where the client is making a handful of queries simultaneously (e.g., blocklist lookup or DNS queries)."
+[^31]: Section 1 (p.2) and Remark 2.2 (p.4): "Respire is well-suited for applications where the client is making a handful of queries simultaneously (e.g., blocklist lookup or DNS queries)."
 
 ---
 

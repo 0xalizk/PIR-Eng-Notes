@@ -103,7 +103,7 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 | **Standalone complexity** | Offline: O(d^3 + ell * d^2 * lg(d)). Online: O(ell * d^2).&#8201;[^7] |
 | **Relationship to prior primitives** | Improves on CDKS [18] ring packing: CDKS needs lg(d) key-switching matrices (large cryptographic material); InspiRING needs only 2. InspiRING also has smaller noise growth and faster concrete packing times when total key-switching material must be small.&#8201;[^8] |
 
-[^6]: Section 3.2 (p.12): "Beyond RLWE hardness, our packing scheme relies on the standard circular security assumption, as key-switching matrices encrypt (scaled) automorphic images of the secret key."
+[^6]: Section 3.2 (p.11): "Beyond RLWE hardness, our packing scheme relies on the standard circular security assumption, as key-switching matrices encrypt (scaled) automorphic images of the secret key."
 
 [^7]: Theorem 1 (p.11): "InspiRING in the CRS model can pack d LWE ciphertexts in O(d^3 + ell * d^2 * lg(d)) offline time and O(ell * d^2) online time where ell is the dimension of the key-switching matrix."
 
@@ -168,7 +168,7 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 | **Key structure** | Secret key s sampled from chi(Z^d) (LWE) or chi(R) (RLWE). In the CRS model, random components (a vectors, A matrices) are fixed globally and shared; fresh secret keys are sampled per query (multiplicative security loss proportional to number of queries).&#8201;[^16] |
 | **Correctness condition** | Probabilistic: for delta > 2d*exp(-pi*(Delta/2 - tp/2)^2 / sigma_main^2), InsPIRe is (1-delta)-correct, where sigma_main^2 = N*p^2*sigma_chi^2 + t*ell_ks*d^2*z_ks^2*sigma_chi^2/4 + t*ell_gsw*d*z_gsw^2*sigma_chi^2/2 (Theorem 10, p.32).&#8201;[^17] |
 
-[^16]: Section 2.1 (p.7): "Under this assumption, we fix the random components of the LWE/RLWE ciphertexts, and this scheme remains secure as long as fresh secret keys are generated for each query."
+[^16]: Section 2.1 (p.7): "Under this assumption, we fix the random components of the LWE/RLWE ciphertexts, and this scheme remains secure as long as fresh secret keys are generated for each query (with multiplicative security loss proportional to the number of queries)."
 
 [^17]: Theorem 10 (p.32): Defines sigma_main and the correctness bound for InsPIRe. Also Theorem 9 (p.31) gives the noise decomposition e = e_main + e_overflow with e_overflow negligible in practice.
 
@@ -237,7 +237,7 @@ InsPIRe_0 is a direct application of InspiRING to compress DoublePIR responses a
 | Packing keys | Upload | 84 KB | No (per-query secret) | KS material for InspiRING |
 | Query (indicator + RGSW) | Upload | 196 KB (varies with N/t) | No | LWE indicator + evaluation point |
 | Response | Download | 12 KB | No | Single RLWE ciphertext |
-| **Total** | -- | **292 KB** | -- | From Table 2 (1 GB, 64 B entry) |
+| **Total** | -- | **292 KB** | -- | From Table 3 (1 GB, 64 B entry) |
 
 ---
 
@@ -330,21 +330,21 @@ Security: 128-bit, based on lattice-estimator [2] with correctness parameter del
 
 | Metric | YPIR | SimpleYPIR | KSPIR | HintlessPIR | InsPIRe_0 | InsPIRe^(2) | InsPIRe |
 |--------|------|-----------|-------|-------------|-----------|-------------|---------|
-| Upload (Keys) | 462 KB | 462 KB | 462 KB | 360 KB | 84 KB | 80 KB | 84 KB |
-| Upload (Query) | 1024 KB | 448 KB | 14 KB | 512 KB | 106 KB | 113 KB | 140 KB |
-| Download | 12 KB | 12 KB | 224 KB | 3316 KB | 36 KB | 52 KB | 12 KB |
-| Total Comm | 1498 KB | 922 KB | 700 KB | 4188 KB | 226 KB | 245 KB | 236 KB |
-| Server Time | 830 ms | 830 ms | 5910 ms | 2000 ms | 320 ms | 480 ms | 280 ms |
-| Throughput | 8930 MB/s | 8930 MB/s | 1390 MB/s | 4040 MB/s | -- | 2880 MB/s | 3620 MB/s |
+| Upload (Keys) | 462 KB | 462 KB | 2352 KB | 360 KB | 84 KB | 80 KB | 84 KB |
+| Upload (Query) | 384 KB | 112 KB | 14 KB | 512 KB | 106 KB | 113 KB | 140 KB |
+| Download | 12 KB | 52 KB | 52 KB | 3316 KB | 36 KB | 52 KB | 12 KB |
+| Total Comm | 858 KB | 626 KB | 2418 KB | 4188 KB | 226 KB | 245 KB | 236 KB |
+| Server Time | 148 ms | 148 ms | 780 ms | 470 ms | 320 ms | 480 ms | 280 ms |
+| Throughput | 7420 MB/s | 7420 MB/s | 1390 MB/s | 2310 MB/s | -- | 2880 MB/s | 3620 MB/s |
 
 #### Table 3: 64 B entries (selected rows, 1 GB = 2^24 x 64 B)
 
 | Metric | YPIR | SimpleYPIR | KSPIR | HintlessPIR | InsPIRe^(2) (selected) | InsPIRe |
 |--------|------|-----------|-------|-------------|----------------------|---------|
-| Upload (Keys) | 462 KB | 462 KB | 360 KB | 128 KB | 80 KB | 84 KB |
+| Upload (Keys) | 462 KB | 462 KB | 2352 KB | 360 KB | 80 KB | 84 KB |
 | Upload (Query) | 384 KB | 112 KB | 14 KB | 128 KB | 109 KB | 196 KB |
 | Download | 12 KB | 228 KB | 224 KB | 1748 KB | 52 KB | 12 KB |
-| Total Comm | 858 KB | 802 KB | 598 KB | 2004 KB | 241 KB | 292 KB |
+| Total Comm | 858 KB | 802 KB | 2590 KB | 2236 KB | 241 KB | 292 KB |
 | Server Time | 600 ms | 600 ms | 780 ms | 750 ms | 360 ms | 280 ms |
 | Throughput | 1720 MB/s | 1720 MB/s | 1310 MB/s | 1370 MB/s | 2880 MB/s | 3620 MB/s |
 

@@ -125,7 +125,7 @@ The distributional-PIR construction is a **generic compiler** that lifts any sta
 
 | Underlying PIR | Application | Database | Result |
 |----------------|------------|----------|--------|
-| SimplePIR [49] | Twitter feed (CrowdSurf) | 38 GB, 73M users, 560-byte tweets | 5-77x less server work, 4.8-9.7x less communication vs. no batching; 8x total cost reduction&#8201;[^22] |
+| SimplePIR [49] | Twitter feed (CrowdSurf) | 38 GB, 73M users, 560-byte tweets | 10-195x more queries/sec, 4.8-9.7x less communication vs. no batching; 5.1-77x more queries/sec, 8.1-95x less communication vs. batch codes; 8x total cost reduction&#8201;[^22] |
 | Respire [15] | Twitter feed | 1 GB subset | 6.7-12.8x more queries/sec, 2.3-117x less communication vs. no batching&#8201;[^23] |
 | YPIR [79] | SCT auditing | 5 billion SCTs | 12x less server CPU, 3x less communication vs. PIR-based approaches&#8201;[^24] |
 
@@ -357,7 +357,7 @@ Where Q and R abbreviate the full expected communication and runtime expressions
 [^19]: Section 1 (p. 2): "a generic compiler that lifts a standard PIR scheme into a distributional-PIR scheme." Also Theorem 3.3 (p. 5).
 [^20]: Theorem 3.3 (p. 5): Expected server runtime is Õ(k*(1-kappa_worst) + N*kappa_worst).
 [^21]: Theorem 3.3 (p. 5): Expected communication is k*log N + C(k)*(1-kappa_worst) + C(N)*kappa_worst.
-[^22]: Section 7.2.1 (p. 11) and Section 9.1, Table 12 (p. 14): Server work and communication improvements (5-77x less server work, 4.8-9.7x less communication) from Section 7.2.1; 8x total cost reduction ($0.0057 vs. $0.046) from Table 12.
+[^22]: Section 7.2.1 (p. 11) and Section 9.1, Table 12 (p. 14): vs. no batching: 10-195x more queries/sec, 4.8-9.7x less communication; vs. batch codes: 5.1-77x more queries/sec, 8.1-95x less communication (Section 7.2.1). 8x total cost reduction ($0.0057 vs. $0.046) from Table 12.
 [^23]: Section 7.2.1 (p. 11): "When using Respire, our construction increases the queries-per-second by 6.7-12.8x and reduces communication by 2.3-117x."
 [^24]: Section 8, Table 11 (p. 12): Distributional PIR achieves 91 core-ms server CPU and 561 KB communication vs. PIR's 1130 core-ms and 1534 KB.
 [^25]: Section 6 (p. 8): "our scheme performs preprocessing and encryption using a RingLWE-based encryption scheme, then converts the preprocessed state and ciphertext into forms that are compatible with SimplePIR."
@@ -373,7 +373,7 @@ Where Q and R abbreviate the full expected communication and runtime expressions
 [^35]: Theorem 5.1 (p. 7): "E[T] >= max{N*(kappa_worst - W), cdf_P^{-1}(kappa_avg - W)}."
 [^36]: Section 5 (p. 7): "the runtime of our distributional-PIR construction for a single query is within ~1.4x of the lower-bound."
 [^37]: Section 7.1, "Batching requests with GPUs" (p. 10): "For a batch of 50 concurrent requests, one GPU can process roughly 3x more requests per second than the 64-core CPU cluster."
-[^38]: Section 3 / Section 4.1 (p. 3, 6): "the PIR server must have a good approximation of the popularity distribution P." Section 4.1 discusses external information, private measurement, and their tradeoffs.
+[^38]: Section 3 / Section 4.1 (p. 4, 6): "the PIR server must have a good approximation of the popularity distribution P." Section 4.1 discusses external information, private measurement, and their tradeoffs.
 [^39]: Section 1, "Limitations" (p. 3): "this weakened correctness notion more notably affects users with 'out-of-distribution' query patterns, potentially raising fairness concerns."
 [^40]: Proposition 2.1 (p. 4): "If a distributional-PIR scheme [...] has average-case correctness kappa_avg under [...] P, then it has average-case correctness at least kappa_avg_hat = kappa_avg - B*Delta(P, P-hat) under query distribution P-hat."
 [^41]: Table 1 (p. 7): Big-O asymptotic costs for four public-parameter deployment strategies.

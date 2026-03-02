@@ -69,7 +69,7 @@
 
 FrodoPIR constructs a stateful single-server PIR scheme built entirely on plain LWE (not Ring-LWE), where the server's offline preprocessing is completely client-independent. The server compresses the database **D** into a global hint matrix **M** = **A** * **D** (where **A** is pseudorandomly derived from a public seed mu), which all clients download. Each client independently generates LWE-masked query states from **M** and **A**, then forms online queries by adding an indicator vector to the LWE mask. The server computes a simple matrix-vector product to answer each query. This design shifts the bottleneck from per-client preprocessing (O(m) per client in SOnionPIR) to a single global setup, making the scheme dramatically cheaper at scale when serving many clients.[^core]
 
-[^core]: The financial advantage is quantified in Table 1 (p. 6): FrodoPIR's amortized financial cost is $(1.9/C * 10^{-2} + 1.3 * 10^{-3}) per query for C clients, compared to $8.8 * 10^{-5} per query for SOnionPIR (which scales with C).
+[^core]: The financial advantage is quantified in Table 1 (p. 6): FrodoPIR's amortized financial cost is $(1.9/C * 10^{-2} + 1.3 * 10^{-5}) per query for C clients, compared to $6.4 * 10^{-4} per query for SOnionPIR (which scales with C).
 
 <a id="cryptographic-foundation"></a>
 
@@ -287,7 +287,7 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 | | Computation | 1.37 s | 0.16 s |
 | | Rate | 0.0125 | 0.28 |
 | | Throughput | 196 MB/s | 1.56 GB/s |
-| 2^14 x 30 KB | Query size | 14 KB | 1 MB |
+| 2^18 x 30 KB | Query size | 14 KB | 1 MB |
 | | Response size | 86 KB | 96 KB |
 | | Computation | 17.69 s | 4.27 s |
 | | Rate | 0.3488 | 0.3125 |
@@ -343,7 +343,7 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^tradeoff2]: Figure 4, p. 22. The tradeoff is explicit: preprocessing provides 10^3x -- 10^4x faster online queries at the cost of O(m) storage per preprocessed query.
 
-[^tradeoff3]: Section 2.3, p. 8. This 3x overhead is comparable to RLWE schemes that store DB in NTT form (typically 2x overhead).
+[^tradeoff3]: Section 2.3, p. 8. This 3x overhead is comparable to RLWE schemes that store database elements as FHE ciphertexts (typically 2x overhead from ciphertext expansion).
 
 <a id="comparison-with-prior-work"></a>
 
@@ -354,7 +354,7 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 | Metric | FrodoPIR | SOnionPIR | PSIR | CHKPIR |
 |--------|----------|-----------|------|--------|
 | Security assumption | LWE | RLWE | RLWE | RLWE |
-| Security level | 128 bits | <= 115 bits | <= 111 bits | <= 115 bits |
+| Security level | 128 bits | <= 111 bits | <= 115 bits | <= 115 bits |
 | Offline: client-independent? | **Yes** | No | No (downloads DB) | No |
 | Offline: server computation | O(m*n*omega) (once) | O(k*m) per client | -- | O(m) per client |
 | Client offline download | λ + n*omega*log(q) (~6 MB) | O(sqrt(m)) per client | |DB| (entire DB) | O(sqrt(m)) per client |
@@ -362,7 +362,7 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 | Online: response size | omega*log(q) (~3.6 KB) | O(sqrt(m)) | O(sqrt(m)) | O(sqrt(m)) |
 | Online: response blowup | < 3.6x | 128x | 320x | ~128x |
 | Online: server computation | O(m*omega) | O(m) | O(m) | O(sqrt(m)) |
-| Financial cost per query (m=2^20, C clients) | $(1.9/C * 10^-2 + 1.3*10^-3) | $8.8*10^-5 (scales with C) | $8.8*10^-5 | ~$8.8*10^-5 |
+| Financial cost per query (m=2^20, C clients) | $(1.9/C * 10^-2 + 1.3*10^-5) | $6.4*10^-4 (scales with C) | $8.8*10^-5 | ~$8.8*10^-5 |
 
 #### vs. Stateless PIR / Spiral (Table 7, p. 26)
 
@@ -443,4 +443,4 @@ For the rounding to be correct, the noise magnitude rho/q * ||e^T * D||_inf must
 
 [^unc2]: Table 5, p. 16. For m = 2^20, kappa = 187.603, meaning the client downloads roughly 1/188 of the raw DB. The kappa formula captures the compression gain from using an n-dimensional LWE matrix (n << m) to represent the DB.
 
-[^unc3]: Table 1, p. 6. The formula $(1.9/C * 10^-2 + 1.3 * 10^-3) per query shows offline cost (1.9*10^-2 / C) vanishes as C grows, leaving only the per-query online cost of approximately $0.0013.
+[^unc3]: Table 1, p. 6. The formula $(1.9/C * 10^-2 + 1.3 * 10^-5) per query shows offline cost (1.9*10^-2 / C) vanishes as C grows, leaving only the per-query online cost of approximately $0.000013.

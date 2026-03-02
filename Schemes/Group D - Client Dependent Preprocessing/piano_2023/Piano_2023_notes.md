@@ -122,7 +122,7 @@ Piano achieves sublinear server computation for single-server PIR by having each
 
 [^14]: Figure 1 (p.6): Primary table definition. Implementation uses 32-bit tags with master key rather than independent λ-bit keys.
 [^15]: Figure 1 (p.6): "Store replacement entries: sample and store M_2 tuples of the form (r, DB[r]) where r is a random index from the j-th chunk."
-[^16]: Figure 1 (p.6): "Update backup table: for each chunk j and k in [M_2], let p_bar_{j,k} <- p_bar_{j,k} XOR DB[Set(sk_bar_{j,k})[j]]."
+[^16]: Figure 1 (p.6): "Update backup table: for i in {0, 1, ..., sqrt(n)-1}/{j} and k in [M_2], let p_bar_{i,k} <- p_bar_{i,k} XOR DB[Set(sk_bar_{i,k})[j]]."
 
 <a id="protocol-phases"></a>
 
@@ -263,7 +263,7 @@ Hardware: Two AWS m5.8xlarge instances with 128 GB RAM. Server computation is si
 
 [^36]: Appendix B.2, "Performance analysis" (p.23-24): Hierarchical data structure with L = O(log n) levels, each level l containing a PIR instance of size 2^l * Q. Amortized costs per update: O_λ(log n) communication, O(log n) server time.
 [^37]: Appendix B.1 (p.22): Cuckoo hashing with overflow pile for key-value queries.
-[^38]: Section 1.1 (p.3) and Table 2 (p.12): "This represents over 150x speedup relative to SimplePIR" (LAN); over WAN, Piano is 72.6 ms vs SimplePIR's extrapolated 10.9 s.
+[^38]: Section 1.1 (p.3) and Table 2 (p.12): "This represents over 150x speedup relative to SimplePIR" (WAN); over LAN at 100 GB, the speedup is ~915x (Table 1: 11.9 ms vs 10.9 s).
 
 <a id="key-tradeoffs-limitations"></a>
 
@@ -367,4 +367,4 @@ Hardware: Two AWS m5.8xlarge instances with 128 GB RAM. Server computation is si
 - **TreePIR [Group D]:** Two-server concurrent work. Achieves polylogarithmic per-query communication via weak privately puncturable PRFs. For 2^28 entries (8 GB), TreePIR's best amortized online time is 23 ms (non-recursive) vs Piano's 8 ms amortized with 4x local storage.&#8201;[^51]
 - **RMS24 [Group D]:** Successor. Uses dummy subsets for standard (non-consumable) correctness model.
 
-[^51]: Section 5 (p.16): "For an 8GB database with 2^28 entries, the best amortized online time results reported in TreePIR are 23ms for the non-recursive scheme and 84ms for the recursive scheme. For comparison, our scheme has an amortized 8ms per-query time under the same setting with 4x local storage."
+[^51]: Section 5 (p.15): "For an 8GB database with 2^28 entries, the best amortized online time results reported in TreePIR are 23ms for the non-recursive scheme and 84ms for the recursive scheme. For comparison, our scheme has an amortized 8ms per-query time under the same setting with 4x local storage."

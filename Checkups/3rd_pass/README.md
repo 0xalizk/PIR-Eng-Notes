@@ -29,3 +29,32 @@
 - **Missing context qualifiers**: GPU vs CPU not distinguished (ThorPIR 0.86s), dropped parenthetical phrases from quotes
 - **Reversed comparisons**: Two-server vs single-server overhead swapped (RMS24), security levels transposed (FrodoPIR)
 - **Wrong exponents/magnitudes**: FrodoPIR 10^{-3} vs 10^{-5} (two orders of magnitude)
+
+#### Cross-pass overlap
+
+Compared all 3rd-pass issues against 1st and 2nd pass findings. The dominant failure mode from prior passes was **incomplete fixes**: footnotes were corrected in isolation, but tables displaying the same data were not updated.
+
+**Persistent issues (1st/2nd pass → 3rd, never fully fixed):**
+
+| Scheme | Error | Passes | Root Cause |
+|--------|-------|--------|------------|
+| YPIR | Complexity table still shows 724 KB upload / 32 MB download (should be 2.5 MB / 12 KB) | 1st, 3rd | Footnote [^14] corrected but table not updated |
+| Respire | Cryptographic Foundation table `Pr[fail]` formula has erroneous "1 −" prefix | 1st, 3rd | Footnote/prose corrected but table not updated |
+| SimplePIR/DoublePIR | Complexity + Protocol Phases tables still show 345 KB for both upload and download (should be 313/32 KB) | 1st, 3rd | Variants table fixed but two sibling tables missed |
+| SealPIR | Comparison table values drawn from wrong database-size row | 1st, 2nd, 3rd | Never fully resolved across all three passes |
+| KeywordPIR | SealPIR performance values shifted by one column in Table 3 transcription | 1st, 3rd | Systematic column-shift error never fixed |
+
+**Fix regressions (fix introduced a new error):**
+
+| Scheme | Error | What happened |
+|--------|-------|---------------|
+| SealPIR [^8] | "in EXPAND" qualifier misplaced | 1st: missing → fix added it → 3rd: placed in wrong position |
+| HintlessPIR [^19] | Lemma 19 Condition 2 `sqrt(ℓ*N)` vs `√ℓ · N` | 1st: missing "1+" in log → fix rewrote formula → 3rd: sqrt scope now wrong |
+| SealPIR [^9] | Page reference | 1st: wrong section → fix corrected section → 3rd: page number still wrong |
+
+**Same underlying confusion, different manifestation:**
+
+| Scheme | Error | What happened |
+|--------|-------|---------------|
+| CwPIR | Folklore operator depth (log vs log-log) | 1st: plain/arithmetic confusion; 3rd: Table 6 transcription — same root issue |
+| XPIR-2016 [^36] | Figure 5 page reference (p.11 vs p.12) | 1st: fixed prose location → 3rd: Figure location now wrong |

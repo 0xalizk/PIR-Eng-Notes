@@ -129,7 +129,7 @@ The paper constructs the first *compressible* fully homomorphic encryption schem
 
 [^11]: Section 5.2, p. 20: "breaking each entry into 2-by-2 plaintext matrices M in R_q (recall q approximately 2^{46}). Hence each matrix holds 2 * 2 * 46 * 2^{12} approximately 2^{19.5} bits (92KB)." Server stores M' = M * H mod q in CRT representation modulo Q, entailing a ~3.5x storage blowup.
 
-[^12]: Section 5.2, p. 19: G_1 has m'_1 = n'_1 * ceil(log_4 Q) = 3 * 53 = 159 columns; G_2 has m'_2 = n'_1 * ceil(log_{2^{51}} Q) = 3 * 2 = 6 columns. Appendix A.3, p. 28 uses slightly different parameters: G_1 with m'_1 = n'_0 * floor(log_4(Q)) = 2 * 51 = 102 (where n'_0 = 2); G_2 with m'_2 = n'_1 * ceil(log_{2^{51}} Q) = 3 * 2 = 6.
+[^12]: Section 5.2, p. 19: G_1 has m'_1 = n'_1 * ceil(log_4 Q) = 3 * 53 = 159 columns; G_2 has m'_2 = n'_1 * ceil(log_{2^{53}} Q) = 3 * 2 = 6 columns. Appendix A.3, p. 28 uses slightly different parameters: G_1 with m'_1 = n'_0 * floor(log_4(Q)) = 2 * 51 = 102 (where n'_0 = 2); G_2 with m'_2 = n'_1 * ceil(log_{2^{51}} Q) = 3 * 2 = 6.
 
 <a id="database-encoding"></a>
 

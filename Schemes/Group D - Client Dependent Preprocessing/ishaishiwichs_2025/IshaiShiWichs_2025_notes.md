@@ -163,12 +163,12 @@ A database-oblivious scheme restricts Definition 1 so that: (1) the database is 
 
 - **Database representation:** n-bit string x in {0,1}^n reshaped as a 3-dimensional m x m x m array where m = n^{1/3}, with DB[x,y,z] = DB[id] for id = (x,y,z) in base-m representation.&#8201;[^11]
 - **Cross-product sets:** Each hint entry is S = X x Y x Z where X, Y, Z are subsets of {0,...,m-1}, described in O(n^{1/6}) bits.&#8201;[^8]
-- **Hint table:** L = 20*sqrt(n) cross-product sets, each with 8 associated parity bits (full set parity plus 7 "planar set" parities obtained by removing one element from one dimension).&#8201;[^12]
+- **Hint table:** L = 20*sqrt(n) cross-product sets, each with 1 + |X_i| + |Y_i| + |Z_i| = O(n^{1/6}) associated parity bits (full set parity plus all "planar set" parities obtained by removing one element from one dimension).&#8201;[^12]
 - **Planar sets:** For each hint S = X x Y x Z and each element x in X (resp. y in Y, z in Z), the "planar set" {x} x Y x Z (resp. X x {y} x Z, X x Y x {z}) of size n^{1/3} whose parity can be maintained during streaming.&#8201;[^13]
 
 [^11]: Section 4.1 (p.12-13): The database index id in {0,...,n-1} is expressed as a tuple (x,y,z) in {0,...,m-1}^3 using base-m representation.
 
-[^12]: Section 4.2 (p.14): The client stores L = 20*sqrt(n) hints, each consisting of: (1) the set description (X, Y, Z), (2) parities of X x Y x Z and of all sub-cross-products formed by removing one element from one dimension.
+[^12]: Section 4.2 (p.14): The client stores L = 20*sqrt(n) hints, each consisting of: (1) the set description (X, Y, Z), (2) parities of S_i = X_i x Y_i x Z_i and of all planar sets formed by removing one element from one dimension — totalling 1 + |X_i| + |Y_i| + |Z_i| = O(n^{1/6}) parities per hint (since E[|X_i|] = E[|Y_i|] = E[|Z_i|] = n^{1/6} per Fact 4.1, p.13).
 
 [^13]: Section 4.2 (p.15): Planar sets have size n^{1/3}; each hint has an expected n^{1/6} planar sets per dimension (3 dimensions), enabling cumulative parity updates during streaming.
 
@@ -273,7 +273,7 @@ Given set S = X x Y x Z and point (x,y,z) in S, Resample(S, (x,y,z)) produces S'
 
 #### Adaptive Correctness Upgrade (Appendix A)
 
-The paper introduces a novel technique using hint-specific permutations to achieve adaptive correctness. Each hint entry stores (S, pi) where pi is a special-purpose random permutation over {0,...,n-1}^3 defined by a random vector r in GF(2^k)^{3x3} (where k = log(n)/3). The permutation pi_r(v) = Rv is a GF(2^k)-linear map, which can be described in O(1) field elements (O(log n) bits).&#8201;[^21]
+The paper introduces a novel technique using hint-specific permutations to achieve adaptive correctness. Each hint entry stores (S, pi) where pi is a special-purpose random permutation over {0,...,n-1}^3 defined by a random vector r in GF(2^k)^{3x3} (where k = log(n)/3). The permutation pi_r(v) = Rv is a GF(2^k)-linear map, which can be described in O(1) field elements (Õ(1) bits).&#8201;[^21]
 
 [^21]: Appendix A.3 (p.35): The permutation pi_r maps (x_0, y_0, z_0) to (x, y, z) via an invertible 3x3 matrix R over GF(2^k), achieving the key property that for distinct v != v', the probability Pr_r[x = x'] <= 1/(n^{1/3}-1) for each coordinate.
 

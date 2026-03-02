@@ -133,11 +133,11 @@ YPIR+SP applies the CDKS packing to the SimplePIR output (an entire column of th
 | Phase | Actor | Operation | Communication | When / Frequency |
 |-------|-------|-----------|---------------|------------------|
 | DB Setup | Server | Compute H1, H2 from D using structured matrices A1, A2. Precompute random components of CDKS.Pack output. | -- | Once per DB update |
-| Query Gen | Client | Sample s1, s2, compute packing key pk via CDKS.Setup(1^λ, s2, z). Construct LWE encodings c1 (row indicator), c2 (column indicator). | q = (pk, c1, c2) uploaded: 724 KB -- 2.5 MB | Per query |
+| Query Gen | Client | Sample s1, s2, compute packing key pk via CDKS.Setup(1^λ, s2, z). Construct LWE encodings c1 (row indicator), c2 (column indicator). | q = (pk, c1, c2) uploaded: 846 KB -- 2.5 MB | Per query |
 | Answer (SimplePIR) | Server | Compute T = g_p^{-1}(c1^T * D |_{q1,q-hat1}) -- linear scan over database | -- | Per query |
 | Answer (DoublePIR) | Server | Compute C = delta * [H2, A2*T^T; c2^T*H1^T, c2^T*T^T] | -- | Per query |
 | Answer (Packing) | Server | Apply CDKS.Pack(pk, C_i) for each block C_i; only O(kappa + log d2) NTTs needed online (rest precomputed) | -- | Per query |
-| Answer (Modulus switch) | Server | Apply ModReduce to packed RLWE encodings | resp = rho pairs (c_{i,1}, c_{i,2}): 12 KB -- 32 MB | Per query |
+| Answer (Modulus switch) | Server | Apply ModReduce to packed RLWE encodings | resp = rho pairs (c_{i,1}, c_{i,2}): 12 KB | Per query |
 | Extract | Client | Decrypt RLWE encodings using s2, recover coefficient vector, apply gadget expansion with s1, round to recover mu in Z_N | -- | Per query |
 
 [^11]: Construction 3.1 (p.11-12): Full protocol specification with four Answer steps and Extract procedure.
@@ -170,12 +170,12 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 
 | Metric | Asymptotic | Concrete (32 GB, 1-bit records) | Phase |
 |--------|-----------|-------------------------------|-------|
-| Query size | O(sqrt(N) * log q / log p + d * log d * log q) | 724 KB (upload) | Online |
-| Response size | O(d^2 * kappa * log q-hat / d2) | 32 MB (download) | Online |
+| Query size | O(sqrt(N) * log q / log p + d * log d * log q) | 2.5 MB (upload) | Online |
+| Response size | O(d^2 * kappa * log q-hat / d2) | 12 KB (download) | Online |
 | Server computation | O(N * d) | 2.64 s | Online |
 | Client computation | -- | Negligible (decryption + rounding) | Online |
 | Throughput | O(M) where M = memory bandwidth | 12.1 GB/s/core | Online |
-| Response overhead | -- | 32 MB / 32 GB = 0.001x (response independent of DB size) | -- |
+| Response overhead | -- | 12 KB / 32 GB ~ 0 (response independent of DB size) | -- |
 
 [^14]: Table 2 (p.20): At 32 GB, YPIR achieves 2.5 MB upload, 12 KB download, 2.64 s server time, 12.1 GB/s throughput.
 
@@ -199,7 +199,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | Expansion factor (RLWE) | 2*log q / log p | Response uses RLWE: (d+1)/2 compression | -- |
 | Communication rate | -- | Response size independent of DB size (only depends on lattice parameters) | -- |
 
-[^17]: Section 1.2 (p.5): "RLWE decreases the expansion factor from (n+1)*log q/log p to 2*log q/log p. For concrete values of n ~ 2^{10}, this is a 1000x reduction."
+[^17]: Section 1.2 (p.4): "RLWE decreases the expansion factor from (n+1)*log q/log p to 2*log q/log p. For concrete values of n ~ 2^{10}, this is a 1000x reduction."
 
 #### If-reported metrics
 
@@ -398,7 +398,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 
 [^40]: Section 1.1 (p.4): "A YPIR query is 1.8-3x larger than a DoublePIR query... and 3-7x larger than a SimplePIR query."
 [^41]: Table 3 (p.22): Packing is 30% of total at 1 GB, 1% at 32 GB.
-[^42]: Section 3 (p.10): "Pseudorandomness thus relies on a 'circular security' assumption."
+[^42]: Section 2.1 (p.10): "Pseudorandomness thus relies on a 'circular security' assumption."
 [^43]: Remark 4.1 (p.15-16): A ring-based SimplePIR incurs a 3.6x throughput reduction (11.5 GB/s to 3.2 GB/s) due to log q/log N representation blowup.
 
 <a id="open-problems"></a>

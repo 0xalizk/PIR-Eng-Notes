@@ -41,7 +41,7 @@
 | **Rounds (online)** | 1 (client sends two subsets, server returns two parities) |
 | **Record-size regime** | Small (8-byte and 32-byte entries in benchmarks; 256-byte entries tested for scaling) |
 
-[^1]: Section 3.5 (p.8): Correctness failure happens when none of the M = λ * sqrt(N) main hints contains the queried index. By Lemma 1, each hint contains a given index with probability at least 1/(2*sqrt(N)), so the failure probability is at most (1 - 1/(2*sqrt(N)))^{λ*sqrt(N)} < e^{-λ/2}, which is astronomically small for large λ. This is a standard (non-degrading) guarantee: the same bound holds for every subsequent query because hint replenishment preserves the distribution.
+[^1]: Section 3.5 (p.7): Correctness failure happens when none of the M = λ * sqrt(N) main hints contains the queried index. By Lemma 1, each hint contains a given index with probability at least 1/(2*sqrt(N)), so the failure probability is at most (1 - 1/(2*sqrt(N)))^{λ*sqrt(N)} < e^{-λ/2}, which is astronomically small for large λ. This is a standard (non-degrading) guarantee: the same bound holds for every subsequent query because hint replenishment preserves the distribution.
 
 ---
 
@@ -68,7 +68,7 @@
 
 ### Core Idea <a href="#toc">⤴</a>
 
-RMS24 presents a stateful PIR scheme that achieves amortized sublinear communication and computation for both two-server and single-server settings, while maintaining *standard* PIR correctness (correctness for arbitrary, adaptively chosen query sequences).&#8201;[^5] The database of N entries is divided into sqrt(N) partitions. Each client hint selects sqrt(N)/2 + 1 random partitions and picks one random index from each, storing the XOR parity. The key innovation is the **dummy subset**: when querying, the client constructs a real subset (the hint's subset minus the queried index) and a dummy subset (one random index from each unrepresented partition), then sends both in random order to the server.&#8201;[^6] This eliminates the information leakage that prior schemes suffered -- where the server could learn which partition the queried index belongs to -- without requiring parallel repetition. The result is O(1) online response overhead (2x the insecure baseline for two servers, 4x for one server) with O(sqrt(N)) client storage and computation.&#8201;[^7]
+RMS24 presents a stateful PIR scheme that achieves amortized sublinear communication and computation for both two-server and single-server settings, while maintaining *standard* PIR correctness (correctness for arbitrary, adaptively chosen query sequences).&#8201;[^5] The database of N entries is divided into sqrt(N) partitions. Each client hint selects sqrt(N)/2 + 1 random partitions and picks one random index from each, storing the XOR parity. The key innovation is the **dummy subset**: when querying, the client constructs a real subset (the hint's subset minus the queried index) and a dummy subset (one random index from each unrepresented partition), then sends both in random order to the server.&#8201;[^6] This eliminates the information leakage that prior schemes suffered -- where the server could learn which partition the queried index belongs to -- without requiring parallel repetition. The result is O(1) online response overhead (4x the insecure baseline for two servers; single-server response overhead is O(sqrt(N)/λ)) with O(sqrt(N)) client storage and computation.&#8201;[^7]
 
 [^5]: Section 2 (p.3): The standard stateful PIR definition requires correctness for any adaptively chosen query sequence and privacy against a server that chooses both candidate query sequences.
 
@@ -87,9 +87,9 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 | Two-server | Offline server generates hints; online server answers queries + helps replenish | 2 (non-colluding) | O(1) -- constant, 4x element size | On-the-fly via offline server (Alg. 3) | Unlimited (constant amortized)&#8201;[^8] |
 | Single-server | Client streams entire DB offline; uses backup hints for replenishment | 1 | O(sqrt(N)/λ) amortized | Via pre-computed backup hint pairs (Alg. 5) | 0.4 * λ * sqrt(N) queries per offline phase&#8201;[^9] |
 
-[^8]: Section 3.6 (p.9): "The amortized cost of our two-server scheme only depends on the online phase and the hint replenishment step." The offline phase runs once. Each query costs O(1) response and O(sqrt(N)) server computation.
+[^8]: Section 3.6 (p.8): "The amortized cost of our two-server scheme only depends on the online phase and the hint replenishment step." The offline phase runs once. Each query costs O(1) response and O(sqrt(N)) server computation.
 
-[^9]: Section 3.4 (p.7): The client retrieves λ*sqrt(N) main hints and λ*sqrt(N) backup hints. Backup hints come in pairs; with pairs, the client can make up to λ*sqrt(N)/2 queries before needing to re-run the offline phase. The 0.4*λ*sqrt(N) figure used in Table 1 is a conservative estimate (the paired strategy achieves close to but fewer than 0.5*λ*sqrt(N)).
+[^9]: Section 3.4 (p.6): The client retrieves λ*sqrt(N) main hints and λ*sqrt(N) backup hints. Backup hints come in pairs; with pairs, the client can make up to λ*sqrt(N)/2 queries before needing to re-run the offline phase. The 0.4*λ*sqrt(N) figure used in Table 1 is a conservative estimate (the paired strategy achieves close to but fewer than 0.5*λ*sqrt(N)).
 
 ---
 
@@ -108,7 +108,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 | **Purpose** | Eliminate the information leakage from the queried index's absence in the query subset, allowing the scheme to achieve standard PIR privacy without parallel repetition |
 | **Built from** | PRF evaluations for the offset vectors; random sampling for dummy indices |
 
-[^10]: Section 3.5 (p.8): Lemma 2 proves Pr(b | i) = Pr(b | i') for any two query indices i and i', where b is the bit vector encoding which partitions go to which subset. The proof shows each event has probability tau/2 where tau = C(sqrt(N)-1, sqrt(N)/2)^{-1}, independent of the queried index.
+[^10]: Section 3.5 (p.7): Lemma 2 proves Pr(b | i) = Pr(b | i') for any two query indices i and i', where b is the bit vector encoding which partitions go to which subset. The proof shows each event has probability tau/2 where tau = C(sqrt(N)-1, sqrt(N)/2)^{-1}, independent of the queried index.
 
 #### 2. Partition-Based Hints with Median Cutoff Selection
 
@@ -136,11 +136,11 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 | **Key structure** | Per-client PRF key shared between client and offline server (two-server) or held by client alone (single-server). The PRF key derives all hint structures deterministically. |
 | **Correctness condition** | Pr[fail] <= e^{-λ/2} per query, by union bound over queries (Lemma 1 + Section 3.5)&#8201;[^14] |
 
-[^12]: Section 2 (p.3-4): "PRF is one of the most common cryptographic primitives and can be instantiated from any one-way function" (quote continues with mentions of AES and SHA as practical instantiations).
+[^12]: Section 2 (p.3): "PRF is one of the most common cryptographic primitives and can be instantiated from any one-way function" (quote continues with mentions of AES and SHA as practical instantiations).
 
-[^13]: Section 4.1 (p.9): "We use AES as the pseudorandom function. We use CryptoPP's implementation of AES, which leverages Intel's AES-NI instructions."
+[^13]: Section 4.1 (p.8): "We use AES as the pseudorandom function. We use CryptoPP's implementation of AES, which leverages Intel's AES-NI instructions."
 
-[^14]: Section 3.5 (p.8): Lemma 1 proves each hint contains any particular index with probability at least 1/(2*sqrt(N)). With M = λ*sqrt(N) hints, the probability that none contains the queried index is at most (1 - 1/(2*sqrt(N)))^{λ*sqrt(N)} < e^{-λ/2}.
+[^14]: Section 3.5 (p.7): Lemma 1 proves each hint contains any particular index with probability at least 1/(2*sqrt(N)). With M = λ*sqrt(N) hints, the probability that none contains the queried index is at most (1 - 1/(2*sqrt(N)))^{λ*sqrt(N)} < e^{-λ/2}.
 
 ---
 
@@ -158,9 +158,9 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 [^16]: Section 3.2 (p.5): "Hint storage. Each hint is stored as a tuple (j, v-hat_j, e_j, P_j) where j is a unique hint ID, v-hat_j is the cutoff median value, e_j is the extra index, and P_j is the parity."
 
-[^17]: Section 3.4 (p.7): "A more clever strategy is to have backup hints in pairs, similar in spirit to the two-server hint replenishment algorithm." Each backup hint pair stores parities for both halves.
+[^17]: Section 3.4 (p.6): "A more clever strategy is to have backup hints in pairs, similar in spirit to the two-server hint replenishment algorithm." Each backup hint pair stores parities for both halves.
 
-[^18]: Section 4.1 (p.9): "We use 32-bit numbers for elements in V_j to save client storage and computation." Hint IDs use 32-bit integers in single-server (reset periodically) and 64-bit in two-server.
+[^18]: Section 4.1 (p.8): "We use 32-bit numbers for elements in V_j to save client storage and computation." Hint IDs use 32-bit integers in single-server (reset periodically) and 64-bit in two-server.
 
 ---
 
@@ -178,7 +178,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 | Decode | Client | Discard dummy parity; recover DB[i] = P XOR P_j (stored parity of hint j) | -- | Per query |
 | Replenish (Alg. 3) | Offline server + Client | Offline server constructs new hint with next ID J, sends (J, v-hat_J, P_J, P'_J); client picks correct half, adds i as extra index | O(1) words | Per query (piggybacked) |
 
-[^19]: Section 3.6 (p.9): "The offline phase costs O(λ*sqrt(N)) communication and O(λ*N) computation at the offline server."
+[^19]: Section 3.6 (p.8): "The offline phase costs O(λ*sqrt(N)) communication and O(λ*N) computation at the offline server."
 
 [^20]: Section 3.2 (p.5-6): The compact encoding using b and r costs (sqrt(N)/2 + 1) * log(N) bits, reducing the request size compared to sending explicit subsets at sqrt(N) * log(N) bits.
 
@@ -192,7 +192,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 | Decode | Client | Discard dummy parity; recover DB[i] | -- | Per query |
 | Replenish (Alg. 5) | Client | Find unused backup hint pair that skips the queried partition; promote to main hint with i as extra index | -- (local) | Per query |
 
-[^21]: Section 3.6 (p.9): "The streaming offline phase costs N communication and O(λ*N) computation, and needs to be run every 0.5*λ*sqrt(N) online queries." The single-server response overhead is O(sqrt(N)/λ) amortized because the O(N) offline communication is amortized over 0.5*λ*sqrt(N) queries.
+[^21]: Section 3.6 (p.8): "The streaming offline phase costs N communication and O(λ*N) computation, and needs to be run every 0.5*λ*sqrt(N) online queries." The single-server response overhead is O(sqrt(N)/λ) amortized because the O(N) offline communication is amortized over 0.5*λ*sqrt(N) queries.
 
 ---
 
@@ -209,7 +209,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 | **Security guarantee** | Computational (OWF/PRF) -- learns nothing about query sequence | Computational (OWF/PRF) -- cannot distinguish real from dummy subset&#8201;[^22] |
 | **Non-collusion assumption** | Required -- if servers collude, the offline server's PRF key reveals all hint structures, and the online server's subsets reveal the query |
 
-[^22]: Section 3.5 (p.8): Privacy is proven by showing that the bit vector b (encoding the partition assignment) has probability Pr(b | i) = tau/2 for any query index i (Lemma 2), so observing b gives the server no advantage in distinguishing between any two candidate queries.
+[^22]: Section 3.5 (p.7): Privacy is proven by showing that the bit vector b (encoding the partition assignment) has probability Pr(b | i) = tau/2 for any query index i (Lemma 2), so observing b gives the server no advantage in distinguishing between any two candidate queries.
 
 ---
 
@@ -229,11 +229,11 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 | **Adaptive vs non-adaptive** | Correctness holds for fully adaptive queries -- this is the key distinction from Piano PIR&#8201;[^26] |
 | **Query model restrictions** | Two-server: unlimited queries. Single-server: bounded by backup hint supply (~0.4*λ*sqrt(N) queries per offline phase). |
 
-[^23]: Section 3.5 (p.8): Lemma 1 and the paragraph following it.
+[^23]: Section 3.5 (p.7): Lemma 1 and the paragraph following it.
 
-[^24]: Section 3.5 (p.9): "Thus, every hint j in H' follows the same distribution as the hint j in H. This shows that the main hints after a query are identically distributed as they were before the query." The proof uses a matrix representation H where each row is a hint and shows the distribution R_i (conditioned on containing i) and R_{-i} (conditioned on not containing i) are preserved.
+[^24]: Section 3.5 (p.8): "Thus, every hint j in H' follows the same distribution as the hint j in H. This shows that the main hints after a query are identically distributed as they were before the query." The proof uses a matrix representation H where each row is a hint and shows the distribution R_i (conditioned on containing i) and R_{-i} (conditioned on not containing i) are preserved.
 
-[^25]: Section 3.5 (p.8-9): The full distributional argument constructs random variable J (the consumed hint index) with geometric-like distribution Pr(J = j) = (1-q)^j * q, then shows that for any hint j in H', its distribution is a mixture of R (sampled from R with probability 1-(1-q)^j) and R_{-i} (with the remaining probability), which equals R.
+[^25]: Section 3.5 (p.7-8): The full distributional argument constructs random variable J (the consumed hint index) with geometric-like distribution Pr(J = j) = (1-q)^j * q, then shows that for any hint j in H', its distribution is a mixture of R (sampled from R with probability 1-(1-q)^j) and R_{-i} (with the remaining probability), which equals R.
 
 [^26]: Section 2 (p.3): "Piano PIR [34], however, does not satisfy the above definition (even for statically constructed queries) because it requires the client query sequence to have no adversarial influence."
 
@@ -251,11 +251,11 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 | Response size | O(w) -- constant (two-server); O(w) per query (single-server) | 64 bytes (two parities, w=32) | Online |
 | Server computation | O(sqrt(N)) | 2.7 ms (two-server); 2.7 ms online (single-server)&#8201;[^27] | Online |
 | Client computation | O(sqrt(N)) | < 1 ms (finding hint + subset construction) | Online |
-| Response overhead | 2x insecure baseline (two-server); 4x (single-server)&#8201;[^28] | 2x (two-server); 4x (single-server) | -- |
+| Response overhead | 4x insecure baseline (two-server); O(sqrt(N)/λ) (single-server)&#8201;[^28] | 4x (two-server); O(sqrt(N)/λ) (single-server) | -- |
 
-[^27]: Table 2 (p.11): At 2^28 x 32-byte entries (8 GB), the two-server scheme achieves 60.16 MB offline communication and 842 s offline computation, with 34.1 KB online communication and 2.7 ms online computation.
+[^27]: Table 2 (p.10): At 2^28 x 32-byte entries (8 GB), the two-server scheme achieves 60.16 MB offline communication and 842 s offline computation, with 34.1 KB online communication and 2.7 ms online computation.
 
-[^28]: Section 3.6 (p.9): "The online response overhead is O(1), or 4x to be precise, since both the online server and the offline server both send back two parities." For two-server, only 2 parities are needed from the online server (the other 2 come from replenishment). The "2x" figure is from the abstract: "the online response overhead is only twice that of simply fetching the desired entry without privacy."
+[^28]: Section 3.6 (p.8): "The online response overhead is O(1), or 4x to be precise, since the online server and the offline server both send back two parities." This 4x figure is for the two-server scheme. For single-server: "The only difference from the two-server case is that the response overhead is O(sqrt(N)/λ) because the O(N) offline communication is amortized over 0.5*λ*sqrt(N) online queries." The abstract's "twice that of simply fetching" is an approximation.
 
 #### Preprocessing metrics
 
@@ -267,9 +267,9 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 | Amortized response overhead | O(1) | 2x | O(sqrt(N)/λ) | varies |
 | Amortization window | Unlimited (constant) | -- | ~0.4*λ*sqrt(N) queries | ~0.4 * 80 * 2^14 ~ 524K queries |
 
-[^29]: Table 3 (p.11): At 2^28 x 32-byte entries, the single-server scheme requires 8192 MB offline communication (full DB stream) and 1146 s offline computation. Client storage is 100 MB.
+[^29]: Table 3 (p.10): At 2^28 x 32-byte entries, the single-server scheme requires 8192 MB offline communication (full DB stream) and 1146 s offline computation. Client storage is 100 MB.
 
-[^30]: Table 3 (p.11): Client storage for single-server at 8 GB is 100 MB (1.5x the two-server's 60 MB because of backup hint pairs). At 2^28 x 256-byte entries (64 GB), client storage is 660 MB.
+[^30]: Table 3 (p.10): Client storage for single-server at 8 GB is 100 MB (1.5x the two-server's 60 MB because of backup hint pairs). At 2^28 x 256-byte entries (64 GB), client storage is 660 MB.
 
 #### Preprocessing Characterization
 
@@ -280,7 +280,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 | **Number of DB passes** | 1 (offline server) | 1 (streaming) |
 | **Hint refresh mechanism** | Pipelining -- offline server replenishes on-the-fly after each query | Full re-download after ~0.4*λ*sqrt(N) queries |
 
-[^31]: Section 3.4 (p.7-8): Algorithm 4 streams the database one partition at a time. For each partition k, it downloads DB[k*sqrt(N) : (k+1)*sqrt(N) - 1] and processes all 1.5M hints to update their parities. This requires only O(λ*sqrt(N)) client memory.
+[^31]: Section 3.4 (p.6-7): Algorithm 4 streams the database one partition at a time. For each partition k, it downloads DB[k*sqrt(N) : (k+1)*sqrt(N) - 1] and processes all 1.5M hints to update their parities. This requires only O(λ*sqrt(N)) client memory.
 
 ---
 
@@ -292,7 +292,7 @@ RMS24 presents a stateful PIR scheme that achieves amortized sublinear communica
 
 AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18. All experiments single-threaded.&#8201;[^32]
 
-[^32]: Section 4.2 (p.10): "We run all experiments on an AWS m5.8xlarge instance equipped with a 3.1 GHz Intel Xeon processor and 128 GB RAM."
+[^32]: Section 4.2 (p.9): "We run all experiments on an AWS m5.8xlarge instance equipped with a 3.1 GHz Intel Xeon processor and 128 GB RAM."
 
 #### Two-Server Benchmarks (Table 2)
 
@@ -343,9 +343,9 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 **Key takeaway:** RMS24 should be preferred when standard PIR correctness is required (adaptive query sequences) and sublinear server computation is needed. In the two-server setting, it achieves the best balance of low communication, low computation, and manageable client storage -- avoiding the 1 GB+ client storage of Checklist and the 1 MB+ online communication of TreePIR.&#8201;[^33] In the single-server setting, it is 9-14x better in communication and hundreds of times faster in computation than SimplePIR, while providing stronger correctness guarantees than Piano.&#8201;[^34]
 
-[^33]: Section 4.3 (p.10): "Our scheme achieves a balance of low client storage, low communication, and low computation for all database parameters, by avoiding major bottlenecks in previous schemes such as linear client storage, linear server computation, or high communication."
+[^33]: Section 4.3 (p.9): "Our scheme achieves a balance of low client storage, low communication, and low computation for all database parameters, by avoiding major bottlenecks in previous schemes such as linear client storage, linear server computation, or high communication."
 
-[^34]: Section 4.3 (p.11): "Compared with the latest version of Piano PIR, which is concurrent with our work, our communication is about 2x better, and our amortized computation is 1.7 -- 3.7x better. Moreover, we achieve these improvements while providing a stronger correctness guarantee."
+[^34]: Section 4.3 (p.10): "Compared with the latest version of Piano PIR, which is concurrent with our work, our communication is about 2x better, and our amortized computation is 1.7 -- 3.7x better. Moreover, we achieve these improvements while providing a stronger correctness guarantee."
 
 ---
 
@@ -362,7 +362,7 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 
 [^36]: Section 3.2 (p.6): The compact encoding costs (sqrt(N)/2 + 1) * log(N) bits vs. sqrt(N) * log(N) bits for sending explicit subsets directly.
 
-[^37]: Section 4.1 (p.10): "We can filter out elements that are too large or too small... In expectation, this filters 7/8 of the elements." The probability of filtering a median element is 6 x 10^{-5} for N = 2^20.
+[^37]: Section 4.1 (p.9): "We can filter out elements that are too large or too small... In expectation, this filters 7/8 of the elements." The probability of filtering a median element is 6 x 10^{-5} for N = 2^20.
 
 ---
 
@@ -380,15 +380,15 @@ AWS m5.8xlarge: 3.1 GHz Intel Xeon, 128 GB RAM, Ubuntu 22.04, GCC 11.3, Go 1.18.
 - **Security parameter:** λ = 80&#8201;[^41]
 - **V_j element size:** 32-bit fixed-point numbers for PRF-derived partition selection values&#8201;[^42]
 
-[^38]: Section 4.1 (p.9): "We implemented our scheme in C++. The implementation is available at https://github.com/renling/S3PIR/."
+[^38]: Section 4.1 (p.8): "We implemented our scheme in C++. The implementation is available at https://github.com/renling/S3PIR/."
 
-[^39]: Section 4.1 (p.9-10): "We break up a single 128-bit AES output into four to eight pseudorandom numbers (i.e., v_{j,k} and r_{j,k} in the algorithms) across different hints or partitions to save computation."
+[^39]: Section 4.1 (p.8-9): "We break up a single 128-bit AES output into four to eight pseudorandom numbers (i.e., v_{j,k} and r_{j,k} in the algorithms) across different hints or partitions to save computation."
 
-[^40]: Section 4.1 (p.9): "the two-server version of our implementation comprises about 600 lines of code and the single-server version comprises about 500 lines of code."
+[^40]: Section 4.1 (p.8): "the two-server version of our implementation comprises about 600 lines of code and the single-server version comprises about 500 lines of code."
 
-[^41]: Section 4.1 (p.9): "We set the parameter λ to 80."
+[^41]: Section 4.1 (p.8): "We set the parameter λ to 80."
 
-[^42]: Section 4.1 (p.9-10): "We use 32-bit numbers for elements in V_j to save client storage and computation." The paper notes a corner case where two or more elements equal the median; such hints are discarded with very small probability.
+[^42]: Section 4.1 (p.8-9): "We use 32-bit numbers for elements in V_j to save client storage and computation." The paper notes a corner case where two or more elements equal the median; such hints are discarded with very small probability.
 
 ---
 

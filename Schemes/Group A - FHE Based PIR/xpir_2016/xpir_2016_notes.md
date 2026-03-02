@@ -119,7 +119,7 @@ Prior cPIR schemes based on number-theoretic assumptions (Paillier, RSA) process
 
 ### Auto-Optimization Algorithm <a href="#toc">⤴</a>
 
-The auto-optimizer is XPIR's signature engineering contribution. It runs on the client after receiving the database shape (n, l) and network bandwidth (U, D) from the server.&#8201;[^3]
+The auto-optimizer is XPIR's signature engineering contribution. It runs on the client after receiving the database shape (n, l) and the server's performance cache from the server; the client determines upload/download bandwidth (U, D) via its own bandwidth test.&#8201;[^3]
 
 **Inputs:**
 - Recursion range (d_1, d_2): range of dimension values to try
@@ -154,11 +154,11 @@ The auto-optimizer is XPIR's signature engineering contribution. It runs on the 
 
 ### Encryption Parameter Sets <a href="#toc">⤴</a>
 
-| Parameters (N, q bits) | Max h_a (sums) | Plaintext capacity | Ciphertext size | Expansion factor F | Security (bits) |
-|------------------------|----------------|-------------------|-----------------|--------------------|-----------------|
-| (1024, 60) | 97 | <= 20 Kbits | 128 Kbits | >= 6.4 | 97 |
-| (2048, 120) | 91 | <= 100 Kbits | 512 Kbits | >= 5.12 | 91 |
-| (4096, 120) | 335 | <= 192 Kbits | 1 Mbit | >= 5.3 | 256 (capped by Salsa20/20) |
+| Parameters (N, q bits) | Max Sec (bits) | Plaintext capacity | Ciphertext size | Expansion factor F |
+|------------------------|----------------|-------------------|-----------------|--------------------|
+| (1024, 60) | 97 | <= 20 Kbits | 128 Kbits | >= 6.4 |
+| (2048, 120) | 91 | <= 100 Kbits | 512 Kbits | >= 5.12 |
+| (4096, 120) | 335 (capped at 256 by Salsa20/20) | <= 192 Kbits | 1 Mbit | >= 5.3 |
 
 [^24]
 
@@ -523,7 +523,7 @@ Private packet sniffer filtering traffic by source IP:&#8201;[^45]
 
 [^35]: p. 9, Section 3.2.1, "Implications on cPIR performance" -- "After importation, the database is processed during the reply generation phase at roughly 20Gbits/s"; import at 5 Gbit/s.
 
-[^36]: p. 11 (60-bit numbers), Figure 5 and text -- "We are able to generate a query at 700Mbits/s and decrypt an incoming reply at 5Gbits/s" (60-bit); p. 12 (120-bit numbers) -- "encryption scales well... it is possible to generate a query at 850Mbits/s, but decryption suffers... 710Mbits/s" (120-bit).
+[^36]: p. 11 (60-bit numbers, prose) and p. 12 (Figure 5) -- "We are able to generate a query at 700Mbits/s and decrypt an incoming reply at 5Gbits/s" (60-bit); p. 12 (120-bit numbers) -- "encryption scales well... it is possible to generate a query at 850Mbits/s, but decryption suffers... 710Mbits/s" (120-bit).
 
 [^37]: p. 14, Figure 6 -- "User-perceived throughput of XPIR streaming static data." Log-log plot. "this line is pretty close to the straight line defined by 15/n Gbps."
 

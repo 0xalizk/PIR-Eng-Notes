@@ -64,7 +64,7 @@ VIA addresses the high online communication cost of lattice-based PIR schemes th
 
 [^2]: Section 1.1 (p.3): The DMux-CMux architecture resembles a symmetric triangular configuration (a "V" shape), which inspired the name VIA.
 
-[^3]: Section 4.2 (p.13): VIA-C's LWE-to-RLWE conversion reduces queries to l*log(IJn_1/n_2) = l*log N elements in Z_{q_1}. For a 32 GB database, VIA-C's query size is only 0.659 KB vs. Respire's 57.77 KB.
+[^3]: Section 5.2 (p.17): VIA-C's LWE-to-RLWE conversion reduces queries to l*log(IJn_1/n_2) = l*log N elements in Z_{q_1}. For a 32 GB database, VIA-C's query size is only 0.659 KB vs. Respire's 57.77 KB.
 
 <a id="variants"></a>
 
@@ -371,7 +371,7 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 | Throughput | 466.9 MB/s | 2.15 GB/s | 2.26 GB/s | 15.63 GB/s | 547.3 MB/s | 1.2 GB/s |
 | *32 GB database* | | | | | | |
 | Offline Comm | -- | -- | -- | 724 MB | 3.9 MB | 14.8 MB |
-| Offline Comp | -- | 315.231 s | 33.34 s | 3376.47 s | 1101.33 s | 67.539 s |
+| Offline Comp | 9252.3 s | 315.231 s | 33.34 s | 3376.47 s | 1101.33 s | 67.539 s |
 | Query Size | 1064 KB | 2560 KB | 674.75 KB | 724 KB | 57.77 KB | 0.659 KB |
 | Response Size | 17514 KB | 12 KB | 15.5 KB | 724 KB | 2 KB | 1.439 KB |
 | Online Comp | 17.391 s | 7.086 s | 10.286 s | 2.674 s | 45.851 s | 20.307 s |
@@ -436,7 +436,7 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 - **Homomorphic repacking (MLWEs-to-RLWE):** Generalizes LWE-to-RLWE to pack multiple MLWE ciphertexts into one RLWE ciphertext with logarithmic noise variance. Useful for batch PIR constructions beyond VIA-B.&#8201;[^37]
 - **MLWE as a portable concept:** MLWE bridges LWE (m=1) and RLWE (n=1), parameterized by module rank m. The conversion chain LWE -> (n/2, 2)-MLWE -> (n/4, 4)-MLWE -> ... -> (1, n)-MLWE = RLWE provides a smooth interpolation with controllable noise at each step.
 
-[^34]: Section 1.1 (p.3) and Section 3.1 (p.8): "VIA substitutes coefficient expansion techniques with DMux for generating the encrypted one-hot vector, introducing only logarithmic noise variance."
+[^34]: Section 1.1 (p.3) and Section 3.1 (p.8): "VIA substitutes coefficient expansion techniques with DMux for generating the encrypted one-hot vector, introducing only logarithmic noise variance in the one-hot vector length."
 
 [^35]: Lemma 4.2 (p.12): "The LWE-to-RLWE conversion algorithm introduces O(n log n) noise variance," compared to O(n^3) for the approach in [28].
 

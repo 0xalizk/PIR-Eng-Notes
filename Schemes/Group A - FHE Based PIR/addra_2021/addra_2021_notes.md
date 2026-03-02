@@ -39,7 +39,7 @@
 | **Additional assumptions** | BFV semantic security (lattice-based); AES-CBC for content encryption |
 | **Correctness model** | Deterministic (BFV decryption correctness with chosen parameters; q >> p ensures noise budget) |
 | **Rounds (online)** | 1 (non-interactive: query uploaded once per round, reused across subrounds) |
-| **Record-size regime** | Small (96 bytes — one LPCNet voice frame encoding 40 ms audio) |
+| **Record-size regime** | Small (96 bytes — one 480 ms subround: 12 LPCNet frames of 8 bytes each) |
 
 <a id="lineage"></a>
 
@@ -70,7 +70,7 @@ Addra is the first system that hides voice-call metadata over *fully untrusted* 
 - **System architecture:** Master-worker cluster on AWS EC2 (logically centralized, physically distributed). One master (c5.24xlarge: 96 vCPU, 192 GiB RAM, 25 Gbps NIC) plus up to 100 worker machines (c5.12xlarge: 48 vCPU, 96 GiB RAM, 12 Gbps NIC).&#8201;[^4]
 - **Where PIR fits:** During each subround of the communication phase, the master compiles all mailbox contents into a message library and broadcasts it to workers. Each worker answers its assigned subset of CPIR queries using FastPIR's Answer procedure. Results are pushed back to clients.&#8201;[^5]
 - **Round structure:** A round = 5 minutes of voice call. Within a round: one dialing phase (exchange PIR queries) + t subrounds of communication (each subround = 480 ms = one voice packet exchange). The CPIR query is generated once during dialing and reused across all subrounds.&#8201;[^6]
-- **Two-hop message delivery:** Caller pushes message to server (1 hop); server answers callee's PIR query and pushes response (2nd hop). This is critical for low latency vs. Pung's log_2(n+1) round trips.&#8201;[^7]
+- **Two-hop message delivery:** Caller pushes message to server (1 hop); server answers callee's PIR query and pushes response (2nd hop). This is critical for low latency vs. Pung's ⌈log_2(n+1)⌉ round trips.&#8201;[^7]
 - **Cover traffic:** Devices not in a call still participate — they call themselves (query their own mailbox) and write encrypted random messages. This prevents traffic analysis from join/leave timing.&#8201;[^8]
 
 [^3]: Paper p.1, Introduction: "each hop in the communication infrastructure must not spend longer than this time period to process and forward the packet, to avoid an unbounded packet build up."

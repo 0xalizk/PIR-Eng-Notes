@@ -92,7 +92,7 @@ OnionPIR's solution: keep BFV plaintext-ciphertext multiplication for the *initi
 | **Encryption/encoding schemes** | BFV [14] (initial dimension query vector, plaintext-ciphertext multiplication) + RGSW [16, 11] (subsequent dimension selection, external products) |
 | **Ring / Field** | R = Z[x]/(x^n + 1) with n = 2048 or n = 4096; ciphertext modulus q; plaintext modulus t |
 | **Key structure** | Ternary secret s in R; per-client RGSW(s) and evaluation keys stored on server (0.63 MB or 2.9 MB)&#8201;[^7] |
-| **Correctness condition** | BFV decryption: round((c_0 + c_1 * s) / Delta) mod t where Delta = floor(q/t); requires noise norm < Delta/2 |
+| **Correctness condition** | BFV decryption: floor((c_0 + c_1 * s) / Delta) mod t where Delta = floor(q/t); requires noise norm < Delta/2 |
 
 [^7]: §4.4, p.12: "The key material size is 0.63 MB for the smaller parameter setting and 2.9 MB for the larger parameter setting."
 

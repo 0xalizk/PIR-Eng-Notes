@@ -375,7 +375,7 @@ For n = 16384 rows, payload = 1 plaintext (~20.1 KB), database ~330 MB, varying 
 - For log_2 |S| >= 41: k = 4 produces best results.
 - The expansion step (shaded area in Figure 4) grows with domain size and eventually dominates; larger k reduces expansion cost at the expense of deeper equality circuits.&#8201;[^33]
 
-[^33]: Section 6, p. 13-14. "Initially, for log_2 |S| <= 27, k = 2 has the smallest server time. However, when log_2 |S| approaches 28, the expansion constitutes a significant portion of the server time and a switch to k = 3 results in a smaller total server time."
+[^33]: Section 6, p. 13-14. "Initially, for log_2 |S| <= 27, k = 2 has the smallest server time. However, when log_2 |S| approaches 28, the expansion time constitutes a significant portion of the server time and a switch to k = 3 results in a smaller total server time."
 
 <a id="comparison-with-prior-work"></a>
 
@@ -387,7 +387,7 @@ For n = 16384 rows, payload = 1 plaintext (~20.1 KB), database ~330 MB, varying 
 |--------|-----------|-----------------|-------------------------------|-------------------|
 | SealPIR | d - 1 | d * ceil(d-th root of n) | sum_{i=0}^{d-1} n^{(d-i)/d} * F^i * PM | F^{d-1} * s |
 | MulPIR | d - 1 | d * ceil(d-th root of n) | (n * PM + sum_{i=0}^{d-1} n^{(d-i)/d} * M) * s | s |
-| Folklore PIR | ceil(log_2 n) | ceil(log_2 n) | n * (log_2 n) * M + n * s * PM | s |
+| Folklore PIR | ⌈log₂⌈log₂ n⌉⌉ | ceil(log_2 n) | n * (log_2 n) * M + n * s * PM | s |
 | **CwPIR** | **ceil(log k)** | **O(k-th root of (k! * n) + k)** | **n * k * M + n * s * PM** | **s** |
 
 #### Table 10 (p. 13): Keyword PIR properties (sparse database, |S| = domain size)

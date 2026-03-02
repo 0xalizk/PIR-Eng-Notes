@@ -204,14 +204,14 @@ The noise analysis tracks worst-case infinity norms through each operation, usin
 
 | Phase | Noise parameter | Growth type | Notes |
 |-------|----------------|-------------|-------|
-| Fresh encryption | \|\|e\|\|_inf <= B_chi (bound on chi samples) | -- | chi is discrete Gaussian with std dev sigma |
-| Key switching (one rotation) | \|\|e'\|\|_inf <= gamma_R * B_chi * B * w | additive | B = decomposition base, w = ceil(log_B(q)); each switching adds noise bounded by gamma_R * B_chi * B * w&#8201;[^23] |
+| Fresh encryption | \|\|e\|\|_inf <= B_Y (bound on chi samples) | -- | chi is discrete Gaussian with std dev sigma |
+| Key switching (one rotation) | \|\|e'\|\|_inf <= gamma_R * B_Y * B * w | additive | B = decomposition base, w = ceil(log_B(q)); each switching adds noise bounded by gamma_R * B_Y * B * w&#8201;[^23] |
 | Index expansion (all rotations) | Accumulated from ~total_rotations key switches | additive | Total rotations depend on generator choice (Table 1) |
 | Homomorphic multiplication (plaintext-ct) | \|\|e'\|\|_inf <= p * gamma_R * \|\|m\|\|_inf * \|\|e\|\|_inf | multiplicative | First level only; plaintext operand is DB element&#8201;[^24] |
 | Homomorphic multiplication (ct-ct) | \|\|e'\|\|_inf <= p * (\|\|e\|\| + \|\|e'\|\| + gamma_R * \|\|e\|\| * \|\|e'\|\|) | multiplicative | Equation (1), p.4; subsequent k-1 levels |
 | Modulus switching | \|\|e'\|\|_inf <= q_2/q_1 * noise + p * gamma_R * \|\|s\|\|_inf | additive (rounding) | Lemma A.1 (p.14); reduces modulus from q to ~p*n |
 
-[^23]: Section 2.2.1 (p.5): "The size of the resulting noise term is ||e'|| <= gamma_R * B_chi * B * w." where B_chi is bound on noise in switching key.
+[^23]: Section 2.2.1 (p.5): "The size of the resulting noise term is ||e|| <= gamma_R * B_Y * B * w." where B_Y is bound on noise in switching key.
 
 [^24]: Section 2.2 (p.4): EvalMultPlain noise: "||e'|| <= gamma_R * ||m|| * ||e|| < p*sqrt(n)*||e||" when using Euclidean norm.
 
@@ -423,7 +423,7 @@ WhisPIR is applied to URL blocklist checking in end-to-end encrypted messaging a
 
 [^47]: Section 3.3 (p.9): "Only in settings where the server is receiving many more updates than queries would maintaining this a_k term result in significant computational overhead."
 
-[^48]: Section 1.2 (p.3): "WhisPIR does not require any offline phase to update any client or server parameters, regardless of any database updates."
+[^48]: Section 1.2 (p.3): "WhisPIR does not require any offline phase to update any client or server parameters, regardless of any database updates (excluding significant changes in the database size)."
 
 [^49]: Section 1.2 (p.3): "The only public parameters in WhisPIR are a database size and basic parameters... which can fit into just a few hundred bits."
 

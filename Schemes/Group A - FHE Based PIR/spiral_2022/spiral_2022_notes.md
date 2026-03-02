@@ -63,7 +63,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 | Variant | Key Difference | Query Size | Public Params | Rate (2^18 x 30KB) | Throughput | Best For |
 |---------|---------------|-----------|--------------|---------------------|------------|----------|
 | **Spiral** | Base: matrix Regev + GSW composition, query compressed to single scalar Regev ct | 14 KB | 14--18 MB | 0.3573 | 322 MB/s | General-purpose static PIR |
-| **SpiralStream** | Client uploads expanded Regev + GSW encodings directly (no query expansion); eliminates expansion noise | 8--30 MB | 344 KB--5 MB | 0.4803 | 875 MB/s | Streaming (reused query across DBs) |
+| **SpiralStream** | Client uploads expanded Regev + GSW encodings directly (no query expansion); eliminates expansion noise | 8--30 MB | 344 KB--3 MB | 0.4803 | 875 MB/s | Streaming (reused query across DBs) |
 | **SpiralPack** | Response packing: n^2 scalar Regev encodings packed into single n x n matrix Regev encoding; uses n=1 for query, larger T_pack for response | 14 KB | 14--47 MB | 0.3488 | 444 MB/s | Large records, high rate |
 | **SpiralStreamPack** | Combines streaming + packing | 15--30 MB | 16--125 MB | 0.3117 | 1.48 GB/s | Maximum throughput streaming |
 
@@ -203,7 +203,7 @@ Spiral introduces a family of single-server PIR protocols that compose two latti
 
 **Why two decomposition bases?** The conversion base z_conv controls noise from the translation step independently from z_GSW which controls noise in subsequent GSW external products. This decoupling enables finer noise optimization during parameter selection.&#8201;[^12]
 
-[^12]: Theorem 3.2 (p.14): "The noise introduced by the encoding conversion step depends only on the decomposition base z_conv and not on the decomposition base z_GSW associated with the GSW encodings."
+[^12]: Section 3.2, introductory paragraph (p.14): "The noise introduced by the encoding conversion step depends only on the decomposition base z_conv and not on the decomposition base z_GSW associated with the GSW encodings."
 
 ---
 
@@ -378,7 +378,7 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 |--------|--------|---------|---------|----------|--------------|
 | Query size | **14 KB** | 66 KB | 33 MB | 63 KB | 2^18 x 30KB |
 | Response size | 84 KB | 3 MB | 262 KB | **127 KB** | 2^18 x 30KB |
-| Server time | **24.52 s** | 74.91 s | 50.52 s | 52.73 s | 2^18 x 30KB |
+| Server time | **24.46 s** | 74.91 s | 50.52 s | 52.73 s | 2^18 x 30KB |
 | Throughput | **322 MB/s** | 105 MB/s | 156 MB/s | 149 MB/s | 2^18 x 30KB |
 | Rate | **0.3573** | 0.0092 | 0.1144 | 0.2363 | 2^18 x 30KB |
 | Public params | 18 MB | **3 MB** | 1 MB | **5 MB** | 2^18 x 30KB |

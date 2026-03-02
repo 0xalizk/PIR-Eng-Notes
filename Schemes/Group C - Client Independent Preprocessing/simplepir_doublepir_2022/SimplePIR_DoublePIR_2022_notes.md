@@ -136,7 +136,7 @@ SimplePIR exploits the structure of Regev's LWE-based encryption to shift the va
 | Init | Public | Generate A_1 in Z_q^{m x n} and A_2 in Z_q^{ell x n} from seeds | — | Once |
 | Setup (preprocessing) | Server | Compute hint_s = Decomp(A_1^T * db^T), hint_c = hint_s * A_2. Total: 2nN + 2 * kappa * n^2 * sqrt(N) operations in Z_q&#8201;[^16] | hint_c: kappa * n^2 elements in Z_q (approximately 16 MB) to all clients | One-time, client-independent |
 | Query | Client | Decompose i into (i_row, i_col). Sample (s_1, e_1) for level-1 query c_1, and (s_2, e_2) for level-2 query c_2 | c_1: m elements in Z_q + c_2: ell elements in Z_q upward (approximately 2 * sqrt(N) elements total) | Per query |
-| Answer | Server | Level 1: ans_1 = Decomp(c_1^T * db^T), h = ans_1 * A_2. Level 2: stack [ans_h; ans_2] = [hint_s; ans_1] * c_2. Total: 2N + 2(2n+1) * sqrt(N) * kappa operations&#8201;[^17] | (h, ans_h, ans_2): kappa * (2n+1) elements in Z_q downward (approximately 345 KB) | Per query |
+| Answer | Server | Level 1: ans_1 = Decomp(c_1^T * db^T), h = ans_1 * A_2. Level 2: stack [ans_h; ans_2] = [hint_s; ans_1] * c_2. Total: 2N + 2(2n+1) * sqrt(N) * kappa operations&#8201;[^17] | (h, ans_h, ans_2): kappa * (2n+1) elements in Z_q downward (approximately 32 KB) | Per query |
 | Recover | Client | Compute [h_hat_1; a_hat_1] from answer and hint, apply Recomp and Round_Delta. Run two levels of SimplePIR recovery. | — | Per query |
 
 [^16]: Section 5.1 (p.8): Concrete costs of DoublePIR preprocessing.
@@ -203,8 +203,8 @@ which is slightly more conservative than SimplePIR due to the union bound over k
 
 | Metric | Asymptotic | Concrete (SimplePIR, 1 GB DB, 1-bit entries) | Concrete (DoublePIR, 1 GB DB, 1-bit entries) | Phase |
 |--------|-----------|---------------------------------------------|----------------------------------------------|-------|
-| Query size (upload) | O(sqrt(N)) elements in Z_q | 120 KB&#8201;[^21] | 345 KB&#8201;[^21] | Online |
-| Response size (download) | O(sqrt(N)) elements in Z_q (SimplePIR); O(kappa * (2n+1)) (DoublePIR) | 120 KB&#8201;[^21] | 345 KB&#8201;[^21] | Online |
+| Query size (upload) | O(sqrt(N)) elements in Z_q | 120 KB&#8201;[^21] | 313 KB&#8201;[^21] | Online |
+| Response size (download) | O(sqrt(N)) elements in Z_q (SimplePIR); O(kappa * (2n+1)) (DoublePIR) | 120 KB&#8201;[^21] | 32 KB&#8201;[^21] | Online |
 | Server computation (online) | 2N operations in Z_q (SimplePIR); 2N + 2(2n+1) * sqrt(N) * kappa (DoublePIR) | — | — | Online |
 | Client computation | O(n) per query (key generation + inner product) | < 1 ms | approximately 100 ms (1 GB DB)&#8201;[^22] | Online |
 | Throughput | Limited by memory bandwidth | 10.0 GB/s/core | 7.4 GB/s/core | Online |
@@ -329,7 +329,7 @@ SimplePIR and DoublePIR achieve a novel point in the PIR design space: substanti
 - **Software dependencies:** Go (v1.19.1) and GCC (v11.2.0). Python + NumPy + Matplotlib for evaluation plots.
 - **Reproducibility:** Artifact evaluated at USENIX Security 2023 — received Available, Functional, and Reproduced badges.
 
-[^32]: Section 8 (p.12): "We implement SimplePIR in fewer than 1,200 lines of Go code, along with 200 lines of C, and DoublePIR in 210 additional lines of Go code."
+[^32]: Appendix I.1 (p.30): "implemented in roughly 1,400 lines of Go code, along with 200 lines of C."
 [^33]: Appendix H (p.30): "Both the server time and the client time are measured using a single thread of execution (and are fully parallelizable)."
 
 <a id="key-tradeoffs-limitations"></a>
@@ -385,7 +385,7 @@ SimplePIR and DoublePIR are applied to private SCT (Signed Certificate Timestamp
   - Client storage: 16 MB (reducible to 150 KB)
   - Cost per client: approximately $0.001/month + $4 * 10^{-9}/TLS connection
 
-[^41]: Sections 6–7 (p.9–12) and Section 8.2 (p.14): The application to Certificate Transparency auditing.
+[^41]: Sections 6–7 (p.9–11) and Section 8.2 (p.14): The application to Certificate Transparency auditing.
 
 <a id="open-problems"></a>
 

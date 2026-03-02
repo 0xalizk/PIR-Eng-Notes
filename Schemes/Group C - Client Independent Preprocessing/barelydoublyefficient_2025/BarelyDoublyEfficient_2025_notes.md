@@ -102,7 +102,7 @@ Keyed DEPIR with public preprocessing => pk-DEPIR => sk-DEPIR. The construction 
 | **Specific variant** | LWE with polynomial modulus-to-noise ratio (Definition 2.4): for any polynomial 1/alpha = poly(λ), parameters (n, m, q, chi) can be found in deterministic poly(λ, log(1/alpha)) time such that alpha * q > B and LWE_{n,m,q,chi} holds for any m = poly(λ)&#8201;[^10] |
 | **Parameters** | n = poly(λ, log(1/alpha)), q = poly(λ, 1/alpha), chi is B-bounded |
 | **Trust model** | Common Random String (CRS) model: A <- Z_q^{m x n} sampled uniformly as public parameter; alternatively, standard model with keyed DEPIR |
-| **Why plain LWE matters** | RLWE enjoys worst-case to average-case reduction to ideal lattice problems; plain LWE reduces to general lattice problems. Some community members express reservations about RLWE's long-term security due to its additional algebraic structure. Constructing DEPIR from plain LWE was an explicit open problem.&#8201;[^11] |
+| **Why plain LWE matters** | RLWE enjoys average-case to worst-case reduction to ideal lattice problems; plain LWE reduces to general lattice problems. Some community members express reservations about RLWE's long-term security due to its additional algebraic structure. Constructing DEPIR from plain LWE was an explicit open problem.&#8201;[^11] |
 
 <a id="key-data-structures"></a>
 
@@ -127,7 +127,7 @@ Keyed DEPIR with public preprocessing => pk-DEPIR => sk-DEPIR. The construction 
 | Prep | Server | (1) Reshape DB into D in Z_p^{m x m}, lift to D-hat in Z^{m x m}. (2) Preprocess D-hat (mod q) for fast matrix-vector multiplication via Lemma 3.1 (CRT decomposition into small primes + Williams preprocessing for each). (3) Compute H <- D-hat * A. (4) Output DB-tilde = (D-hat, H).&#8201;[^13] | -- | Once per DB / on DB change |
 | Query | Client | Decompose index i into (i-hat, j-hat, k-hat). Sample s <- Z_q^n, e <- chi^m. Compute v <- A * s + e + floor(q/p) * u_{j-hat}. Output q = v, st = (s, i-hat, k-hat).&#8201;[^14] | |q| = m * log q bits upward | Per query |
 | Answer | Server | Parse DB-tilde as (D-hat, H) and q as v. Evaluate w <- D-hat * v using preprocessed D-hat (Lemma 3.1). Output a = (w, H). | |a| = m * log q + m * n * log q bits downward | Per query |
-| Extract | Client | Parse st as (s, i-hat, k-hat) and a as (w, H). Compute z <- w - H * s. Output the k-hat-th bit of round(p/q * z[i-hat]).&#8201;[^15] | -- | Per query |
+| Extract | Client | Parse st as (s, i-hat, k-hat) and a as (w, H). Compute z <- w - H * s. Output the k-hat-th bit of floor(p/q * z[i-hat]).&#8201;[^15] | -- | Per query |
 
 <a id="simplepir-as-a-building-block-section-2-4-fig-1"></a>
 
@@ -143,7 +143,7 @@ The construction builds directly on SimplePIR. In SimplePIR, the server computes
 
 ### Williams' Fast Matrix-Vector Multiplication (Section 2.5) <a href="#toc">⤴</a>
 
-**Theorem 2.1 (Williams, SODA 2007):** For any finite (semi-)ring R, any m x m matrix over R can be preprocessed in O(m^{2+epsilon} * |R|) time so that subsequent matrix-vector multiplications take O(m^2 / (epsilon * log m)^2) steps.&#8201;[^17]
+**Theorem 2.1 (Williams, SODA 2007):** For any finite (semi-)ring R, any m x m matrix over R can be preprocessed in O(m^{2+epsilon*log|R|}) time so that subsequent matrix-vector multiplications take O(m^2 / (epsilon * log m)^2) steps.&#8201;[^17]
 
 **Corollary 2.1:** Over Z_q, preprocessing takes O(m^{2+epsilon}) * polylog(q) time and evaluation takes O(m^2 / (epsilon * log m)^2) * Õ(log m + log q) + Õ(m) * polylog(q) time.
 
@@ -307,7 +307,7 @@ The paper identifies three open problems, framed as intermediate steps toward LW
 
 [^14]: Fig. 1 — SimplePIR Query (p. 8): "Compute v <- A * s + e + floor(q/p) * u_{j-hat}, where u_j denotes the unit vector with a one in the j-hat-th position."
 
-[^15]: Fig. 2 — Extract (p. 10): "Compute z <- w - H * s. Output the k-hat-th bit of round(p/q * z-tilde[i-hat]) as b."
+[^15]: Fig. 2 — Extract (p. 10): "Compute z <- w - H * s. Output the k-hat-th bit of floor(p/q * z-tilde[i-hat]) as b."
 
 [^16]: Section 2.4 (p. 7): "The simple yet powerful idea behind SimplePIR is to observe that D-hat * A is independent of the query index, allowing A to be fixed as a CRS and shared across all queries."
 

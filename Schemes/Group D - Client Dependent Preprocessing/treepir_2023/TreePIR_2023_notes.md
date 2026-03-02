@@ -123,7 +123,7 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 | **Key structure** | Per-client: M = λ * sqrt(N) independent wpPRF keys k_i in {0,1}^λ, plus stored parities. Server: holds only DB copies (no per-client persistent state). |
 | **Correctness condition** | Pr[query index x not covered by any of the M sets] <= (1 - 1/sqrt(N))^{λ*sqrt(N)} <= (1/e)^λ = negl(λ)&#8201;[^16] |
 
-[^14]: Section 4.3 (p.21): Lemma 4.1 states that assuming DDH is hard, TreePIR achieves polylog online bandwidth by recursing with the Dottling et al. (CRYPTO 2019) [19] single-server PIR scheme. The DDH assumption comes from this scheme [19] combined with [16]. Without DDH, the base TreePIR (Theorem 4.1) achieves O(sqrt(N)) bandwidth from OWF alone.
+[^14]: Section 4.3 (p.21): Lemma 4.1 states that assuming DDH is hard, TreePIR achieves polylog online bandwidth by recursing with the Dottling et al. (CRYPTO 2019) [19] single-server PIR scheme. The DDH assumption comes from [16]; [19] is the single-server PIR scheme that relies on it. Without DDH, the base TreePIR (Theorem 4.1) achieves O(sqrt(N)) bandwidth from OWF alone.
 
 [^15]: Section 5 (p.22): Implementation in 530 lines of C++ and 470 lines of Go. Source code at https://github.com/alazzaretti/treePIR.
 
@@ -368,11 +368,11 @@ Query time amortized over 2000 queries.&#8201;[^37]
 - **Client-dependent preprocessing** -- not suitable for anonymous access; each client must run an expensive offline phase.
 - **Online bandwidth is O(sqrt(N))** in the base scheme -- asymptotically worse than Checklist's O(log N), but concretely competitive for practical database sizes (16.6 KB vs 0.51 KB at N = 2^32, 1-bit elements).
 - **Cannot recurse with another preprocessing-based PIR scheme** -- the sqrt(N) parities from the Answer phase are dynamically generated and index-dependent, so a second TreePIR instance cannot be pre-computed for them.&#8201;[^42]
-- **General D-parameterized tradeoff:** Set size and range can be changed to N^D for any D in (0,1), trading client storage (N^{1-D}) against online server time (N^D). The paper fixes D = 1/2 throughout.&#8201;[^43]
+- **General D-parameterized tradeoff:** Set size and range can be changed to N^D for any D in (0,1), trading client storage (N^{1-D}) against online time (N^D). The paper fixes D = 1/2 throughout.&#8201;[^43]
 
 [^42]: Section 4.3 (p.21): "Note that we cannot recurse with a PIR scheme that uses preprocessing based on the database elements (and this includes our TreePIR), since the sqrt(N) words from the last step of the Answer phase are dynamically generated and entirely dependent on the index we decide to query."
 
-[^43]: Section 4.4 (p.21): "If we change our set size to N^D, then this makes our online server time and bandwidth N^D. In exchange, we get client storage and online client time proportional to N^{1-D}."
+[^43]: Section 4.4 (p.21): "If we change our set size to N^D, then this makes our online time and bandwidth N^D. In exchange, we get client storage and online client time proportional to N^{1-D}."
 
 ---
 

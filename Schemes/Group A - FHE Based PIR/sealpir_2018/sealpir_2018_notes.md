@@ -110,7 +110,7 @@ SealPIR's central contribution is *oblivious query expansion* (Expand): a server
 | Ciphertext multiplication | 1.514 | Multiplicative | Not used in Expand; used only in Answer phase |
 | Substitution (automorphism) | 0.279 | Additive | Core operation of Expand. Sub(c, k): Enc(p(x)) -> Enc(p(x^k)) |
 
-[^8]: Figure 2 footnote: "While plaintext multiplication yields a multiplicative increase in the noise, the factor is always 1 in EXPAND (i.e., no noise growth) because it is based on the number of non-zero coefficients in the plaintext [28, Section 6.2]."
+[^8]: Figure 2 footnote: "While plaintext multiplication yields a multiplicative increase in the noise, the factor is always 1 (i.e., no noise growth) in EXPAND because it is based on the number of non-zero coefficients in the plaintext [28, §6.2]."
 
 <a id="expansion-factor"></a>
 
@@ -121,7 +121,7 @@ The expansion factor F = 2 * log(q) / log(t) determines the ratio between cipher
 - With N = 2048, q = 60-bit, t = 2^23: F approximately 2 * 60 / 23 approximately 5.2
 - The Expand optimization (Section 6) changes the effective plaintext modulus from t = 2^y to t' = 2^{y-l} where l = ceil(log_2(m)), reducing packing efficiency but eliminating the inverse-multiplication step in Expand.&#8201;[^10]
 
-[^9]: Section 3 (FV background preamble), p. 4. F = 2 * log(q) / log(t).
+[^9]: Section 3 (FV background preamble), p. 3. F = 2 * log(q) / log(t).
 [^10]: Section 6, Equation 1 (p. 10). The optimization avoids n plaintext multiplications and one inversion, reducing noise, but requires the server to use t' < t for database representation.
 
 <a id="database-encoding"></a>
@@ -426,10 +426,10 @@ SealPIR + mPIR integrated into the Pung private communication system:
 
 | Metric | SealPIR (d=2) | XPIR (d=2) | XPIR (d=3) |
 |--------|--------------|------------|------------|
-| Query size (n=2^20) | 64 KB | 17,536 KB | 2,560 KB |
+| Query size (n=2^20) | 64 KB | 17,536 KB | 4,064 KB |
 | Response size | 256 KB | 256 KB | 1,952 KB |
-| Server CPU (n=2^20) | 6.38 s | 4.39 s | 3.68 s |
-| Client Query CPU | 3.37 ms | 55.14 ms | 8.03 ms |
+| Server CPU (n=2^20) | 6.38 s | 4.39 s | 4.84 s |
+| Client Query CPU | 3.37 ms | 55.14 ms | 12.74 ms |
 | Query compression factor | **274x** over XPIR d=2 | 1x | 6.8x over XPIR d=2 |
 | Throughput | 7 req/s (approximate) | 9 req/s (approximate) | lower |
 | DB params | 2^20 x 288B | 2^20 x 288B | 2^20 x 288B |

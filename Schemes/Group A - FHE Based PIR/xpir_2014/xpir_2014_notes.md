@@ -138,7 +138,7 @@ Deterministic correctness — the retrieval function f(x) is an exact arithmetic
 | Metric | Asymptotic | Concrete (benchmark params) | Confidence |
 |--------|-----------|---------------------------|------------|
 | Multiplicative depth | ceil(log\_2(l)) where l = log\_2(N) | d = 5 for N = 2^32 (4 billion entries) | exact [^17] |
-| Ciphertext size (alpha) | poly(n, log q) | 8192 polynomials of degree 16384 with 512-bit coefficients at d=5; ~32 KB per ciphertext (bundled) | exact [^14] |
+| Ciphertext size (alpha) | poly(n, log q) | 8192 polynomials of degree 16384 with 512-bit coefficients at d=5; ~32 KB per retrieval (bundled) | exact [^14] |
 | Expansion factor (F) | Not directly stated | Response 784 KB for 1024 bits retrieved = ~6272x per bit; ~6.1x per retrieval in bundled mode | inferred |
 | Batching capacity (epsilon) | Number of irreducible factors of Phi\_m(x) mod 2 | 1024 (d=5), 630 (d=4), 256 (d=3) | exact [^14] |
 
@@ -246,7 +246,7 @@ Security is parameterized via the Hermite factor gamma. The feasibility boundary
 [^1]: Section 4.1, p. 7 — "we can express the correctness condition as ||c^{2^d} f^{2^d}||\_inf < q\_d/2"
 [^2]: Section 3, p. 5, footnote 3 — "we restricted the database entries D\_i to be bits but a w-bit entry can also easily be handled by considering w parallel and independent function evaluations"
 [^3]: Abstract, p. 1 — "our implementation achieves a significantly lower bandwidth cost (more than 1000 times smaller)"
-[^4]: Section 4, p. 5 — "We make use of the modified NTRU scheme introduced by Stehle and Steinfeld [12]... Stehle and Steinfeld formalized the security setting and reduced the security of their NTRU variant to the ring learning with error (RLWE) problem"
+[^4]: Section 4, p. 5 — "We make use of the modified NTRU scheme [13] introduced by Stehle and Steinfeld [12]... Stehle and Steinfeld formalized the security setting and reduced the security of their NTRU variant to the ring learning with error (RLWE) problem"
 [^5]: Section 4, p. 6 — "we do not use relinearizations as proposed in [11] since we are in a single user setting and we have a shallow well structured circuit (a perfect binary tree) to evaluate"
 [^6]: Section 4, p. 6 — "We use a decreasing sequence of odd prime moduli q\_0 > q\_1 > ... > q\_d... we specialize the prime moduli q\_i by requiring q\_{i+1} | q\_i as was proposed in [16]. This allows us to eliminate the need for key switching." The PDF prints "q\_i|q\_{k+1}" with an ambiguous subscript; the mathematically correct direction for a decreasing chain is q\_{i+1} | q\_i (smaller divides larger), which yields the integer ratio used in modulus reduction.
 [^7]: Section 4, p. 6 — KeyGen description: "We choose a decreasing sequence of primes q\_0 > q\_1 > ... > q\_d and a polynomial Phi\_m(x)... set f^(i) = 2u^(i) + 1 and h^(i) = 2g^(i)(f^(i))^{-1}"

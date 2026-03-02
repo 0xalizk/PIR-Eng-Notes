@@ -125,7 +125,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 | **Security definition** | Game 1 (p.14): Given a punctured key sk_p, the adversary guesses the punctured element x*. The guessing advantage is PSAdv\[A, Psi\](λ, n) := Pr\[A wins\] - 1/(n - s(n) + 1). A puncturable pseudorandom set is *computationally secure* if PSAdv <= negl(λ), and *perfectly secure* if PSAdv = 0 for all unbounded adversaries.&#8201;[^11] |
 | **Correctness definition** | With probability 1 over Gen: (1) S in binom([n], s(n)), i.e., S is a valid s(n)-subset, and (2) for all i in S, Eval(Punc(sk, i)) = S \ {i}.&#8201;[^12] |
 | **Purpose** | Compactly represent pseudorandom subsets of the database with the ability to privately puncture — enabling the online query to hide the target index by sending only a short punctured key instead of the full set |
-| **Built from** | Three constructions provided with increasing compactness: (1) Fact 2: Perfectly secure with linear-size keys (trivially store the set). (2) Theorem 3 / Construction 4: From puncturable PRFs, with keys of length kappa(λ, n) + O(log n) and punctured keys of length kappa_p(λ, n) + O(log n); instantiated with the GGM-tree PRF (Corollary 6), this gives keys of length O(λ log n) and punctured keys of length O(λ log n). (3) Theorem 7: From PRPs, with keys of length kappa(λ, n) and punctured keys of length s * O(log n), plus fast membership test InSet.&#8201;[^13] |
+| **Built from** | Three constructions provided with increasing compactness: (1) Fact 2: Perfectly secure with linear-size keys (trivially store the set). (2) Theorem 3 / Construction 4: From puncturable PRFs, with keys of length kappa(λ, n) + O(log n) and punctured keys of length kappa_p(λ, n) + O(log n); instantiated with the GGM-tree PRF (Corollary 6), this gives keys of length λ + O(log n) and punctured keys of length O(λ log n). (3) Theorem 7: From PRPs, with keys of length kappa(λ, n) and punctured keys of length s * O(log n), plus fast membership test InSet.&#8201;[^13] |
 | **Standalone complexity** | Gen: O(s(n)) * poly(λ, log n). Eval: O(s(n)) * poly(λ, log n). Punc: O(s(n)) * poly(λ, log n). InSet (PRP construction only): poly(λ, log n).&#8201;[^14] |
 | **Relationship to prior primitives** | Analogous to puncturable PRFs but for *sets* rather than *functions*. A puncturable PRF key allows evaluating f at all points except x*; a puncturable pseudorandom set key allows enumerating all elements of S except x*. The punctured key also hides x*. Not equivalent to DPFs: the left key can be generated before the index i is chosen, which standard DPFs cannot achieve.&#8201;[^15] |
 
@@ -258,7 +258,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 [^26]: Appendix C.2 (p.49): Failure probability analysis of Construction 16.
 [^27]: Appendix C.2 (p.49-50): Amplification via λ parallel repetitions.
 [^28]: Appendix D.2 (p.57-58): Multi-query failure probability via union bound (analysis begins p.57, T/2^lambda result on p.58).
-[^29]: Appendix C.2 (p.49-50): "By running λ instances of the scheme in parallel, using independent randomness for each instance, we can drive the overall failure probability (when the puncturable pseudorandom set is perfectly secure) to 2^{-λ}."
+[^29]: Appendix C.2 (p.49-50): By running λ instances of the scheme in parallel, using independent randomness for each instance, one can drive the overall failure probability (when the puncturable pseudorandom set is perfectly secure) to be negligibly close to 2^{-λ} (paraphrase of p.49-50).
 
 <a id="complexity"></a>
 
@@ -315,7 +315,7 @@ Offline/online PIR is a *strict generalization* of standard PIR: any standard tw
 [^33]: Theorem 23 (p.28): Model restrictions -- server stores DB in original form, uses no additional storage.
 [^34]: Appendix F (p.63-66): Full proof via reduction to Yao's Box Problem.
 [^35]: Section 6 (p.28): "The offline/online PIR schemes we construct in Section 3 achieve the optimal trade-off, up to log factors."
-[^36]: Remark 24 (p.28): "The lower bound of Theorem 23 does not preclude schemes that achieve better communication and lower bound by virtue of having the servers store some form of encoding of the database."
+[^36]: Remark 24 (p.28): "The lower bound of Theorem 23 does not preclude schemes that achieve better communication and online time by virtue of having the servers store some form of encoding of the database."
 
 <a id="performance-benchmarks"></a>
 

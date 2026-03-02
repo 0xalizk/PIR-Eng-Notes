@@ -369,7 +369,7 @@ Key observations from Table 4:
 - **Language / Library:** C++ built on Microsoft SEAL Homomorphic Encryption Library version 3.5.1.[^impl_seal]
 - **Polynomial arithmetic:** NTT-based. The paper identified SEAL's NTT implementation as a bottleneck (>80% of server time) and replaced it with NFLLib, which uses "several arithmetic optimizations and AVX2 specialization for arithmetic operations over polynomials." NFLLib's NTT is 2-3x faster than SEAL's.[^impl_ntt]
 - **CRT decomposition:** CRT representation implemented for RGSW ciphertexts, "which is more efficient than using multi-precision arithmetic."[^impl_crt]
-- **SIMD / vectorization:** AVX (via NFLLib integration).[^impl_avx]
+- **SIMD / vectorization:** AVX2 (via NFLLib integration).[^impl_avx]
 - **Parallelism:** Not explicitly multi-threaded in the reported benchmarks (single-threaded implied).
 - **Lines of Code:** ~3000 lines of C++ modifications to integrate NFLLib's NTT into SEAL and implement RGSW/external products.[^impl_loc]
 - **Open source:** Not explicitly linked in the paper.

@@ -143,7 +143,7 @@ VeriSimplePIR's central contribution is adding *verifiability* to SimplePIR — 
 | Property | Definition | Mechanism | Proved Where |
 |----------|-----------|-----------|--------------|
 | **Verification Completeness** | Honest server's responses always pass both preprocessing and online verification (Pr = 1). | Follows from VLHE correctness: ||Z||_inf bound is never exceeded for honest D with ||D||_inf <= p. ZA = CH holds by construction.&#8201;[^24] | Definition A.1 (p. 16), Lemma C.1 (p. 18) |
-| **Digest Binding** | Computationally infeasible for server to produce two distinct databases D != D' with the same digest. Also infeasible to produce a proof a_pi passing PrRec for a fake digest. | SIS hardness: if D != D' but DA = D'A, then (D - D')A = 0 is a short SIS solution, contradicting hardness assumption (Lemma 2.3, p. 4).&#8201;[^25] | Definition A.2 (p. 17), Lemma C.2 (p. 18) |
+| **Digest Binding** | Computationally infeasible for server to produce two distinct databases D != D' with the same digest. Also infeasible to produce a proof a_pi passing PrRec for a fake digest. | SIS hardness: if D != D' but DA = D'A, then (D - D')A = 0 is a short SIS solution, contradicting hardness assumption (Lemma 2.3, p. 4).&#8201;[^25] | Definition A.2 (p. 16), Lemma C.2 (p. 18) |
 | **Verification Soundness** | If Verify accepts answer a for query q, then a = Answer(D, q) with probability >= 1 - 2^{-λ}. Only the exactly correct ciphertext passes. | VLHE verification uniqueness (Lemma 4.1): under SIS, v-tilde = Du is the only response passing Verify. The challenge C is secret from the server; guessing C*x = 0 for x != 0 has probability <= 2^{-λ} (Lemma 2.4).&#8201;[^26] | Definition A.3 (p. 17), Lemma C.3 (p. 18) |
 | **Query Hiding (Malicious Server)** | Malicious server learns nothing about client's query index, even across multiple queries, as long as proof pi != bottom. | Follows from LWE semantic security of the Regev encryption + perfect completeness of PreVerify (no leakage from verification when honest). Simulation-based proof shows REAL and IDEAL distributions are indistinguishable.&#8201;[^27] | Definition A.4 (p. 17), Lemma C.4 (p. 18) |
 | **Extractability** | From any computationally bounded prover that passes the commitment protocol, an efficient extractor can recover the committed database D. | SIS extractability (Lemma 2.2): extractor makes O(ell * log(ell) / epsilon) calls to prover, recovers D with ||D||_inf <= 2B. This is critical: no need to trust the digest is "honest" — any digest, even one produced by a malicious server, is sufficient for security.&#8201;[^28] | Lemma 2.2 (p. 3), Lemma 2.3 (p. 4) |
@@ -152,7 +152,7 @@ VeriSimplePIR's central contribution is adding *verifiability* to SimplePIR — 
 [^25]: Lemma C.2 (p. 18): "This follows directly from the SIS hardness assumptions given in construction 5.1."
 [^26]: Lemma 2.4 (p. 4): "Pr[C * x = 0] <= 2^{-λ}" for any nonzero x, when C is sampled from {0,1}^{λ x ell}.
 [^27]: Lemma C.4 (p. 18): "This follows from lemma B.3 along with the correctness of the VLHE parameters."
-[^28]: Section 1.2 (p. 2): "any digest, even one produced by a malicious server, is sufficient to commit to some database."
+[^28]: Abstract (p. 1): "any digest, even one produced by a malicious server, is sufficient to commit to some database."
 
 <a id="correctness-analysis"></a>
 
@@ -160,7 +160,7 @@ VeriSimplePIR's central contribution is adding *verifiability* to SimplePIR — 
 
 #### Option D: Inherited from SimplePIR
 
-The base PIR operations (Query, Answer, Recover) are identical to SimplePIR. Correctness of the PIR retrieval itself depends on the LWE noise bound: decryption succeeds when Delta/2 > ||D*e||_inf, where e is the encryption error vector. The probability of decryption failure is bounded by delta = 2*exp(-pi * (Delta / (s * sqrt(m) * ||D||_inf))^2) (p. 5, eq. 2). VeriSimplePIR inherits this analysis directly.&#8201;[^29]
+The base PIR operations (Query, Answer, Recover) are identical to SimplePIR. Correctness of the PIR retrieval itself depends on the LWE noise bound: decryption succeeds when Delta/2 > ||D*e||_inf, where e is the encryption error vector. The probability of decryption failure is bounded by delta = 2*exp(-pi * (Delta / (s * sqrt(m) * ||D||_inf))^2) (p. 5, unnumbered display above eq. 2). VeriSimplePIR inherits this analysis directly.&#8201;[^29]
 
 #### Option F: Verification Soundness
 

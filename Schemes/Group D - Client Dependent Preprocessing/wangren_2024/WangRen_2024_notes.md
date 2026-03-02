@@ -159,7 +159,7 @@ Prior client preprocessing PIR schemes achieve S = O(λ * sqrt(n) * w) storage a
 |-------|-------|-----------|---------------|------------------|
 | KeyGen | Client | Sample λ-bit PRF key ck_hat, initialize Hist | — | Once |
 | HintConstruct | Client | Stream entire DB; for each entry DB_j[e] in row j, compute c = DS_j.Locate(e) and update h_c = h_c XOR DB_j[e] | O(nw) bits (DB download) | Every Q = n/T queries [^20] |
-| Query | Client | Find target column c via DS_{j*}.Locate(i mod m); build request q = (DS_0.Access(c), ..., DS_{T-1}.Access(c)) replacing j*-th entry with a random element; call Hist.Append(c) | T * log(n) bits upload | Per query |
+| Query | Client | Find target column c via DS_{j*}.Locate(i mod m); build request q = (DS_0.Access(c), ..., DS_{T-1}.Access(c)) replacing j*-th entry with DS_{j*}.Access(r*) where r* is a uniformly random unconsumed column (may return bottom if the position is empty); call Hist.Append(c) | T * log(n) bits upload | Per query |
 | Answer | Server | Parse (i_0, ..., i_{T-1}) from q; return (DB_0[i_0], ..., DB_{T-1}[i_{T-1}]) | T * w bits download | Per query |
 | Reconstruct | Client | Compute DB[i] = h[c] XOR (XOR of all returned entries except j*-th); update hints for relocated entries | — | Per query |
 
@@ -201,7 +201,7 @@ Correctness of answer reconstruction: the client computes DB[i] = h[c] XOR (XOR_
 | Client persistent storage | O(Qw + Q log n) = O((n/T)(w + log n)) bits | N/A (no implementation) | — [^23] |
 | Amortized offline/query | O(Tw + T log n) bits communication | N/A (no implementation) | Amortized over Q = n/T queries |
 
-[^23]: Section 4.3 (p.21): "h contains m' XOR sums of size w each and has size m'w = O(Qw). ck contains λ bits of PRF key and the state for Hist. From Construction 3.4, we know that Hist stores an array of size no more than Q and a hash map containing no more than Q elements. Therefore, the size of ck is O(Q log n) bits and the total client storage is O(Qw + Q log n) bits."
+[^23]: Section 4.3 (p.22): "h contains m' XOR sums of size w each and has size m'w = O(Qw). ck contains λ bits of PRF key and the state for Hist. From Construction 3.4, we know that Hist stores an array of size no more than Q and a hash map containing no more than Q elements. Therefore, the size of ck is O(Q log n) bits and the total client storage is O(Qw + Q log n) bits."
 
 #### Preprocessing Characterization
 
@@ -342,7 +342,7 @@ Server performs no computation beyond retrieving the T requested entries, distin
 - **Shared Hist across DS instances:** The observation that all T DS instances share the same Hist (because all rows consume the same column at each query) reduces storage from T separate consumed-column sets to a single global one. Applicable to any multi-row hint table scheme.
 - **PRP for query randomization (Appendix A.2):** To achieve O(T) client computation for arbitrary (non-random) queries, the client uses a PRP P: [n] -> [n] to permute the database, making any query sequence appear random to the data structure. This technique is applicable to any preprocessing PIR scheme whose efficiency analysis requires random queries. [^35]
 
-[^35]: Appendix A.2 (p.27): "At the beginning of the protocol, the client chooses a PRP P: [n] -> [n] over domain [n] of database indices and sends the PRP key to the server... For every query, the client uses permutation P to transform the desired index into the index of the same entry in the permuted database."
+[^35]: Appendix A.2 (p.26): "At the beginning of the protocol, the client chooses a PRP P: [n] -> [n] over domain [n] of database indices and sends the PRP key to the server... For every query, the client uses permutation P to transform the desired index into the index of the same entry in the permuted database."
 
 <a id="open-problems-as-discussed-by-the-authors"></a>
 

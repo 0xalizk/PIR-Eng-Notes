@@ -71,8 +71,8 @@ Finally, the paper introduces **keyword PIR** for sparse databases via two hashi
 | **MulPIR** (d=2) | Somewhat HE (FV multiplicative) | 119 | 119 | 1,174 (Expand+Response) | 0.0026 | Large entries (8kB+); balanced upload/download&#8201;[^8] |
 | **Gentry-Ramzan** (1 gen.) | Number-theoretic (CRT + discrete log) | 0.5 | 1.3 | 54,125 (Setup+Response) | 0.0145 | Minimal communication; small DB; cost-insensitive&#8201;[^9] |
 | **Client-Aided GR** (50 gen.) | Number-theoretic (CRT + Straus multi-exp) | 13.1 | 1.3 | 6,654 (Setup+Response) | 0.0011 | Small entries; client willing to precompute&#8201;[^10] |
-| **ElGamal** | Additive HE (NIST P-224r1) | 1,480 | 0.6 | 55,044 (Setup+Response) | 0.0382 | Baseline comparison only |
-| **Damgard-Jurik** (s=1) | Additive HE (Paillier generalization) | 280 | 280 | 120,636 (approximate, Setup+Response) | 0.0091 | N/A in practice (too slow) |
+| **ElGamal** | Additive HE (NIST P-224r1) | 280 | 8 | 55,044 (Setup+Response) | 0.0091 | Baseline comparison only |
+| **Damgard-Jurik** (s=1) | Additive HE (Paillier generalization) | 1,480 | 0.6 | 120,636 (approximate, Setup+Response) | 0.0382 | N/A in practice (too slow) |
 
 All values from Table 5 (p. 13) for the 1MB database (5,000 elements of 288B) without recursion. Server costs from Table 3 (p. 12) for 288B entries with n=2^20 use recursion d=2.
 
@@ -177,14 +177,14 @@ All values from Table 5 (p. 13) for the 1MB database (5,000 elements of 288B) wi
 | Metric | SealPIR [5] | Optimized SealPIR | MulPIR (d=2) | Phase |
 |--------|------------|-------------------|-------------|-------|
 | Upload size | 61.4 kB | 15.4 kB | 122 kB | Online |
-| Download size | 307 kB | 128 kB | 122 kB | Online |
-| Total communication | 368.4 kB | 143.4 kB | 244 kB | Online |
+| Download size | 307 kB | 128 kB | 119 kB | Online |
+| Total communication | 368.4 kB | 143.4 kB | 241 kB | Online |
 | Client Query (ms) | 19 | 19 | 172 | Online |
 | Server Expand (ms) | 145 | 294 | 391 | Online |
 | Server Response (ms) | 1,020 | 590 (approximate) | 1,919 | Online |
-| Server Cost (US cents) | 0.0040 | 0.0028 (approximate) | 0.0026 | Online |
+| Server Cost (US cents) | 0.0033 | 0.0028 (approximate) | 0.0026 | Online |
 
-Values from Table 3 (p. 12), n = 262,144 column (closest to 2^18); for n = 2^20 see the 1,048,576 columns.&#8201;[^26]
+Values from Table 3 (p. 12), n = 262,144 (= 2^18) column; for n = 2^20 see the 1,048,576 columns.&#8201;[^26]
 
 #### Core metrics — Gentry-Ramzan (5,000 entries of 288B, no recursion)
 
@@ -192,8 +192,8 @@ Values from Table 3 (p. 12), n = 262,144 column (closest to 2^18); for n = 2^20 
 |--------|------------|---------------------------|---------------------------|----------------------------|
 | Upload (kB) | 0.5 | 4.1 | 13.1 | 25.8 |
 | Download (kB) | 1.3 | 1.3 | 1.3 | 1.3 |
-| C.Setup (ms) | 1,532 | 1,540 | 1,594 | 1,796 |
-| S.Setup (ms) | 3,294 | 2,688 | 3,966 | 7,980 |
+| S.Setup (ms) | 1,532 | 1,540 | 1,594 | 1,796 |
+| C.Create (ms) | 3,294 | 2,688 | 3,966 | 7,980 |
 | S.Respond (ms) | 51,803 | 5,495 | 2,988 | 2,904 |
 | Server Cost (US cents) | 0.0145 | 0.0016 | **0.0011** | 0.0014 |
 
@@ -241,17 +241,17 @@ All experiments on a virtual machine with Intel Xeon E5-2695 v3 @ 2.30 GHz, 128 
 |----------------|---------|-----------|-----------|
 | **SealPIR [5] (d=2)** | | | |
 | Client Query (ms) | 19 | 19 | 19 |
-| Server Expand (ms) | 145 | 590 | 12,891 |
+| Server Expand (ms) | 145 | 294 | 590 |
 | Server Response (ms) | 1,020 | 3,520 | 12,891 |
 | Upload (kB) | 61.4 | 61.4 | 61.4 |
 | Download (kB) | 307 | 307 | 307 |
-| Server Cost (US cents) | 0.0040 | **0.0040** | 0.017 |
+| Server Cost (US cents) | 0.0033 | **0.0040** | 0.0067 |
 | **MulPIR (d=2)** | | | |
 | Client Query (ms) | 172 | 192 | 213 |
 | Server Expand (ms) | 391 | 783 | 1,610 |
 | Server Response (ms) | 1,919 | 5,213 | 16,307 |
 | Upload (kB) | 122 | 122 | 122 |
-| Download (kB) | 122 | 122 | 122 |
+| Download (kB) | 119 | 119 | 119 |
 | Server Cost (US cents) | 0.0026 | **0.0036** | 0.0069 |
 
 MulPIR achieves lower server cost than SealPIR for most database sizes due to its lower communication costs, despite higher computation.&#8201;[^31]
@@ -337,9 +337,9 @@ Server builds a cuckoo hash table with kappa hash functions, guaranteeing each e
 
 | Metric | MulPIR | ElGamal | Damgard-Jurik (s=1) | Gentry-Ramzan (1 gen.) | Client-Aided GR (50 gen.) |
 |--------|--------|---------|--------------------|-----------------------|---------------------------|
-| Upload (kB) | 14 | 1,480 | 0.6 | 0.5 | 13.1 |
-| Download (kB) | 21 | 283 | 614 | 1.3 | 1.3 |
-| Total comm. (kB) | 35 | 1,763 | 614.6 | 1.8 | 14.4 |
+| Upload (kB) | 14 | 280 | 1,480 | 0.5 | 13.1 |
+| Download (kB) | 21 | 8 | 0.6 | 1.3 | 1.3 |
+| Total comm. (kB) | 35 | 288 | 1,480.6 | 1.8 | 14.4 |
 | S.Setup (ms) | 39 | 29 | 40,636 | 1,532 | 1,594 |
 | S.Respond (ms) | 3,910 | 893 | 20,710 | 51,803 | 2,988 |
 | Server Cost (US cents) | **0.0019** | 0.0091 | 0.0382 | 0.0145 | **0.0011** |
@@ -417,7 +417,7 @@ For databases where downloading everything is viable, PIR becomes worthwhile whe
 [^1]: Appendix A (p. 16): "Park and Tibouchi [51] present a construction that uses GSW-style homomorphic encryption that support logarithmic multiplicative degree and achieves O(log n) communication."
 [^2]: Abstract (p. 1): "We study the computation and communication costs and their possible trade-offs in various constructions for private information retrieval (PIR), including schemes based on homomorphic encryption and the Gentry-Ramzan PIR."
 [^3]: Section 1 (p. 2): "We analyze the communication-computation trade-offs that different PIR construction approaches offer and the hurdles towards achieving the optimal asymptotic communication costs in practice."
-[^4]: Section 1.1 (p. 2): "Our first contribution reduces the communication of SealPIR by (1) using symmetric key encryption to reduce the upload size, (2) using modulus switching reduction techniques... to reduce the value of F down to F approximately 4, and (3) introducing a new oblivious expansion algorithm which can further halve the upload communication."
+[^4]: Section 1.1 (p. 2): "Our first contribution reduces the communication of SealPIR by (1) using symmetric key encryption to reduce the upload size, (2) using modulus switching reduction techniques... to reduce the value of F down to F approximately 4, and (3) introducing a new oblivious expansion algorithm which can further halve the upload communication for some parameter sets."
 [^5]: Section 1.1 (p. 2): "We then present MulPIR, a PIR protocol additionally leveraging multiplicative homomorphism to implement the recursion steps in PIR... it introduces a meaningful tradeoff by significantly reducing communication, at the cost of an increased computational cost for the server."
 [^6]: Section 1.1 (p. 2-3): "We leverage a divide-and-conquer modular interpolation algorithm [7] that enables us to achieve computation complexity Õ(n log^2 n)... This enables a client-aided technique that allows us to improve the server's computation at the price of (small) additional work at the client."
 [^7]: Section 1.1 (p. 3): "we introduce new ways to handle PIR over sparse databases (keyword PIR), based on different hashing techniques."
