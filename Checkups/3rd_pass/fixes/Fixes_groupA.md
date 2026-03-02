@@ -8,7 +8,7 @@
 
 ### SealPIR (5 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/sealpir_2018/sealpir_2018_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/sealpir_2018/sealpir_2018_notes.md`
 
 1. **INCORRECT -- Comparison table XPIR(d=3) query size (cross-pass persistent)**
    - Location: Comparison with Prior Work table, XPIR (d=3) row
@@ -44,7 +44,7 @@
 
 ### XPIR-2014 (2 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/xpir_2014/xpir_2014_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/xpir_2014/xpir_2014_notes.md`
 
 1. **INCORRECT -- [^14] "per ciphertext" should be "per retrieval"**
    - Location: FHE-specific metrics table, Ciphertext size row
@@ -62,7 +62,7 @@
 
 ### XPIR-2016 (3 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/xpir_2016/xpir_2016_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/xpir_2016/xpir_2016_notes.md`
 
 1. **INCORRECT -- Encryption Parameter Sets table: mislabeled column + phantom duplicate**
    - Location: Encryption Parameter Sets table
@@ -86,7 +86,7 @@
 
 ### MulPIR (1 fix)
 
-**File:** `Schemes/Group A - FHE Based PIR/mulpir_2019/mulpir_2019_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/mulpir_2019/mulpir_2019_notes.md`
 
 1. **INCORRECT -- [^12] G_2 base in Section 5.2 portion**
    - Location: Footnote [^12], Section 5.2 description of G_2
@@ -98,7 +98,7 @@
 
 ### OnionPIR (1 fix)
 
-**File:** `Schemes/Group A - FHE Based PIR/onionpir_2021/onionpir_2021_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/onionpir_2021/onionpir_2021_notes.md`
 
 1. **MINOR -- Body text "AVX" should be "AVX2"**
    - Location: Implementation Notes, SIMD/vectorization bullet
@@ -110,7 +110,7 @@
 
 ### OnionPIRv2 (1 fix)
 
-**File:** `Schemes/Group A - FHE Based PIR/onionpirv2_2025/onionpirv2_2025_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/onionpirv2_2025/onionpirv2_2025_notes.md`
 
 1. **MINOR -- BFV decryption operation: round -> floor**
    - Location: Cryptographic Foundation table, Correctness condition row
@@ -122,7 +122,7 @@
 
 ### Addra / FastPIR (2 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/addra_2021/addra_2021_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/addra_2021/addra_2021_notes.md`
 
 1. **INCORRECT -- Record-size regime description**
    - Location: Header table, Record-size regime row
@@ -140,7 +140,7 @@
 
 ### CwPIR (2 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/cwpir_2022/cwpir_2022_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/cwpir_2022/cwpir_2022_notes.md`
 
 1. **MINOR -- [^33] dropped word "time"**
    - Location: Footnote [^33]
@@ -158,7 +158,7 @@
 
 ### Spiral (3 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/spiral_2022/spiral_2022_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/spiral_2022/spiral_2022_notes.md`
 
 1. **MINOR -- [^12] Theorem 3.2 attribution**
    - Location: Footnote [^12]
@@ -182,7 +182,7 @@
 
 ### FrodoPIR (5 fixes, 8 individual edits)
 
-**File:** `Schemes/Group A - FHE Based PIR/frodopir_2022/frodopir_2022_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/frodopir_2022/frodopir_2022_notes.md`
 
 1. **INCORRECT -- Financial cost exponent (three occurrences)**
    - Locations: [^core] (line 72), Comparison table (line 365), [^unc3] (line 446)
@@ -218,7 +218,7 @@
 
 ### ThorPIR (6 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/thorpir_2024/thorpir_2024_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md`
 
 1. **INCORRECT -- Theorem 3.2 prior bound formula garbled**
    - Location: Novel Primitives table, Improvement over prior row

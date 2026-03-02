@@ -16,7 +16,7 @@ Verify every claim in engineering notes against the source PDF — footnoted cit
 
 ## 2. Locate inputs
 
-- **Notes files**: `Schemes/<Group Directory>/<scheme>/<scheme>_notes.md`
+- **Notes files**: `research/<Group Directory>/<scheme>/<scheme>_notes.md`
 - **Source PDFs**: in the same directory as the notes file (one PDF per scheme)
 
 **Scope** (determined by the user's request):

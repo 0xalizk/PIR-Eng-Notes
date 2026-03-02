@@ -18,15 +18,15 @@ import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent.parent.parent
-SCHEMES_DIR = REPO_ROOT / "Schemes"
+SCHEMES_DIR = REPO_ROOT / "research"
 OUTPUT_FILE = Path(__file__).parent.parent / "pir_data.json"
 
 GROUP_DIRS = {
-    "A": SCHEMES_DIR / "Group A - FHE Based PIR",
-    "B": SCHEMES_DIR / "Group B - Stateless Single Server PIR",
-    "C": SCHEMES_DIR / "Group C - Client Independent Preprocessing",
-    "D": SCHEMES_DIR / "Group D - Client Dependent Preprocessing",
-    "X": SCHEMES_DIR / "Group X - Extensions",
+    "A": SCHEMES_DIR / "Group.A.FHE.Based.PIR",
+    "B": SCHEMES_DIR / "Group.B.Stateless.Single.Server.PIR",
+    "C": SCHEMES_DIR / "Group.C.Client.Independent.Preprocessing",
+    "D": SCHEMES_DIR / "Group.D.Client.Dependent.Preprocessing",
+    "X": SCHEMES_DIR / "Group.X.Extensions",
 }
 
 

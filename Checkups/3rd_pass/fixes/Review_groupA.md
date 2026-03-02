@@ -9,7 +9,7 @@
 
 ### SealPIR (5 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/sealpir_2018/sealpir_2018_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/sealpir_2018/sealpir_2018_notes.md`
 **PDF:** `SealPIR_2017_1142.pdf`
 
 **Fix 1 -- INCORRECT: Comparison table XPIR(d=3) query size (cross-pass persistent)**
@@ -46,7 +46,7 @@
 
 ### XPIR-2014 (2 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/xpir_2014/xpir_2014_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/xpir_2014/xpir_2014_notes.md`
 **PDF:** `XPIR_2014_232.pdf`
 
 **Fix 1 -- INCORRECT: [^14] "per ciphertext" should be "per retrieval"**
@@ -65,7 +65,7 @@
 
 ### XPIR-2016 (3 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/xpir_2016/xpir_2016_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/xpir_2016/xpir_2016_notes.md`
 **PDF:** `XPIR_computational_2014_1025.pdf`
 
 **Fix 1 -- INCORRECT: Encryption Parameter Sets table mislabeled column**
@@ -90,7 +90,7 @@
 
 ### MulPIR (1 fix)
 
-**File:** `Schemes/Group A - FHE Based PIR/mulpir_2019/mulpir_2019_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/mulpir_2019/mulpir_2019_notes.md`
 **PDF:** `MulPIR_2019_733.pdf`
 
 **Fix 1 -- INCORRECT: [^12] G_2 base in Section 5.2 portion**
@@ -103,7 +103,7 @@
 
 ### OnionPIR (1 fix)
 
-**File:** `Schemes/Group A - FHE Based PIR/onionpir_2021/onionpir_2021_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/onionpir_2021/onionpir_2021_notes.md`
 **PDF:** `OnionPIR_2021_1081.pdf`
 
 **Fix 1 -- MINOR: Body text "AVX" should be "AVX2"**
@@ -116,7 +116,7 @@
 
 ### OnionPIRv2 (1 fix)
 
-**File:** `Schemes/Group A - FHE Based PIR/onionpirv2_2025/onionpirv2_2025_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/onionpirv2_2025/onionpirv2_2025_notes.md`
 **PDF:** `FHEPIR_2025_1142.pdf`
 
 **Fix 1 -- MINOR: BFV decryption operation: round -> floor**
@@ -129,7 +129,7 @@
 
 ### Addra / FastPIR (2 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/addra_2021/addra_2021_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/addra_2021/addra_2021_notes.md`
 **PDF:** `Addra_FastPIR_2021_044.pdf`
 
 **Fix 1 -- INCORRECT: Record-size regime description**
@@ -148,7 +148,7 @@
 
 ### CwPIR (2 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/cwpir_2022/cwpir_2022_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/cwpir_2022/cwpir_2022_notes.md`
 **PDF:** `FastPIR_orig_arxiv_2202.07569.pdf`
 
 **Fix 1 -- MINOR: [^33] dropped word "time"**
@@ -167,7 +167,7 @@
 
 ### Spiral (3 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/spiral_2022/spiral_2022_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/spiral_2022/spiral_2022_notes.md`
 **PDF:** `Spiral_stream_2022_368.pdf`
 
 **Fix 1 -- MINOR: [^12] Theorem 3.2 attribution**
@@ -192,7 +192,7 @@
 
 ### FrodoPIR (5 fixes, 8 individual edits)
 
-**File:** `Schemes/Group A - FHE Based PIR/frodopir_2022/frodopir_2022_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/frodopir_2022/frodopir_2022_notes.md`
 **PDF:** `FrodoPIR_2022_981.pdf`
 
 **Fix 1 -- INCORRECT: Financial cost exponent (three occurrences)**
@@ -234,7 +234,7 @@
 
 ### ThorPIR (6 fixes)
 
-**File:** `Schemes/Group A - FHE Based PIR/thorpir_2024/thorpir_2024_notes.md`
+**File:** `research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md`
 **PDF:** `FHEPIR_2024_482.pdf`
 
 **Fix 1 -- INCORRECT: Theorem 3.2 prior bound formula garbled**
