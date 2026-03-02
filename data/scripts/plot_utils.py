@@ -240,10 +240,10 @@ def get_notes_path(scheme):
     Returns:
         Path object to the notes file, or None if not found.
     """
-    schemes_dir = SCRIPT_DIR.parent.parent / "Schemes"
+    schemes_dir = SCRIPT_DIR.parent.parent / "research"
     group = scheme["group"]
     group_dir_name = GROUP_DIR_NAMES.get(group, "")
-    group_dir = schemes_dir / f"Group {group} - {group_dir_name}"
+    group_dir = schemes_dir / group_dir_name
 
     scheme_id = scheme["id"]
 

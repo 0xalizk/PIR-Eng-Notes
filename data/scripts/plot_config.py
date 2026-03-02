@@ -51,11 +51,11 @@ TIER_EDGE_ALPHA = {
 
 # --- Group Directory Names (for notes file path resolution) ---
 GROUP_DIR_NAMES = {
-    "A": "FHE Based PIR",
-    "B": "Stateless Single Server PIR",
-    "C": "Client Independent Preprocessing",
-    "D": "Client Dependent Preprocessing",
-    "X": "Extensions",
+    "A": "Group.A.FHE.Based.PIR",
+    "B": "Group.B.Stateless.Single.Server.PIR",
+    "C": "Group.C.Client.Independent.Preprocessing",
+    "D": "Group.D.Client.Dependent.Preprocessing",
+    "X": "Group.X.Extensions",
 }
 
 # --- Font Sizes ---
