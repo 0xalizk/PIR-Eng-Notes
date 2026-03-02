@@ -1,6 +1,6 @@
 ---
-name: validate-research
-description: Validate PIR engineering notes against source PDFs — checks every footnote, table, formula, protocol description, and benchmark claim
+name: full-checkup
+description: Full validation of PIR engineering notes against source PDFs — checks every footnote, table, formula, protocol description, and benchmark claim
 argument-hint: "[group or scheme name]"
 ---
 
