@@ -1277,6 +1277,13 @@
         _cachedData = computeCompositeScores(raw);
         renderCharts(_cachedData);
         renderCatalog(_cachedData);
+
+        // After charts render, re-scroll to the URL hash anchor
+        // (charts change page height, so the initial browser scroll lands wrong)
+        if (window.location.hash) {
+          var target = document.getElementById(window.location.hash.slice(1));
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       })
       .catch(function (err) {
         console.error('Failed to load PIR data:', err);
