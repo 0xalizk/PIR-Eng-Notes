@@ -1278,11 +1278,13 @@
         renderCharts(_cachedData);
         renderCatalog(_cachedData);
 
-        // After charts render, re-scroll to the URL hash anchor
-        // (charts change page height, so the initial browser scroll lands wrong)
+        // After charts render, re-scroll to the URL hash anchor.
+        // Plotly.newPlot is async — wait for layout reflow before scrolling.
         if (window.location.hash) {
-          var target = document.getElementById(window.location.hash.slice(1));
-          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(function () {
+            var target = document.getElementById(window.location.hash.slice(1));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 600);
         }
       })
       .catch(function (err) {
