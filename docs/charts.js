@@ -793,6 +793,20 @@
       });
     }
 
+    // Shape legend: Tier 1 (circle) and Tier 3 (diamond)
+    traces.push({
+      x: [null], y: [null], mode: 'markers', type: 'scatter',
+      name: 'Tier 1 (exact)',
+      marker: { symbol: 'circle', size: 8, color: t.muted, line: { width: 1, color: t.text } },
+      hoverinfo: 'skip'
+    });
+    traces.push({
+      x: [null], y: [null], mode: 'markers', type: 'scatter',
+      name: 'Tier 3 (asymptotic)',
+      marker: { symbol: 'diamond', size: 8, color: t.muted, line: { width: 1, color: t.text } },
+      hoverinfo: 'skip'
+    });
+
     Plotly.newPlot(el, traces, baseLayout('Pareto Frontier — Communication vs Server Time', {
       xaxis: { title: 'Total Communication (KB)', type: 'log', gridcolor: t.grid },
       yaxis: { title: 'Server Time (ms)', type: 'log', gridcolor: t.grid },
