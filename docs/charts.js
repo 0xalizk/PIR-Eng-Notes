@@ -447,7 +447,7 @@
       g.x.push(qk);
       g.y.push(rk);
       g.names.push(s.display_name);
-      g.text.push(s.display_name + '<br>Query: ' + formatNum(qk) + ' KB<br>Response: ' + formatNum(rk) + ' KB<br>Tier: ' + TIER_LABELS[s.data_tier]);
+      g.text.push(s.display_name + '<br>Query: ' + formatNum(qk) + ' KB<br>Response: ' + formatNum(rk) + ' KB<br>Source: ' + (s.source_ref || 'N/A'));
       g.marker.color.push(GROUP_COLORS[s.group]);
       g.marker.opacity.push(TIER_OPACITY[s.data_tier]);
       var st = getVal(s, 'server_time_ms');
@@ -557,10 +557,12 @@
     var items = data.filter(function (s) { return getVal(s, 'throughput_gbps') !== null; });
     items.sort(function (a, b) { return getVal(b, 'throughput_gbps') - getVal(a, 'throughput_gbps'); });
 
-    Plotly.newPlot(el, [{
-      y: items.map(function (s) { return s.display_name; }),
+    var traces = [];
+    traces.push({
+      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + s.display_name; }),
       x: items.map(function (s) { return getVal(s, 'throughput_gbps'); }),
       type: 'bar', orientation: 'h',
+      showlegend: false,
       marker: {
         color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
         opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
@@ -569,14 +571,21 @@
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        return s.display_name + '<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Group: ' + s.group + '<br>Tier: ' + TIER_LABELS[s.data_tier];
+        return s.display_name + '<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Source: ' + (s.source_ref || 'N/A');
       }),
       hoverinfo: 'text'
-    }], baseLayout('Server Throughput (GB/s) — Higher is Better', {
+    });
+
+    Plotly.newPlot(el, traces, baseLayout('Server Throughput (GB/s) — Higher is Better', {
       yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
-      xaxis: { title: 'Throughput (GB/s)', gridcolor: t.grid },
-      margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
-      height: Math.max(350, items.length * 30 + 100)
+      xaxis: { title: { text: 'Throughput (GB/s)', standoff: 20 }, gridcolor: t.grid },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: 80 },
+      height: Math.max(350, items.length * 30 + 120),
+      annotations: [{
+        text: '<i>All Tier 1; no throughput reported in Tiers 2&amp;3</i>',
+        xref: 'paper', yref: 'paper', x: 0, y: 0, yanchor: 'top', yshift: -60,
+        showarrow: false, font: { size: 11, color: t.muted }
+      }]
     }), plotConfig());
   }
 
@@ -589,10 +598,12 @@
     var items = data.filter(function (s) { return getVal(s, 'server_time_ms') !== null; });
     items.sort(function (a, b) { return getVal(a, 'server_time_ms') - getVal(b, 'server_time_ms'); });
 
-    Plotly.newPlot(el, [{
-      y: items.map(function (s) { return s.display_name; }),
+    var traces = [];
+    traces.push({
+      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + s.display_name; }),
       x: items.map(function (s) { return getVal(s, 'server_time_ms'); }),
       type: 'bar', orientation: 'h',
+      showlegend: false,
       marker: {
         color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
         opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
@@ -601,14 +612,21 @@
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        return s.display_name + '<br>Server Time: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Group: ' + s.group + '<br>Tier: ' + TIER_LABELS[s.data_tier];
+        return s.display_name + '<br>Server Time: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A');
       }),
       hoverinfo: 'text'
-    }], baseLayout('Server Time (ms) — Lower is Better', {
+    });
+
+    Plotly.newPlot(el, traces, baseLayout('Server Time (ms) — Lower is Better', {
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
-      xaxis: { title: 'Server Time (ms)', type: 'log', gridcolor: t.grid },
-      margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
-      height: Math.max(350, items.length * 26 + 100)
+      xaxis: { title: { text: 'Server Time (ms)', standoff: 20 }, type: 'log', gridcolor: t.grid },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: 80 },
+      height: Math.max(350, items.length * 26 + 120),
+      annotations: [{
+        text: '\u2020 approx &nbsp;&nbsp; * asymptotic',
+        xref: 'paper', yref: 'paper', x: 0, y: 0, yanchor: 'top', yshift: -60,
+        showarrow: false, font: { size: 11, color: t.muted }
+      }]
     }), plotConfig());
   }
 
@@ -622,7 +640,7 @@
     items.sort(function (a, b) { return getVal(a, 'client_time_ms') - getVal(b, 'client_time_ms'); });
 
     Plotly.newPlot(el, [{
-      y: items.map(function (s) { return s.display_name; }),
+      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + s.display_name; }),
       x: items.map(function (s) { return getVal(s, 'client_time_ms'); }),
       type: 'bar', orientation: 'h',
       marker: {
@@ -633,7 +651,7 @@
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        return s.display_name + '<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms<br>Group: ' + s.group;
+        return s.display_name + '<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A');
       }),
       hoverinfo: 'text'
     }], baseLayout('Client Computation Time (ms)', {
@@ -682,7 +700,7 @@
       cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'offline_hint_mb');
-        return v !== null ? s.display_name + '<br>Offline: ' + formatNum(v) + ' MB' : '';
+        return v !== null ? s.display_name + '<br>Offline: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') : '';
       }),
       hoverinfo: 'text'
     });
@@ -702,7 +720,7 @@
       cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'client_storage_mb');
-        return v !== null ? s.display_name + '<br>Client Storage: ' + formatNum(v) + ' MB' : '';
+        return v !== null ? s.display_name + '<br>Client Storage: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') : '';
       }),
       hoverinfo: 'text'
     });
@@ -776,7 +794,7 @@
         },
         hovertext: gItems.map(function (s) {
           return s.display_name + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms' +
-            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '');
+            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
         }),
         hoverinfo: 'text'
       });
@@ -807,7 +825,7 @@
       hoverinfo: 'skip'
     });
 
-    Plotly.newPlot(el, traces, baseLayout('Pareto Frontier — Communication vs Server Time', {
+    Plotly.newPlot(el, traces, baseLayout('Communication vs Server Time', {
       xaxis: { title: 'Total Communication (KB)', type: 'log', gridcolor: t.grid },
       yaxis: { title: 'Server Time (ms)', type: 'log', gridcolor: t.grid },
       margin: { t: 48, r: 48, b: 100, l: 60 },
@@ -816,7 +834,305 @@
     }), plotConfig());
   }
 
-  // ── 6b. Radar — Tabbed per-group, 3-per-row grid ─────
+  // ── 6b. Pareto — Communication vs Client Storage ────
+  function renderParetoCommStorage(data) {
+    var el = document.getElementById('chart-pareto-comm-storage');
+    if (!el) return;
+    var t = themeColors();
+
+    var items = data.filter(function (s) {
+      return getVal(s, 'query_size_kb') !== null && getVal(s, 'response_size_kb') !== null && getVal(s, 'client_storage_mb') !== null;
+    });
+    items.forEach(function (s) {
+      s._totalComm = getVal(s, 'query_size_kb') + getVal(s, 'response_size_kb');
+    });
+
+    var pareto = items.filter(function (s) {
+      return !items.some(function (o) {
+        return o !== s && o._totalComm <= s._totalComm && getVal(o, 'client_storage_mb') <= getVal(s, 'client_storage_mb') &&
+          (o._totalComm < s._totalComm || getVal(o, 'client_storage_mb') < getVal(s, 'client_storage_mb'));
+      });
+    });
+    pareto.sort(function (a, b) { return a._totalComm - b._totalComm; });
+
+    var traces = [];
+    Object.keys(GROUP_COLORS).forEach(function (g) {
+      if (!items.some(function (s) { return s.group === g; })) return;
+      traces.push({
+        x: [null], y: [null], mode: 'lines', type: 'scatter',
+        name: GROUP_NAMES[g], line: { color: GROUP_COLORS[g], width: 10 },
+        hoverinfo: 'skip'
+      });
+    });
+    Object.keys(GROUP_COLORS).forEach(function (g) {
+      var gItems = items.filter(function (s) { return s.group === g; });
+      if (!gItems.length) return;
+      traces.push({
+        x: gItems.map(function (s) { return s._totalComm; }),
+        y: gItems.map(function (s) { return getVal(s, 'client_storage_mb'); }),
+        mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
+        showlegend: false,
+        text: gItems.map(function (s) { return s.display_name; }),
+        textposition: 'top center', cliponaxis: false,
+        textfont: { size: 9, color: t.muted },
+        marker: {
+          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 14 : 8; }),
+          color: GROUP_COLORS[g],
+          symbol: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 'star' : (s.data_tier === 3 ? 'diamond' : 'circle'); }),
+          opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+          line: { width: 1, color: t.text }
+        },
+        hovertext: gItems.map(function (s) {
+          return s.display_name + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' +
+            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
+        }),
+        hoverinfo: 'text'
+      });
+    });
+    if (pareto.length > 1) {
+      traces.push({
+        x: pareto.map(function (s) { return s._totalComm; }),
+        y: pareto.map(function (s) { return getVal(s, 'client_storage_mb'); }),
+        mode: 'lines', type: 'scatter',
+        line: { shape: 'hv', width: 2, dash: 'dash', color: '#a855f7' },
+        name: 'Pareto frontier', hoverinfo: 'skip'
+      });
+    }
+    traces.push({
+      x: [null], y: [null], mode: 'markers', type: 'scatter',
+      name: 'Tier 1 (exact)',
+      marker: { symbol: 'circle-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
+      hoverinfo: 'skip'
+    });
+    traces.push({
+      x: [null], y: [null], mode: 'markers', type: 'scatter',
+      name: 'Tier 3 (from asymptotics)',
+      marker: { symbol: 'diamond-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
+      hoverinfo: 'skip'
+    });
+
+    Plotly.newPlot(el, traces, baseLayout('Communication vs Client Storage', {
+      xaxis: { title: 'Total Communication (KB)', type: 'log', gridcolor: t.grid },
+      yaxis: { title: 'Client Storage (MB)', type: 'log', gridcolor: t.grid },
+      margin: { t: 48, r: 48, b: 100, l: 60 },
+      legend: { orientation: 'h', y: -0.2 },
+      height: 605
+    }), plotConfig());
+  }
+
+  // ── 6c. Pareto — Communication vs Client Time ──────
+  function renderParetoCommClient(data) {
+    var el = document.getElementById('chart-pareto-comm-client');
+    if (!el) return;
+    var t = themeColors();
+
+    var items = data.filter(function (s) {
+      return getVal(s, 'query_size_kb') !== null && getVal(s, 'response_size_kb') !== null && getVal(s, 'client_time_ms') !== null;
+    });
+    items.forEach(function (s) {
+      s._totalComm = getVal(s, 'query_size_kb') + getVal(s, 'response_size_kb');
+    });
+
+    var pareto = items.filter(function (s) {
+      return !items.some(function (o) {
+        return o !== s && o._totalComm <= s._totalComm && getVal(o, 'client_time_ms') <= getVal(s, 'client_time_ms') &&
+          (o._totalComm < s._totalComm || getVal(o, 'client_time_ms') < getVal(s, 'client_time_ms'));
+      });
+    });
+    pareto.sort(function (a, b) { return a._totalComm - b._totalComm; });
+
+    var traces = [];
+    Object.keys(GROUP_COLORS).forEach(function (g) {
+      if (!items.some(function (s) { return s.group === g; })) return;
+      traces.push({
+        x: [null], y: [null], mode: 'lines', type: 'scatter',
+        name: GROUP_NAMES[g], line: { color: GROUP_COLORS[g], width: 10 },
+        hoverinfo: 'skip'
+      });
+    });
+    Object.keys(GROUP_COLORS).forEach(function (g) {
+      var gItems = items.filter(function (s) { return s.group === g; });
+      if (!gItems.length) return;
+      traces.push({
+        x: gItems.map(function (s) { return s._totalComm; }),
+        y: gItems.map(function (s) { return getVal(s, 'client_time_ms'); }),
+        mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
+        showlegend: false,
+        text: gItems.map(function (s) { return s.display_name; }),
+        textposition: 'top center', cliponaxis: false,
+        textfont: { size: 9, color: t.muted },
+        marker: {
+          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 14 : 8; }),
+          color: GROUP_COLORS[g],
+          symbol: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 'star' : (s.data_tier === 3 ? 'diamond' : 'circle'); }),
+          opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+          line: { width: 1, color: t.text }
+        },
+        hovertext: gItems.map(function (s) {
+          return s.display_name + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
+        }),
+        hoverinfo: 'text'
+      });
+    });
+    if (pareto.length > 1) {
+      traces.push({
+        x: pareto.map(function (s) { return s._totalComm; }),
+        y: pareto.map(function (s) { return getVal(s, 'client_time_ms'); }),
+        mode: 'lines', type: 'scatter',
+        line: { shape: 'hv', width: 2, dash: 'dash', color: '#a855f7' },
+        name: 'Pareto frontier', hoverinfo: 'skip'
+      });
+    }
+    traces.push({
+      x: [null], y: [null], mode: 'markers', type: 'scatter',
+      name: 'Tier 1 (exact)',
+      marker: { symbol: 'circle-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
+      hoverinfo: 'skip'
+    });
+    traces.push({
+      x: [null], y: [null], mode: 'markers', type: 'scatter',
+      name: 'Tier 3 (from asymptotics)',
+      marker: { symbol: 'diamond-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
+      hoverinfo: 'skip'
+    });
+
+    Plotly.newPlot(el, traces, baseLayout('Communication vs Client Time', {
+      xaxis: { title: 'Total Communication (KB)', type: 'log', gridcolor: t.grid },
+      yaxis: { title: 'Client Time (ms)', type: 'log', gridcolor: t.grid },
+      margin: { t: 48, r: 48, b: 100, l: 60 },
+      legend: { orientation: 'h', y: -0.2 },
+      height: 605
+    }), plotConfig());
+  }
+
+  // ── 6d. 3D Scatter — Comm × Client Storage × Client Time ──
+  function renderPareto3DComm(data) {
+    var el = document.getElementById('chart-pareto-3d-comm');
+    if (!el) return;
+    var t = themeColors();
+
+    var items = data.filter(function (s) {
+      return getVal(s, 'query_size_kb') !== null && getVal(s, 'response_size_kb') !== null &&
+        getVal(s, 'client_storage_mb') !== null && getVal(s, 'client_time_ms') !== null;
+    });
+    items.forEach(function (s) {
+      s._totalComm = getVal(s, 'query_size_kb') + getVal(s, 'response_size_kb');
+    });
+
+    var pareto = items.filter(function (s) {
+      return !items.some(function (o) {
+        return o !== s &&
+          o._totalComm <= s._totalComm &&
+          getVal(o, 'client_storage_mb') <= getVal(s, 'client_storage_mb') &&
+          getVal(o, 'client_time_ms') <= getVal(s, 'client_time_ms') &&
+          (o._totalComm < s._totalComm || getVal(o, 'client_storage_mb') < getVal(s, 'client_storage_mb') || getVal(o, 'client_time_ms') < getVal(s, 'client_time_ms'));
+      });
+    });
+
+    var traces = [];
+    Object.keys(GROUP_COLORS).forEach(function (g) {
+      var gItems = items.filter(function (s) { return s.group === g; });
+      if (!gItems.length) return;
+      traces.push({
+        x: gItems.map(function (s) { return s._totalComm; }),
+        y: gItems.map(function (s) { return getVal(s, 'client_storage_mb'); }),
+        z: gItems.map(function (s) { return getVal(s, 'client_time_ms'); }),
+        mode: 'markers+text', type: 'scatter3d', name: GROUP_NAMES[g],
+        text: gItems.map(function (s) { return s.display_name; }),
+        textposition: 'top center',
+        textfont: { size: 9, color: t.muted },
+        marker: {
+          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 10 : 5; }),
+          color: GROUP_COLORS[g],
+          symbol: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 'diamond' : 'circle'; }),
+          opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+          line: { width: 1, color: t.text }
+        },
+        hovertext: gItems.map(function (s) {
+          return s.display_name + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
+        }),
+        hoverinfo: 'text'
+      });
+    });
+
+    Plotly.newPlot(el, traces, baseLayout('Communication × Client Storage × Client Time', {
+      scene: {
+        xaxis: { title: 'Comm (KB)', type: 'log', gridcolor: t.grid },
+        yaxis: { title: 'Storage (MB)', type: 'log', gridcolor: t.grid },
+        zaxis: { title: 'Client (ms)', type: 'log', gridcolor: t.grid },
+        bgcolor: 'rgba(0,0,0,0)',
+      },
+      margin: { t: 48, r: 24, b: 24, l: 24 },
+      legend: { orientation: 'h', x: 0.5, xanchor: 'center', y: -0.02 },
+      height: 700
+    }), plotConfig());
+  }
+
+  // ── 6e. 3D Scatter — Server Time × Client Storage × Client Time ──
+  function renderPareto3DServer(data) {
+    var el = document.getElementById('chart-pareto-3d-server');
+    if (!el) return;
+    var t = themeColors();
+
+    var items = data.filter(function (s) {
+      return getVal(s, 'server_time_ms') !== null &&
+        getVal(s, 'client_storage_mb') !== null && getVal(s, 'client_time_ms') !== null;
+    });
+
+    var pareto = items.filter(function (s) {
+      return !items.some(function (o) {
+        return o !== s &&
+          getVal(o, 'server_time_ms') <= getVal(s, 'server_time_ms') &&
+          getVal(o, 'client_storage_mb') <= getVal(s, 'client_storage_mb') &&
+          getVal(o, 'client_time_ms') <= getVal(s, 'client_time_ms') &&
+          (getVal(o, 'server_time_ms') < getVal(s, 'server_time_ms') || getVal(o, 'client_storage_mb') < getVal(s, 'client_storage_mb') || getVal(o, 'client_time_ms') < getVal(s, 'client_time_ms'));
+      });
+    });
+
+    var traces = [];
+    Object.keys(GROUP_COLORS).forEach(function (g) {
+      var gItems = items.filter(function (s) { return s.group === g; });
+      if (!gItems.length) return;
+      traces.push({
+        x: gItems.map(function (s) { return getVal(s, 'server_time_ms'); }),
+        y: gItems.map(function (s) { return getVal(s, 'client_storage_mb'); }),
+        z: gItems.map(function (s) { return getVal(s, 'client_time_ms'); }),
+        mode: 'markers+text', type: 'scatter3d', name: GROUP_NAMES[g],
+        text: gItems.map(function (s) { return s.display_name; }),
+        textposition: 'top center',
+        textfont: { size: 9, color: t.muted },
+        marker: {
+          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 10 : 5; }),
+          color: GROUP_COLORS[g],
+          symbol: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 'diamond' : 'circle'; }),
+          opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+          line: { width: 1, color: t.text }
+        },
+        hovertext: gItems.map(function (s) {
+          return s.display_name + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
+        }),
+        hoverinfo: 'text'
+      });
+    });
+
+    Plotly.newPlot(el, traces, baseLayout('Server Time × Client Storage × Client Time', {
+      scene: {
+        xaxis: { title: 'Server (ms)', type: 'log', gridcolor: t.grid },
+        yaxis: { title: 'Storage (MB)', type: 'log', gridcolor: t.grid },
+        zaxis: { title: 'Client (ms)', type: 'log', gridcolor: t.grid },
+        bgcolor: 'rgba(0,0,0,0)',
+        camera: { eye: { x: 1.5, y: 1.5, z: 0.1 } }
+      },
+      margin: { t: 48, r: 24, b: 24, l: 24 },
+      legend: { orientation: 'h', x: 0.5, xanchor: 'center', y: -0.02 },
+      height: 700
+    }), plotConfig());
+  }
+
+  // ── 6f. Radar — Tabbed per-group, 3-per-row grid ─────
   var _lastRadarTab = null;
   var RADAR_GROUPS = [
     { key: 'A', label: 'FHE-Based' },
@@ -949,7 +1265,7 @@
           hovertext: radarMetrics.map(function (m) {
             var raw = getVal(s, m);
             return s.display_name + '<br>' + METRIC_LABELS[m] + ': ' + (raw !== null ? formatNum(raw) : 'N/A') +
-              '<br>Rank: ' + (s._ranks[m] !== null ? (s._ranks[m] * 100).toFixed(0) + '%' : 'N/A');
+              '<br>Rank: ' + (s._ranks[m] !== null ? (s._ranks[m] * 100).toFixed(0) + '%' : 'N/A') + '<br>Source: ' + (s.source_ref || 'N/A');
           }),
           hoverinfo: 'text'
         };
@@ -1013,7 +1329,7 @@
     else { drawGroup(_lastRadarTab || 'A'); }
   }
 
-  // ── 6c. Timeline ──────────────────────────────────────
+  // ── 7. Timeline ───────────────────────────────────────
   function renderTimeline(data) {
     var el = document.getElementById('chart-timeline');
     if (!el) return;
@@ -1056,7 +1372,7 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + ' (' + s.year + ')<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Group: ' + s.group;
+          return s.display_name + ' (' + s.year + ')<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Group: ' + s.group + '<br>Source: ' + (s.source_ref || 'N/A');
         }),
         hoverinfo: 'text'
       });
@@ -1076,7 +1392,7 @@
     }), plotConfig());
   }
 
-  // ── 7. Scheme Catalog Table ───────────────────────────
+  // ── 8. Scheme Catalog Table ───────────────────────────
   function renderCatalog(data) {
     var el = document.getElementById('catalog-body');
     var headerRow = document.getElementById('catalog-header');
@@ -1277,6 +1593,17 @@
     renderClientCost(data);
     renderOfflineStorage(data);
     renderPareto(data);
+    renderParetoCommStorage(data);
+    renderParetoCommClient(data);
+    renderPareto3DComm(data);
+    renderPareto3DServer(data);
+
+    // Disable scroll-zoom on 3D plots while preserving page scroll
+    ['chart-pareto-3d-comm', 'chart-pareto-3d-server'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('wheel', function (e) { e.stopPropagation(); }, true);
+    });
+
     renderRadar(data);
     renderTimeline(data);
   }

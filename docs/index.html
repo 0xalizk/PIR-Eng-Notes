@@ -178,10 +178,20 @@
 <section id="pareto">
   <h2><a href="#pareto">Pareto Frontiers</a></h2>
   <p class="desc">
-    Total communication (query + response) vs server time. Starred points are Pareto-optimal
-    (no other scheme is better on both axes). Purple step-line connects the frontier.
+    Starred points are Pareto-optimal (no other scheme is better on all axes).
+    Purple step-line connects 2D frontiers.
   </p>
   <div class="chart-container" id="chart-pareto"></div>
+  <div class="chart-container" id="chart-pareto-comm-storage"></div>
+  <div class="chart-container" id="chart-pareto-comm-client"></div>
+  <div style="display:flex;align-items:center;max-width:none;width:calc(100% + 320px);margin-left:-160px;margin-top:48px">
+    <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:14px;padding-right:12px;white-space:nowrap">Communication × Client Storage × Client Time</div>
+    <div class="chart-container wide" id="chart-pareto-3d-comm" style="flex:1;min-width:0"></div>
+  </div>
+  <div style="display:flex;align-items:center;max-width:none;width:calc(100% + 320px);margin-left:-160px;margin-top:48px">
+    <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:14px;padding-right:12px;white-space:nowrap">Server Time × Client Storage × Client Time</div>
+    <div class="chart-container wide" id="chart-pareto-3d-server" style="flex:1;min-width:0"></div>
+  </div>
 </section>
 
 <!-- 7. Timeline -->
