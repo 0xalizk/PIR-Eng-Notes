@@ -1,4 +1,4 @@
-## ThorPIR -- Engineering Notes
+## ThorPIR — Engineering Notes
 
 <a id="toc"></a>
 

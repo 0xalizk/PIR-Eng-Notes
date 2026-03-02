@@ -1,4 +1,4 @@
-## WhisPIR -- Engineering Notes
+## WhisPIR — Engineering Notes
 
 <a id="toc"></a>
 

@@ -1,4 +1,4 @@
-## VIA: Communication-Efficient Single-Server Private Information Retrieval -- Engineering Notes
+## VIA: Communication-Efficient Single-Server Private Information Retrieval — Engineering Notes
 
 <a id="toc"></a>
 

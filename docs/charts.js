@@ -1222,7 +1222,7 @@
         e.preventDefault();
         activeGroups = new Set(Object.keys(GROUP_COLORS));
         activeTiers = new Set([1, 2, 3]);
-        implFilter = true;
+        implFilter = null;
         Array.from(filterEl.querySelectorAll('.filter-pill')).forEach(function (p) {
           p.classList.add('active');
         });

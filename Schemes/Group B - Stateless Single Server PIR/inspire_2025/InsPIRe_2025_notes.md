@@ -1,4 +1,4 @@
-## InsPIRe: Communication-Efficient PIR with Server-side Preprocessing -- Engineering Notes
+## InsPIRe: Communication-Efficient PIR with Server-side Preprocessing — Engineering Notes
 
 <a id="toc"></a>
 

@@ -1,4 +1,4 @@
-## TreePIR -- Engineering Notes
+## TreePIR — Engineering Notes
 
 <a id="toc"></a>
 

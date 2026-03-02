@@ -1,4 +1,4 @@
-## Pirouette: Query Efficient Single-Server PIR -- Engineering Notes
+## Pirouette: Query Efficient Single-Server PIR — Engineering Notes
 
 <a id="toc"></a>
 

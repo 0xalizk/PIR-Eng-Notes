@@ -1,4 +1,4 @@
-## RMS24 -- Engineering Notes
+## RMS24 — Engineering Notes
 
 <a id="toc"></a>
 

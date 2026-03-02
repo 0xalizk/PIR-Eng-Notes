@@ -1,4 +1,4 @@
-## FrodoPIR -- Engineering Notes
+## FrodoPIR — Engineering Notes
 
 <a id="toc"></a>
 

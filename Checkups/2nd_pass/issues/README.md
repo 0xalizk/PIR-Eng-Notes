@@ -1,6 +1,6 @@
 ### 2nd Pass — Issues Found
 
-Each footnoted citation across all 34 engineering notes files was re-validated against its source PDF. One subagent per scheme read the notes file, extracted every `[^N]` footnote, checked it against the PDF (page numbers, section refs, quoted text, numerical values, units, arithmetic, attribution), and classified it as Correct, Minor, or Incorrect. The process was guided by the [validate-footnotes](../../../.claude/skills/validate-footnotes/SKILL.md) skill.
+Each footnoted citation across all 34 engineering notes files was re-validated against its source PDF. One subagent per scheme read the notes file, extracted every `[^N]` footnote, checked it against the PDF (page numbers, section refs, quoted text, numerical values, units, arithmetic, attribution), and classified it as Correct, Minor, or Incorrect. The process was guided by the [footnotes-checkup](../../../.claude/skills/footnotes-checkup/SKILL.md) skill.
 
 | Group | Footnotes | ${\color{green}\textsf{Correct}}$ | ${\color{orange}\textsf{Minor}}$ | ${\color{red}\textsf{Incorrect}}$ | Papers | Checkup Reports |
 |-------|-----------|---------|-------|-----------|--------|-----------------|

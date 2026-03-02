@@ -7,7 +7,7 @@
 <sub><nobr>1. <a href="#lineage">Lineage</a></nobr></sub><br>
 <sub><nobr>2. <a href="#core-idea"><b>Core Idea</b></a></nobr></sub><br>
 <sub><nobr>3. <a href="#cross-paradigm-comparison">Cross-Paradigm Comparison</a></nobr></sub><br>
-<sub><nobr>4. <a href="#cryptographic-foundations">Cryptographic Foundations</a></nobr></sub><br>
+<sub><nobr>4. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
 <sub><nobr>5. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
 <sub><nobr>6. <a href="#complexity"><b>Complexity</b></a></nobr></sub><br>
 <sub><nobr>7. <a href="#performance-benchmarks"><b>Performance Benchmarks</b></a></nobr></sub>
@@ -76,9 +76,9 @@ Finally, the paper introduces **keyword PIR** for sparse databases via two hashi
 
 All values from Table 5 (p. 13) for the 1MB database (5,000 elements of 288B) without recursion. Server costs from Table 3 (p. 12) for 288B entries with n=2^20 use recursion d=2.
 
-<a id="cryptographic-foundations"></a>
+<a id="cryptographic-foundation"></a>
 
-### Cryptographic Foundations <a href="#toc">⤴</a>
+### Cryptographic Foundation <a href="#toc">⤴</a>
 
 #### 1. Fan-Vercauteren (FV/BFV) — used by SealPIR and MulPIR
 

@@ -1,4 +1,4 @@
-## NPIR: High-Rate PIR for Databases with Moderate-Size Records -- Engineering Notes
+## NPIR: High-Rate PIR for Databases with Moderate-Size Records — Engineering Notes
 
 <a id="toc"></a>
 

@@ -4,7 +4,7 @@
 - verified every claim: footnoted citations, tables, protocol descriptions, complexity expressions, benchmarks, quotes
 - classified discrepancies as Incorrect or Minor
 - a second reviewer agent independently re-verified each finding, rejecting false positives and reclassifying severity
-- guided by [3rd-pass instructions](INSTRUCTIONS.md) and the [validate-footnotes](../../.claude/skills/validate-footnotes/SKILL.md) skill
+- guided by [3rd-pass instructions](INSTRUCTIONS.md) and the [footnotes-checkup](../../.claude/skills/footnotes-checkup/SKILL.md) skill
 
 | Group | Claims | ${\color{green}\textsf{Confirmed}}$ | ${\color{orange}\textsf{Minor}}$ | ${\color{red}\textsf{Incorrect}}$ | ${\color{gray}\textsf{Rejected}}$ | Papers | Checkup Reports |
 |-------|--------|-----------|-------|-----------|----------|--------|-----------------|

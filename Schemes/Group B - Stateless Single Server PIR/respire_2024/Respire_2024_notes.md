@@ -1,4 +1,4 @@
-## Respire: High-Rate PIR for Databases with Small Records -- Engineering Notes
+## Respire: High-Rate PIR for Databases with Small Records — Engineering Notes
 
 <a id="toc"></a>
 

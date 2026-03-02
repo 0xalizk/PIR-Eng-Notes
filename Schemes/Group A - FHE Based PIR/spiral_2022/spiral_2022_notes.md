@@ -1,4 +1,4 @@
-## Spiral: Fast, High-Rate Single-Server PIR via FHE Composition -- Engineering Notes
+## Spiral: Fast, High-Rate Single-Server PIR via FHE Composition — Engineering Notes
 
 <a id="toc"></a>
 
