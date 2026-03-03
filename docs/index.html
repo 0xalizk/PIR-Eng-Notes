@@ -42,7 +42,7 @@
 <section id="overview">
   <h2>PIR Benchs</h2>
   <details class="data-sources-toggle">
-    <summary><strong>Tier 1</strong> (26) Exact &mdash; from reported benchmarks in the paper</summary>
+    <summary><strong>Tier 1</strong> (24) Exact &mdash; from reported benchmarks in the paper</summary>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Scheme</th><th>Source</th></tr></thead>
@@ -66,25 +66,25 @@
           <tr><td>2022 FrodoPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/frodopir_2022/frodopir_2022_notes.md" target="_blank" rel="noopener noreferrer">Table 6, Table 7</a></td></tr>
           <tr><td>2022 SimplePIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md" target="_blank" rel="noopener noreferrer">Table 1, Table 8</a></td></tr>
           <tr><td>2022 Spiral</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/spiral_2022/spiral_2022_notes.md" target="_blank" rel="noopener noreferrer">Table 3, Table 5</a></td></tr>
-          <tr><td>2021 Addra/FastPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/addra_2021/addra_2021_notes.md" target="_blank" rel="noopener noreferrer">Figure 9, Figure 10</a></td></tr>
           <tr><td>2021 IncPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/incpir_2021/IncPIR_2021_notes.md" target="_blank" rel="noopener noreferrer">Figure 9, Figure 10</a></td></tr>
           <tr><td>2021 OnionPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/onionpir_2021/onionpir_2021_notes.md" target="_blank" rel="noopener noreferrer">Table 3, Table 4</a></td></tr>
           <tr><td>2019 KeywordPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.X.Extensions/keywordpir_2019/KeywordPIR_2019_notes.md" target="_blank" rel="noopener noreferrer">Table 3, Table 4</a></td></tr>
           <tr><td>2018 SealPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/sealpir_2018/sealpir_2018_notes.md" target="_blank" rel="noopener noreferrer">Figure 9</a></td></tr>
-          <tr><td>2016 XPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/xpir_2016/xpir_2016_notes.md" target="_blank" rel="noopener noreferrer">Figure 6, Figure 7, Figure 8</a></td></tr>
           <tr><td>2014 XPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/xpir_2014/xpir_2014_notes.md" target="_blank" rel="noopener noreferrer">Table 2, Table 3</a></td></tr>
         </tbody>
       </table>
     </div>
   </details>
   <details class="data-sources-toggle">
-    <summary><strong>Tier 2</strong> (2) Approximate &mdash; read from paper figures (no exact tables provided)</summary>
+    <summary><strong>Tier 2</strong> (4) Approximate &mdash; read from paper figures (no exact tables provided)</summary>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Scheme</th><th>Source</th><th>How estimated</th></tr></thead>
         <tbody>
           <tr><td>2024 VeriSimplePIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.C.Client.Independent.Preprocessing/verisimplepir_2024/VeriSimplePIR_2024_notes.md" target="_blank" rel="noopener noreferrer">Figure 7, Figure 8</a></td><td>Values read from paper figures (approximate)</td></tr>
           <tr><td>2024 WhisPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/whispir_2024/WhisPIR_2024_notes.md" target="_blank" rel="noopener noreferrer">Figure 1, Figure 2, Figure 4</a></td><td>Values read from paper figures (approximate)</td></tr>
+          <tr><td>2021 Addra/FastPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/addra_2021/addra_2021_notes.md" target="_blank" rel="noopener noreferrer">Figure 9, Figure 10</a></td><td>Values read from paper figures (approximate, log-scale)</td></tr>
+          <tr><td>2016 XPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/xpir_2016/xpir_2016_notes.md" target="_blank" rel="noopener noreferrer">Figure 6, Figure 7, Figure 8</a></td><td>Values read from paper figures (approximate, log-scale charts)</td></tr>
         </tbody>
       </table>
     </div>
@@ -182,8 +182,8 @@
     Purple step-line connects 2D frontiers.
   </p>
   <div class="chart-container" id="chart-pareto"></div>
-  <div class="chart-container" id="chart-pareto-comm-storage"></div>
   <div class="chart-container" id="chart-pareto-comm-client"></div>
+  <div class="chart-container" id="chart-pareto-comm-storage"></div>
   <div style="display:flex;align-items:center;max-width:none;width:calc(100% + 320px);margin-left:-160px;margin-top:48px">
     <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:14px;padding-right:12px;white-space:nowrap">Communication × Client Storage × Client Time</div>
     <div class="chart-container wide" id="chart-pareto-3d-comm" style="flex:1;min-width:0"></div>

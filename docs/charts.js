@@ -10,6 +10,7 @@
     A: 'FHE-Based', B: 'Stateless', C: 'Client-Indep. Preprocessing',
     D: 'Client-Dep. Preprocessing', X: 'Extensions'
   };
+  var GROUP_SYMBOLS_3D = { A: 'circle', B: 'square', C: 'diamond', D: 'cross', X: 'x' };
   var TIER_OPACITY = { 1: 1.0, 2: 0.8, 3: 0.55 };
   var TIER_LABELS = { 1: 'Exact', 2: 'Approx', 3: 'Asymp.' };
   var TIER_BADGE = { 1: '', 2: '\u2020', 3: '*' };
@@ -127,11 +128,11 @@
     plinko_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/plinko_2024/Plinko_2024_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 32B)' },
     singlepass_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/singlepass_2024/SinglePass_2024_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (3,000,000 \u00d7 32B)' },
     wangren_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/wangren_2024/WangRen_2024_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 32B)' },
-    keywordpir_2019: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.X.Extensions/keywordpir_2019/KeywordPIR_2019_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 288B)' },
+    keywordpir_2019: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.X.Extensions/keywordpir_2019/KeywordPIR_2019_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (262,144 \u00d7 288B)' },
     distributionalpir_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.X.Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md#complexity', tip: 'reference_db field: "38 GB Twitter DB, B=24"' },
     xpir_2014: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/xpir_2014/xpir_2014_notes.md#complexity', tip: 'reference_db: "N=2^32, d=5, bundled"' },
     xpir_2016: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/xpir_2016/xpir_2016_notes.md#complexity', tip: 'reference_db: "various, pre-processed static"' },
-    cwpir_2022: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/cwpir_2022/cwpir_2022_notes.md#complexity', tip: 'reference_db: "k=2, n=16384, 1 plaintext"' }
+    cwpir_2022: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/cwpir_2022/cwpir_2022_notes.md#complexity', tip: 'reference_db: "k=2, n=256, 1 plaintext"' }
   };
 
   // ── Helpers ────────────────────────────────────────────
@@ -1031,6 +1032,17 @@
     });
 
     var traces = [];
+    // legend-only swatches (correct group symbol)
+    Object.keys(GROUP_COLORS).forEach(function (g) {
+      if (!items.some(function (s) { return s.group === g; })) return;
+      traces.push({
+        x: [null], y: [null], z: [null], mode: 'markers', type: 'scatter3d',
+        name: GROUP_NAMES[g],
+        marker: { size: 8, color: GROUP_COLORS[g], symbol: GROUP_SYMBOLS_3D[g], line: { width: 1, color: t.text } },
+        hoverinfo: 'skip'
+      });
+    });
+    // data traces per group
     Object.keys(GROUP_COLORS).forEach(function (g) {
       var gItems = items.filter(function (s) { return s.group === g; });
       if (!gItems.length) return;
@@ -1039,13 +1051,14 @@
         y: gItems.map(function (s) { return getVal(s, 'client_storage_mb'); }),
         z: gItems.map(function (s) { return getVal(s, 'client_time_ms'); }),
         mode: 'markers+text', type: 'scatter3d', name: GROUP_NAMES[g],
+        showlegend: false,
         text: gItems.map(function (s) { return s.display_name; }),
         textposition: 'top center',
         textfont: { size: 9, color: t.muted },
         marker: {
-          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 10 : 5; }),
+          size: 6,
           color: GROUP_COLORS[g],
-          symbol: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 'diamond' : 'circle'; }),
+          symbol: GROUP_SYMBOLS_3D[g],
           opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
           line: { width: 1, color: t.text }
         },
@@ -1056,6 +1069,21 @@
         hoverinfo: 'text'
       });
     });
+    // Pareto ring overlay
+    if (pareto.length) {
+      traces.push({
+        x: pareto.map(function (s) { return s._totalComm; }),
+        y: pareto.map(function (s) { return getVal(s, 'client_storage_mb'); }),
+        z: pareto.map(function (s) { return getVal(s, 'client_time_ms'); }),
+        mode: 'markers', type: 'scatter3d', name: 'Pareto-optimal',
+        marker: { size: 14, color: 'rgba(0,0,0,0)', symbol: 'circle', line: { width: 3, color: '#a855f7' } },
+        hovertext: pareto.map(function (s) {
+          return s.display_name + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+            '<br><b>Pareto-optimal \u2605</b><br>Source: ' + (s.source_ref || 'N/A');
+        }),
+        hoverinfo: 'text'
+      });
+    }
 
     Plotly.newPlot(el, traces, baseLayout('Communication × Client Storage × Client Time', {
       scene: {
@@ -1092,6 +1120,17 @@
     });
 
     var traces = [];
+    // legend-only swatches (correct group symbol)
+    Object.keys(GROUP_COLORS).forEach(function (g) {
+      if (!items.some(function (s) { return s.group === g; })) return;
+      traces.push({
+        x: [null], y: [null], z: [null], mode: 'markers', type: 'scatter3d',
+        name: GROUP_NAMES[g],
+        marker: { size: 8, color: GROUP_COLORS[g], symbol: GROUP_SYMBOLS_3D[g], line: { width: 1, color: t.text } },
+        hoverinfo: 'skip'
+      });
+    });
+    // data traces per group
     Object.keys(GROUP_COLORS).forEach(function (g) {
       var gItems = items.filter(function (s) { return s.group === g; });
       if (!gItems.length) return;
@@ -1100,13 +1139,14 @@
         y: gItems.map(function (s) { return getVal(s, 'client_storage_mb'); }),
         z: gItems.map(function (s) { return getVal(s, 'client_time_ms'); }),
         mode: 'markers+text', type: 'scatter3d', name: GROUP_NAMES[g],
+        showlegend: false,
         text: gItems.map(function (s) { return s.display_name; }),
         textposition: 'top center',
         textfont: { size: 9, color: t.muted },
         marker: {
-          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 10 : 5; }),
+          size: 6,
           color: GROUP_COLORS[g],
-          symbol: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 'diamond' : 'circle'; }),
+          symbol: GROUP_SYMBOLS_3D[g],
           opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
           line: { width: 1, color: t.text }
         },
@@ -1117,6 +1157,21 @@
         hoverinfo: 'text'
       });
     });
+    // Pareto ring overlay
+    if (pareto.length) {
+      traces.push({
+        x: pareto.map(function (s) { return getVal(s, 'server_time_ms'); }),
+        y: pareto.map(function (s) { return getVal(s, 'client_storage_mb'); }),
+        z: pareto.map(function (s) { return getVal(s, 'client_time_ms'); }),
+        mode: 'markers', type: 'scatter3d', name: 'Pareto-optimal',
+        marker: { size: 14, color: 'rgba(0,0,0,0)', symbol: 'circle', line: { width: 3, color: '#a855f7' } },
+        hovertext: pareto.map(function (s) {
+          return s.display_name + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+            '<br><b>Pareto-optimal \u2605</b><br>Source: ' + (s.source_ref || 'N/A');
+        }),
+        hoverinfo: 'text'
+      });
+    }
 
     Plotly.newPlot(el, traces, baseLayout('Server Time × Client Storage × Client Time', {
       scene: {
