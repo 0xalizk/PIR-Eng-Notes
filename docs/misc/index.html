@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PIR Benchs — Misc</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8" integrity="sha384-cCVCZkAjYNxaYKbM8lsArLznDF/SvMFr1jcZrvOpSTCa0W40ZAdLzHCEulnUa5i7" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- Hamburger (mobile) -->
+<button class="hamburger" aria-label="Menu">&#9776;</button>
+<div class="sidebar-overlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <a href="../" class="sidebar-title">PIR Benchs</a>
+  <nav id="sidebar-nav"></nav>
+</aside>
+
+<!-- Main Content -->
+<main class="content">
+
+<!-- Timeline -->
+<section id="timeline">
+  <h2><a href="#timeline">Timeline</a></h2>
+  <p class="desc">
+    Throughput evolution by year.<br>
+    Bubble size inversely proportional to total communication (smaller bubble = more bandwidth-efficient). Color = group.
+  </p>
+  <div class="chart-container" id="chart-timeline"></div>
+</section>
+
+<!-- Scheme Catalog -->
+<section id="catalog">
+  <h2><a href="#catalog">Scheme Catalog</a></h2>
+
+  <div class="tier-legend-inline">
+    <span><strong>Tier 1:</strong> Exact benchmarks</span>
+    <span><strong>Tier 2:</strong> Read from paper figures (approximate)</span>
+    <span><strong>Tier 3:</strong> Asymptotic/theoretical only</span>
+  </div>
+
+  <div id="catalog-filters" class="filter-row"></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr id="catalog-header"></tr></thead>
+      <tbody id="catalog-body"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- References -->
+<section id="references">
+  <h2><a href="#references">References</a></h2>
+  <div class="links">
+    <a href="https://github.com/0xalizk/PIR-Eng-Notes" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+    <a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/data/pir_data.json" target="_blank" rel="noopener noreferrer">Raw Data</a>
+    <a href="https://hackmd.io/@keewoolee/SJyGoXCzZe#Taxonomy" target="_blank" rel="noopener noreferrer">Taxonomy</a>
+    <a href="https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434" target="_blank" rel="noopener noreferrer">Research</a>
+  </div>
+</section>
+
+</main>
+
+<script src="../nav.js"></script>
+<script src="../script.js"></script>
+<script src="../reported/charts.js"></script>
+</body>
+</html>

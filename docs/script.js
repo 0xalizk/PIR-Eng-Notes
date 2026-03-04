@@ -1,6 +1,6 @@
 /* ── Scroll-spy via IntersectionObserver ──────────────── */
 (function () {
-  var navLinks = document.querySelectorAll('.sidebar nav a[href^="#"]');
+  var navLinks = document.querySelectorAll('.sidebar nav a.nav-link[href^="#"]');
   var sections = [];
   navLinks.forEach(function (link) {
     var id = link.getAttribute('href').slice(1);
@@ -33,7 +33,7 @@
 })();
 
 /* ── Smooth scroll for nav links ─────────────────────── */
-document.querySelectorAll('.sidebar nav a[href^="#"]').forEach(function (link) {
+document.querySelectorAll('.sidebar nav a.nav-link[href^="#"]').forEach(function (link) {
   link.addEventListener('click', function (e) {
     var target = document.getElementById(this.getAttribute('href').slice(1));
     if (target) {

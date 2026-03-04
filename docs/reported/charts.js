@@ -826,10 +826,10 @@
       hoverinfo: 'skip'
     });
 
-    Plotly.newPlot(el, traces, baseLayout('Communication vs Server Time', {
+    Plotly.newPlot(el, traces, baseLayout('', {
       xaxis: { title: 'Total Communication (KB)', type: 'log', gridcolor: t.grid },
       yaxis: { title: 'Server Time (ms)', type: 'log', gridcolor: t.grid },
-      margin: { t: 48, r: 48, b: 100, l: 60 },
+      margin: { t: 16, r: 48, b: 100, l: 60 },
       legend: { orientation: 'h', y: -0.2 },
       height: 605
     }), plotConfig());
@@ -912,10 +912,10 @@
       hoverinfo: 'skip'
     });
 
-    Plotly.newPlot(el, traces, baseLayout('Communication vs Client Storage', {
+    Plotly.newPlot(el, traces, baseLayout('', {
       xaxis: { title: 'Total Communication (KB)', type: 'log', gridcolor: t.grid },
       yaxis: { title: 'Client Storage (MB)', type: 'log', gridcolor: t.grid },
-      margin: { t: 48, r: 48, b: 100, l: 60 },
+      margin: { t: 16, r: 48, b: 100, l: 60 },
       legend: { orientation: 'h', y: -0.2 },
       height: 605
     }), plotConfig());
@@ -998,10 +998,10 @@
       hoverinfo: 'skip'
     });
 
-    Plotly.newPlot(el, traces, baseLayout('Communication vs Client Time', {
+    Plotly.newPlot(el, traces, baseLayout('', {
       xaxis: { title: 'Total Communication (KB)', type: 'log', gridcolor: t.grid },
       yaxis: { title: 'Client Time (ms)', type: 'log', gridcolor: t.grid },
-      margin: { t: 48, r: 48, b: 100, l: 60 },
+      margin: { t: 16, r: 48, b: 100, l: 60 },
       legend: { orientation: 'h', y: -0.2 },
       height: 605
     }), plotConfig());
@@ -1085,7 +1085,7 @@
       });
     }
 
-    Plotly.newPlot(el, traces, baseLayout('Communication × Client Storage × Client Time', {
+    Plotly.newPlot(el, traces, baseLayout('', {
       scene: {
         xaxis: { title: 'Comm (KB)', type: 'log', gridcolor: t.grid },
         yaxis: { title: 'Storage (MB)', type: 'log', gridcolor: t.grid },
@@ -1173,7 +1173,7 @@
       });
     }
 
-    Plotly.newPlot(el, traces, baseLayout('Server Time × Client Storage × Client Time', {
+    Plotly.newPlot(el, traces, baseLayout('', {
       scene: {
         xaxis: { title: 'Server (ms)', type: 'log', gridcolor: t.grid },
         yaxis: { title: 'Storage (MB)', type: 'log', gridcolor: t.grid },
@@ -1664,7 +1664,11 @@
   }
 
   function init() {
-    fetch('data/pir_data.json')
+    // Resolve data path: charts.js lives in reported/, data in data/
+    // Script src tells us relative depth: "charts.js" → "../", "../charts.js" → "../../"
+    var scriptEl = document.querySelector('script[src$="charts.js"]');
+    var prefix = scriptEl ? scriptEl.getAttribute('src').replace('charts.js', '') : '';
+    fetch(prefix + '../data/reported.json')
       .then(function (r) { return r.json(); })
       .then(function (raw) {
         // clear loading indicators
