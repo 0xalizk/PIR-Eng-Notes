@@ -7,16 +7,14 @@
    benchmarks/
      README.md
      PLAN.md (this file)
-     implementations/           (gitignored)
+     implementations/              # gitignored — cloned repos
        README.md
-       S3PIR/                   (cloned)
-       rms24-plinko-spec/       (cloned)
      replication_benchs/
-       rms24_2024/run_notes.md
-       plinko_2024/run_notes.md
+       README.md
+       <scheme>/run_notes.md
      standardized_benchs/
-       rms24_2024/run_notes.md
-       plinko_2024/run_notes.md
+       README.md
+       <scheme>/run_notes.md
    ```
 
 2. **README.md written** — setup instructions, parameter tables, conventions, caveats
