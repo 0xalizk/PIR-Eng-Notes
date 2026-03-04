@@ -1683,8 +1683,12 @@
         if (window.location.hash) {
           setTimeout(function () {
             var target = document.getElementById(window.location.hash.slice(1));
-            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (target) target.scrollIntoView({ behavior: 'auto', block: 'start' });
+            // Enable smooth scroll only after initial anchor jump
+            setTimeout(function () { document.documentElement.classList.add('smooth'); }, 100);
           }, 600);
+        } else {
+          document.documentElement.classList.add('smooth');
         }
       })
       .catch(function (err) {

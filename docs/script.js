@@ -46,6 +46,11 @@ document.querySelectorAll('.sidebar nav a.nav-link[href^="#"]').forEach(function
   });
 });
 
+/* ── Enable smooth scroll on pages without charts ────── */
+if (!document.querySelector('script[src$="charts.js"]')) {
+  document.documentElement.classList.add('smooth');
+}
+
 /* ── Mobile hamburger ────────────────────────────────── */
 (function () {
   var btn = document.querySelector('.hamburger');
