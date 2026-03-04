@@ -44,6 +44,8 @@
 
 html { scroll-padding-top: 24px; }
 html.smooth { scroll-behavior: smooth; }
+/* Hide content until charts render (prevents anchor-scroll jank) */
+.content.loading { opacity: 0; }
 body {
   font-family: var(--font);
   background: var(--bg);

@@ -1678,18 +1678,17 @@
         renderCharts(_cachedData);
         renderCatalog(_cachedData);
 
-        // After charts render, re-scroll to the URL hash anchor.
-        // Plotly.newPlot is async — wait for layout reflow before scrolling.
-        if (window.location.hash) {
-          setTimeout(function () {
+        // Reveal page after charts render, then jump to anchor instantly
+        setTimeout(function () {
+          var main = document.querySelector('.content.loading');
+          if (main) main.classList.remove('loading');
+          if (window.location.hash) {
             var target = document.getElementById(window.location.hash.slice(1));
             if (target) target.scrollIntoView({ behavior: 'auto', block: 'start' });
-            // Enable smooth scroll only after initial anchor jump
-            setTimeout(function () { document.documentElement.classList.add('smooth'); }, 100);
-          }, 600);
-        } else {
-          document.documentElement.classList.add('smooth');
-        }
+          }
+          // Enable smooth scroll for subsequent nav clicks
+          setTimeout(function () { document.documentElement.classList.add('smooth'); }, 100);
+        }, 700);
       })
       .catch(function (err) {
         console.error('Failed to load PIR data:', err);
