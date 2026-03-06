@@ -243,30 +243,32 @@ h4 {
 }
 .radar-mode-tabs {
   display: none;
-  gap: 6px;
-  margin: 8px 0 6px;
   justify-content: center;
+  margin: 8px 0 6px;
+}
+.radar-mode-tabs-inner {
+  display: inline-flex;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
 }
 .radar-mode-tab {
   font-family: var(--font);
   font-size: 12px;
-  padding: 4px 12px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  padding: 5px 16px;
   background: transparent;
+  border: none;
   color: var(--text-muted);
   cursor: pointer;
   transition: all 0.15s;
 }
-.radar-mode-tab:hover {
-  background: var(--nav-hover);
-  color: var(--text);
+.radar-mode-tab:hover:not(.active) {
+  background: var(--bg-alt);
 }
 .radar-mode-tab.active {
-  background: var(--bg-alt);
-  color: var(--text);
-  font-weight: 600;
-  border-color: var(--link);
+  background: var(--link);
+  color: #fff;
+  font-weight: 500;
 }
 .radar-tier-legend {
   display: none;
