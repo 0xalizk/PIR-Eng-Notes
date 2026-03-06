@@ -104,6 +104,37 @@
     <h3><a href="#overview">Overview</a></h3>
     <div class="radar-tabs" id="radar-tabs"></div>
     <div class="radar-tier-legend" id="radar-tier-legend"></div>
+    <div class="radar-mode-tabs" id="radar-mode-tabs">
+      <button class="radar-mode-tab active" data-mode="relative">Relative</button>
+      <button class="radar-mode-tab" data-mode="absolute">Absolute</button>
+    </div>
+    <details class="rank-explainer-toggle" id="radar-explainer-relative" style="display:none;">
+      <summary>How relative rank is determined</summary>
+      <div class="rank-explainer">
+        <p>Each radar axis shows a <strong>percentile rank</strong> (0–1), where <strong>0 = best</strong> (center) and <strong>1 = worst</strong> (outer edge) among all schemes in the current view.</p>
+        <ol>
+          <li><strong>Collect &amp; sort</strong> — For each metric, all reported values are gathered and sorted by "better is first." For most metrics (query size, response size, server time, client time, storage) lower is better; for throughput, higher is better.</li>
+          <li><strong>Percentile rank</strong> — <code>rank = indexOf(value) / (totalValues − 1)</code>. The best scheme gets 0.0, the worst gets 1.0. If only one scheme reports a metric, it defaults to 0.5.</li>
+          <li><strong>Missing data</strong> — If a scheme doesn't report a metric, it maps to 1.0 (outer edge) on that axis.</li>
+          <li><strong>Tier 3 discount</strong> — For composite scoring only (not radar display), Tier 3 (asymptotic) ranks are shrunk toward the middle: <code>rank × 0.8 + 0.1</code>, preventing theoretical estimates from dominating.</li>
+        </ol>
+        <p><strong>Reading:</strong> Smaller polygon = better. Hover shows raw value + rank percentage. Line style: solid = Tier 1, dashed = Tier 2, dotted = Tier 3. Fill opacity also decreases with tier.</p>
+        <p>A red <strong style="color:#e74c3c">?</strong> at the outer edge marks metrics with no reported data — these default to rank 1.0 (worst) so the polygon visibly stretches outward on that axis.</p>
+      </div>
+    </details>
+    <details class="rank-explainer-toggle" id="radar-explainer-absolute" style="display:none;">
+      <summary>How absolute normalization works</summary>
+      <div class="rank-explainer">
+        <p>Each radar axis shows a <strong>log-scale normalized</strong> value (0–1), where <strong>0 = best</strong> (center) and <strong>1 = worst</strong> (outer edge).</p>
+        <ol>
+          <li><strong>Log transform</strong> — Raw values are log-transformed to handle orders-of-magnitude differences between schemes (e.g. 1 ms vs 10,000 ms).</li>
+          <li><strong>Min-max normalize</strong> — <code>norm = (log(v) − log(min)) / (log(max) − log(min))</code>. The best value maps to 0.0, the worst to 1.0.</li>
+          <li><strong>Proportional gaps preserved</strong> — Unlike relative mode, a 1000× difference in raw values produces a much larger radial gap than a 2× difference.</li>
+          <li><strong>Missing data</strong> — Same as relative: maps to 1.0 (outer edge), marked with a red <strong style="color:#e74c3c">?</strong>.</li>
+        </ol>
+        <p><strong>Reading:</strong> Smaller polygon = better. The shape reflects actual proportional performance differences, not just ordinal rank.</p>
+      </div>
+    </details>
     <div id="radar-all-panel">
       <div class="chart-container wide" id="chart-heatmap"><div class="chart-loading">Loading charts...</div></div>
       <p class="chart-note">

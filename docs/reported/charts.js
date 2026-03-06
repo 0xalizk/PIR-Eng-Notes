@@ -313,6 +313,31 @@
       });
     });
 
+    // Absolute normalization: log-scale min-max per metric (0 = best, 1 = worst)
+    var absMin = {}, absMax = {};
+    ALL_METRICS.forEach(function (m) {
+      var vals = allMetricVals[m].filter(function (v) { return v > 0; });
+      if (!vals.length) { absMin[m] = 0; absMax[m] = 1; return; }
+      var logs = vals.map(function (v) { return Math.log(v); });
+      absMin[m] = Math.min.apply(null, logs);
+      absMax[m] = Math.max.apply(null, logs);
+    });
+    data.forEach(function (s) {
+      s._absNorm = {};
+      ALL_METRICS.forEach(function (m) {
+        var v = getVal(s, m);
+        if (v !== null && v !== undefined && v > 0) {
+          var logV = Math.log(v);
+          var range = absMax[m] - absMin[m];
+          var norm = range > 0 ? (logV - absMin[m]) / range : 0.5;
+          // Invert for higher-is-better so 0 = best for all metrics
+          s._absNorm[m] = HIGHER_IS_BETTER[m] ? 1 - norm : norm;
+        } else {
+          s._absNorm[m] = null;
+        }
+      });
+    });
+
     return data;
   }
 
@@ -1218,12 +1243,14 @@
 
   // ── 6f. Radar — Tabbed per DB-size tier, 2-per-row grid ──
   var _lastRadarTab = null;
+  var _radarMode = 'relative'; // 'relative' | 'absolute'
 
   function renderRadar(data) {
     var tabsEl = document.getElementById('radar-tabs');
     var gridEl = document.getElementById('radar-grid');
     var allPanel = document.getElementById('radar-all-panel');
     var legendEl = document.getElementById('radar-tier-legend');
+    var modeTabsEl = document.getElementById('radar-mode-tabs');
     if (!tabsEl || !gridEl) return;
 
     // build construction-type legend (once)
@@ -1240,6 +1267,35 @@
         span.appendChild(document.createTextNode(GROUP_NAMES[g]));
         legendEl.appendChild(span);
       });
+
+      // tier line-style legend (separate row)
+      var tierDiv = document.createElement('div');
+      tierDiv.className = 'construction-legend';
+      tierDiv.style.marginTop = '6px';
+      [
+        { label: 'Tier 1 (Exact)',   dash: '' },
+        { label: 'Tier 2 (Approx.)', dash: '6,4' },
+        { label: 'Tier 3 (Asymp.)',  dash: '2,3' }
+      ].forEach(function (t) {
+        var item = document.createElement('span');
+        item.className = 'construction-legend-item';
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '24');
+        svg.setAttribute('height', '10');
+        var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', '0');
+        line.setAttribute('y1', '5');
+        line.setAttribute('x2', '24');
+        line.setAttribute('y2', '5');
+        line.setAttribute('stroke', 'var(--text-muted)');
+        line.setAttribute('stroke-width', '2');
+        if (t.dash) line.setAttribute('stroke-dasharray', t.dash);
+        svg.appendChild(line);
+        item.appendChild(svg);
+        item.appendChild(document.createTextNode(t.label));
+        tierDiv.appendChild(item);
+      });
+      legendEl.parentNode.insertBefore(tierDiv, legendEl.nextSibling);
     }
 
     var radarMetrics = ALL_METRICS.filter(function (m) {
@@ -1260,6 +1316,11 @@
       gridEl.innerHTML = '';
       if (allPanel) allPanel.style.display = '';
       if (legendEl) legendEl.style.display = 'none';
+      if (modeTabsEl) modeTabsEl.style.display = 'none';
+      var re = document.getElementById('radar-explainer-relative');
+      var ae = document.getElementById('radar-explainer-absolute');
+      if (re) re.style.display = 'none';
+      if (ae) ae.style.display = 'none';
     }
 
     function drawTier(tier) {
@@ -1270,8 +1331,14 @@
       });
       if (allPanel) allPanel.style.display = 'none';
       if (legendEl) legendEl.style.display = 'flex';
+      if (modeTabsEl) modeTabsEl.style.display = 'flex';
+      var re = document.getElementById('radar-explainer-relative');
+      var ae = document.getElementById('radar-explainer-absolute');
+      if (re) re.style.display = _radarMode === 'relative' ? '' : 'none';
+      if (ae) ae.style.display = _radarMode === 'absolute' ? '' : 'none';
       gridEl.style.display = '';
       gridEl.innerHTML = '';
+      var useAbs = _radarMode === 'absolute';
 
       var schemes = filterByDbSize(data, tier)
         .filter(function (s) { return s.group !== 'X'; }) // Group X excluded from radar
@@ -1315,8 +1382,9 @@
         var plotDiv = document.createElement('div');
         cell.appendChild(plotDiv);
 
+        var vals = useAbs ? s._absNorm : s._ranks;
         var r = radarMetrics.map(function (m) {
-          return s._ranks[m] !== null ? s._ranks[m] : 1;
+          return vals[m] !== null ? vals[m] : 1;
         });
         r.push(r[0]);
 
@@ -1332,20 +1400,47 @@
           fillcolor: tierFill[s.data_tier] || color + '22',
           hovertext: radarMetrics.map(function (m) {
             var raw = getVal(s, m);
+            var rankLine = useAbs
+              ? 'Log-norm: ' + (s._absNorm[m] !== null ? (s._absNorm[m] * 100).toFixed(0) + '%' : 'N/A')
+              : 'Rank: ' + (s._ranks[m] !== null ? (s._ranks[m] * 100).toFixed(0) + '%' : 'N/A');
             return s.display_name + '<br>' + METRIC_LABELS[m] + ': ' + (raw !== null ? formatNum(raw) : 'N/A') +
-              '<br>Rank: ' + (s._ranks[m] !== null ? (s._ranks[m] * 100).toFixed(0) + '%' : 'N/A') +
+              '<br>' + rankLine +
               '<br>Group: ' + s.group + ' (' + GROUP_NAMES[s.group] + ')' +
               '<br>Source: ' + (s.source_ref || 'N/A');
           }),
           hoverinfo: 'text'
         };
 
+        // Missing-data markers: red "?" at outer edge where data is null
+        var missingR = [], missingTheta = [], missingText = [];
+        radarMetrics.forEach(function (m, i) {
+          if (vals[m] === null) {
+            missingR.push(1);
+            missingTheta.push(theta[i]);
+            missingText.push(METRIC_LABELS[m] + ': no data');
+          }
+        });
+        var traces = [trace];
+        if (missingR.length) {
+          traces.push({
+            type: 'scatterpolar', mode: 'markers+text',
+            r: missingR, theta: missingTheta,
+            text: missingR.map(function () { return '?'; }),
+            textposition: 'top center',
+            textfont: { size: 10, color: '#e74c3c', family: 'Ubuntu, sans-serif' },
+            marker: { size: 7, color: 'rgba(0,0,0,0)', line: { color: '#e74c3c', width: 1.5 } },
+            hovertext: missingText,
+            hoverinfo: 'text',
+            showlegend: false
+          });
+        }
+
         var layout = {
           polar: {
             radialaxis: {
               visible: true, range: [0, 1],
               tickvals: [0, 0.5, 1],
-              ticktext: ['Best', 'Mid', 'Worst'],
+              ticktext: useAbs ? ['Best', '', 'Worst'] : ['Best', 'Mid', 'Worst'],
               gridcolor: t.grid, linecolor: t.grid,
               tickfont: { color: t.muted, size: 9 }
             },
@@ -1369,7 +1464,7 @@
           }]
         };
 
-        Plotly.newPlot(plotDiv, [trace], layout, plotConfig());
+        Plotly.newPlot(plotDiv, traces, layout, plotConfig());
       });
     }
 
@@ -1393,6 +1488,27 @@
       btn.addEventListener('click', function () { drawTier(tier); });
       tabsEl.appendChild(btn);
     });
+
+    // Wire up mode tabs (Relative / Absolute)
+    var relExplainer = document.getElementById('radar-explainer-relative');
+    var absExplainer = document.getElementById('radar-explainer-absolute');
+    function updateExplainer() {
+      if (relExplainer) relExplainer.style.display = _radarMode === 'relative' ? '' : 'none';
+      if (absExplainer) absExplainer.style.display = _radarMode === 'absolute' ? '' : 'none';
+    }
+    if (modeTabsEl) {
+      Array.from(modeTabsEl.querySelectorAll('.radar-mode-tab')).forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          _radarMode = btn.dataset.mode;
+          Array.from(modeTabsEl.querySelectorAll('.radar-mode-tab')).forEach(function (b) {
+            b.classList.toggle('active', b.dataset.mode === _radarMode);
+          });
+          updateExplainer();
+          // re-draw current tier
+          if (activeTab && activeTab !== 'all') drawTier(activeTab);
+        });
+      });
+    }
 
     // restore last tab or default to <= 1 GB
     if (_lastRadarTab === 'all') { showAll(); }
