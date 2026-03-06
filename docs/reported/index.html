@@ -121,6 +121,13 @@
 <section id="communication">
   <h2><a href="#communication">Communication</a></h2>
   <p class="desc">Dot size = server time (larger = slower).</p>
+  <div class="db-size-tabs">
+    <button class="db-tab active" data-tier="tiny">&le; 1 GB</button>
+    <button class="db-tab" data-tier="small">1-8 GB</button>
+    <button class="db-tab" data-tier="medium">8-32 GB</button>
+    <button class="db-tab" data-tier="large">&gt; 32 GB</button>
+    <button class="db-tab" data-tier="1-bit">1-bit</button>
+  </div>
   <div class="chart-container" id="chart-communication"></div>
 </section>
 
@@ -128,7 +135,13 @@
 <section id="server-perf">
   <h2><a href="#server-perf">Server Performance</a></h2>
   <p class="subtitle">Throughput and server computation time</p>
-
+  <div class="db-size-tabs">
+    <button class="db-tab active" data-tier="tiny">&le; 1 GB</button>
+    <button class="db-tab" data-tier="small">1-8 GB</button>
+    <button class="db-tab" data-tier="medium">8-32 GB</button>
+    <button class="db-tab" data-tier="large">&gt; 32 GB</button>
+    <button class="db-tab" data-tier="1-bit">1-bit</button>
+  </div>
   <div class="chart-pair">
     <div class="chart-container" id="chart-throughput"></div>
     <div class="chart-container" id="chart-server-time"></div>
@@ -139,12 +152,26 @@
 <section id="client-cost">
   <h2><a href="#client-cost">Client Compute</a></h2>
   <p class="subtitle">Client-side computation time (only ~15 schemes report this metric)</p>
+  <div class="db-size-tabs">
+    <button class="db-tab active" data-tier="tiny">&le; 1 GB</button>
+    <button class="db-tab" data-tier="small">1-8 GB</button>
+    <button class="db-tab" data-tier="medium">8-32 GB</button>
+    <button class="db-tab" data-tier="large">&gt; 32 GB</button>
+    <button class="db-tab" data-tier="1-bit">1-bit</button>
+  </div>
   <div class="chart-container" id="chart-client-cost"></div>
 </section>
 
 <!-- 5. Offline & Storage -->
 <section id="offline-storage">
   <h2><a href="#offline-storage">Offline &amp; Storage</a></h2>
+  <div class="db-size-tabs">
+    <button class="db-tab active" data-tier="tiny">&le; 1 GB</button>
+    <button class="db-tab" data-tier="small">1-8 GB</button>
+    <button class="db-tab" data-tier="medium">8-32 GB</button>
+    <button class="db-tab" data-tier="large">&gt; 32 GB</button>
+    <button class="db-tab" data-tier="1-bit">1-bit</button>
+  </div>
   <details class="data-sources-toggle">
     <summary><b>Offline</b> — init client-server data exchange before querying can begin</summary>
     <table class="inline-table">

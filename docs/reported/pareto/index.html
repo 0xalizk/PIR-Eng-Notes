@@ -31,22 +31,56 @@
     Starred points are Pareto-optimal (no other scheme is better on all axes).
     Purple step-line connects 2D frontiers.
   </p>
-
   <h4 id="pareto-comm-server"><a href="#pareto-comm-server">Communication vs Server Time:</a></h4>
+  <div class="db-size-tabs">
+    <button class="db-tab active" data-tier="tiny">&le; 1 GB</button>
+    <button class="db-tab" data-tier="small">1-8 GB</button>
+    <button class="db-tab" data-tier="medium">8-32 GB</button>
+    <button class="db-tab" data-tier="large">&gt; 32 GB</button>
+    <button class="db-tab" data-tier="1-bit">1-bit</button>
+  </div>
   <div class="chart-container" id="chart-pareto"></div>
 
   <h4 id="pareto-comm-client"><a href="#pareto-comm-client">Communication vs Client Time:</a></h4>
+  <div class="db-size-tabs">
+    <button class="db-tab active" data-tier="tiny">&le; 1 GB</button>
+    <button class="db-tab" data-tier="small">1-8 GB</button>
+    <button class="db-tab" data-tier="medium">8-32 GB</button>
+    <button class="db-tab" data-tier="large">&gt; 32 GB</button>
+    <button class="db-tab" data-tier="1-bit">1-bit</button>
+  </div>
   <div class="chart-container" id="chart-pareto-comm-client"></div>
 
   <h4 id="pareto-comm-storage"><a href="#pareto-comm-storage">Communication vs Client Storage:</a></h4>
+  <div class="db-size-tabs">
+    <button class="db-tab active" data-tier="tiny">&le; 1 GB</button>
+    <button class="db-tab" data-tier="small">1-8 GB</button>
+    <button class="db-tab" data-tier="medium">8-32 GB</button>
+    <button class="db-tab" data-tier="large">&gt; 32 GB</button>
+    <button class="db-tab" data-tier="1-bit">1-bit</button>
+  </div>
   <div class="chart-container" id="chart-pareto-comm-storage"></div>
 
   <h4 id="pareto-3d-comm"><a href="#pareto-3d-comm">Communication × Client Storage × Client Time:</a></h4>
+  <div class="db-size-tabs">
+    <button class="db-tab active" data-tier="tiny">&le; 1 GB</button>
+    <button class="db-tab" data-tier="small">1-8 GB</button>
+    <button class="db-tab" data-tier="medium">8-32 GB</button>
+    <button class="db-tab" data-tier="large">&gt; 32 GB</button>
+    <button class="db-tab" data-tier="1-bit">1-bit</button>
+  </div>
   <div style="display:flex;align-items:center;max-width:none;width:calc(100% + 320px);margin-left:-160px;margin-top:12px">
     <div class="chart-container wide" id="chart-pareto-3d-comm" style="flex:1;min-width:0"></div>
   </div>
 
   <h4 id="pareto-3d-server"><a href="#pareto-3d-server">Server Time × Client Storage × Client Time:</a></h4>
+  <div class="db-size-tabs">
+    <button class="db-tab active" data-tier="tiny">&le; 1 GB</button>
+    <button class="db-tab" data-tier="small">1-8 GB</button>
+    <button class="db-tab" data-tier="medium">8-32 GB</button>
+    <button class="db-tab" data-tier="large">&gt; 32 GB</button>
+    <button class="db-tab" data-tier="1-bit">1-bit</button>
+  </div>
   <div style="display:flex;align-items:center;max-width:none;width:calc(100% + 320px);margin-left:-160px;margin-top:12px">
     <div class="chart-container wide" id="chart-pareto-3d-server" style="flex:1;min-width:0"></div>
   </div>

@@ -11,6 +11,17 @@
     D: 'Client-Dep. Preprocessing', X: 'Extensions'
   };
   var GROUP_SYMBOLS_3D = { A: 'circle', B: 'square', C: 'diamond', D: 'cross', X: 'x' };
+  // GROUP_COLORS/NAMES/SYMBOLS represent construction type (A=FHE, B=Stateless, etc.)
+
+  var DB_SIZE_TIERS = ['tiny', 'small', 'medium', 'large', '1-bit'];
+  var DB_SIZE_LABELS = {
+    tiny: '\u2264 1 GB', small: '1\u20138 GB', medium: '8\u201332 GB',
+    large: '> 32 GB', '1-bit': '1-bit'
+  };
+  var DB_SIZE_COLORS = {
+    tiny: '#9b59b6', small: '#3498db', medium: '#e67e22',
+    large: '#e74c3c', '1-bit': '#17becf'
+  };
   var TIER_OPACITY = { 1: 1.0, 2: 0.8, 3: 0.55 };
   var TIER_LABELS = { 1: 'Exact', 2: 'Approx', 3: 'Asymp.' };
   var TIER_BADGE = { 1: '', 2: '\u2020', 3: '*' };
@@ -198,6 +209,24 @@
   }
   function barLeftMargin() { return isMobile() ? 110 : 140; }
 
+  function entrySizeLabel(s) {
+    var c = s.concrete;
+    if (!c) return null;
+    if (c.entry_size_bytes === null || c.entry_size_bytes === undefined) {
+      if (c.reference_db && /1[- ]?bit/i.test(c.reference_db)) return '1-bit';
+      return null;
+    }
+    var b = c.entry_size_bytes;
+    if (b >= 1024) return (b / 1024).toFixed(b % 1024 === 0 ? 0 : 1) + ' KB';
+    return b + ' B';
+  }
+
+  function filterByDbSize(data, tier) {
+    return data.filter(function (s) {
+      return s.db_size_categories && s.db_size_categories.indexOf(tier) >= 0;
+    });
+  }
+
   function plotConfig() {
     return { responsive: true, displayModeBar: false };
   }
@@ -311,7 +340,7 @@
         var hoverVal = raw !== null
           ? (lblMatch ? formatNum(raw) + ' ' + lblMatch[2] : formatNum(raw))
           : 'N/A';
-        var hover = s.display_name + '<br>' + (lblMatch ? lblMatch[1] : lbl) + ': ' + hoverVal +
+        var hover = s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>' + (lblMatch ? lblMatch[1] : lbl) + ': ' + hoverVal +
           '<br>Tier: ' + TIER_LABELS[s.data_tier] +
           '<br>Group: ' + s.group + ' (' + GROUP_NAMES[s.group] + ')' +
           '<br>Composite: ' + s._composite.toFixed(3) +
@@ -448,7 +477,7 @@
       g.x.push(qk);
       g.y.push(rk);
       g.names.push(s.display_name);
-      g.text.push(s.display_name + '<br>Query: ' + formatNum(qk) + ' KB<br>Response: ' + formatNum(rk) + ' KB<br>Source: ' + (s.source_ref || 'N/A'));
+      g.text.push(s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Query: ' + formatNum(qk) + ' KB<br>Response: ' + formatNum(rk) + ' KB<br>Source: ' + (s.source_ref || 'N/A'));
       g.marker.color.push(GROUP_COLORS[s.group]);
       g.marker.opacity.push(TIER_OPACITY[s.data_tier]);
       var st = getVal(s, 'server_time_ms');
@@ -572,7 +601,7 @@
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        return s.display_name + '<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Source: ' + (s.source_ref || 'N/A');
+        return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Source: ' + (s.source_ref || 'N/A');
       }),
       hoverinfo: 'text'
     });
@@ -613,7 +642,7 @@
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        return s.display_name + '<br>Server Time: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A');
+        return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server Time: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A');
       }),
       hoverinfo: 'text'
     });
@@ -652,7 +681,7 @@
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        return s.display_name + '<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A');
+        return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A');
       }),
       hoverinfo: 'text'
     }], baseLayout('Client Computation Time (ms)', {
@@ -701,7 +730,7 @@
       cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'offline_hint_mb');
-        return v !== null ? s.display_name + '<br>Offline: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') : '';
+        return v !== null ? s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Offline: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') : '';
       }),
       hoverinfo: 'text'
     });
@@ -721,7 +750,7 @@
       cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'client_storage_mb');
-        return v !== null ? s.display_name + '<br>Client Storage: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') : '';
+        return v !== null ? s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Client Storage: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') : '';
       }),
       hoverinfo: 'text'
     });
@@ -794,7 +823,7 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms' +
+          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms' +
             (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
         }),
         hoverinfo: 'text'
@@ -884,7 +913,7 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' +
+          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' +
             (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
         }),
         hoverinfo: 'text'
@@ -970,7 +999,7 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
             (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
         }),
         hoverinfo: 'text'
@@ -1063,7 +1092,7 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
             (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
         }),
         hoverinfo: 'text'
@@ -1078,7 +1107,7 @@
         mode: 'markers', type: 'scatter3d', name: 'Pareto-optimal',
         marker: { size: 14, color: 'rgba(0,0,0,0)', symbol: 'circle', line: { width: 3, color: '#a855f7' } },
         hovertext: pareto.map(function (s) {
-          return s.display_name + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
             '<br><b>Pareto-optimal \u2605</b><br>Source: ' + (s.source_ref || 'N/A');
         }),
         hoverinfo: 'text'
@@ -1151,7 +1180,7 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
             (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
         }),
         hoverinfo: 'text'
@@ -1166,7 +1195,7 @@
         mode: 'markers', type: 'scatter3d', name: 'Pareto-optimal',
         marker: { size: 14, color: 'rgba(0,0,0,0)', symbol: 'circle', line: { width: 3, color: '#a855f7' } },
         hovertext: pareto.map(function (s) {
-          return s.display_name + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
             '<br><b>Pareto-optimal \u2605</b><br>Source: ' + (s.source_ref || 'N/A');
         }),
         hoverinfo: 'text'
@@ -1187,14 +1216,8 @@
     }), plotConfig());
   }
 
-  // ── 6f. Radar — Tabbed per-group, 3-per-row grid ─────
+  // ── 6f. Radar — Tabbed per DB-size tier, 2-per-row grid ──
   var _lastRadarTab = null;
-  var RADAR_GROUPS = [
-    { key: 'A', label: 'FHE-Based' },
-    { key: 'B', label: 'Stateless' },
-    { key: 'C', label: 'Client-Indep. Preprocessing' },
-    { key: 'D', label: 'Client-Dep. Preprocessing' }
-  ];
 
   function renderRadar(data) {
     var tabsEl = document.getElementById('radar-tabs');
@@ -1203,21 +1226,18 @@
     var legendEl = document.getElementById('radar-tier-legend');
     if (!tabsEl || !gridEl) return;
 
-    // build tier legend (once)
+    // build construction-type legend (once)
     if (legendEl && !legendEl.hasChildNodes()) {
-      var tierInfo = [
-        { label: 'Tier 1 — Exact', dash: 'solid', fill: 0.13 },
-        { label: 'Tier 2 — Approx', dash: 'dashed', fill: 0.05 },
-        { label: 'Tier 3 — From asymptotics', dash: 'dotted', fill: 0 }
-      ];
-      tierInfo.forEach(function (ti) {
+      legendEl.className = 'construction-legend';
+      Object.keys(GROUP_COLORS).forEach(function (g) {
+        if (g === 'X') return; // excluded from radar per convention
         var span = document.createElement('span');
-        var swatch = document.createElement('span');
-        swatch.className = 'tier-swatch';
-        swatch.style.background = ti.fill > 0 ? 'rgba(120,120,120,' + ti.fill + ')' : 'transparent';
-        swatch.style.border = '2px ' + ti.dash + ' var(--text-muted)';
-        span.appendChild(swatch);
-        span.appendChild(document.createTextNode(ti.label));
+        span.className = 'construction-legend-item';
+        var dot = document.createElement('span');
+        dot.className = 'construction-dot';
+        dot.style.background = GROUP_COLORS[g];
+        span.appendChild(dot);
+        span.appendChild(document.createTextNode(GROUP_NAMES[g]));
         legendEl.appendChild(span);
       });
     }
@@ -1228,59 +1248,51 @@
     var theta = radarMetrics.map(function (m) { return METRIC_LABELS[m]; });
     theta.push(theta[0]);
 
-    // activeTab persists via closure in outer scope — see _lastRadarTab
     var activeTab = _lastRadarTab || null;
 
     function showAll() {
       activeTab = 'all';
       _lastRadarTab = 'all';
-
       Array.from(tabsEl.children).forEach(function (btn) {
-        btn.classList.toggle('active', btn.dataset.group === 'all');
+        btn.classList.toggle('active', btn.dataset.tier === 'all');
       });
-
       gridEl.style.display = 'none';
       gridEl.innerHTML = '';
       if (allPanel) allPanel.style.display = '';
-      if (legendEl) legendEl.classList.remove('visible');
+      if (legendEl) legendEl.style.display = 'none';
     }
 
-    function drawGroup(groupKey) {
-      activeTab = groupKey;
-      _lastRadarTab = groupKey;
-
-      // update tab active state
+    function drawTier(tier) {
+      activeTab = tier;
+      _lastRadarTab = tier;
       Array.from(tabsEl.children).forEach(function (btn) {
-        btn.classList.toggle('active', btn.dataset.group === groupKey);
+        btn.classList.toggle('active', btn.dataset.tier === tier);
       });
-
-      // hide heatmap, show radar grid + legend
       if (allPanel) allPanel.style.display = 'none';
-      if (legendEl) legendEl.classList.add('visible');
+      if (legendEl) legendEl.style.display = 'flex';
       gridEl.style.display = '';
-
-      // clear grid
       gridEl.innerHTML = '';
 
-      var schemes = data.filter(function (s) { return s.group === groupKey; })
+      var schemes = filterByDbSize(data, tier)
+        .filter(function (s) { return s.group !== 'X'; }) // Group X excluded from radar
         .sort(function (a, b) {
-          var da = dbSizeBytes(a);
-          var db = dbSizeBytes(b);
-          if (da === null && db === null) return 0;
-          if (da === null) return 1;
-          if (db === null) return -1;
-          return db - da;
+          if (a.group !== b.group) return a.group.localeCompare(b.group);
+          return a._composite - b._composite;
         });
 
+      if (!schemes.length) {
+        gridEl.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:40px">No schemes in this DB-size tier.</p>';
+        return;
+      }
+
       var t = themeColors();
-      var color = GROUP_COLORS[groupKey];
 
       schemes.forEach(function (s) {
         var cell = document.createElement('div');
         cell.className = 'radar-cell';
         gridEl.appendChild(cell);
 
-        // HTML title with hyperlink
+        var color = GROUP_COLORS[s.group];
         var titleEl = document.createElement('div');
         titleEl.style.textAlign = 'center';
         titleEl.style.padding = '12px 0 0';
@@ -1288,6 +1300,7 @@
         var nameHtml = url
           ? '<a href="' + url + '" target="_blank" rel="noopener noreferrer" style="color:' + t.text + ';text-decoration:none;font-weight:bold;font-size:15.4px">' + s.display_name + '</a>'
           : '<span style="font-weight:bold;font-size:15.4px;color:' + t.text + '">' + s.display_name + '</span>';
+        var groupHtml = ' <span style="font-size:10px;color:' + color + ';font-weight:600">' + s.group + '</span>';
         var sizeLabel = dbSizeLabel(s);
         var sizeSource = DB_SIZE_SOURCES[s.id];
         var sizeHtml = '';
@@ -1296,7 +1309,7 @@
         } else if (sizeLabel) {
           sizeHtml = '<br><span style="font-size:11px;color:' + t.muted + '">' + sizeLabel + ' db</span>';
         }
-        titleEl.innerHTML = nameHtml + sizeHtml;
+        titleEl.innerHTML = nameHtml + groupHtml + sizeHtml;
         cell.appendChild(titleEl);
 
         var plotDiv = document.createElement('div');
@@ -1320,7 +1333,9 @@
           hovertext: radarMetrics.map(function (m) {
             var raw = getVal(s, m);
             return s.display_name + '<br>' + METRIC_LABELS[m] + ': ' + (raw !== null ? formatNum(raw) : 'N/A') +
-              '<br>Rank: ' + (s._ranks[m] !== null ? (s._ranks[m] * 100).toFixed(0) + '%' : 'N/A') + '<br>Source: ' + (s.source_ref || 'N/A');
+              '<br>Rank: ' + (s._ranks[m] !== null ? (s._ranks[m] * 100).toFixed(0) + '%' : 'N/A') +
+              '<br>Group: ' + s.group + ' (' + GROUP_NAMES[s.group] + ')' +
+              '<br>Source: ' + (s.source_ref || 'N/A');
           }),
           hoverinfo: 'text'
         };
@@ -1364,24 +1379,24 @@
     // "All" tab (heatmap)
     var allBtn = document.createElement('button');
     allBtn.className = 'radar-tab';
-    allBtn.dataset.group = 'all';
+    allBtn.dataset.tier = 'all';
     allBtn.textContent = 'All';
     allBtn.addEventListener('click', function () { showAll(); });
     tabsEl.appendChild(allBtn);
 
-    // Per-group tabs
-    RADAR_GROUPS.forEach(function (g) {
+    // Per DB-size tier tabs
+    DB_SIZE_TIERS.forEach(function (tier) {
       var btn = document.createElement('button');
       btn.className = 'radar-tab';
-      btn.dataset.group = g.key;
-      btn.innerHTML = '<span class="tab-dot" style="background:' + GROUP_COLORS[g.key] + '"></span>' + g.label;
-      btn.addEventListener('click', function () { drawGroup(g.key); });
+      btn.dataset.tier = tier;
+      btn.textContent = DB_SIZE_LABELS[tier];
+      btn.addEventListener('click', function () { drawTier(tier); });
       tabsEl.appendChild(btn);
     });
 
-    // restore last tab or default to FHE-Based
+    // restore last tab or default to <= 1 GB
     if (_lastRadarTab === 'all') { showAll(); }
-    else { drawGroup(_lastRadarTab || 'A'); }
+    else { drawTier(_lastRadarTab || 'tiny'); }
   }
 
   // ── 7. Timeline ───────────────────────────────────────
@@ -1427,7 +1442,7 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + ' (' + s.year + ')<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Group: ' + s.group + '<br>Source: ' + (s.source_ref || 'N/A');
+          return s.display_name + ' (' + s.year + ')' + (entrySizeLabel(s) ? '<br>Entry size: ' + entrySizeLabel(s) : '') + '<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Group: ' + s.group + '<br>Source: ' + (s.source_ref || 'N/A');
         }),
         hoverinfo: 'text'
       });
@@ -1462,9 +1477,13 @@
       items.forEach(function (s) {
         var tr = document.createElement('tr');
         var link = schemeUrl(s.id);
+        var dbPills = (s.db_size_categories || []).map(function (c) {
+          return '<span class="db-size-pill" style="border-color:' + DB_SIZE_COLORS[c] + ';color:' + DB_SIZE_COLORS[c] + '">' + DB_SIZE_LABELS[c] + '</span>';
+        }).join(' ') || '<span style="color:var(--text-muted)">\u2014</span>';
         tr.innerHTML =
           '<td><a href="' + link + '" target="_blank" rel="noopener noreferrer">' + s.display_name + '</a></td>' +
           '<td><span class="group-dot" style="background:' + GROUP_COLORS[s.group] + '"></span> ' + s.group + '</td>' +
+          '<td>' + dbPills + '</td>' +
           '<td>' + s.year + '</td>' +
           '<td>' + (s.has_implementation ? (IMPL_URLS[s.id] ? '<a href="' + IMPL_URLS[s.id] + '" target="_blank" rel="noopener noreferrer">Yes</a>' : 'Yes') : 'No') + '</td>' +
           '<td class="num">' + formatNum(getVal(s, 'query_size_kb')) + '</td>' +
@@ -1481,6 +1500,7 @@
     var columns = [
       { key: 'display_name', label: 'Scheme' },
       { key: 'group', label: 'Group' },
+      { key: 'db_size', label: 'DB Size' },
       { key: 'year', label: 'Year' },
       { key: 'has_implementation', label: 'Impl?' },
       { key: 'query_size_kb', label: 'Query KB', metric: true },
@@ -1508,6 +1528,9 @@
           if (col.metric) {
             va = getVal(a, col.key);
             vb = getVal(b, col.key);
+          } else if (col.key === 'db_size') {
+            va = (a.db_size_categories || []).length;
+            vb = (b.db_size_categories || []).length;
           } else {
             va = a[col.key];
             vb = b[col.key];
@@ -1528,18 +1551,25 @@
       filterEl.innerHTML = '';
       var activeGroups = new Set(Object.keys(GROUP_COLORS));
       var activeTiers = new Set([1, 2, 3]);
+      var activeDbSizes = new Set(DB_SIZE_TIERS);
       var implFilter = null; // null = all, true = yes, false = no
 
       function applyFilters() {
         var filtered = data.filter(function (s) {
-          return activeGroups.has(s.group) && activeTiers.has(s.data_tier) &&
-            (implFilter === null || s.has_implementation === implFilter);
+          var groupOk = activeGroups.has(s.group);
+          var tierOk = activeTiers.has(s.data_tier);
+          var implOk = implFilter === null || s.has_implementation === implFilter;
+          var dbOk = activeDbSizes.size === DB_SIZE_TIERS.length || // all selected = no filter
+            (s.db_size_categories && s.db_size_categories.some(function (c) { return activeDbSizes.has(c); }));
+          return groupOk && tierOk && implOk && dbOk;
         });
         if (sortCol) {
           var col = columns.filter(function (c) { return c.key === sortCol; })[0];
           filtered.sort(function (a, b) {
-            var va = col && col.metric ? getVal(a, sortCol) : a[sortCol];
-            var vb = col && col.metric ? getVal(b, sortCol) : b[sortCol];
+            var va, vb;
+            if (col && col.metric) { va = getVal(a, sortCol); vb = getVal(b, sortCol); }
+            else if (sortCol === 'db_size') { va = (a.db_size_categories || []).length; vb = (b.db_size_categories || []).length; }
+            else { va = a[sortCol]; vb = b[sortCol]; }
             if (va === null || va === undefined) return 1;
             if (vb === null || vb === undefined) return -1;
             if (typeof va === 'string') return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
@@ -1595,6 +1625,23 @@
       });
       filterEl.appendChild(groupRow);
 
+      // DB size row
+      var dbRow = document.createElement('div');
+      dbRow.className = 'filter-row-line';
+      DB_SIZE_TIERS.forEach(function (tier) {
+        var pill = document.createElement('button');
+        pill.className = 'filter-pill active';
+        pill.style.borderColor = DB_SIZE_COLORS[tier];
+        pill.textContent = DB_SIZE_LABELS[tier];
+        pill.addEventListener('click', function () {
+          if (activeDbSizes.has(tier)) { activeDbSizes.delete(tier); pill.classList.remove('active'); }
+          else { activeDbSizes.add(tier); pill.classList.add('active'); }
+          applyFilters();
+        });
+        dbRow.appendChild(pill);
+      });
+      filterEl.appendChild(dbRow);
+
       // select all / clear links
       var actionsRow = document.createElement('div');
       actionsRow.className = 'filter-row-line';
@@ -1607,6 +1654,7 @@
         e.preventDefault();
         activeGroups = new Set(Object.keys(GROUP_COLORS));
         activeTiers = new Set([1, 2, 3]);
+        activeDbSizes = new Set(DB_SIZE_TIERS);
         implFilter = null;
         Array.from(filterEl.querySelectorAll('.filter-pill')).forEach(function (p) {
           p.classList.add('active');
@@ -1623,6 +1671,7 @@
         e.preventDefault();
         activeGroups = new Set();
         activeTiers = new Set();
+        activeDbSizes = new Set();
         implFilter = null;
         Array.from(filterEl.querySelectorAll('.filter-pill')).forEach(function (p) {
           p.classList.remove('active');
@@ -1637,11 +1686,10 @@
     renderRows(sorted);
   }
 
-  // ── Data Loading & Init ───────────────────────────────
-  var _cachedData = null;
+  // ── DB Size Tab System ───────────────────────────────
+  var _activeDbTier = 'tiny';
 
-  function renderCharts(data) {
-    renderHeatmap(data);
+  function renderFilteredCharts(data) {
     renderCommunicationScatter(data);
     renderThroughputBars(data);
     renderServerTimeBars(data);
@@ -1652,6 +1700,54 @@
     renderParetoCommClient(data);
     renderPareto3DComm(data);
     renderPareto3DServer(data);
+  }
+
+  function setActiveDbTier(tier) {
+    _activeDbTier = tier;
+    // Sync all tab UIs across all pages
+    document.querySelectorAll('.db-size-tabs .db-tab').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.tier === tier);
+    });
+    if (_cachedData) {
+      var filtered = filterByDbSize(_cachedData, tier);
+      renderFilteredCharts(filtered);
+    }
+  }
+
+  function initDbSizeTabs() {
+    document.querySelectorAll('.db-size-tabs').forEach(function (container) {
+      container.querySelectorAll('.db-tab').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setActiveDbTier(btn.dataset.tier);
+        });
+      });
+    });
+  }
+
+  // ── Auto-derive db_size_categories from configs ───────
+  function deriveDbSizeCategories(s) {
+    if (!s.configs || !s.configs.length) return [];
+    var tiers = {};
+    s.configs.forEach(function (c) {
+      if (c.entry_size && /bit/i.test(c.entry_size)) tiers['1-bit'] = true;
+      var b = c.db_size_bytes;
+      if (b != null) {
+        if (b <= 1e9) tiers['tiny'] = true;
+        if (b > 1e9 && b <= 8e9) tiers['small'] = true;
+        if (b > 8e9 && b <= 32e9) tiers['medium'] = true;
+        if (b > 32e9) tiers['large'] = true;
+      }
+    });
+    return Object.keys(tiers);
+  }
+
+  // ── Data Loading & Init ───────────────────────────────
+  var _cachedData = null;
+
+  function renderCharts(data) {
+    renderHeatmap(data);
+    var filtered = filterByDbSize(data, _activeDbTier);
+    renderFilteredCharts(filtered);
 
     // Disable scroll-zoom on 3D plots while preserving page scroll
     ['chart-pareto-3d-comm', 'chart-pareto-3d-server'].forEach(function (id) {
@@ -1674,7 +1770,10 @@
         // clear loading indicators
         var loaders = document.querySelectorAll('.chart-loading');
         loaders.forEach(function (el) { el.remove(); });
+        // Auto-derive db_size_categories from configs (replaces old static field)
+        raw.forEach(function (s) { s.db_size_categories = deriveDbSizeCategories(s); });
         _cachedData = computeCompositeScores(raw);
+        initDbSizeTabs();
         renderCharts(_cachedData);
         renderCatalog(_cachedData);
 

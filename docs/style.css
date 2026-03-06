@@ -9,6 +9,11 @@
   --group-c: #ff7f0e;
   --group-d: #d62728;
   --group-x: #7f7f7f;
+  --db-tiny: #9b59b6;
+  --db-small: #3498db;
+  --db-medium: #e67e22;
+  --db-large: #e74c3c;
+  --db-1bit: #17becf;
 
   /* Light theme */
   --bg: #ffffff;
@@ -262,6 +267,65 @@ h4 {
   row-gap: 40px;
   margin-top: 24px;
 }
+
+/* ── DB Size Tabs ─────────────────────────────────────── */
+.db-size-tabs {
+  display: flex;
+  gap: 6px;
+  margin: 12px 0 16px;
+  flex-wrap: wrap;
+}
+.db-tab {
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-bottom: 3px solid transparent;
+  border-radius: 8px 8px 0 0;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.db-tab:hover {
+  background: var(--nav-hover);
+  color: var(--text);
+}
+.db-tab.active {
+  background: var(--bg-alt);
+  color: var(--text);
+  font-weight: 600;
+  border-bottom-color: var(--link);
+}
+.construction-legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 4px 0 8px;
+  align-items: center;
+}
+.construction-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.construction-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.db-size-pill {
+  display: inline-block;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin: 0 1px;
+  border: 1px solid;
+  white-space: nowrap;
+}
 .radar-cell {
   background: var(--bg-card);
   border-radius: 8px;
@@ -495,6 +559,11 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
     font-size: 13px;
     padding: 10px 14px;
     min-height: 40px;
+  }
+  .db-tab {
+    font-size: 12px;
+    padding: 8px 12px;
+    min-height: 36px;
   }
   /* Stack tier legend vertically */
   .tier-legend-inline {

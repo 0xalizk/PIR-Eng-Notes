@@ -9,9 +9,9 @@
     "source_ref": "Table 2, Table 3",
     "estimation_meta": null,
     "concrete": {
-      "reference_db": "N=2^32, d=5, bundled",
-      "num_entries": 4294967296,
-      "entry_size_bytes": null,
+      "reference_db": "Table 6: N=2^20 and 2^24 x {8B, 4KB}",
+      "num_entries": 1048576,
+      "entry_size_bytes": 8,
       "query_size_kb": 32768.0,
       "response_size_kb": 784.0,
       "server_time_ms": null,
@@ -34,7 +34,55 @@
       "expansion_factor": null,
       "multiplicative_depth": null,
       "rate": null
-    }
+    },
+    "source_pdf": "Group.A.FHE.Based.PIR/xpir_2014/XPIR_2014_232.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "8 B",
+        "entry_size_bytes": 8,
+        "db_size": "8 MB",
+        "db_size_bytes": 8388608,
+        "type": "benchmarked",
+        "source_ref": "Table 6",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "4 KB",
+        "entry_size_bytes": 4096,
+        "db_size": "4 GB",
+        "db_size_bytes": 4294967296,
+        "type": "benchmarked",
+        "source_ref": "Table 6",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "8 B",
+        "entry_size_bytes": 8,
+        "db_size": "128 MB",
+        "db_size_bytes": 134217728,
+        "type": "benchmarked",
+        "source_ref": "Table 6",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "4 KB",
+        "entry_size_bytes": 4096,
+        "db_size": "64 GB",
+        "db_size_bytes": 68719476736,
+        "type": "benchmarked",
+        "source_ref": "Table 6",
+        "is_primary": false
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "xpir_2016",
@@ -44,7 +92,10 @@
     "has_implementation": true,
     "data_tier": 2,
     "source_ref": "Figure 6, Figure 7, Figure 8",
-    "estimation_meta": {"confidence": "moderate", "method": "Values read from paper figures (approximate, log-scale charts)"},
+    "estimation_meta": {
+      "confidence": "moderate",
+      "method": "Values read from paper figures (approximate, log-scale charts)"
+    },
     "concrete": {
       "reference_db": "various, pre-processed static",
       "num_entries": null,
@@ -71,7 +122,24 @@
       "expansion_factor": 5.5,
       "multiplicative_depth": null,
       "rate": null
-    }
+    },
+    "source_pdf": "Group.A.FHE.Based.PIR/xpir_2016/XPIR_computational_2014_1025.pdf",
+    "configs": [
+      {
+        "num_entries": null,
+        "num_entries_raw": null,
+        "entry_size": null,
+        "entry_size_bytes": null,
+        "db_size": "various",
+        "db_size_bytes": null,
+        "type": "benchmarked",
+        "source_ref": "Figs 6–8",
+        "is_primary": false
+      }
+    ],
+    "footnotes": [
+      "XPIR (2016) is a system paper with auto-parameter optimization. Benchmarks span many DB sizes via an automated search over recursion depths and ring parameters — no single fixed configs to list. Values read from Figures 6–8 (log-scale)."
+    ]
   },
   {
     "id": "sealpir_2018",
@@ -108,7 +176,44 @@
       "expansion_factor": 5.2,
       "multiplicative_depth": null,
       "rate": null
-    }
+    },
+    "source_pdf": "Group.A.FHE.Based.PIR/sealpir_2018/SealPIR_2017_1142.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "288 B",
+        "entry_size_bytes": 288,
+        "db_size": "288 MB",
+        "db_size_bytes": 301989888,
+        "type": "benchmarked",
+        "source_ref": "Fig 2, Sec 6",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "288 B",
+        "entry_size_bytes": 288,
+        "db_size": "4.6 GB",
+        "db_size_bytes": 4831838208,
+        "type": "benchmarked",
+        "source_ref": "Fig 2, Sec 6",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "288 B",
+        "entry_size_bytes": 288,
+        "db_size": "73 GB",
+        "db_size_bytes": 77309411328,
+        "type": "benchmarked",
+        "source_ref": "Fig 2, Sec 6",
+        "is_primary": false
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "mulpir_2019",
@@ -149,7 +254,22 @@
       "expansion_factor": 2.27,
       "multiplicative_depth": null,
       "rate": 0.44
-    }
+    },
+    "source_pdf": "Group.A.FHE.Based.PIR/mulpir_2019/MulPIR_2019_733.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "256 MB",
+        "db_size_bytes": 268435456,
+        "type": "analytical",
+        "source_ref": "Sec 5.2, App A",
+        "is_primary": true
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "onionpir_2021",
@@ -186,7 +306,77 @@
       "expansion_factor": 4.2,
       "multiplicative_depth": null,
       "rate": null
-    }
+    },
+    "source_pdf": "Group.A.FHE.Based.PIR/onionpir_2021/OnionPIR_2021_1081.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "16 B",
+        "entry_size_bytes": 16,
+        "db_size": "16 MB",
+        "db_size_bytes": 16777216,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "16 B",
+        "entry_size_bytes": 16,
+        "db_size": "256 MB",
+        "db_size_bytes": 268435456,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "16 B",
+        "entry_size_bytes": 16,
+        "db_size": "4 GB",
+        "db_size_bytes": 4294967296,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "256 MB",
+        "db_size_bytes": 268435456,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "4 GB",
+        "db_size_bytes": 4294967296,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "10^6",
+        "num_entries_raw": 1000000,
+        "entry_size": "30 KB",
+        "entry_size_bytes": 30720,
+        "db_size": "~29 GB",
+        "db_size_bytes": 30720000000,
+        "type": "benchmarked",
+        "source_ref": "Tables 3–4",
+        "is_primary": true
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "addra_2021",
@@ -196,7 +386,10 @@
     "has_implementation": true,
     "data_tier": 2,
     "source_ref": "Figure 9, Figure 10",
-    "estimation_meta": {"confidence": "moderate", "method": "Values read from paper figures (approximate, log-scale Figure 9; numeric labels from Figure 10)"},
+    "estimation_meta": {
+      "confidence": "moderate",
+      "method": "Values read from paper figures (approximate, log-scale Figure 9; numeric labels from Figure 10)"
+    },
     "concrete": {
       "reference_db": "32768 x 96B",
       "num_entries": 32768,
@@ -223,7 +416,68 @@
       "expansion_factor": null,
       "multiplicative_depth": null,
       "rate": null
-    }
+    },
+    "source_pdf": "Group.A.FHE.Based.PIR/addra_2021/Addra_FastPIR_2021_044.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "32 MB",
+        "db_size_bytes": 33554432,
+        "type": "benchmarked",
+        "source_ref": "Table 1",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "512 MB",
+        "db_size_bytes": 536870912,
+        "type": "benchmarked",
+        "source_ref": "Table 1",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^25",
+        "num_entries_raw": 33554432,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 1",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "8 GB",
+        "db_size_bytes": 8589934592,
+        "type": "benchmarked",
+        "source_ref": "Table 1",
+        "is_primary": false
+      },
+      {
+        "num_entries": "32,768",
+        "num_entries_raw": 32768,
+        "entry_size": "96 B",
+        "entry_size_bytes": 96,
+        "db_size": "~3 MB",
+        "db_size_bytes": 3145728,
+        "type": "benchmarked",
+        "source_ref": "Sec 6.5",
+        "is_primary": true
+      }
+    ],
+    "footnotes": [
+      "Addra/FastPIR has two distinct evaluation contexts: PIR microbenchmarks (Table 1: 32B entries at various N) and the Addra voice-call system benchmark (Section 6.5: 32,768 mailboxes × 96B messages). reported.json uses the system benchmark (32768 × 96B). Values are Tier 2 (approximate from figures)."
+    ]
   },
   {
     "id": "cwpir_2022",
@@ -260,7 +514,46 @@
       "expansion_factor": null,
       "multiplicative_depth": 1,
       "rate": null
-    }
+    },
+    "source_pdf": "Group.A.FHE.Based.PIR/cwpir_2022/FastPIR_orig_arxiv_2202.07569.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "288 B",
+        "entry_size_bytes": 288,
+        "db_size": "288 MB",
+        "db_size_bytes": 301989888,
+        "type": "benchmarked",
+        "source_ref": "Fig 7",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "288 B",
+        "entry_size_bytes": 288,
+        "db_size": "4.6 GB",
+        "db_size_bytes": 4831838208,
+        "type": "benchmarked",
+        "source_ref": "Fig 7",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "288 B",
+        "entry_size_bytes": 288,
+        "db_size": "73 GB",
+        "db_size_bytes": 77309411328,
+        "type": "benchmarked",
+        "source_ref": "Fig 7",
+        "is_primary": false
+      }
+    ],
+    "footnotes": [
+      "CwPIR's benchmark configs (2^20–2^28 × 288B) match SealPIR's configs because CwPIR is evaluated as a drop-in replacement for SealPIR. Entry size is BFV plaintext payload; CwPIR is keyword PIR — the \"288B\" is the record payload, not the identifier."
+    ]
   },
   {
     "id": "spiral_2022",
@@ -297,7 +590,66 @@
       "expansion_factor": null,
       "multiplicative_depth": null,
       "rate": 0.3573
-    }
+    },
+    "source_pdf": "Group.A.FHE.Based.PIR/spiral_2022/Spiral_stream_2022_368.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "256 MB",
+        "db_size_bytes": 268435456,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "4 GB",
+        "db_size_bytes": 4294967296,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "64 GB",
+        "db_size_bytes": 68719476736,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "1 KB",
+        "entry_size_bytes": 1024,
+        "db_size": "1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "1 KB",
+        "entry_size_bytes": 1024,
+        "db_size": "16 GB",
+        "db_size_bytes": 17179869184,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "frodopir_2022",
@@ -334,7 +686,57 @@
       "expansion_factor": 3.556,
       "multiplicative_depth": null,
       "rate": null
-    }
+    },
+    "source_pdf": "Group.A.FHE.Based.PIR/frodopir_2022/FrodoPIR_2022_981.pdf",
+    "configs": [
+      {
+        "num_entries": "2^16",
+        "num_entries_raw": 65536,
+        "entry_size": "1 KB",
+        "entry_size_bytes": 1024,
+        "db_size": "64 MB",
+        "db_size_bytes": 67108864,
+        "type": "benchmarked",
+        "source_ref": "Table 6",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "1 KB",
+        "entry_size_bytes": 1024,
+        "db_size": "1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 6",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^16",
+        "num_entries_raw": 65536,
+        "entry_size": "8 KB",
+        "entry_size_bytes": 8192,
+        "db_size": "512 MB",
+        "db_size_bytes": 536870912,
+        "type": "benchmarked",
+        "source_ref": "Table 6",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "8 KB",
+        "entry_size_bytes": 8192,
+        "db_size": "8 GB",
+        "db_size_bytes": 8589934592,
+        "type": "benchmarked",
+        "source_ref": "Table 6",
+        "is_primary": false
+      }
+    ],
+    "footnotes": [
+      "FrodoPIR tests a grid of 5 N values (2^16 to 2^20) × 2 entry sizes (1 KB, 8 KB) = 10 configurations total (only endpoints shown). All in Table 6."
+    ]
   },
   {
     "id": "thorpir_2024",
@@ -375,7 +777,24 @@
       "expansion_factor": null,
       "multiplicative_depth": null,
       "rate": null
-    }
+    },
+    "source_pdf": "Group.A.FHE.Based.PIR/thorpir_2024/FHEPIR_2024_482.pdf",
+    "configs": [
+      {
+        "num_entries": "2^30",
+        "num_entries_raw": 1073741824,
+        "entry_size": "360 B",
+        "entry_size_bytes": 360,
+        "db_size": "~360 GB",
+        "db_size_bytes": 386547056640,
+        "type": "analytical",
+        "source_ref": "Table 2",
+        "is_primary": true
+      }
+    ],
+    "footnotes": [
+      "ThorPIR has concrete parameter choices in Table 2 (N=2^30, 360B entries, 1024-query budget) but no running implementation. Server time derived from end-to-end time / Q queries. The parameters are the paper's own specification, not our estimate — hence \"Analytical\" rather than \"Estimated.\""
+    ]
   },
   {
     "id": "onionpirv2_2025",
@@ -387,9 +806,9 @@
     "source_ref": "Table 2",
     "estimation_meta": null,
     "concrete": {
-      "reference_db": "n=2048, ~1 GB DB",
-      "num_entries": null,
-      "entry_size_bytes": null,
+      "reference_db": "N=2^20, 3.75 KB entries (Table 2)",
+      "num_entries": 1048576,
+      "entry_size_bytes": 3840,
       "query_size_kb": 16.0,
       "response_size_kb": 13.5,
       "server_time_ms": 800.0,
@@ -412,7 +831,66 @@
       "expansion_factor": 3.6,
       "multiplicative_depth": null,
       "rate": null
-    }
+    },
+    "source_pdf": "Group.A.FHE.Based.PIR/onionpirv2_2025/FHEPIR_2025_1142.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "64 B",
+        "entry_size_bytes": 64,
+        "db_size": "64 MB",
+        "db_size_bytes": 67108864,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^23",
+        "num_entries_raw": 8388608,
+        "entry_size": "64 B",
+        "entry_size_bytes": 64,
+        "db_size": "512 MB",
+        "db_size_bytes": 536870912,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "3.75 KB",
+        "entry_size_bytes": 3840,
+        "db_size": "3.75 GB",
+        "db_size_bytes": 4026531840,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^23",
+        "num_entries_raw": 8388608,
+        "entry_size": "3.75 KB",
+        "entry_size_bytes": 3840,
+        "db_size": "30 GB",
+        "db_size_bytes": 32212254720,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "22.5 KB",
+        "entry_size_bytes": 23040,
+        "db_size": "22.5 GB",
+        "db_size_bytes": 24159191040,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "hintlesspir_2023",
@@ -448,7 +926,46 @@
     "group_specific": {
       "response_overhead": 33.0,
       "offline_comm_mb": null
-    }
+    },
+    "source_pdf": "Group.B.Stateless.Single.Server.PIR/hintlesspir_2023/HintlessPIR_2023_1733.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "288 B",
+        "entry_size_bytes": 288,
+        "db_size": "~76 MB",
+        "db_size_bytes": 301989888,
+        "type": "benchmarked",
+        "source_ref": "Table 1",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "8 KB",
+        "entry_size_bytes": 8192,
+        "db_size": "~2.1 GB",
+        "db_size_bytes": 8589934592,
+        "type": "benchmarked",
+        "source_ref": "Table 1",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "2 MB",
+        "entry_size_bytes": 2097152,
+        "db_size": "~560 GB",
+        "db_size_bytes": 2199023255552,
+        "type": "benchmarked",
+        "source_ref": "Table 1",
+        "is_primary": false
+      }
+    ],
+    "footnotes": [
+      "HintlessPIR fixes N=2^20 and scales entry size (288B to 8KB to 2MB). The 2MB entry config produces ~560 GB total DB — the largest tested by any scheme — but with only 2^20 ≈ 1M entries."
+    ]
   },
   {
     "id": "ypir_2024",
@@ -484,7 +1001,46 @@
     "group_specific": {
       "response_overhead": null,
       "offline_comm_mb": null
-    }
+    },
+    "source_pdf": "Group.B.Stateless.Single.Server.PIR/ypir_2024/YPIR_2024_270.pdf",
+    "configs": [
+      {
+        "num_entries": "~2^33",
+        "num_entries_raw": 8589934592,
+        "entry_size": "1 bit",
+        "entry_size_bytes": null,
+        "db_size": "1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "~2^36",
+        "num_entries_raw": 68719476736,
+        "entry_size": "1 bit",
+        "entry_size_bytes": null,
+        "db_size": "8 GB",
+        "db_size_bytes": 8589934592,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "~2^38",
+        "num_entries_raw": 274877906944,
+        "entry_size": "1 bit",
+        "entry_size_bytes": null,
+        "db_size": "32 GB",
+        "db_size_bytes": 34359738368,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": true
+      }
+    ],
+    "footnotes": [
+      "YPIR is optimized for the 1-bit PIR setting. Configs reflect Table 2 (1/8/32 GB, 1-bit entries). The paper also evaluates competitor schemes at 256B entries for comparison, but those are not YPIR's own configs."
+    ]
   },
   {
     "id": "respire_2024",
@@ -521,11 +1077,66 @@
       "response_overhead": null,
       "offline_comm_mb": 3.9,
       "concrete_variants": [
-        {"db": "256 MB, 2^20 x 256B", "query_kb": 4.1, "response_kb": 2.0, "server_ms": 1260, "throughput_mbps": 204},
-        {"db": "1 GB, 2^22 x 256B", "query_kb": 7.7, "response_kb": 2.0, "server_ms": 3480, "throughput_mbps": 295},
-        {"db": "8 GB, 2^25 x 256B", "query_kb": 14.8, "response_kb": 2.0, "server_ms": 20840, "throughput_mbps": 393}
+        {
+          "db": "256 MB, 2^20 x 256B",
+          "query_kb": 4.1,
+          "response_kb": 2.0,
+          "server_ms": 1260,
+          "throughput_mbps": 204
+        },
+        {
+          "db": "1 GB, 2^22 x 256B",
+          "query_kb": 7.7,
+          "response_kb": 2.0,
+          "server_ms": 3480,
+          "throughput_mbps": 295
+        },
+        {
+          "db": "8 GB, 2^25 x 256B",
+          "query_kb": 14.8,
+          "response_kb": 2.0,
+          "server_ms": 20840,
+          "throughput_mbps": 393
+        }
       ]
-    }
+    },
+    "source_pdf": "Group.B.Stateless.Single.Server.PIR/respire_2024/Respire_2024_1165.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "256 MB",
+        "db_size_bytes": 268435456,
+        "type": "benchmarked",
+        "source_ref": "Tables 1–2",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^22",
+        "num_entries_raw": 4194304,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Tables 1–2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^25",
+        "num_entries_raw": 33554432,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "8 GB",
+        "db_size_bytes": 8589934592,
+        "type": "benchmarked",
+        "source_ref": "Tables 1–2",
+        "is_primary": false
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "whispir_2024",
@@ -535,7 +1146,10 @@
     "has_implementation": true,
     "data_tier": 2,
     "source_ref": "Figure 1, Figure 2, Figure 4, Section 4",
-    "estimation_meta": {"confidence": "moderate", "method": "Values read from paper figures (approximate)"},
+    "estimation_meta": {
+      "confidence": "moderate",
+      "method": "Values read from paper figures (approximate)"
+    },
     "concrete": {
       "reference_db": "various (approximate from figures)",
       "num_entries": null,
@@ -561,7 +1175,35 @@
     "group_specific": {
       "response_overhead": null,
       "offline_comm_mb": null
-    }
+    },
+    "source_pdf": "Group.B.Stateless.Single.Server.PIR/whispir_2024/WhisPIR_2024_266.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "256 MB",
+        "db_size_bytes": 268435456,
+        "type": "benchmarked",
+        "source_ref": "Figs 1–2",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "4 GB",
+        "db_size_bytes": 4294967296,
+        "type": "benchmarked",
+        "source_ref": "Figs 1–2",
+        "is_primary": false
+      }
+    ],
+    "footnotes": [
+      "WhisPIR values are Tier 2 — read from log-scale figures, not exact tables. Paper also tests up to 32 GB in Figure 4, but specific (N, entry_size) pairs are not clearly separable from the charts."
+    ]
   },
   {
     "id": "pirouette_2025",
@@ -597,7 +1239,33 @@
     "group_specific": {
       "response_overhead": null,
       "offline_comm_mb": null
-    }
+    },
+    "source_pdf": "Group.B.Stateless.Single.Server.PIR/pirouette_2025/Pirouette_2025_680.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "256 MB",
+        "db_size_bytes": 268435456,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^25",
+        "num_entries_raw": 33554432,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "8 GB",
+        "db_size_bytes": 8589934592,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": true
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "inspire_2025",
@@ -634,7 +1302,33 @@
       "response_overhead": null,
       "offline_comm_mb": null,
       "total_comm_kb": 292.0
-    }
+    },
+    "source_pdf": "Group.B.Stateless.Single.Server.PIR/inspire_2025/InsPIRe_2025_1352.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "64 B",
+        "entry_size_bytes": 64,
+        "db_size": "64 MB",
+        "db_size_bytes": 67108864,
+        "type": "benchmarked",
+        "source_ref": "Tables 2–3",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "64 B",
+        "entry_size_bytes": 64,
+        "db_size": "1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Tables 2–3",
+        "is_primary": true
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "npir_2026",
@@ -670,7 +1364,33 @@
     "group_specific": {
       "response_overhead": 4.0,
       "offline_comm_mb": null
-    }
+    },
+    "source_pdf": "Group.B.Stateless.Single.Server.PIR/npir_2026/NPIR_2026_2257.pdf",
+    "configs": [
+      {
+        "num_entries": "2^15",
+        "num_entries_raw": 32768,
+        "entry_size": "32 KB",
+        "entry_size_bytes": 32768,
+        "db_size": "1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 1",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^18",
+        "num_entries_raw": 262144,
+        "entry_size": "32 KB",
+        "entry_size_bytes": 32768,
+        "db_size": "8 GB",
+        "db_size_bytes": 8589934592,
+        "type": "benchmarked",
+        "source_ref": "Table 1",
+        "is_primary": true
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "via_2025",
@@ -707,10 +1427,63 @@
       "response_overhead": null,
       "offline_comm_mb": null,
       "concrete_variants": [
-        {"variant": "VIA", "db": "32 GB", "query_kb": 674.75, "response_kb": 15.5, "server_ms": 10286, "throughput_gbps": 3.11},
-        {"variant": "VIA-C", "db": "32 GB", "query_kb": 0.659, "response_kb": 1.439, "server_ms": 20307, "throughput_gbps": 1.58, "offline_comm_mb": 14.8, "offline_time_s": 67.539}
+        {
+          "variant": "VIA",
+          "db": "32 GB",
+          "query_kb": 674.75,
+          "response_kb": 15.5,
+          "server_ms": 10286,
+          "throughput_gbps": 3.11
+        },
+        {
+          "variant": "VIA-C",
+          "db": "32 GB",
+          "query_kb": 0.659,
+          "response_kb": 1.439,
+          "server_ms": 20307,
+          "throughput_gbps": 1.58,
+          "offline_comm_mb": 14.8,
+          "offline_time_s": 67.539
+        }
       ]
-    }
+    },
+    "source_pdf": "Group.B.Stateless.Single.Server.PIR/via_2025/VIA_2025_2074.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "256 MB",
+        "db_size_bytes": 268435456,
+        "type": "benchmarked",
+        "source_ref": "Tables 1–2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "4 GB",
+        "db_size_bytes": 4294967296,
+        "type": "benchmarked",
+        "source_ref": "Tables 1–2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "~2^35",
+        "num_entries_raw": 34359738368,
+        "entry_size": "1 B",
+        "entry_size_bytes": 1,
+        "db_size": "32 GB",
+        "db_size_bytes": 34359738368,
+        "type": "benchmarked",
+        "source_ref": "Table 1",
+        "is_primary": true
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "simplepir_2022",
@@ -746,7 +1519,57 @@
     "group_specific": {
       "offline_hint_mb": 121.0,
       "preprocessing_type": "client-independent"
-    }
+    },
+    "source_pdf": "Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_949.pdf",
+    "configs": [
+      {
+        "num_entries": "2^23",
+        "num_entries_raw": 8388608,
+        "entry_size": "1 bit",
+        "entry_size_bytes": null,
+        "db_size": "~1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 10",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^26",
+        "num_entries_raw": 67108864,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "~1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 10",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "1 KB",
+        "entry_size_bytes": 1024,
+        "db_size": "~1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 10",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "~1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 10",
+        "is_primary": false
+      }
+    ],
+    "footnotes": [
+      "SimplePIR and DoublePIR keep total DB size constant at ~1 GB and vary the entry size / entry count tradeoff. All four configs represent the same ~1 GB database accessed differently."
+    ]
   },
   {
     "id": "doublepir_2022",
@@ -782,7 +1605,55 @@
     "group_specific": {
       "offline_hint_mb": 16.0,
       "preprocessing_type": "client-independent"
-    }
+    },
+    "source_pdf": "Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_949.pdf",
+    "configs": [
+      {
+        "num_entries": "2^23",
+        "num_entries_raw": 8388608,
+        "entry_size": "1 bit",
+        "entry_size_bytes": null,
+        "db_size": "~1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 10",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^26",
+        "num_entries_raw": 67108864,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "~1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 10",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "1 KB",
+        "entry_size_bytes": 1024,
+        "db_size": "~1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 10",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "~1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 10",
+        "is_primary": false
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "verisimplepir_2024",
@@ -792,7 +1663,10 @@
     "has_implementation": true,
     "data_tier": 2,
     "source_ref": "Figure 7, Figure 8",
-    "estimation_meta": {"confidence": "moderate", "method": "Values read from paper figures (approximate)"},
+    "estimation_meta": {
+      "confidence": "moderate",
+      "method": "Values read from paper figures (approximate)"
+    },
     "concrete": {
       "reference_db": "4-256 GiB databases",
       "num_entries": null,
@@ -818,7 +1692,35 @@
     "group_specific": {
       "offline_hint_mb": null,
       "preprocessing_type": "client-independent (verifiable)"
-    }
+    },
+    "source_pdf": "Group.C.Client.Independent.Preprocessing/verisimplepir_2024/VeriSimplePIR_2024_341.pdf",
+    "configs": [
+      {
+        "num_entries": "varies",
+        "num_entries_raw": null,
+        "entry_size": "varies",
+        "entry_size_bytes": null,
+        "db_size": "4 GiB",
+        "db_size_bytes": 4294967296,
+        "type": "benchmarked",
+        "source_ref": "Figs 7–8",
+        "is_primary": true
+      },
+      {
+        "num_entries": "varies",
+        "num_entries_raw": null,
+        "entry_size": "varies",
+        "entry_size_bytes": null,
+        "db_size": "256 GiB",
+        "db_size_bytes": 274877906944,
+        "type": "benchmarked",
+        "source_ref": "Figs 7–8",
+        "is_primary": false
+      }
+    ],
+    "footnotes": [
+      "VeriSimplePIR evaluates a scaling benchmark from 4 GiB to 256 GiB. Figures 7–8 show performance as a function of DB size on log-scale axes. Individual (N, entry_size) pairs not extractable — the paper plots continuous scaling curves, not discrete configurations."
+    ]
   },
   {
     "id": "barelydoublyefficient_2025",
@@ -858,7 +1760,24 @@
     "group_specific": {
       "offline_hint_mb": null,
       "preprocessing_type": "client-independent (theoretical)"
-    }
+    },
+    "source_pdf": "Group.C.Client.Independent.Preprocessing/barelydoublyefficient_2025/BarelyDoublyEfficient_2025_1305.pdf",
+    "configs": [
+      {
+        "num_entries": null,
+        "num_entries_raw": null,
+        "entry_size": null,
+        "entry_size_bytes": null,
+        "db_size": "1 GB (theoretical)",
+        "db_size_bytes": 1073741824,
+        "type": "analytical",
+        "source_ref": "Theorem 3.1",
+        "is_primary": true
+      }
+    ],
+    "footnotes": [
+      "BarelyDoublyEfficient is a pure theory/feasibility result. \"1 GB\" was chosen for asymptotic estimation in reported.json. The paper proves existence via Williams' technique but the poly(λ) constants are unknown and potentially large. No concrete parameters specified in the paper."
+    ]
   },
   {
     "id": "incrementalpir_2026",
@@ -894,7 +1813,35 @@
     "group_specific": {
       "offline_hint_mb": 121.0,
       "preprocessing_type": "client-independent (incremental updates)"
-    }
+    },
+    "source_pdf": "Group.C.Client.Independent.Preprocessing/incrementalpir_2026/IncrementalPIR_2026_030.pdf",
+    "configs": [
+      {
+        "num_entries": "~2^33",
+        "num_entries_raw": 8589934592,
+        "entry_size": "1 bit",
+        "entry_size_bytes": null,
+        "db_size": "1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^30",
+        "num_entries_raw": 1073741824,
+        "entry_size": "4 B",
+        "entry_size_bytes": 4,
+        "db_size": "4 GB",
+        "db_size_bytes": 4294967296,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      }
+    ],
+    "footnotes": [
+      "IncrementalPIR evaluates iSimplePIR across a wide range (2^10 to 2^30 entries, 1-bit to 32-bit entries). The primary benchmark is 1 GB with 1-bit entries (matching SimplePIR baseline). The paper also evaluates a 4 GB password-breach detection scenario."
+    ]
   },
   {
     "id": "ck20_2019",
@@ -935,7 +1882,24 @@
       "setup_model": "client-dependent",
       "query_budget": null,
       "client_storage_asymptotic": null
-    }
+    },
+    "source_pdf": "Group.D.Client.Dependent.Preprocessing/ck20_2019/CK20_SublinearOnline_2019_1075.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "~32 MB",
+        "db_size_bytes": 33554432,
+        "type": "estimated",
+        "source_ref": "Theorem 14",
+        "is_primary": true
+      }
+    ],
+    "footnotes": [
+      "CK20, IshaiShiWichs, Plinko, and WangRen have no implementations. \"N=2^20 × 32B\" was chosen by the notes author to match Group D conventions and produce comparable asymptotic estimates. The papers themselves only state bounds in terms of N, not specific benchmark configurations."
+    ]
   },
   {
     "id": "incpir_2021",
@@ -972,7 +1936,22 @@
       "setup_model": "client-dependent",
       "query_budget": null,
       "client_storage_asymptotic": null
-    }
+    },
+    "source_pdf": "Group.D.Client.Dependent.Preprocessing/incpir_2021/IncPIR_2021_1438.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "~32 MB",
+        "db_size_bytes": 33554432,
+        "type": "benchmarked",
+        "source_ref": "Figs 9–10",
+        "is_primary": true
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "piano_2023",
@@ -1009,7 +1988,44 @@
       "setup_model": "client-dependent (streaming)",
       "query_budget": "sqrt(n) * ln(kappa) * alpha(kappa)",
       "client_storage_asymptotic": "O_λ(sqrt(n) * log kappa * alpha(kappa))"
-    }
+    },
+    "source_pdf": "Group.D.Client.Dependent.Preprocessing/piano_2023/Piano_2023_452.pdf",
+    "configs": [
+      {
+        "num_entries": "2^27",
+        "num_entries_raw": 134217728,
+        "entry_size": "8 B",
+        "entry_size_bytes": 8,
+        "db_size": "1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Table 1",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "8 B",
+        "entry_size_bytes": 8,
+        "db_size": "2 GB",
+        "db_size_bytes": 2147483648,
+        "type": "benchmarked",
+        "source_ref": "Tables 1–2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "~1.68×10^9",
+        "num_entries_raw": 1680000000,
+        "entry_size": "64 B",
+        "entry_size_bytes": 64,
+        "db_size": "100 GB",
+        "db_size_bytes": 107520000000,
+        "type": "benchmarked",
+        "source_ref": "Tables 1–2",
+        "is_primary": true
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "treepir_2023",
@@ -1046,7 +2062,55 @@
       "setup_model": "client-dependent (two-server)",
       "query_budget": null,
       "client_storage_asymptotic": null
-    }
+    },
+    "source_pdf": "Group.D.Client.Dependent.Preprocessing/treepir_2023/TreePIR_2023_204.pdf",
+    "configs": [
+      {
+        "num_entries": "2^32",
+        "num_entries_raw": 4294967296,
+        "entry_size": "1 bit",
+        "entry_size_bytes": null,
+        "db_size": "512 MB",
+        "db_size_bytes": 536870912,
+        "type": "benchmarked",
+        "source_ref": "Fig 7",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^22",
+        "num_entries_raw": 4194304,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "1 GB",
+        "db_size_bytes": 1073741824,
+        "type": "benchmarked",
+        "source_ref": "Fig 8",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "2 GB",
+        "db_size_bytes": 8589934592,
+        "type": "benchmarked",
+        "source_ref": "Fig 9",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^29",
+        "num_entries_raw": 536870912,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "4 GB",
+        "db_size_bytes": 17179869184,
+        "type": "benchmarked",
+        "source_ref": "Fig 9",
+        "is_primary": false
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "rms24_2024",
@@ -1084,7 +2148,66 @@
       "query_budget": null,
       "client_storage_asymptotic": null,
       "response_overhead": "2x (two-server), 4x (single-server)"
-    }
+    },
+    "source_pdf": "Group.D.Client.Dependent.Preprocessing/rms24_2024/RMS24_2024_1072.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "32 MB",
+        "db_size_bytes": 33554432,
+        "type": "benchmarked",
+        "source_ref": "Tables 2–3",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "512 MB",
+        "db_size_bytes": 536870912,
+        "type": "benchmarked",
+        "source_ref": "Tables 2–3",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "8 B",
+        "entry_size_bytes": 8,
+        "db_size": "2 GB",
+        "db_size_bytes": 2147483648,
+        "type": "benchmarked",
+        "source_ref": "Tables 2–3",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "8 GB",
+        "db_size_bytes": 8589934592,
+        "type": "benchmarked",
+        "source_ref": "Tables 2–3",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "64 GB",
+        "db_size_bytes": 68719476736,
+        "type": "benchmarked",
+        "source_ref": "Tables 2–3",
+        "is_primary": false
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "ishaishiwichs_2025",
@@ -1125,7 +2248,24 @@
       "setup_model": "client-dependent",
       "query_budget": null,
       "client_storage_asymptotic": "Õ(n^{2/3})"
-    }
+    },
+    "source_pdf": "Group.D.Client.Dependent.Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_976.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "~32 MB",
+        "db_size_bytes": 33554432,
+        "type": "estimated",
+        "source_ref": "Theorem 4.4",
+        "is_primary": true
+      }
+    ],
+    "footnotes": [
+      "CK20, IshaiShiWichs, Plinko, and WangRen have no implementations. \"N=2^20 × 32B\" was chosen by the notes author to match Group D conventions and produce comparable asymptotic estimates."
+    ]
   },
   {
     "id": "plinko_2024",
@@ -1166,7 +2306,24 @@
       "setup_model": "client-dependent",
       "query_budget": null,
       "client_storage_asymptotic": null
-    }
+    },
+    "source_pdf": "Group.D.Client.Dependent.Preprocessing/plinko_2024/Plinko_2024_318.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "~32 MB",
+        "db_size_bytes": 33554432,
+        "type": "estimated",
+        "source_ref": "Figs 1, 6",
+        "is_primary": true
+      }
+    ],
+    "footnotes": [
+      "CK20, IshaiShiWichs, Plinko, and WangRen have no implementations. \"N=2^20 × 32B\" was chosen by the notes author to match Group D conventions and produce comparable asymptotic estimates."
+    ]
   },
   {
     "id": "singlepass_2024",
@@ -1203,7 +2360,66 @@
       "setup_model": "client-dependent (two-server)",
       "query_budget": null,
       "client_storage_asymptotic": null
-    }
+    },
+    "source_pdf": "Group.D.Client.Dependent.Preprocessing/singlepass_2024/SinglePass_2024_303.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "~32 MB",
+        "db_size_bytes": 33554432,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": true
+      },
+      {
+        "num_entries": "2^24",
+        "num_entries_raw": 16777216,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "~512 MB",
+        "db_size_bytes": 536870912,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "8 B",
+        "entry_size_bytes": 8,
+        "db_size": "~2 GB",
+        "db_size_bytes": 2147483648,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^28",
+        "num_entries_raw": 268435456,
+        "entry_size": "256 B",
+        "entry_size_bytes": 256,
+        "db_size": "~64 GB",
+        "db_size_bytes": 68719476736,
+        "type": "benchmarked",
+        "source_ref": "Table 2",
+        "is_primary": false
+      },
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "512 B",
+        "entry_size_bytes": 512,
+        "db_size": "~512 MB",
+        "db_size_bytes": 536870912,
+        "type": "benchmarked",
+        "source_ref": "Table 3",
+        "is_primary": false
+      }
+    ],
+    "footnotes": []
   },
   {
     "id": "wangren_2024",
@@ -1244,7 +2460,24 @@
       "setup_model": "client-dependent",
       "query_budget": null,
       "client_storage_asymptotic": null
-    }
+    },
+    "source_pdf": "Group.D.Client.Dependent.Preprocessing/wangren_2024/WangRen_2024_1845.pdf",
+    "configs": [
+      {
+        "num_entries": "2^20",
+        "num_entries_raw": 1048576,
+        "entry_size": "32 B",
+        "entry_size_bytes": 32,
+        "db_size": "~32 MB",
+        "db_size_bytes": 33554432,
+        "type": "estimated",
+        "source_ref": "Theorem 4.1",
+        "is_primary": true
+      }
+    ],
+    "footnotes": [
+      "CK20, IshaiShiWichs, Plinko, and WangRen have no implementations. \"N=2^20 × 32B\" was chosen by the notes author to match Group D conventions and produce comparable asymptotic estimates."
+    ]
   },
   {
     "id": "keywordpir_2019",
@@ -1281,7 +2514,35 @@
       "pir_variant": "keyword (optimized SealPIR)",
       "total_comm_kb": 143.4,
       "server_cost_cents": 0.0028
-    }
+    },
+    "source_pdf": "Group.X.Extensions/keywordpir_2019/SealPIR_KeywordPIR_2019_1483.pdf",
+    "configs": [
+      {
+        "num_entries": "2^18",
+        "num_entries_raw": 262144,
+        "entry_size": "288 B",
+        "entry_size_bytes": 288,
+        "db_size": "~72 MB",
+        "db_size_bytes": 75497472,
+        "type": "benchmarked",
+        "source_ref": "Table 3",
+        "is_primary": true
+      },
+      {
+        "num_entries": "100K",
+        "num_entries_raw": 100000,
+        "entry_size": "40 KB",
+        "entry_size_bytes": 40960,
+        "db_size": "~4 GB",
+        "db_size_bytes": 4096000000,
+        "type": "benchmarked",
+        "source_ref": "Table 4",
+        "is_primary": false
+      }
+    ],
+    "footnotes": [
+      "KeywordPIR is a multi-paradigm comparison paper (SealPIR vs. MulPIR vs. Gentry-Ramzan). The 288B config evaluates index PIR; the 40KB config evaluates keyword PIR on a labeled database (100K records)."
+    ]
   },
   {
     "id": "distributionalpir_2025",
@@ -1318,6 +2579,56 @@
       "pir_variant": "distributional",
       "per_request_cost": 0.0057,
       "speedup_over_baseline": "10-195x (SimplePIR), 6.7-12.8x (Respire)"
-    }
+    },
+    "source_pdf": "Group.X.Extensions/distributionalpir_2025/DistributionalPIR_2025_132.pdf",
+    "configs": [
+      {
+        "num_entries": "~5K",
+        "num_entries_raw": 5000,
+        "entry_size": "288 B",
+        "entry_size_bytes": 288,
+        "db_size": "~1.5 MB",
+        "db_size_bytes": 1440000,
+        "type": "benchmarked",
+        "source_ref": "Sec 7.1",
+        "is_primary": false
+      },
+      {
+        "num_entries": "~10K",
+        "num_entries_raw": 10000,
+        "entry_size": "307 B",
+        "entry_size_bytes": 307,
+        "db_size": "~3.1 MB",
+        "db_size_bytes": 3070000,
+        "type": "benchmarked",
+        "source_ref": "Sec 7.1",
+        "is_primary": false
+      },
+      {
+        "num_entries": "~1M",
+        "num_entries_raw": 1000000,
+        "entry_size": "variable",
+        "entry_size_bytes": null,
+        "db_size": "~4 GB",
+        "db_size_bytes": 4294967296,
+        "type": "benchmarked",
+        "source_ref": "Sec 7.1, Fig 9",
+        "is_primary": false
+      },
+      {
+        "num_entries": "~73M",
+        "num_entries_raw": 73000000,
+        "entry_size": "~560 B",
+        "entry_size_bytes": 560,
+        "db_size": "~38 GB",
+        "db_size_bytes": 40880000000,
+        "type": "benchmarked",
+        "source_ref": "Sec 7.2.1, Table 12",
+        "is_primary": true
+      }
+    ],
+    "footnotes": [
+      "DistributionalPIR uses real-world datasets (Twitter). Entry sizes vary per user (tweets). The \"~560B\" for the 38 GB config is the average tweet size. The smaller configs (5K, 10K entries) are synthetic evaluation points."
+    ]
   }
 ]
