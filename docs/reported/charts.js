@@ -16,7 +16,7 @@
   var DB_SIZE_TIERS = ['tiny', 'small', 'medium', 'large', '1-bit'];
   var DB_SIZE_LABELS = {
     tiny: '\u2264 1 GB', small: '1\u20138 GB', medium: '8\u201332 GB',
-    large: '> 32 GB', '1-bit': '1-bit'
+    large: '> 32 GB', '1-bit': '1-bit entry'
   };
   var DB_SIZE_COLORS = {
     tiny: '#9b59b6', small: '#3498db', medium: '#e67e22',
@@ -1482,7 +1482,7 @@
     // Per DB-size tier tabs
     DB_SIZE_TIERS.forEach(function (tier) {
       var btn = document.createElement('button');
-      btn.className = 'radar-tab';
+      btn.className = 'radar-tab' + (tier === '1-bit' ? ' onebit-tab' : '');
       btn.dataset.tier = tier;
       btn.textContent = DB_SIZE_LABELS[tier];
       btn.addEventListener('click', function () { drawTier(tier); });

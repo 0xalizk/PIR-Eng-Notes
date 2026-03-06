@@ -235,6 +235,22 @@ h4 {
   border-color: var(--link);
   box-shadow: 0 1px 3px var(--shadow);
 }
+.onebit-tab {
+  background: rgba(230,126,34,0.07);
+  border-color: rgba(230,126,34,0.25);
+  color: #b5651d;
+}
+.onebit-tab:hover {
+  background: rgba(230,126,34,0.13);
+  color: #a0571a;
+}
+.onebit-tab.active {
+  background: rgba(230,126,34,0.15);
+  border-color: #e67e22;
+  color: #a0571a;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(230,126,34,0.2);
+}
 .tab-dot {
   display: inline-block;
   width: 8px;
