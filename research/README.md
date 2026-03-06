@@ -1,1 +1,1 @@
-[db, record, entry sizes](db_config.html)
+[db, record, entry sizes](../docs/db_config.html)

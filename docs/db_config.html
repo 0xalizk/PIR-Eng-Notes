@@ -1,25 +1,71 @@
-**Paper-reported data configurations:**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PIR Benchs — DB Configs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    #configs-table tbody tr:nth-child(even) { background: transparent; }
+    #configs-table .scheme-start td { border-top: 2px solid var(--border); }
+    #configs-table thead th { text-align: center; cursor: default; }
+    #configs-table thead th:hover { background: var(--bg-alt); }
+    #configs-table tbody td { text-align: center; white-space: normal; }
+    .type-legend { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; font-size: 14px; }
+    .type-legend span { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
+    .type-legend strong { color: var(--text); }
+    .type-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .type-dot.benchmarked { background: #2da44e; }
+    .type-dot.analytical { background: #bf8700; }
+    .type-dot.estimated { background: var(--text-muted); }
+    .footnotes { margin-top: 32px; font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+    .footnotes p { margin-bottom: 12px; }
+    .footnotes sup { color: var(--link); font-weight: 600; }
+    .footnotes code { font-size: 12px; background: var(--bg-alt); padding: 2px 5px; border-radius: 3px; }
+    @media (max-width: 900px) {
+      .type-legend { flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
 
-- **Benchmarked** — Implementation ran at this configuration; performance numbers are measured (from tables or read from charts)
-- **Analytical** — Paper's authors derive concrete costs at this configuration through a cost model, but no implementation exists
-- **Estimated** — Configuration chosen by the notes author to compute asymptotic estimates; not specified in the paper's evaluation
+<!-- Hamburger (mobile) -->
+<button class="hamburger" aria-label="Menu">&#9776;</button>
+<div class="sidebar-overlay"></div>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,700;1,400&display=swap');
-.configs { font-family: 'Ubuntu', sans-serif; border-collapse: collapse; width: 100%; }
-.configs th { background: #f6f8fa; font-weight: 700; text-align: center; }
-.configs th, .configs td { border: 1px solid #d0d7de; padding: 6px 12px; font-size: 14px; }
-.configs td { text-align: center; }
-</style>
+<!-- Sidebar -->
+<aside class="sidebar">
+  <a href="./" class="sidebar-title">PIR Benchs</a>
+  <nav id="sidebar-nav"></nav>
+</aside>
 
-<table class="configs">
-<thead>
-<tr><th>#</th><th>Scheme</th><th>Group</th><th>N (entries)</th><th>Entry Size</th><th>DB Size</th><th>Type</th><th>Source</th></tr>
-</thead>
-<tbody>
+<!-- Main Content -->
+<main class="content">
+<section id="db-configs">
+  <h2><a href="#db-configs">DB Configs</a></h2>
+  <p class="desc">
+    Paper-reported database configurations across 35 PIR schemes. Each row shows a (N, entry size) pair
+    that was benchmarked, analytically estimated, or chosen for asymptotic comparison.
+  </p>
+
+  <div class="type-legend">
+    <span><span class="type-dot benchmarked"></span> <strong>Benchmarked</strong> — measured from implementation</span>
+    <span><span class="type-dot analytical"></span> <strong>Analytical</strong> — derived via cost model, no impl</span>
+    <span><span class="type-dot estimated"></span> <strong>Estimated</strong> — chosen by notes author for asymptotic estimates</span>
+  </div>
+
+  <div class="table-wrap">
+    <table id="configs-table">
+      <thead>
+        <tr><th>#</th><th>Scheme</th><th>Group</th><th>N (entries)</th><th>Entry Size</th><th>DB Size</th><th>Type</th><th>Source</th></tr>
+      </thead>
+      <tbody>
 
 <!-- 1  XPIR (2014) -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="4" align="center" valign="middle">1</td>
 <td rowspan="4" align="center" valign="middle">XPIR (2014)</td>
 <td rowspan="4" align="center" valign="middle">A</td>
@@ -29,14 +75,14 @@
 <tr><td>2<sup>24</sup></td><td>4 KB</td><td>64 GB</td><td>Benchmarked</td><td>Table 6</td></tr>
 
 <!-- 2  XPIR (2016) -->
-<tr>
+<tr class="scheme-start">
 <td align="center" valign="middle">2</td>
 <td align="center" valign="middle">XPIR (2016)</td>
 <td align="center" valign="middle">A</td>
 <td>—</td><td>—</td><td>various</td><td>—</td><td><a href="#fn-a"><sup>a</sup></a></td></tr>
 
 <!-- 3  SealPIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="3" align="center" valign="middle">3</td>
 <td rowspan="3" align="center" valign="middle">SealPIR</td>
 <td rowspan="3" align="center" valign="middle">A</td>
@@ -45,14 +91,14 @@
 <tr><td>2<sup>28</sup></td><td>288 B</td><td>73 GB</td><td>Benchmarked</td><td>Fig 2, Sec 6</td></tr>
 
 <!-- 4  MulPIR -->
-<tr>
+<tr class="scheme-start">
 <td align="center" valign="middle">4</td>
 <td align="center" valign="middle">MulPIR</td>
 <td align="center" valign="middle">A</td>
 <td>2<sup>20</sup></td><td>256 B</td><td>256 MB</td><td>Analytical</td><td>Sec 5.2, App A</td></tr>
 
 <!-- 5  OnionPIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="6" align="center" valign="middle">5</td>
 <td rowspan="6" align="center" valign="middle">OnionPIR</td>
 <td rowspan="6" align="center" valign="middle">A</td>
@@ -64,7 +110,7 @@
 <tr><td>10<sup>6</sup></td><td>30 KB</td><td>~29 GB</td><td>Benchmarked</td><td>Tables 3–4</td></tr>
 
 <!-- 6  Addra/FastPIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="5" align="center" valign="middle">6</td>
 <td rowspan="5" align="center" valign="middle">Addra/FastPIR</td>
 <td rowspan="5" align="center" valign="middle">A</td>
@@ -75,7 +121,7 @@
 <tr><td>32,768</td><td>96 B</td><td>~3 MB</td><td>Benchmarked</td><td>Sec 6.5 <a href="#fn-b"><sup>b</sup></a></td></tr>
 
 <!-- 7  CwPIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="3" align="center" valign="middle">7</td>
 <td rowspan="3" align="center" valign="middle">CwPIR</td>
 <td rowspan="3" align="center" valign="middle">A</td>
@@ -84,7 +130,7 @@
 <tr><td>2<sup>28</sup></td><td>288 B</td><td>73 GB</td><td>Benchmarked</td><td>Fig 7 <a href="#fn-c"><sup>c</sup></a></td></tr>
 
 <!-- 8  Spiral -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="5" align="center" valign="middle">8</td>
 <td rowspan="5" align="center" valign="middle">Spiral</td>
 <td rowspan="5" align="center" valign="middle">A</td>
@@ -95,7 +141,7 @@
 <tr><td>2<sup>24</sup></td><td>1 KB</td><td>16 GB</td><td>Benchmarked</td><td>Table 2</td></tr>
 
 <!-- 9  FrodoPIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="2" align="center" valign="middle">9</td>
 <td rowspan="2" align="center" valign="middle">FrodoPIR</td>
 <td rowspan="2" align="center" valign="middle">A</td>
@@ -103,14 +149,14 @@
 <tr><td>2<sup>16</sup>–2<sup>20</sup></td><td>8 KB</td><td>512 MB – 8 GB</td><td>Benchmarked</td><td>Table 6 <a href="#fn-d"><sup>d</sup></a></td></tr>
 
 <!-- 10  ThorPIR -->
-<tr>
+<tr class="scheme-start">
 <td align="center" valign="middle">10</td>
 <td align="center" valign="middle">ThorPIR</td>
 <td align="center" valign="middle">A</td>
 <td>2<sup>30</sup></td><td>360 B</td><td>~360 GB</td><td>Analytical</td><td>Table 2 <a href="#fn-e"><sup>e</sup></a></td></tr>
 
 <!-- 11  OnionPIRv2 -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="5" align="center" valign="middle">11</td>
 <td rowspan="5" align="center" valign="middle">OnionPIRv2</td>
 <td rowspan="5" align="center" valign="middle">A</td>
@@ -121,7 +167,7 @@
 <tr><td>2<sup>20</sup></td><td>22.5 KB</td><td>22.5 GB</td><td>Benchmarked</td><td>Table 2</td></tr>
 
 <!-- 12  HintlessPIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="3" align="center" valign="middle">12</td>
 <td rowspan="3" align="center" valign="middle">HintlessPIR</td>
 <td rowspan="3" align="center" valign="middle">B</td>
@@ -130,7 +176,7 @@
 <tr><td>2<sup>20</sup></td><td>2 MB</td><td>~560 GB</td><td>Benchmarked</td><td>Table 1 <a href="#fn-f"><sup>f</sup></a></td></tr>
 
 <!-- 13  YPIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="3" align="center" valign="middle">13</td>
 <td rowspan="3" align="center" valign="middle">YPIR</td>
 <td rowspan="3" align="center" valign="middle">B</td>
@@ -139,7 +185,7 @@
 <tr><td>2<sup>24</sup></td><td>256 B</td><td>4 GB</td><td>Benchmarked</td><td>Eval section <a href="#fn-g"><sup>g</sup></a></td></tr>
 
 <!-- 14  Respire -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="3" align="center" valign="middle">14</td>
 <td rowspan="3" align="center" valign="middle">Respire</td>
 <td rowspan="3" align="center" valign="middle">B</td>
@@ -148,7 +194,7 @@
 <tr><td>2<sup>23</sup></td><td>256 B</td><td>8 GB</td><td>Benchmarked</td><td>Tables 1–2</td></tr>
 
 <!-- 15  WhisPIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="2" align="center" valign="middle">15</td>
 <td rowspan="2" align="center" valign="middle">WhisPIR</td>
 <td rowspan="2" align="center" valign="middle">B</td>
@@ -156,7 +202,7 @@
 <tr><td>2<sup>24</sup></td><td>256 B</td><td>4 GB</td><td>Benchmarked</td><td>Figs 1–2 <a href="#fn-h"><sup>h</sup></a></td></tr>
 
 <!-- 16  Pirouette -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="2" align="center" valign="middle">16</td>
 <td rowspan="2" align="center" valign="middle">Pirouette</td>
 <td rowspan="2" align="center" valign="middle">B</td>
@@ -164,7 +210,7 @@
 <tr><td>2<sup>23</sup></td><td>256 B</td><td>8 GB</td><td>Benchmarked</td><td>Table 2</td></tr>
 
 <!-- 17  InsPIRe -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="2" align="center" valign="middle">17</td>
 <td rowspan="2" align="center" valign="middle">InsPIRe</td>
 <td rowspan="2" align="center" valign="middle">B</td>
@@ -172,7 +218,7 @@
 <tr><td>2<sup>24</sup></td><td>256 B</td><td>4 GB</td><td>Benchmarked</td><td>Tables 2–3</td></tr>
 
 <!-- 18  NPIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="2" align="center" valign="middle">18</td>
 <td rowspan="2" align="center" valign="middle">NPIR</td>
 <td rowspan="2" align="center" valign="middle">B</td>
@@ -180,7 +226,7 @@
 <tr><td>2<sup>23</sup></td><td>256 B</td><td>8 GB</td><td>Benchmarked</td><td>Table 1</td></tr>
 
 <!-- 19  VIA -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="2" align="center" valign="middle">19</td>
 <td rowspan="2" align="center" valign="middle">VIA</td>
 <td rowspan="2" align="center" valign="middle">B</td>
@@ -188,7 +234,7 @@
 <tr><td>2<sup>24</sup></td><td>256 B</td><td>4 GB</td><td>Benchmarked</td><td>Tables 1–2</td></tr>
 
 <!-- 20  SimplePIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="4" align="center" valign="middle">20</td>
 <td rowspan="4" align="center" valign="middle">SimplePIR</td>
 <td rowspan="4" align="center" valign="middle">C</td>
@@ -198,7 +244,7 @@
 <tr><td>2<sup>28</sup></td><td>256 B</td><td>~1 GB</td><td>Benchmarked</td><td>Table 10</td></tr>
 
 <!-- 21  DoublePIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="4" align="center" valign="middle">21</td>
 <td rowspan="4" align="center" valign="middle">DoublePIR</td>
 <td rowspan="4" align="center" valign="middle">C</td>
@@ -208,42 +254,42 @@
 <tr><td>2<sup>28</sup></td><td>256 B</td><td>~1 GB</td><td>Benchmarked</td><td>Table 10</td></tr>
 
 <!-- 22  VeriSimplePIR -->
-<tr>
+<tr class="scheme-start">
 <td align="center" valign="middle">22</td>
 <td align="center" valign="middle">VeriSimplePIR</td>
 <td align="center" valign="middle">C</td>
 <td>varies</td><td>varies</td><td>4–256 GiB</td><td>Benchmarked</td><td>Figs 7–8 <a href="#fn-j"><sup>j</sup></a></td></tr>
 
 <!-- 23  BarelyDoublyEfficient -->
-<tr>
+<tr class="scheme-start">
 <td align="center" valign="middle">23</td>
 <td align="center" valign="middle">BarelyDoublyEfficient</td>
 <td align="center" valign="middle">C</td>
 <td>—</td><td>—</td><td>1 GB (theoretical)</td><td>Analytical</td><td>Theorem 3.1 <a href="#fn-k"><sup>k</sup></a></td></tr>
 
 <!-- 24  IncrementalPIR -->
-<tr>
+<tr class="scheme-start">
 <td align="center" valign="middle">24</td>
 <td align="center" valign="middle">IncrementalPIR</td>
 <td align="center" valign="middle">C</td>
 <td>2<sup>10</sup>–2<sup>30</sup></td><td>1 bit – 32 bits</td><td>varies</td><td>Benchmarked</td><td>Table 2 <a href="#fn-l"><sup>l</sup></a></td></tr>
 
 <!-- 25  CK20 -->
-<tr>
+<tr class="scheme-start">
 <td align="center" valign="middle">25</td>
 <td align="center" valign="middle">CK20</td>
 <td align="center" valign="middle">D</td>
 <td>2<sup>20</sup></td><td>32 B</td><td>~32 MB</td><td>Estimated</td><td>Theorem 14 <a href="#fn-m"><sup>m</sup></a></td></tr>
 
 <!-- 26  IncPIR -->
-<tr>
+<tr class="scheme-start">
 <td align="center" valign="middle">26</td>
 <td align="center" valign="middle">IncPIR</td>
 <td align="center" valign="middle">D</td>
 <td>2<sup>20</sup></td><td>32 B</td><td>~32 MB</td><td>Benchmarked</td><td>Figs 9–10</td></tr>
 
 <!-- 27  Piano -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="3" align="center" valign="middle">27</td>
 <td rowspan="3" align="center" valign="middle">Piano</td>
 <td rowspan="3" align="center" valign="middle">D</td>
@@ -252,7 +298,7 @@
 <tr><td>~1.68×10<sup>9</sup></td><td>64 B</td><td>100 GB</td><td>Benchmarked</td><td>Tables 1–2</td></tr>
 
 <!-- 28  TreePIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="4" align="center" valign="middle">28</td>
 <td rowspan="4" align="center" valign="middle">TreePIR</td>
 <td rowspan="4" align="center" valign="middle">D</td>
@@ -262,7 +308,7 @@
 <tr><td>2<sup>29</sup></td><td>32 B</td><td>4 GB</td><td>Benchmarked</td><td>Fig 9</td></tr>
 
 <!-- 29  RMS24 -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="5" align="center" valign="middle">29</td>
 <td rowspan="5" align="center" valign="middle">RMS24</td>
 <td rowspan="5" align="center" valign="middle">D</td>
@@ -273,21 +319,21 @@
 <tr><td>2<sup>28</sup></td><td>256 B</td><td>64 GB</td><td>Benchmarked</td><td>Tables 2–3</td></tr>
 
 <!-- 30  IshaiShiWichs -->
-<tr>
+<tr class="scheme-start">
 <td align="center" valign="middle">30</td>
 <td align="center" valign="middle">IshaiShiWichs</td>
 <td align="center" valign="middle">D</td>
 <td>2<sup>20</sup></td><td>32 B</td><td>~32 MB</td><td>Estimated</td><td>Theorem 4.4 <a href="#fn-m"><sup>m</sup></a></td></tr>
 
 <!-- 31  Plinko -->
-<tr>
+<tr class="scheme-start">
 <td align="center" valign="middle">31</td>
 <td align="center" valign="middle">Plinko</td>
 <td align="center" valign="middle">D</td>
 <td>2<sup>20</sup></td><td>32 B</td><td>~32 MB</td><td>Estimated</td><td>Figs 1, 6 <a href="#fn-m"><sup>m</sup></a></td></tr>
 
 <!-- 32  SinglePass -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="5" align="center" valign="middle">32</td>
 <td rowspan="5" align="center" valign="middle">SinglePass</td>
 <td rowspan="5" align="center" valign="middle">D</td>
@@ -298,14 +344,14 @@
 <tr><td>2<sup>20</sup></td><td>512 B</td><td>~512 MB</td><td>Benchmarked</td><td>Table 3</td></tr>
 
 <!-- 33  WangRen -->
-<tr>
+<tr class="scheme-start">
 <td align="center" valign="middle">33</td>
 <td align="center" valign="middle">WangRen</td>
 <td align="center" valign="middle">D</td>
 <td>2<sup>20</sup></td><td>32 B</td><td>~32 MB</td><td>Estimated</td><td>Theorem 4.1 <a href="#fn-m"><sup>m</sup></a></td></tr>
 
 <!-- 34  KeywordPIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="2" align="center" valign="middle">34</td>
 <td rowspan="2" align="center" valign="middle">KeywordPIR</td>
 <td rowspan="2" align="center" valign="middle">X</td>
@@ -313,7 +359,7 @@
 <tr><td>100K</td><td>40 KB</td><td>~4 GB</td><td>Benchmarked</td><td>Table 4 <a href="#fn-n"><sup>n</sup></a></td></tr>
 
 <!-- 35  DistributionalPIR -->
-<tr>
+<tr class="scheme-start">
 <td rowspan="4" align="center" valign="middle">35</td>
 <td rowspan="4" align="center" valign="middle">DistributionalPIR</td>
 <td rowspan="4" align="center" valign="middle">X</td>
@@ -322,37 +368,32 @@
 <tr><td>~1M</td><td>variable</td><td>~4 GB</td><td>Benchmarked</td><td>Sec 7.1, Fig 9</td></tr>
 <tr><td>~73M</td><td>~560 B</td><td>~38 GB</td><td>Benchmarked</td><td>Sec 7.2.1, Table 12</td></tr>
 
-</tbody>
-</table>
+      </tbody>
+    </table>
+  </div>
 
-<br>
+  <div class="footnotes">
+    <p id="fn-a"><sup>a</sup> XPIR (2016) is a system paper with auto-parameter optimization. Benchmarks span many DB sizes via an automated search over recursion depths and ring parameters — no single fixed configs to list. Values read from Figures 6–8 (log-scale).</p>
+    <p id="fn-b"><sup>b</sup> Addra/FastPIR has two distinct evaluation contexts: PIR microbenchmarks (Table 1: 32B entries at various N) and the Addra voice-call system benchmark (Section 6.5: 32,768 mailboxes × 96B messages). <code>reported.json</code> uses the system benchmark (32768 × 96B). Values are Tier 2 (approximate from figures).</p>
+    <p id="fn-c"><sup>c</sup> CwPIR's benchmark configs (2<sup>20</sup>–2<sup>28</sup> × 288B) match SealPIR's configs because CwPIR is evaluated as a drop-in replacement for SealPIR. Entry size is BFV plaintext payload; CwPIR is keyword PIR — the "288B" is the record payload, not the identifier.</p>
+    <p id="fn-d"><sup>d</sup> FrodoPIR tests a grid of 5 N values (2<sup>16</sup> to 2<sup>20</sup>) × 2 entry sizes (1 KB, 8 KB) = 10 configurations total. All in Table 6.</p>
+    <p id="fn-e"><sup>e</sup> ThorPIR has concrete parameter choices in Table 2 (N=2<sup>30</sup>, 360B entries, 1024-query budget) but no running implementation. Server time derived from end-to-end time / Q queries. The parameters are the paper's own specification, not our estimate — hence "Analytical" rather than "Estimated."</p>
+    <p id="fn-f"><sup>f</sup> HintlessPIR fixes N=2<sup>20</sup> and scales entry size (288B to 8KB to 2MB). The 2MB entry config produces ~560 GB total DB — the largest tested by any scheme — but with only 2<sup>20</sup> ≈ 1M entries.</p>
+    <p id="fn-g"><sup>g</sup> YPIR's headline benchmark is "32 GB, 1-bit records" (2<sup>38</sup> entries × 1 bit), which is its primary throughput result. The 256B-entry configs (2<sup>16</sup>–2<sup>24</sup>) may be from comparison evaluation with other schemes. Needs verification whether these are YPIR's own runs or competitor data.</p>
+    <p id="fn-h"><sup>h</sup> WhisPIR values are Tier 2 — read from log-scale figures, not exact tables. Paper also tests up to 32 GB in Figure 4, but specific (N, entry_size) pairs are not clearly separable from the charts.</p>
+    <p id="fn-i"><sup>i</sup> SimplePIR and DoublePIR keep total DB size constant at ~1 GB and vary the entry size / entry count tradeoff. All four configs represent the same ~1 GB database accessed differently.</p>
+    <p id="fn-j"><sup>j</sup> VeriSimplePIR evaluates a scaling benchmark from 4 GiB to 256 GiB. Figures 7–8 show performance as a function of DB size on log-scale axes. Individual (N, entry_size) pairs not extractable — the paper plots continuous scaling curves, not discrete configurations.</p>
+    <p id="fn-k"><sup>k</sup> BarelyDoublyEfficient is a pure theory/feasibility result. "1 GB" was chosen for asymptotic estimation in <code>reported.json</code>. The paper proves existence via Williams' technique but the poly(lambda) constants are unknown and potentially large. No concrete parameters specified in the paper.</p>
+    <p id="fn-l"><sup>l</sup> IncrementalPIR evaluates iSimplePIR across a wide range (2<sup>10</sup> to 2<sup>30</sup> entries, 1-bit to 32-bit entries). The primary benchmark is 1 GB with 1-bit entries (matching SimplePIR baseline). The paper also evaluates a 4 GB password-breach detection scenario.</p>
+    <p id="fn-m"><sup>m</sup> CK20, IshaiShiWichs, Plinko, and WangRen have no implementations. "N=2<sup>20</sup> × 32B" was chosen by the notes author to match Group D conventions and produce comparable asymptotic estimates. The papers themselves only state bounds in terms of N, not specific benchmark configurations.</p>
+    <p id="fn-n"><sup>n</sup> KeywordPIR is a multi-paradigm comparison paper (SealPIR vs. MulPIR vs. Gentry-Ramzan). The 288B config evaluates index PIR; the 40KB config evaluates keyword PIR on a labeled database (100K records).</p>
+    <p id="fn-o"><sup>o</sup> DistributionalPIR uses real-world datasets (Twitter). Entry sizes vary per user (tweets). The "~560B" for the 38 GB config is the average tweet size. The smaller configs (5K, 10K entries) are synthetic evaluation points.</p>
+  </div>
 
-<p id="fn-a"><sup>a</sup> XPIR (2016) is a system paper with auto-parameter optimization. Benchmarks span many DB sizes via an automated search over recursion depths and ring parameters — no single fixed configs to list. Values read from Figures 6–8 (log-scale).</p>
+</section>
+</main>
 
-<p id="fn-b"><sup>b</sup> Addra/FastPIR has two distinct evaluation contexts: PIR microbenchmarks (Table 1: 32B entries at various N) and the Addra voice-call system benchmark (Section 6.5: 32,768 mailboxes × 96B messages). <code>reported.json</code> uses the system benchmark (32768 × 96B). Values are Tier 2 (approximate from figures).</p>
-
-<p id="fn-c"><sup>c</sup> CwPIR's benchmark configs (2<sup>20</sup>–2<sup>28</sup> × 288B) match SealPIR's configs because CwPIR is evaluated as a drop-in replacement for SealPIR. Entry size is BFV plaintext payload; CwPIR is keyword PIR — the "288B" is the record payload, not the identifier.</p>
-
-<p id="fn-d"><sup>d</sup> FrodoPIR tests a grid of 5 N values (2<sup>16</sup> to 2<sup>20</sup>) × 2 entry sizes (1 KB, 8 KB) = 10 configurations total. All in Table 6.</p>
-
-<p id="fn-e"><sup>e</sup> ThorPIR has concrete parameter choices in Table 2 (N=2<sup>30</sup>, 360B entries, 1024-query budget) but no running implementation. Server time derived from end-to-end time / Q queries. The parameters are the paper's own specification, not our estimate — hence "Analytical" rather than "Estimated."</p>
-
-<p id="fn-f"><sup>f</sup> HintlessPIR fixes N=2<sup>20</sup> and scales entry size (288B to 8KB to 2MB). The 2MB entry config produces ~560 GB total DB — the largest tested by any scheme — but with only 2<sup>20</sup> ≈ 1M entries.</p>
-
-<p id="fn-g"><sup>g</sup> YPIR's headline benchmark is "32 GB, 1-bit records" (2<sup>38</sup> entries × 1 bit), which is its primary throughput result. The 256B-entry configs (2<sup>16</sup>–2<sup>24</sup>) may be from comparison evaluation with other schemes. Needs verification whether these are YPIR's own runs or competitor data.</p>
-
-<p id="fn-h"><sup>h</sup> WhisPIR values are Tier 2 — read from log-scale figures, not exact tables. Paper also tests up to 32 GB in Figure 4, but specific (N, entry_size) pairs are not clearly separable from the charts.</p>
-
-<p id="fn-i"><sup>i</sup> SimplePIR and DoublePIR keep total DB size constant at ~1 GB and vary the entry size / entry count tradeoff. All four configs represent the same ~1 GB database accessed differently.</p>
-
-<p id="fn-j"><sup>j</sup> VeriSimplePIR evaluates a scaling benchmark from 4 GiB to 256 GiB. Figures 7–8 show performance as a function of DB size on log-scale axes. Individual (N, entry_size) pairs not extractable — the paper plots continuous scaling curves, not discrete configurations.</p>
-
-<p id="fn-k"><sup>k</sup> BarelyDoublyEfficient is a pure theory/feasibility result. "1 GB" was chosen for asymptotic estimation in <code>reported.json</code>. The paper proves existence via Williams' technique but the poly(lambda) constants are unknown and potentially large. No concrete parameters specified in the paper.</p>
-
-<p id="fn-l"><sup>l</sup> IncrementalPIR evaluates iSimplePIR across a wide range (2<sup>10</sup> to 2<sup>30</sup> entries, 1-bit to 32-bit entries). The primary benchmark is 1 GB with 1-bit entries (matching SimplePIR baseline). The paper also evaluates a 4 GB password-breach detection scenario.</p>
-
-<p id="fn-m"><sup>m</sup> CK20, IshaiShiWichs, Plinko, and WangRen have no implementations. "N=2<sup>20</sup> × 32B" was chosen by the notes author to match Group D conventions and produce comparable asymptotic estimates. The papers themselves only state bounds in terms of N, not specific benchmark configurations.</p>
-
-<p id="fn-n"><sup>n</sup> KeywordPIR is a multi-paradigm comparison paper (SealPIR vs. MulPIR vs. Gentry-Ramzan). The 288B config evaluates index PIR; the 40KB config evaluates keyword PIR on a labeled database (100K records).</p>
-
-<p id="fn-o"><sup>o</sup> DistributionalPIR uses real-world datasets (Twitter). Entry sizes vary per user (tweets). The "~560B" for the 38 GB config is the average tweet size. The smaller configs (5K, 10K entries) are synthetic evaluation points.</p>
+<script src="nav.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
