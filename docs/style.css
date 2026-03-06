@@ -235,21 +235,25 @@ h4 {
   border-color: var(--link);
   box-shadow: 0 1px 3px var(--shadow);
 }
+.onebit-tab, .onebit-tab:hover, .onebit-tab.active {
+  border: 1px dotted var(--link);
+}
+.db-tab.onebit-tab, .db-tab.onebit-tab:hover, .db-tab.onebit-tab.active {
+  border-bottom: 3px dotted var(--link);
+}
 .onebit-tab {
-  background: rgba(230,126,34,0.07);
-  border-color: rgba(230,126,34,0.25);
-  color: #b5651d;
+  background: #FFFFE6;
+  color: #8a7d00;
 }
 .onebit-tab:hover {
-  background: rgba(230,126,34,0.13);
-  color: #a0571a;
+  background: #FFFFC0;
+  color: #736800;
 }
 .onebit-tab.active {
-  background: rgba(230,126,34,0.15);
-  border-color: #e67e22;
-  color: #a0571a;
+  background: #FFFF00;
+  color: #5c5500;
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(230,126,34,0.2);
+  box-shadow: 0 1px 3px rgba(200,200,0,0.3);
 }
 .tab-dot {
   display: inline-block;
