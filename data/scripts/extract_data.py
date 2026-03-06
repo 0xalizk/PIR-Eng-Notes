@@ -2,14 +2,14 @@
 """
 Extract PIR scheme data from group README.md tables and notes.md files.
 
-This script was used to generate the initial draft of pir_data.json.
-The final pir_data.json is hand-curated and is the single source of truth.
+This script was used to generate the initial draft of reported.json.
+The final reported.json is hand-curated and is the single source of truth.
 
 To regenerate from scratch:
     cd data/
     uv run scripts/extract_data.py
 
-This will overwrite pir_data.json with a fresh extraction. Review carefully
+This will overwrite reported.json with a fresh extraction. Review carefully
 before committing — the hand-curated version may contain corrections.
 """
 
@@ -19,7 +19,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent.parent.parent
 SCHEMES_DIR = REPO_ROOT / "research"
-OUTPUT_FILE = Path(__file__).parent.parent / "pir_data.json"
+OUTPUT_FILE = Path(__file__).parent.parent.parent / "docs" / "data" / "reported.json"
 
 GROUP_DIRS = {
     "A": SCHEMES_DIR / "Group.A.FHE.Based.PIR",
@@ -88,10 +88,10 @@ def parse_gbps(text):
 
 
 def main():
-    print("extract_data.py: This script generates a draft pir_data.json.")
-    print("The canonical pir_data.json is hand-curated. Use with care.")
+    print("extract_data.py: This script generates a draft reported.json.")
+    print("The canonical reported.json is hand-curated. Use with care.")
     print()
-    print("For now, the hand-curated pir_data.json is the source of truth.")
+    print("For now, the hand-curated reported.json is the source of truth.")
     print("This script is provided for reference and future automation.")
 
 

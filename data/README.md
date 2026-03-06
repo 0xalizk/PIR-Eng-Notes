@@ -2,7 +2,7 @@
 
 ### Plots
 
-If you just wanna to see the plots please [see this](https://0xalizk.github.io/PIR-Eng-Notes/#overview) which reads off of the same `pir_data.json`
+If you just wanna to see the plots please [see this](https://0xalizk.github.io/PIR-Eng-Notes/#overview) which reads off of the same `reported.json`
 
 <details>
 <summary>Top-Level (Cross-Group)</summary>
@@ -42,7 +42,7 @@ If you just wanna to see the plots please [see this](https://0xalizk.github.io/P
 
 ### Data
 
-`pir_data.json` is the single source of truth. Each scheme entry has:
+`docs/data/reported.json` is the single source of truth. Each scheme entry has:
 
 - **id, display_name, group, year**: Identification
 - **has_implementation, data_tier**: Tier 1 = exact benchmarks, Tier 2 = approximate, Tier 3 = asymptotic only
@@ -54,7 +54,7 @@ Data was extracted from the group README.md comparison tables (which were audite
 
 #### Reference DB Sizes
 
-Benchmark numbers in `pir_data.json` are **not normalized** to a common database size — each scheme's concrete metrics come from whatever configuration the paper reported. The table below documents each scheme's reference DB size and where it was sourced from.
+Benchmark numbers in `reported.json` are **not normalized** to a common database size — each scheme's concrete metrics come from whatever configuration the paper reported. The table below documents each scheme's reference DB size and where it was sourced from.
 
 | Scheme | DB Size | Source |
 |--------|---------|--------|

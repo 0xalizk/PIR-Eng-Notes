@@ -1693,7 +1693,7 @@
       .catch(function (err) {
         console.error('Failed to load PIR data:', err);
         var el = document.getElementById('chart-heatmap');
-        if (el) el.innerHTML = '<p style="color:red;padding:20px">Failed to load data. Ensure data/pir_data.json exists.</p>';
+        if (el) el.innerHTML = '<p style="color:red;padding:20px">Failed to load data. Ensure data/reported.json exists.</p>';
       });
   }
 

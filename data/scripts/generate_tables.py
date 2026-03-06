@@ -1,5 +1,5 @@
 """
-Generate markdown summary tables from pir_data.json.
+Generate markdown summary tables from reported.json.
 """
 
 from pathlib import Path

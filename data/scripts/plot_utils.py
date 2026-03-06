@@ -19,7 +19,7 @@ from plot_config import (
 
 # Resolve paths relative to this script
 SCRIPT_DIR = Path(__file__).parent
-DATA_FILE = SCRIPT_DIR.parent / "pir_data.json"
+DATA_FILE = SCRIPT_DIR.parent.parent / "docs" / "data" / "reported.json"
 OUTPUT_DIR = SCRIPT_DIR.parent / "output"
 
 

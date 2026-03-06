@@ -64,7 +64,7 @@
 
 1. **Audit (Step 0):** Cross-checked all 5 group README.md comparison tables against the 34 individual scheme notes.md files. Result: zero discrepancies across all groups. The README tables faithfully reflect the source-of-truth notes.md files.
 
-2. **Data Extraction (Step 1):** Rather than fragile regex parsing of heterogeneous markdown tables, the data was hand-curated into `pir_data.json` from the verified README tables. Each scheme gets a structured entry with concrete benchmarks, asymptotic complexity, and group-specific metrics.
+2. **Data Extraction (Step 1):** Rather than fragile regex parsing of heterogeneous markdown tables, the data was hand-curated into `reported.json` from the verified README tables. Each scheme gets a structured entry with concrete benchmarks, asymptotic complexity, and group-specific metrics.
 
 3. **Data Confidence Tiers:** Schemes are classified into three tiers to prevent apples-to-oranges comparisons:
    - **Tier 1 (26 schemes):** Exact paper-reported benchmarks. Filled markers in plots.
