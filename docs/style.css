@@ -335,6 +335,7 @@ h4 {
 .onebit-tab {
   background: #FFFFE6;
   color: #8a7d00;
+  margin-left: 16px;
 }
 .onebit-tab:hover {
   background: #FFFFC0;
