@@ -1,5 +1,6 @@
 /* ── PIR Engineering Notes — charts.js ────────────────── */
 /* All Plotly chart rendering + data loading + composite scoring */
+/* Data source: ../data/reported.json (v2 schema) */
 
 (function () {
   'use strict';
@@ -11,7 +12,6 @@
     D: 'Client-Dep. Preprocessing', X: 'Extensions'
   };
   var GROUP_SYMBOLS_3D = { A: 'circle', B: 'square', C: 'diamond', D: 'cross', X: 'x' };
-  // GROUP_COLORS/NAMES/SYMBOLS represent construction type (A=FHE, B=Stateless, etc.)
 
   var DB_SIZE_TIERS = ['tiny', 'small', 'medium', 'large', '1-bit'];
   var DB_SIZE_LABELS = {
@@ -30,121 +30,34 @@
   var CORE_METRICS = ['query_size_kb', 'response_size_kb', 'server_time_ms', 'throughput_gbps'];
   // all display metrics
   var ALL_METRICS = ['query_size_kb', 'response_size_kb', 'server_time_ms', 'throughput_gbps',
-    'client_time_ms', 'offline_hint_mb', 'client_storage_mb'];
+    'client_time_ms', 'offline_comm_mb', 'client_storage_mb'];
   var METRIC_LABELS = {
     query_size_kb: 'Query (KB)', response_size_kb: 'Response (KB)',
     server_time_ms: 'Server (ms)', throughput_gbps: 'Throughput (GB/s)',
-    client_time_ms: 'Client (ms)', offline_hint_mb: 'Offline (MB)',
+    client_time_ms: 'Client (ms)', offline_comm_mb: 'Offline (MB)',
     client_storage_mb: 'Storage (MB)'
+  };
+  var METRIC_NAMES = {
+    query_size_kb: 'Query', response_size_kb: 'Response',
+    server_time_ms: 'Server', throughput_gbps: 'Throughput',
+    client_time_ms: 'Client', offline_comm_mb: 'Offline',
+    client_storage_mb: 'Storage'
+  };
+  var METRIC_UNITS = {
+    query_size_kb: 'KB', response_size_kb: 'KB',
+    server_time_ms: 'ms', throughput_gbps: 'GB/s',
+    client_time_ms: 'ms', offline_comm_mb: 'MB',
+    client_storage_mb: 'MB'
   };
   // lower is better for all except throughput
   var HIGHER_IS_BETTER = { throughput_gbps: true };
 
-  var SCHEME_LINKS = {
-    xpir_2014: 'Group.A.FHE.Based.PIR/xpir_2014/xpir_2014_notes.md',
-    xpir_2016: 'Group.A.FHE.Based.PIR/xpir_2016/xpir_2016_notes.md',
-    sealpir_2018: 'Group.A.FHE.Based.PIR/sealpir_2018/sealpir_2018_notes.md',
-    mulpir_2019: 'Group.A.FHE.Based.PIR/mulpir_2019/mulpir_2019_notes.md',
-    onionpir_2021: 'Group.A.FHE.Based.PIR/onionpir_2021/onionpir_2021_notes.md',
-    addra_2021: 'Group.A.FHE.Based.PIR/addra_2021/addra_2021_notes.md',
-    cwpir_2022: 'Group.A.FHE.Based.PIR/cwpir_2022/cwpir_2022_notes.md',
-    spiral_2022: 'Group.A.FHE.Based.PIR/spiral_2022/spiral_2022_notes.md',
-    frodopir_2022: 'Group.A.FHE.Based.PIR/frodopir_2022/frodopir_2022_notes.md',
-    thorpir_2024: 'Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md',
-    onionpirv2_2025: 'Group.A.FHE.Based.PIR/onionpirv2_2025/onionpirv2_2025_notes.md',
-    hintlesspir_2023: 'Group.B.Stateless.Single.Server.PIR/hintlesspir_2023/HintlessPIR_2023_notes.md',
-    ypir_2024: 'Group.B.Stateless.Single.Server.PIR/ypir_2024/YPIR_2024_notes.md',
-    respire_2024: 'Group.B.Stateless.Single.Server.PIR/respire_2024/Respire_2024_notes.md',
-    whispir_2024: 'Group.B.Stateless.Single.Server.PIR/whispir_2024/WhisPIR_2024_notes.md',
-    pirouette_2025: 'Group.B.Stateless.Single.Server.PIR/pirouette_2025/Pirouette_2025_notes.md',
-    inspire_2025: 'Group.B.Stateless.Single.Server.PIR/inspire_2025/InsPIRe_2025_notes.md',
-    npir_2026: 'Group.B.Stateless.Single.Server.PIR/npir_2026/NPIR_2026_notes.md',
-    via_2025: 'Group.B.Stateless.Single.Server.PIR/via_2025/VIA_2025_notes.md',
-    simplepir_2022: 'Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md',
-    doublepir_2022: 'Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md',
-    verisimplepir_2024: 'Group.C.Client.Independent.Preprocessing/verisimplepir_2024/VeriSimplePIR_2024_notes.md',
-    barelydoublyefficient_2025: 'Group.C.Client.Independent.Preprocessing/barelydoublyefficient_2025/BarelyDoublyEfficient_2025_notes.md',
-    incrementalpir_2026: 'Group.C.Client.Independent.Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md',
-    ck20_2019: 'Group.D.Client.Dependent.Preprocessing/ck20_2019/CK20_2019_notes.md',
-    incpir_2021: 'Group.D.Client.Dependent.Preprocessing/incpir_2021/IncPIR_2021_notes.md',
-    piano_2023: 'Group.D.Client.Dependent.Preprocessing/piano_2023/Piano_2023_notes.md',
-    treepir_2023: 'Group.D.Client.Dependent.Preprocessing/treepir_2023/TreePIR_2023_notes.md',
-    rms24_2024: 'Group.D.Client.Dependent.Preprocessing/rms24_2024/RMS24_2024_notes.md',
-    ishaishiwichs_2025: 'Group.D.Client.Dependent.Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md',
-    plinko_2024: 'Group.D.Client.Dependent.Preprocessing/plinko_2024/Plinko_2024_notes.md',
-    singlepass_2024: 'Group.D.Client.Dependent.Preprocessing/singlepass_2024/SinglePass_2024_notes.md',
-    wangren_2024: 'Group.D.Client.Dependent.Preprocessing/wangren_2024/WangRen_2024_notes.md',
-    keywordpir_2019: 'Group.X.Extensions/keywordpir_2019/KeywordPIR_2019_notes.md',
-    distributionalpir_2025: 'Group.X.Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md'
-  };
-
   var BASE_URL = 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/';
 
-  var IMPL_URLS = {
-    addra_2021: 'https://github.com/ishtiyaque/FastPIR',
-    cwpir_2022: 'https://github.com/RasoulAM/constant-weight-pir',
-    distributionalpir_2025: 'https://github.com/ryanleh/crowdsurf',
-    simplepir_2022: 'https://github.com/ahenzinger/simplepir',
-    doublepir_2022: 'https://github.com/ahenzinger/simplepir',
-    frodopir_2022: 'https://github.com/brave-experiments/frodo-pir',
-    hintlesspir_2023: 'https://github.com/google/hintless_pir',
-    inspire_2025: 'https://github.com/google/private-membership/tree/main/research/InsPIRe',
-    npir_2026: 'https://github.com/llllinyl/npir',
-    onionpirv2_2025: 'https://github.com/chenyue42/OnionPIRv2',
-    pirouette_2025: 'https://github.com/KULeuven-COSIC/Pirouette',
-    plinko_2024: 'https://github.com/keewoolee/rms24-plinko-spec',
-    rms24_2024: 'https://github.com/keewoolee/rms24-plinko-spec',
-    respire_2024: 'https://github.com/AMACB/respire',
-    sealpir_2018: 'https://github.com/microsoft/SealPIR',
-    spiral_2022: 'https://github.com/menonsamir/spiral',
-    treepir_2023: 'https://github.com/alazzaretti/treePIR',
-    xpir_2016: 'https://github.com/XPIR-team/XPIR',
-    xpir_2014: 'https://github.com/XPIR-team/XPIR',
-    piano_2023: 'https://github.com/wuwuz/Piano-PIR-new',
-    ypir_2024: 'https://github.com/menonsamir/ypir'
-  };
-
-  function schemeUrl(id) {
-    return SCHEME_LINKS[id] ? BASE_URL + SCHEME_LINKS[id] : '#';
+  function schemeUrl(s) {
+    var path = (typeof s === 'object') ? s.notes_path : null;
+    return path ? BASE_URL + path : '#';
   }
-
-  var DB_SIZE_SOURCES = {
-    sealpir_2018: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/sealpir_2018/sealpir_2018_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 288B)' },
-    mulpir_2019: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/mulpir_2019/mulpir_2019_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 256B)' },
-    onionpir_2021: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/onionpir_2021/onionpir_2021_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,000,000 \u00d7 30720B)' },
-    addra_2021: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/addra_2021/addra_2021_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (32,768 \u00d7 96B)' },
-    spiral_2022: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/spiral_2022/spiral_2022_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (262,144 \u00d7 30720B)' },
-    frodopir_2022: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/frodopir_2022/frodopir_2022_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 1024B)' },
-    thorpir_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,073,741,824 \u00d7 360B)' },
-    onionpirv2_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/onionpirv2_2025/onionpirv2_2025_notes.md#complexity', tip: 'reference_db field: "n=2048, ~1 GB DB"' },
-    hintlesspir_2023: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/hintlesspir_2023/HintlessPIR_2023_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (1,073,741,824 \u00d7 1B)' },
-    ypir_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/ypir_2024/YPIR_2024_notes.md#variants', tip: 'reference_db field: "32 GB, 1-bit records"' },
-    respire_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/respire_2024/Respire_2024_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 256B)' },
-    whispir_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/whispir_2024/WhisPIR_2024_notes.md#complexity', tip: 'Figure 4 benchmark DB sizes' },
-    pirouette_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/pirouette_2025/Pirouette_2025_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (33,554,432 \u00d7 256B)' },
-    inspire_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/inspire_2025/InsPIRe_2025_notes.md#variants', tip: 'reference_db field: "1 GB, 64B entries"' },
-    npir_2026: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/npir_2026/NPIR_2026_notes.md#variants', tip: 'reference_db field: "8 GB, 32 KB records"' },
-    via_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/via_2025/VIA_2025_notes.md#variants', tip: 'reference_db field: "32 GB"' },
-    simplepir_2022: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#variants', tip: 'reference_db field: "1 GB, 1-bit entries"' },
-    doublepir_2022: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md#variants', tip: 'reference_db field: "1 GB, 1-bit entries"' },
-    verisimplepir_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.C.Client.Independent.Preprocessing/verisimplepir_2024/VeriSimplePIR_2024_notes.md#complexity', tip: 'Figure 7, Figure 8 (range)' },
-    barelydoublyefficient_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.C.Client.Independent.Preprocessing/barelydoublyefficient_2025/BarelyDoublyEfficient_2025_notes.md#complexity', tip: 'reference_db field: "1 GB (estimated, theoretical)"' },
-    incrementalpir_2026: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.C.Client.Independent.Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md#complexity', tip: 'reference_db field: "1 GB, 1-bit entries"' },
-    ck20_2019: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/ck20_2019/CK20_2019_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 32B)' },
-    incpir_2021: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/incpir_2021/IncPIR_2021_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 32B)' },
-    piano_2023: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/piano_2023/Piano_2023_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (1,680,000,000 \u00d7 64B)' },
-    treepir_2023: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/treepir_2023/TreePIR_2023_notes.md#variants', tip: 'N=2^32 \u00d7 1 bit' },
-    rms24_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/rms24_2024/RMS24_2024_notes.md#variants', tip: 'num_entries \u00d7 entry_size_bytes (268,435,456 \u00d7 32B)' },
-    ishaishiwichs_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 32B)' },
-    plinko_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/plinko_2024/Plinko_2024_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 32B)' },
-    singlepass_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/singlepass_2024/SinglePass_2024_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (3,000,000 \u00d7 32B)' },
-    wangren_2024: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/wangren_2024/WangRen_2024_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (1,048,576 \u00d7 32B)' },
-    keywordpir_2019: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.X.Extensions/keywordpir_2019/KeywordPIR_2019_notes.md#complexity', tip: 'num_entries \u00d7 entry_size_bytes (262,144 \u00d7 288B)' },
-    distributionalpir_2025: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.X.Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md#complexity', tip: 'reference_db field: "38 GB Twitter DB, B=24"' },
-    xpir_2014: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/xpir_2014/xpir_2014_notes.md#complexity', tip: 'reference_db: "N=2^32, d=5, bundled"' },
-    xpir_2016: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/xpir_2016/xpir_2016_notes.md#complexity', tip: 'reference_db: "various, pre-processed static"' },
-    cwpir_2022: { url: 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/cwpir_2022/cwpir_2022_notes.md#complexity', tip: 'reference_db: "k=2, n=256, 1 plaintext"' }
-  };
 
   // ── Helpers ────────────────────────────────────────────
   function getVal(s, metric) {
@@ -184,18 +97,7 @@
   function isMobile() { return window.innerWidth <= 900; }
 
   function dbSizeBytes(s) {
-    var c = s.concrete;
-    if (c.num_entries && c.entry_size_bytes) return c.num_entries * c.entry_size_bytes;
-    if (c.reference_db) {
-      var m = c.reference_db.match(/([\d.]+)\s*(TB|GB|GiB|MB|KB)/i);
-      if (m) {
-        var v = parseFloat(m[1]);
-        var u = m[2].toUpperCase();
-        var mult = { TB: 1e12, GB: 1e9, GIB: 1073741824, MB: 1e6, KB: 1e3 };
-        return v * (mult[u] || 1);
-      }
-    }
-    return null;
+    return s._db_size_bytes || null;
   }
 
   function dbSizeLabel(s) {
@@ -210,20 +112,27 @@
   function barLeftMargin() { return isMobile() ? 110 : 140; }
 
   function entrySizeLabel(s) {
-    var c = s.concrete;
-    if (!c) return null;
-    if (c.entry_size_bytes === null || c.entry_size_bytes === undefined) {
-      if (c.reference_db && /1[- ]?bit/i.test(c.reference_db)) return '1-bit';
-      return null;
-    }
-    var b = c.entry_size_bytes;
-    if (b >= 1024) return (b / 1024).toFixed(b % 1024 === 0 ? 0 : 1) + ' KB';
-    return b + ' B';
+    return s._entry_size_label || null;
   }
 
   function filterByDbSize(data, tier) {
     return data.filter(function (s) {
       return s.db_size_categories && s.db_size_categories.indexOf(tier) >= 0;
+    }).map(function (s) {
+      var tb = s._tierBenchmarks && s._tierBenchmarks[tier];
+      if (!tb) return s;
+      // Swap in tier-specific metrics
+      var copy = {};
+      Object.keys(s).forEach(function (k) { copy[k] = s[k]; });
+      copy.concrete = tb.metrics;
+      copy.data_tier = tb.data_tier;
+      copy.source_ref = tb.source_ref;
+      copy.estimation_meta = tb.estimation_meta;
+      copy._db_size_bytes = tb._db_size_bytes;
+      copy._entry_size_bytes = tb._config.entry_size_bytes;
+      copy._entry_size_label = tb._config.entry_size_label;
+      copy._num_entries = tb._config.num_entries;
+      return copy;
     });
   }
 
@@ -362,23 +271,25 @@
         tRow.push(raw !== null ? formatNum(raw) + TIER_BADGE[s.data_tier] : '');
         var lbl = METRIC_LABELS[m];
         var lblMatch = lbl.match(/^(.+?) \((.+)\)$/);
-        var hoverVal = raw !== null
-          ? (lblMatch ? formatNum(raw) + ' ' + lblMatch[2] : formatNum(raw))
-          : 'N/A';
-        var hover = s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>' + (lblMatch ? lblMatch[1] : lbl) + ': ' + hoverVal +
-          '<br>Tier: ' + TIER_LABELS[s.data_tier] +
-          '<br>Group: ' + s.group + ' (' + GROUP_NAMES[s.group] + ')' +
-          '<br>Composite: ' + s._composite.toFixed(3) +
-          '<br>Source: ' + (s.source_ref || 'N/A');
-        if (s.data_tier >= 2 && s.estimation_meta) {
-          hover += '<br>Confidence: ' + (s.estimation_meta.confidence || 'N/A');
-          if (s.estimation_meta.method) {
-            var method = s.estimation_meta.method;
-            if (method.length > 120) method = method.slice(0, 120) + '...';
-            hover += '<br>Method: ' + method;
+        if (raw === null || raw === undefined) {
+          hRow.push('');
+        } else {
+          var hoverVal = lblMatch ? formatNum(raw) + ' ' + lblMatch[2] : formatNum(raw);
+          var hover = s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>' + (lblMatch ? lblMatch[1] : lbl) + ': ' + hoverVal +
+            '<br>Tier: ' + TIER_LABELS[s.data_tier] +
+            '<br>Group: ' + s.group + ' (' + GROUP_NAMES[s.group] + ')' +
+            '<br>Composite: ' + s._composite.toFixed(3) +
+            '<br>Source: ' + (s.source_ref || 'N/A');
+          if (s.data_tier >= 2 && s.estimation_meta) {
+            hover += '<br>Confidence: ' + (s.estimation_meta.confidence || 'N/A');
+            if (s.estimation_meta.method) {
+              var method = s.estimation_meta.method;
+              if (method.length > 120) method = method.slice(0, 120) + '...';
+              hover += '<br>Method: ' + method;
+            }
           }
+          hRow.push(hover);
         }
-        hRow.push(hover);
       });
       z.push(row);
       text.push(tRow);
@@ -429,7 +340,7 @@
       xgap: 2, ygap: 1
     };
 
-    var layout = baseLayout('PIR Scheme Rankings — Sorted Heatmap<br><span style="font-size:11px;font-weight:normal;color:' + t.muted + '"><i>Click inside a column to sort by it</i></span>', {
+    var layout = baseLayout('Data Reported in the Paper<br><span style="font-size:11px;font-weight:normal;color:' + t.muted + '"><i>Click inside a column to sort by it</i></span>', {
       xaxis: {
         tickfont: { size: isMobile() ? 9 : 11 }, side: 'top',
         gridcolor: t.grid
@@ -462,9 +373,11 @@
       var reSorted = data.slice().sort(function (a, b) {
         var va = getVal(a, metric);
         var vb = getVal(b, metric);
-        if (va === null && vb === null) return 0;
-        if (va === null) return -1; // nulls at bottom (index 0 in reversed array)
-        if (vb === null) return 1;
+        var aMissing = va === null || va === undefined;
+        var bMissing = vb === null || vb === undefined;
+        if (aMissing && bMissing) return 0;
+        if (aMissing) return -1; // nulls at bottom (index 0 in Plotly = visual bottom)
+        if (bMissing) return 1;
         // reversed sort: worst at index 0 (bottom), best at top
         return HIGHER_IS_BETTER[metric] ? va - vb : vb - va;
       });
@@ -727,34 +640,34 @@
     var STORAGE_COLOR = '#f59e0b';
 
     var items = data.filter(function (s) {
-      return getVal(s, 'offline_hint_mb') !== null || getVal(s, 'client_storage_mb') !== null;
+      return getVal(s, 'offline_comm_mb') !== null || getVal(s, 'client_storage_mb') !== null;
     });
 
     // sort by max of the two values (largest at top)
     items.sort(function (a, b) {
-      var aMax = Math.max(getVal(a, 'offline_hint_mb') || 0, getVal(a, 'client_storage_mb') || 0);
-      var bMax = Math.max(getVal(b, 'offline_hint_mb') || 0, getVal(b, 'client_storage_mb') || 0);
+      var aMax = Math.max(getVal(a, 'offline_comm_mb') || 0, getVal(a, 'client_storage_mb') || 0);
+      var bMax = Math.max(getVal(b, 'offline_comm_mb') || 0, getVal(b, 'client_storage_mb') || 0);
       return aMax - bMax;
     });
 
     var schemes = items.map(function (s) { return s.display_name; });
     var traces = [];
 
-    // Offline hint bars (bar legend icons are natively colored rectangles in Plotly)
+    // Offline comm bars
     traces.push({
       y: schemes,
-      x: items.map(function (s) { return getVal(s, 'offline_hint_mb'); }),
+      x: items.map(function (s) { return getVal(s, 'offline_comm_mb'); }),
       type: 'bar', orientation: 'h',
       name: 'Offline',
       marker: { color: HINT_COLOR, opacity: 0.85 },
       text: items.map(function (s) {
-        var v = getVal(s, 'offline_hint_mb');
+        var v = getVal(s, 'offline_comm_mb');
         return v !== null ? formatNum(v) + ' MB' : '';
       }),
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        var v = getVal(s, 'offline_hint_mb');
+        var v = getVal(s, 'offline_comm_mb');
         return v !== null ? s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Offline: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') : '';
       }),
       hoverinfo: 'text'
@@ -1061,7 +974,7 @@
     }), plotConfig());
   }
 
-  // ── 6d. 3D Scatter — Comm × Client Storage × Client Time ──
+  // ── 6d. 3D Scatter — Comm x Client Storage x Client Time ──
   function renderPareto3DComm(data) {
     var el = document.getElementById('chart-pareto-3d-comm');
     if (!el) return;
@@ -1152,7 +1065,7 @@
     }), plotConfig());
   }
 
-  // ── 6e. 3D Scatter — Server Time × Client Storage × Client Time ──
+  // ── 6e. 3D Scatter — Server Time x Client Storage x Client Time ──
   function renderPareto3DServer(data) {
     var el = document.getElementById('chart-pareto-3d-server');
     if (!el) return;
@@ -1363,20 +1276,22 @@
         var titleEl = document.createElement('div');
         titleEl.style.textAlign = 'center';
         titleEl.style.padding = '12px 0 0';
-        var url = schemeUrl(s.id);
-        var nameHtml = url
+        var url = schemeUrl(s);
+        var nameHtml = url && url !== '#'
           ? '<a href="' + url + '" target="_blank" rel="noopener noreferrer" style="color:' + t.text + ';text-decoration:none;font-weight:bold;font-size:15.4px">' + s.display_name + '</a>'
           : '<span style="font-weight:bold;font-size:15.4px;color:' + t.text + '">' + s.display_name + '</span>';
-        var groupHtml = ' <span style="font-size:10px;color:' + color + ';font-weight:600">' + s.group + '</span>';
         var sizeLabel = dbSizeLabel(s);
-        var sizeSource = DB_SIZE_SOURCES[s.id];
+        var sizeUrl = s.notes_path ? BASE_URL + s.notes_path : null;
+        var sizeTip = s._num_entries
+          ? s._num_entries.toLocaleString() + ' \u00d7 ' + (s._entry_size_label || s._entry_size_bytes + 'B')
+          : '';
         var sizeHtml = '';
-        if (sizeLabel && sizeSource) {
-          sizeHtml = '<br><a href="' + sizeSource.url + '" target="_blank" rel="noopener noreferrer" title="' + sizeSource.tip.replace(/"/g, '&quot;') + '" style="font-size:11px;color:' + t.muted + ';text-decoration:none">' + sizeLabel + ' db</a>';
+        if (sizeLabel && sizeUrl) {
+          sizeHtml = '<br><a href="' + sizeUrl + '" target="_blank" rel="noopener noreferrer" title="' + sizeTip.replace(/"/g, '&quot;') + '" style="font-size:11px;color:' + t.muted + ';text-decoration:none">' + sizeLabel + ' db</a>';
         } else if (sizeLabel) {
           sizeHtml = '<br><span style="font-size:11px;color:' + t.muted + '">' + sizeLabel + ' db</span>';
         }
-        titleEl.innerHTML = nameHtml + groupHtml + sizeHtml;
+        titleEl.innerHTML = nameHtml + sizeHtml;
         cell.appendChild(titleEl);
 
         var plotDiv = document.createElement('div');
@@ -1398,16 +1313,22 @@
           line: { color: color, width: 2, dash: tierDash[s.data_tier] || 'solid' },
           fill: 'toself',
           fillcolor: tierFill[s.data_tier] || color + '22',
-          hovertext: radarMetrics.map(function (m) {
-            var raw = getVal(s, m);
-            var rankLine = useAbs
-              ? 'Log-norm: ' + (s._absNorm[m] !== null ? (s._absNorm[m] * 100).toFixed(0) + '%' : 'N/A')
-              : 'Rank: ' + (s._ranks[m] !== null ? (s._ranks[m] * 100).toFixed(0) + '%' : 'N/A');
-            return s.display_name + '<br>' + METRIC_LABELS[m] + ': ' + (raw !== null ? formatNum(raw) : 'N/A') +
-              '<br>' + rankLine +
-              '<br>Group: ' + s.group + ' (' + GROUP_NAMES[s.group] + ')' +
-              '<br>Source: ' + (s.source_ref || 'N/A');
-          }),
+          hovertext: (function () {
+            var ht = radarMetrics.map(function (m) {
+              var raw = getVal(s, m);
+              var rankLine = useAbs
+                ? 'Log-norm: ' + (s._absNorm[m] !== null ? (s._absNorm[m] * 100).toFixed(0) + '%' : 'N/A')
+                : 'Rank: ' + (s._ranks[m] !== null ? (s._ranks[m] * 100).toFixed(0) + '%' : 'N/A');
+              var valStr = raw !== null ? formatNum(raw) + ' ' + METRIC_UNITS[m] : 'N/A';
+              var dbEntry = 'DB / Entry: ' + (dbSizeLabel(s) || 'N/A') + ' / ' + (s._entry_size_label || 'N/A');
+              return METRIC_NAMES[m] + ': ' + valStr +
+                '<br>' + rankLine +
+                '<br>' + dbEntry +
+                '<br>Source: ' + (s.source_ref || 'N/A');
+            });
+            ht.push(ht[0]); // closing point matches first metric
+            return ht;
+          })(),
           hoverinfo: 'text'
         };
 
@@ -1437,6 +1358,7 @@
 
         var layout = {
           polar: {
+            domain: { x: [0.125, 0.875], y: [0.1, 0.85] },
             radialaxis: {
               visible: true, range: [0, 1],
               tickvals: [0, 0.5, 1],
@@ -1445,7 +1367,7 @@
               tickfont: { color: t.muted, size: 9 }
             },
             angularaxis: {
-              tickfont: { size: 10, color: t.text },
+              tickfont: { size: 9, color: t.text },
               gridcolor: t.grid, linecolor: t.grid
             },
             bgcolor: 'rgba(0,0,0,0)'
@@ -1453,9 +1375,10 @@
           paper_bgcolor: 'rgba(0,0,0,0)',
           font: { color: t.text, family: t.font.family, size: 11 },
           showlegend: false,
-          margin: { t: 16, r: 30, b: 20, l: 30 },
-          height: 300,
-          annotations: s.has_implementation ? [] : [{
+          hoverdistance: -1,
+          margin: { t: 8, r: 8, b: 8, l: 8 },
+          height: 280,
+          annotations: s.implementation_url ? [] : [{
             text: '(no impl)',
             showarrow: false,
             xref: 'paper', yref: 'paper',
@@ -1471,11 +1394,13 @@
     // build tabs (clear first for theme re-render)
     tabsEl.innerHTML = '';
 
-    // "All" tab (heatmap)
+    // "Raw" tab (heatmap)
     var allBtn = document.createElement('button');
     allBtn.className = 'radar-tab';
     allBtn.dataset.tier = 'all';
-    allBtn.textContent = 'All';
+    allBtn.textContent = 'Raw';
+    allBtn.style.fontWeight = 'bold';
+    allBtn.style.marginRight = '16px';
     allBtn.addEventListener('click', function () { showAll(); });
     tabsEl.appendChild(allBtn);
 
@@ -1521,11 +1446,54 @@
     if (!el) return;
     var t = themeColors();
 
-    var items = data.filter(function (s) { return getVal(s, 'throughput_gbps') !== null; });
+    var withTput = data.filter(function (s) { return getVal(s, 'throughput_gbps') !== null && s.year >= 2020; });
+
+    // Consolidate variants per scheme: keep best throughput, list others in hover
+    var schemeMap = {};
+    var schemeOrder = [];
+    withTput.forEach(function (s) {
+      var key = s.id; // all variants of a scheme share the same id
+      if (!schemeMap[key]) {
+        schemeMap[key] = { best: s, variants: [] };
+        schemeOrder.push(key);
+      }
+      schemeMap[key].variants.push(s);
+      if (getVal(s, 'throughput_gbps') > getVal(schemeMap[key].best, 'throughput_gbps')) {
+        schemeMap[key].best = s;
+      }
+    });
+
+    var items = schemeOrder.map(function (key) {
+      var entry = schemeMap[key];
+      var best = entry.best;
+      var varNames = entry.variants.map(function (v) { return v.display_name; });
+      // For multi-variant schemes, find the common scheme name
+      var schemeName = best.display_name;
+      if (entry.variants.length > 1) {
+        schemeName = varNames.reduce(function (a, b) {
+          var i = 0;
+          while (i < a.length && i < b.length && a[i] === b[i]) i++;
+          return a.substring(0, i);
+        }).replace(/[\s\-\(]+$/, '').replace(/-[a-z]$/i, '') || best.display_name;
+      }
+      return {
+        year: best.year, group: best.group, id: key,
+        display_name: schemeName,
+        data_tier: best.data_tier,
+        source_ref: best.source_ref,
+        _throughput: getVal(best, 'throughput_gbps'),
+        _query_kb: getVal(best, 'query_size_kb'),
+        _response_kb: getVal(best, 'response_size_kb'),
+        _variantLines: entry.variants.map(function (v) {
+          return v.display_name + ': ' + formatNum(getVal(v, 'throughput_gbps')) + ' GB/s';
+        }),
+        _entryLabel: entrySizeLabel(best)
+      };
+    });
 
     var traces = [];
 
-    // Group legend patches — thick lines render as rectangular swatches
+    // Group legend patches
     Object.keys(GROUP_COLORS).forEach(function (g) {
       if (!items.some(function (s) { return s.group === g; })) return;
       traces.push({
@@ -1536,29 +1504,54 @@
       });
     });
 
+    // Pre-compute text positions to avoid overlaps
+    var allPts = items.map(function (s) {
+      return { year: s.year, logY: Math.log10(s._throughput || 0.01), id: s.id };
+    });
+    var posMap = {};
+    var positions = ['top center', 'bottom center', 'top right', 'bottom right', 'top left', 'bottom left'];
+    allPts.sort(function (a, b) { return a.year - b.year || a.logY - b.logY; });
+    allPts.forEach(function (pt, i) {
+      var nearby = 0;
+      for (var j = 0; j < i; j++) {
+        if (Math.abs(allPts[j].year - pt.year) <= 0.5 && Math.abs(allPts[j].logY - pt.logY) < 0.3) {
+          nearby++;
+        }
+      }
+      posMap[pt.id] = positions[nearby % positions.length];
+    });
+
     Object.keys(GROUP_COLORS).forEach(function (g) {
       var gItems = items.filter(function (s) { return s.group === g; });
       if (!gItems.length) return;
       traces.push({
         x: gItems.map(function (s) { return s.year; }),
-        y: gItems.map(function (s) { return getVal(s, 'throughput_gbps'); }),
+        y: gItems.map(function (s) { return s._throughput; }),
         mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
         showlegend: false,
         text: gItems.map(function (s) { return s.display_name; }),
-        textposition: 'top center',
+        textposition: gItems.map(function (s) { return posMap[s.id] || 'top center'; }),
         cliponaxis: false,
         textfont: { size: 9, color: t.muted },
         marker: {
           color: GROUP_COLORS[g],
           size: gItems.map(function (s) {
-            var comm = (getVal(s, 'query_size_kb') || 100) + (getVal(s, 'response_size_kb') || 100);
+            var comm = (s._query_kb || 100) + (s._response_kb || 100);
             return Math.max(10, Math.min(40, 50 / Math.log10(comm + 1)));
           }),
           opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + ' (' + s.year + ')' + (entrySizeLabel(s) ? '<br>Entry size: ' + entrySizeLabel(s) : '') + '<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Group: ' + s.group + '<br>Source: ' + (s.source_ref || 'N/A');
+          var lines = s.display_name + ' (' + s.year + ')';
+          if (s._entryLabel) lines += '<br>Entry size: ' + s._entryLabel;
+          if (s._variantLines.length > 1) {
+            lines += '<br><br>' + s._variantLines.join('<br>');
+          } else {
+            lines += '<br>Throughput: ' + formatNum(s._throughput) + ' GB/s';
+          }
+          lines += '<br>Source: ' + (s.source_ref || 'N/A');
+          return lines;
         }),
         hoverinfo: 'text'
       });
@@ -1592,22 +1585,22 @@
       el.innerHTML = '';
       items.forEach(function (s) {
         var tr = document.createElement('tr');
-        var link = schemeUrl(s.id);
+        var link = schemeUrl(s);
         var dbPills = (s.db_size_categories || []).map(function (c) {
           return '<span class="db-size-pill" style="border-color:' + DB_SIZE_COLORS[c] + ';color:' + DB_SIZE_COLORS[c] + '">' + DB_SIZE_LABELS[c] + '</span>';
         }).join(' ') || '<span style="color:var(--text-muted)">\u2014</span>';
         tr.innerHTML =
           '<td><a href="' + link + '" target="_blank" rel="noopener noreferrer">' + s.display_name + '</a></td>' +
-          '<td><span class="group-dot" style="background:' + GROUP_COLORS[s.group] + '"></span> ' + s.group + '</td>' +
+          '<td style="text-align:center"><span class="group-dot" style="background:' + GROUP_COLORS[s.group] + '"></span> ' + s.group + '</td>' +
           '<td>' + dbPills + '</td>' +
-          '<td>' + s.year + '</td>' +
-          '<td>' + (s.has_implementation ? (IMPL_URLS[s.id] ? '<a href="' + IMPL_URLS[s.id] + '" target="_blank" rel="noopener noreferrer">Yes</a>' : 'Yes') : 'No') + '</td>' +
-          '<td class="num">' + formatNum(getVal(s, 'query_size_kb')) + '</td>' +
-          '<td class="num">' + formatNum(getVal(s, 'response_size_kb')) + '</td>' +
-          '<td class="num">' + formatNum(getVal(s, 'server_time_ms')) + '</td>' +
-          '<td class="num">' + formatNum(getVal(s, 'throughput_gbps')) + '</td>' +
-          '<td class="num">' + formatNum(getVal(s, 'client_time_ms')) + '</td>' +
-          '<td>' + TIER_LABELS[s.data_tier] + '</td>';
+          '<td style="text-align:center">' + s.year + '</td>' +
+          '<td style="text-align:center">' + (s.implementation_url ? '<a href="' + s.implementation_url + '" target="_blank" rel="noopener noreferrer">Yes</a>' : '<span style="color:var(--text-muted)">' + (s.theory_only ? 'Theory-only' : 'No') + '</span>') + '</td>' +
+          '<td class="num" style="text-align:center">' + formatNum(getVal(s, 'query_size_kb')) + '</td>' +
+          '<td class="num" style="text-align:center">' + formatNum(getVal(s, 'response_size_kb')) + '</td>' +
+          '<td class="num" style="text-align:center">' + formatNum(getVal(s, 'server_time_ms')) + '</td>' +
+          '<td class="num" style="text-align:center">' + formatNum(getVal(s, 'throughput_gbps')) + '</td>' +
+          '<td class="num" style="text-align:center">' + formatNum(getVal(s, 'client_time_ms')) + '</td>' +
+          '<td style="text-align:center">' + TIER_LABELS[s.data_tier] + '</td>';
         el.appendChild(tr);
       });
     }
@@ -1618,7 +1611,7 @@
       { key: 'group', label: 'Group' },
       { key: 'db_size', label: 'DB Size' },
       { key: 'year', label: 'Year' },
-      { key: 'has_implementation', label: 'Impl?' },
+      { key: 'theory_only', label: 'Open-Source<br>Impl?' },
       { key: 'query_size_kb', label: 'Query KB', metric: true },
       { key: 'response_size_kb', label: 'Response KB', metric: true },
       { key: 'server_time_ms', label: 'Server ms', metric: true },
@@ -1628,10 +1621,11 @@
     ];
 
     headerRow.innerHTML = '';
-    columns.forEach(function (col) {
+    columns.forEach(function (col, ci) {
       var th = document.createElement('th');
-      th.textContent = col.label;
+      th.innerHTML = col.label;
       th.style.cursor = 'pointer';
+      if (ci !== 0 && ci !== 2) th.style.textAlign = 'center';
       th.addEventListener('click', function () {
         if (sortCol === col.key) {
           sortAsc = !sortAsc;
@@ -1668,13 +1662,13 @@
       var activeGroups = new Set(Object.keys(GROUP_COLORS));
       var activeTiers = new Set([1, 2, 3]);
       var activeDbSizes = new Set(DB_SIZE_TIERS);
-      var implFilter = null; // null = all, true = yes, false = no
+      var includeTheoryOnly = true; // true = show theory-only schemes
 
       function applyFilters() {
         var filtered = data.filter(function (s) {
           var groupOk = activeGroups.has(s.group);
           var tierOk = activeTiers.has(s.data_tier);
-          var implOk = implFilter === null || s.has_implementation === implFilter;
+          var implOk = includeTheoryOnly || !s.theory_only;
           var dbOk = activeDbSizes.size === DB_SIZE_TIERS.length || // all selected = no filter
             (s.db_size_categories && s.db_size_categories.some(function (c) { return activeDbSizes.has(c); }));
           return groupOk && tierOk && implOk && dbOk;
@@ -1714,11 +1708,11 @@
       });
       // impl pill on tier row
       var implPill = document.createElement('button');
-      implPill.className = 'filter-pill';
-      implPill.textContent = 'Has Impl';
+      implPill.className = 'filter-pill active';
+      implPill.textContent = 'Include Theory-only';
       implPill.addEventListener('click', function () {
-        if (implFilter === true) { implFilter = null; implPill.classList.remove('active'); }
-        else { implFilter = true; implPill.classList.add('active'); }
+        includeTheoryOnly = !includeTheoryOnly;
+        implPill.classList.toggle('active', includeTheoryOnly);
         applyFilters();
       });
       tierRow.appendChild(implPill);
@@ -1771,7 +1765,7 @@
         activeGroups = new Set(Object.keys(GROUP_COLORS));
         activeTiers = new Set([1, 2, 3]);
         activeDbSizes = new Set(DB_SIZE_TIERS);
-        implFilter = null;
+        includeTheoryOnly = true;
         Array.from(filterEl.querySelectorAll('.filter-pill')).forEach(function (p) {
           p.classList.add('active');
         });
@@ -1788,7 +1782,7 @@
         activeGroups = new Set();
         activeTiers = new Set();
         activeDbSizes = new Set();
-        implFilter = null;
+        includeTheoryOnly = false;
         Array.from(filterEl.querySelectorAll('.filter-pill')).forEach(function (p) {
           p.classList.remove('active');
         });
@@ -1840,21 +1834,110 @@
     });
   }
 
-  // ── Auto-derive db_size_categories from configs ───────
-  function deriveDbSizeCategories(s) {
-    if (!s.configs || !s.configs.length) return [];
-    var tiers = {};
-    s.configs.forEach(function (c) {
-      if (c.entry_size && /bit/i.test(c.entry_size)) tiers['1-bit'] = true;
-      var b = c.db_size_bytes;
-      if (b != null) {
-        if (b <= 1e9) tiers['tiny'] = true;
-        if (b > 1e9 && b <= 8e9) tiers['small'] = true;
-        if (b > 8e9 && b <= 32e9) tiers['medium'] = true;
-        if (b > 32e9) tiers['large'] = true;
-      }
+  // ── v2 Data Transformation ────────────────────────────
+  function classifyDbTier(dbBytes, entrySizeBytes) {
+    if (entrySizeBytes <= 0.125) return '1-bit';
+    if (dbBytes <= 1e9) return 'tiny';
+    if (dbBytes <= 8e9) return 'small';
+    if (dbBytes <= 32e9) return 'medium';
+    return 'large';
+  }
+
+  function variantDisplayName(schemeName, variant, isMultiVariant) {
+    if (!isMultiVariant) return schemeName;
+    if (variant === schemeName) return schemeName;
+    if (variant.toLowerCase().indexOf(schemeName.toLowerCase()) === 0) return variant;
+    return schemeName + ' (' + variant + ')';
+  }
+
+  function transformV2(raw) {
+    var schemes = (raw && raw.schemes) ? raw.schemes : (Array.isArray(raw) ? raw : []);
+    var entities = [];
+
+    schemes.forEach(function (scheme) {
+      // Build config lookup and compute db_size_bytes per config
+      var configMap = {};
+      (scheme.configs || []).forEach(function (c) {
+        c._db_size_bytes = c.num_entries * c.entry_size_bytes;
+        configMap[c.config_id] = c;
+      });
+
+      var variants = scheme.variants && scheme.variants.length ? scheme.variants : ['default'];
+      var isMultiVariant = variants.length > 1;
+
+      // Group benchmarks by variant
+      var benchByVariant = {};
+      (scheme.benchmarks || []).forEach(function (b) {
+        var v = b.variant || 'default';
+        if (!benchByVariant[v]) benchByVariant[v] = [];
+        benchByVariant[v].push(b);
+      });
+
+      variants.forEach(function (variant) {
+        var benches = benchByVariant[variant] || [];
+        if (!benches.length) return;
+
+        // Classify benchmarks by DB size tier; pick representative per tier
+        var tierBenchmarks = {};
+        var dbCategories = {};
+
+        benches.forEach(function (b) {
+          var config = configMap[b.config_id];
+          if (!config) return;
+          var dbBytes = config._db_size_bytes;
+          var tier = classifyDbTier(dbBytes, config.entry_size_bytes);
+
+          dbCategories[tier] = true;
+
+          if (!tierBenchmarks[tier] || dbBytes > tierBenchmarks[tier]._db_size_bytes) {
+            tierBenchmarks[tier] = {
+              metrics: b.metrics,
+              data_tier: b.data_tier,
+              source_ref: b.source_ref,
+              estimation_meta: b.estimation_meta,
+              _db_size_bytes: dbBytes,
+              _config: config
+            };
+          }
+        });
+
+        // Pick primary benchmark: largest db_size, prefer lower data_tier
+        var primary = null;
+        var primaryDbSize = -1;
+        Object.keys(tierBenchmarks).forEach(function (tier) {
+          var tb = tierBenchmarks[tier];
+          if (tb._db_size_bytes > primaryDbSize ||
+              (tb._db_size_bytes === primaryDbSize && tb.data_tier < (primary ? primary.data_tier : 4))) {
+            primary = tb;
+            primaryDbSize = tb._db_size_bytes;
+          }
+        });
+
+        if (!primary) return;
+
+        entities.push({
+          id: scheme.id,
+          display_name: variantDisplayName(scheme.display_name, variant, isMultiVariant),
+          group: scheme.group,
+          year: scheme.year,
+          theory_only: scheme.theory_only || false,
+          implementation_url: scheme.implementation_url || null,
+          notes_path: scheme.notes_path || null,
+          concrete: primary.metrics,
+          data_tier: primary.data_tier,
+          source_ref: primary.source_ref,
+          estimation_meta: primary.estimation_meta,
+          _db_size_bytes: primary._db_size_bytes,
+          _entry_size_bytes: primary._config.entry_size_bytes,
+          _entry_size_label: primary._config.entry_size_label || null,
+          _num_entries: primary._config.num_entries,
+          db_size_categories: Object.keys(dbCategories),
+          _tierBenchmarks: tierBenchmarks
+        });
+      });
     });
-    return Object.keys(tiers);
+
+    return entities;
   }
 
   // ── Data Loading & Init ───────────────────────────────
@@ -1877,7 +1960,6 @@
 
   function init() {
     // Resolve data path: charts.js lives in reported/, data in data/
-    // Script src tells us relative depth: "charts.js" → "../", "../charts.js" → "../../"
     var scriptEl = document.querySelector('script[src$="charts.js"]');
     var prefix = scriptEl ? scriptEl.getAttribute('src').replace('charts.js', '') : '';
     fetch(prefix + '../data/reported.json')
@@ -1886,9 +1968,11 @@
         // clear loading indicators
         var loaders = document.querySelectorAll('.chart-loading');
         loaders.forEach(function (el) { el.remove(); });
-        // Auto-derive db_size_categories from configs (replaces old static field)
-        raw.forEach(function (s) { s.db_size_categories = deriveDbSizeCategories(s); });
-        _cachedData = computeCompositeScores(raw);
+
+        // Transform v2 schema into flat plotable entities
+        var entities = transformV2(raw);
+
+        _cachedData = computeCompositeScores(entities);
         initDbSizeTabs();
         renderCharts(_cachedData);
         renderCatalog(_cachedData);

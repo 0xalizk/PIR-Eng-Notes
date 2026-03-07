@@ -206,7 +206,7 @@ h4 {
 /* ── Radar Tabs & Grid ──────────────────────────────── */
 .radar-tabs {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   margin: 12px 0 16px;
   flex-wrap: wrap;
 }
@@ -234,12 +234,6 @@ h4 {
   font-weight: 600;
   border-color: var(--link);
   box-shadow: 0 1px 3px var(--shadow);
-}
-.tab-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
 }
 .radar-mode-tabs {
   display: none;
@@ -272,26 +266,10 @@ h4 {
 }
 .radar-tier-legend {
   display: none;
-  gap: 20px;
-  flex-wrap: wrap;
-  font-size: 13px;
-  color: var(--text-muted);
-  margin: 12px 0 0;
-  align-items: center;
-}
-.radar-tier-legend.visible { display: flex; }
-.radar-tier-legend .tier-swatch {
-  display: inline-block;
-  width: 18px;
-  height: 12px;
-  border-radius: 3px;
-  vertical-align: middle;
-  margin-right: 6px;
-  border: 1.5px solid var(--text-muted);
 }
 .radar-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px 16px;
   row-gap: 40px;
   margin-top: 24px;

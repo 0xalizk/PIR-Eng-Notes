@@ -1,0 +1,617 @@
+// PIR Benchmarks — Master Data File Schema (v2)
+// Source of truth for all paper-reported metrics.
+//
+// KEY DESIGN PRINCIPLES:
+// - Configs (num_entries, entry_size) are defined once per scheme, referenced by config_id
+// - Each benchmark row is a (variant x config_id x threading) tuple
+// - Variants are treated as distinct plotable entities
+// - Self-reported data only (no cross-paper comparison numbers)
+// - Theory-only schemes get Tier 3 estimated benchmarks (64-bit entries, 32 GB DB)
+// - No "is_primary" — consuming code picks representative benchmarks per tier
+//
+// CONFIG IDENTITY:
+//   A config = (num_entries, entry_size). db_size is DERIVED: num_entries * entry_size_bytes.
+//   config_id is a human-readable key like "2^18x30KB" or "2^33x1bit".
+//   charts.js computes db_size_bytes at load time from the two independent values.
+//
+// VIEW RESOLUTION (how charts.js picks what to plot):
+// 1. Compute db_size_bytes for each config: num_entries * entry_size_bytes
+// 2. Classify into db_size tier (tiny/small/medium/large/1-bit)
+// 3. Filter benchmarks by tier
+// 4. For each (scheme_id, variant), pick the benchmark with largest db_size_bytes in tier
+// 5. Flatten to one row per (scheme_id, variant) for plotting
+//
+// DB SIZE TIERS:
+//   tiny:   <= 1 GB
+//   small:  1-8 GB
+//   medium: 8-32 GB
+//   large:  > 32 GB
+//   1-bit:  entry_size_label contains "bit"
+
+{
+  "schemes": [
+    {
+      // ── SCHEME METADATA (one per paper/scheme) ──────────
+      "id": "spiral_2022",
+      "display_name": "Spiral",
+      "group": "A",
+      "year": 2022,
+      "theory_only": false,              // true when implementation_url is null (no open-source impl)
+      "implementation_url": "https://github.com/menonsamir/spiral",  // null if no open-source impl
+      "source_pdf": "Group.A.FHE.Based.PIR/spiral_2022/Spiral_stream_2022_368.pdf",
+      "notes_path": "Group.A.FHE.Based.PIR/spiral_2022/spiral_2022_notes.md",
+
+      // Hardware used for ALL benchmarks in this paper
+      // (null for theory-only schemes)
+      "hardware": {
+        "cpu": "Intel Xeon Platinum 8124M @ 3 GHz",
+        "platform": "Amazon EC2 c5n.2xlarge",
+        "ram_gb": 21,
+        "notes": "8 vCPUs; AVX2; AVX-512 gives 6-14% extra"
+      },
+
+      // Asymptotic complexity (scheme-level, not per-config)
+      "asymptotic": {
+        "query_size": "O(d log q)",
+        "response_size": "O(d*n^2*log q_1 + d*n*log q_2)",
+        "server_computation": "O(N * n^2*(n+1) * d)",
+        "client_computation": "O(d)",
+        "preprocessing": null
+      },
+
+      // Optional group/scheme-specific metadata (open object)
+      "group_specific": {
+        "multiplicative_depth": "v2 (external products)",
+        "ring_dimension": 2048,
+        "encoding_modulus_bits": 56
+      },
+
+      // All variants this paper defines
+      "variants": ["Spiral", "SpiralStream", "SpiralPack", "SpiralStreamPack"],
+
+      // ── CONFIGS: each is a (num_entries, entry_size) pair ──
+      // db_size = num_entries * entry_size_bytes (derived by consumer)
+      "configs": [
+        {
+          "config_id": "2^20x256B",
+          "num_entries": 1048576,
+          "num_entries_label": "2^20",
+          "entry_size_bytes": 256,
+          "entry_size_label": "256 B"
+        },
+        {
+          "config_id": "2^18x30KB",
+          "num_entries": 262144,
+          "num_entries_label": "2^18",
+          "entry_size_bytes": 30720,
+          "entry_size_label": "30 KB"
+        },
+        {
+          "config_id": "2^14x100KB",
+          "num_entries": 16384,
+          "num_entries_label": "2^14",
+          "entry_size_bytes": 102400,
+          "entry_size_label": "100 KB"
+        }
+      ],
+
+      // ── BENCHMARKS: one row per (variant x config_id x threading) ──
+      "benchmarks": [
+        // ─── Spiral base variant ───
+        {
+          "variant": "Spiral",
+          "config_id": "2^20x256B",
+          "data_tier": 1,
+          "source_ref": "Table 2",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 14.0,
+            "response_size_kb": 21.0,
+            "server_time_ms": 1680.0,
+            "throughput_gbps": 0.159,
+            "client_time_ms": 31.0,
+            "offline_comm_mb": 14.0,
+            "client_storage_mb": 14.0,
+            "setup_time_ms": 700.0,
+            "rate": 0.0122
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "Spiral",
+          "config_id": "2^18x30KB",
+          "data_tier": 1,
+          "source_ref": "Table 3",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 14.0,
+            "response_size_kb": 84.0,
+            "server_time_ms": 24520.0,
+            "throughput_gbps": 0.322,
+            "client_time_ms": 31.0,
+            "offline_comm_mb": 18.0,
+            "client_storage_mb": 18.0,
+            "setup_time_ms": 700.0,
+            "rate": 0.3573
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "Spiral",
+          "config_id": "2^14x100KB",
+          "data_tier": 1,
+          "source_ref": "Table 4",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 14.0,
+            "response_size_kb": 242.0,
+            "server_time_ms": 4920.0,
+            "throughput_gbps": 0.333,
+            "client_time_ms": 31.0,
+            "offline_comm_mb": 17.0,
+            "client_storage_mb": 17.0,
+            "setup_time_ms": 700.0,
+            "rate": 0.4129
+          },
+          "footnotes": []
+        },
+
+        // ─── SpiralStream variant ───
+        {
+          "variant": "SpiralStream",
+          "config_id": "2^20x256B",
+          "data_tier": 1,
+          "source_ref": "Table 2",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 8192.0,
+            "response_size_kb": 20.0,
+            "server_time_ms": 860.0,
+            "throughput_gbps": 0.312,
+            "offline_comm_mb": 0.336,
+            "client_storage_mb": 0.336,
+            "rate": 0.0125
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "SpiralStream",
+          "config_id": "2^18x30KB",
+          "data_tier": 1,
+          "source_ref": "Table 3",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 15360.0,
+            "response_size_kb": 62.0,
+            "server_time_ms": 9000.0,
+            "throughput_gbps": 0.874,
+            "offline_comm_mb": 3.0,
+            "client_storage_mb": 3.0,
+            "rate": 0.4803
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "SpiralStream",
+          "config_id": "2^14x100KB",
+          "data_tier": 1,
+          "source_ref": "Table 4",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 8192.0,
+            "response_size_kb": 208.0,
+            "server_time_ms": 2400.0,
+            "throughput_gbps": 0.683,
+            "offline_comm_mb": 1.0,
+            "client_storage_mb": 1.0,
+            "rate": 0.4811
+          },
+          "footnotes": []
+        },
+
+        // ─── SpiralPack variant ───
+        {
+          "variant": "SpiralPack",
+          "config_id": "2^20x256B",
+          "data_tier": 1,
+          "source_ref": "Table 2",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 14.0,
+            "response_size_kb": 20.0,
+            "server_time_ms": 1370.0,
+            "throughput_gbps": 0.196,
+            "offline_comm_mb": 14.0,
+            "client_storage_mb": 14.0,
+            "rate": 0.0125
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "SpiralPack",
+          "config_id": "2^18x30KB",
+          "data_tier": 1,
+          "source_ref": "Table 3",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 14.0,
+            "response_size_kb": 86.0,
+            "server_time_ms": 17690.0,
+            "throughput_gbps": 0.444,
+            "offline_comm_mb": 18.0,
+            "client_storage_mb": 18.0,
+            "rate": 0.3488
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "SpiralPack",
+          "config_id": "2^14x100KB",
+          "data_tier": 1,
+          "source_ref": "Table 4",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 14.0,
+            "response_size_kb": 188.0,
+            "server_time_ms": 4580.0,
+            "throughput_gbps": 0.358,
+            "offline_comm_mb": 47.0,
+            "client_storage_mb": 47.0,
+            "rate": 0.5307
+          },
+          "footnotes": []
+        },
+
+        // ─── SpiralStreamPack variant ───
+        {
+          "variant": "SpiralStreamPack",
+          "config_id": "2^20x256B",
+          "data_tier": 1,
+          "source_ref": "Table 2",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 15360.0,
+            "response_size_kb": 71.0,
+            "server_time_ms": 420.0,
+            "throughput_gbps": 0.635,
+            "offline_comm_mb": 16.0,
+            "client_storage_mb": 16.0,
+            "rate": 0.0036
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "SpiralStreamPack",
+          "config_id": "2^18x30KB",
+          "data_tier": 1,
+          "source_ref": "Table 3",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 30720.0,
+            "response_size_kb": 96.0,
+            "server_time_ms": 5330.0,
+            "throughput_gbps": 1.48,
+            "offline_comm_mb": 16.0,
+            "client_storage_mb": 16.0,
+            "rate": 0.3117
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "SpiralStreamPack",
+          "config_id": "2^14x100KB",
+          "data_tier": 1,
+          "source_ref": "Table 4",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 30720.0,
+            "response_size_kb": 150.0,
+            "server_time_ms": 1210.0,
+            "throughput_gbps": 1.35,
+            "offline_comm_mb": 24.0,
+            "client_storage_mb": 24.0,
+            "rate": 0.6677
+          },
+          "footnotes": []
+        }
+      ]
+    },
+
+    // ── EXAMPLE: single-variant, multiple configs, 1-bit entries ──
+    {
+      "id": "ypir_2024",
+      "display_name": "YPIR",
+      "group": "B",
+      "year": 2024,
+      "theory_only": false,
+      "implementation_url": "https://github.com/menonsamir/ypir",
+      "source_pdf": "Group.B.Stateless.Single.Server.PIR/ypir_2024/YPIR_2024_270.pdf",
+      "notes_path": "Group.B.Stateless.Single.Server.PIR/ypir_2024/YPIR_2024_notes.md",
+
+      "hardware": {
+        "cpu": "Intel Xeon Platinum 8375C @ 2.9 GHz",
+        "platform": "Amazon EC2 r6i.16xlarge",
+        "ram_gb": 512,
+        "notes": "Single-threaded"
+      },
+
+      "asymptotic": {
+        "query_size": "O(sqrt(N) * log q / log p + d * log d * log q)",
+        "response_size": "O(d^2 * kappa * log q_hat / d2)",
+        "server_computation": "O(N * d)",
+        "client_computation": "negligible",
+        "preprocessing": "O(l1 * l2 * d1 * log d1)"
+      },
+
+      "group_specific": {
+        "memory_bandwidth_util": 0.83
+      },
+
+      "variants": ["YPIR"],
+
+      "configs": [
+        {
+          "config_id": "~2^33x1bit",
+          "num_entries": 8589934592,
+          "num_entries_label": "~2^33",
+          "entry_size_bytes": 0.125,
+          "entry_size_label": "1 bit"
+        },
+        {
+          "config_id": "~2^36x1bit",
+          "num_entries": 68719476736,
+          "num_entries_label": "~2^36",
+          "entry_size_bytes": 0.125,
+          "entry_size_label": "1 bit"
+        },
+        {
+          "config_id": "~2^38x1bit",
+          "num_entries": 274877906944,
+          "num_entries_label": "~2^38",
+          "entry_size_bytes": 0.125,
+          "entry_size_label": "1 bit"
+        }
+      ],
+
+      "benchmarks": [
+        {
+          "variant": "YPIR",
+          "config_id": "~2^33x1bit",
+          "data_tier": 1,
+          "source_ref": "Table 2, p.20",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 846.0,
+            "response_size_kb": 12.0,
+            "server_time_ms": 129.0,
+            "throughput_gbps": 7.8,
+            "preprocessing_throughput_mbps": 39.0
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "YPIR",
+          "config_id": "~2^36x1bit",
+          "data_tier": 1,
+          "source_ref": "Table 2, p.20",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 1536.0,
+            "response_size_kb": 12.0,
+            "server_time_ms": 687.0,
+            "throughput_gbps": 11.6,
+            "preprocessing_throughput_mbps": 46.0
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "YPIR",
+          "config_id": "~2^38x1bit",
+          "data_tier": 1,
+          "source_ref": "Table 2, p.20",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 2560.0,
+            "response_size_kb": 12.0,
+            "server_time_ms": 2640.0,
+            "throughput_gbps": 12.1,
+            "preprocessing_throughput_mbps": 48.0
+          },
+          "footnotes": ["YPIR optimized for 1-bit PIR. Table 2 (1/8/32 GB, 1-bit entries)."]
+        }
+      ]
+    },
+
+    // ── EXAMPLE: theory-only scheme (Tier 3) ──
+    {
+      "id": "ck20_2019",
+      "display_name": "CK20",
+      "group": "D",
+      "year": 2019,
+      "theory_only": true,
+      "implementation_url": null,
+      "source_pdf": "Group.D.Client.Dependent.Preprocessing/ck20_2019/CK20_2019_165.pdf",
+      "notes_path": "Group.D.Client.Dependent.Preprocessing/ck20_2019/CK20_2019_notes.md",
+
+      "hardware": null,
+
+      "asymptotic": {
+        "query_size": "O(sqrt(n))",
+        "response_size": "O(1)",
+        "server_computation": "O(sqrt(n))",
+        "client_computation": "O(sqrt(n))",
+        "preprocessing": "O(n)"
+      },
+
+      "group_specific": {
+        "preprocessing_model": "client-dependent",
+        "assumption": "puncturable PRF"
+      },
+
+      "variants": ["CK20"],
+
+      "configs": [
+        {
+          "config_id": "2^29x64B",
+          "num_entries": 536870912,
+          "num_entries_label": "2^29",
+          "entry_size_bytes": 64,
+          "entry_size_label": "64 B"
+        }
+      ],
+
+      "benchmarks": [
+        {
+          "variant": "CK20",
+          "config_id": "2^29x64B",
+          "data_tier": 3,
+          "source_ref": "Theorem 1.1",
+          "threading": null,
+          "estimation_meta": {
+            "confidence": "low",
+            "method": "Derived from O(sqrt(n)) asymptotics with n=2^29, lambda=128, 64B entries, 32 GB DB"
+          },
+          "metrics": {},
+          "footnotes": ["Theory only. First sublinear-server cPIR. No implementation. Metrics estimated from asymptotics."]
+        }
+      ]
+    },
+
+    // ── EXAMPLE: preprocessing scheme with threading variants ──
+    {
+      "id": "piano_2023",
+      "display_name": "Piano",
+      "group": "D",
+      "year": 2023,
+      "theory_only": false,
+      "implementation_url": "https://github.com/wuwuz/Piano-PIR-new",
+      "source_pdf": "Group.D.Client.Dependent.Preprocessing/piano_2023/Piano_2023_174.pdf",
+      "notes_path": "Group.D.Client.Dependent.Preprocessing/piano_2023/Piano_2023_notes.md",
+
+      "hardware": {
+        "cpu": "AWS m5.8xlarge",
+        "platform": "AWS EC2 m5.8xlarge (two instances)",
+        "ram_gb": 128,
+        "notes": "LAN benchmarks (same region)"
+      },
+
+      "asymptotic": {
+        "query_size": "O(sqrt(n))",
+        "response_size": "O(1)",
+        "server_computation": "O(sqrt(n))",
+        "client_computation": "O(sqrt(n))",
+        "preprocessing": "O(n)"
+      },
+
+      "group_specific": {
+        "preprocessing_model": "client-dependent",
+        "assumption": "OWF (AES-128 PRF)",
+        "preprocessing_comm_model": "streaming, single-pass"
+      },
+
+      "variants": ["Piano"],
+
+      "configs": [
+        {
+          "config_id": "2^27x8B",
+          "num_entries": 134217728,
+          "num_entries_label": "2^27",
+          "entry_size_bytes": 8,
+          "entry_size_label": "8 B"
+        },
+        {
+          "config_id": "2^28x8B",
+          "num_entries": 268435456,
+          "num_entries_label": "2^28",
+          "entry_size_bytes": 8,
+          "entry_size_label": "8 B"
+        },
+        {
+          "config_id": "1.68e9x64B",
+          "num_entries": 1680000000,
+          "num_entries_label": "1.68*10^9",
+          "entry_size_bytes": 64,
+          "entry_size_label": "64 B"
+        }
+      ],
+
+      "benchmarks": [
+        {
+          "variant": "Piano",
+          "config_id": "2^27x8B",
+          "data_tier": 1,
+          "source_ref": "Table 1, p.11",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 32.0,
+            "response_size_kb": 0.0625,
+            "server_time_ms": 3.0,
+            "client_time_ms": 3.0,
+            "offline_comm_mb": 1024.0,
+            "client_storage_mb": 61.0,
+            "preprocessing_time_s": 629.0,
+            "amortized_offline_time_ms": 2.9,
+            "amortized_offline_comm_kb": 4.9
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "Piano",
+          "config_id": "2^27x8B",
+          "data_tier": 1,
+          "source_ref": "Table 1, p.11",
+          "threading": "8-thread",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 32.0,
+            "response_size_kb": 0.0625,
+            "server_time_ms": 3.0,
+            "client_time_ms": 3.0,
+            "offline_comm_mb": 1024.0,
+            "client_storage_mb": 61.0,
+            "preprocessing_time_s": 111.0,
+            "amortized_offline_time_ms": 0.5,
+            "amortized_offline_comm_kb": 4.9
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "Piano",
+          "config_id": "1.68e9x64B",
+          "data_tier": 1,
+          "source_ref": "Table 1, p.11",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 100.0,
+            "response_size_kb": 0.0625,
+            "server_time_ms": 11.9,
+            "client_time_ms": 11.9,
+            "offline_comm_mb": 102400.0,
+            "client_storage_mb": 839.0,
+            "preprocessing_time_s": 11520.0,
+            "amortized_offline_time_ms": 13.2,
+            "amortized_offline_comm_kb": 120.5
+          },
+          "footnotes": ["WAN benchmarks (Table 2, 60ms RTT, 2 Gbps): 72.6 ms end-to-end latency at 100 GB"]
+        }
+      ]
+    }
+  ]
+}

@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PIR Benchs — DB Configs</title>
+  <title>Benching PIR — DB Configs</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
   <style>
     #configs-table tbody tr:nth-child(even) { background: transparent; }
     #configs-table .scheme-start td { border-top: 2px solid var(--border); }
     #configs-table thead th { text-align: center; cursor: default; }
-    #configs-table thead th:hover { background: var(--bg-alt); }
+    #configs-table thead th:hover { background: transparent; }
+    #configs-table tbody tr:hover { background: transparent; }
     #configs-table tbody td { text-align: center; white-space: normal; }
-    .type-legend { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; font-size: 14px; }
+    .type-legend { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; font-size: 12px; }
     .type-legend span { display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
     .type-legend strong { color: var(--text); }
     .type-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
@@ -38,7 +39,7 @@
 
 <!-- Sidebar -->
 <aside class="sidebar">
-  <a href="./" class="sidebar-title">PIR Benchs</a>
+  <a href="../" class="sidebar-title">Benching PIR</a>
   <nav id="sidebar-nav"></nav>
 </aside>
 
@@ -55,7 +56,7 @@
   <div class="table-wrap">
     <table id="configs-table">
       <thead>
-        <tr><th>#</th><th>Scheme</th><th>Group</th><th>N (entries)</th><th>Entry Size</th><th>DB Size</th><th>Type</th><th>Source</th></tr>
+        <tr><th>#</th><th>Scheme</th><th>N (entries)</th><th>Entry Size</th><th>DB Size</th><th>Type</th><th>Source</th></tr>
       </thead>
       <tbody id="configs-body">
       </tbody>
@@ -68,8 +69,8 @@
 </section>
 </main>
 
-<script src="nav.js"></script>
-<script src="script.js"></script>
+<script src="../nav.js"></script>
+<script src="../script.js"></script>
 <script src="db_config.js"></script>
 </body>
 </html>

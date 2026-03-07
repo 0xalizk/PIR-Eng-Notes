@@ -4,7 +4,7 @@
 
   // Detect base path: works on both GitHub Pages (/PIR-Eng-Notes/) and local dev (/)
   var BASE = '/PIR-Eng-Notes/';
-  var knownDirs = ['reported/pareto/', 'reported/', 'replicated/', 'standardized/', 'misc/', 'db_config.html'];
+  var knownDirs = ['reported/pareto/', 'reported/db_config.html', 'reported/', 'replicated/', 'standardized/', 'misc/'];
   var p = location.pathname;
   for (var i = 0; i < knownDirs.length; i++) {
     var idx = p.indexOf(knownDirs[i]);
@@ -31,7 +31,8 @@
           { label: 'Comm × Storage', anchor: '#pareto-comm-storage' },
           { label: 'Comm × Storage × Client', anchor: '#pareto-3d-comm' },
           { label: 'Server × Storage × Client', anchor: '#pareto-3d-server' }
-        ]}
+        ]},
+        { label: 'DB Configs', href: 'reported/db_config.html' }
       ]
     },
     {
@@ -50,7 +51,6 @@
       noHeader: true,
       children: [
         { label: 'Timeline', anchor: '#timeline' },
-        { label: 'DB Configs', href: 'db_config.html' },
         { label: 'Scheme Catalog', anchor: '#catalog' },
         { label: 'References', anchor: '#references' }
       ]
@@ -115,8 +115,8 @@
           });
           html += '</div>';
         } else {
-          // Regular anchor link within section page
-          var childHref = isOnSecPage ? child.anchor : (sectionUrl + child.anchor);
+          // Regular anchor link within section page, or cross-page href
+          var childHref = child.href ? (BASE + child.href) : (isOnSecPage ? child.anchor : (sectionUrl + child.anchor));
           html += '<a href="' + childHref + '" class="nav-link">' + child.label + '</a>';
         }
       });
