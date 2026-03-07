@@ -1,18 +1,95 @@
-/* ── PIR Engineering Notes — charts.js ────────────────── */
-/* All Plotly chart rendering + data loading + composite scoring */
-/* Data source: ../data/reported.json (v2 schema) */
+/* ── PIR Engineering Notes — charts.js ────────────────────────────────
+ *
+ * Main visualization engine for the "Benching PIR" site.
+ * Renders all Plotly charts from ../data/reported.json (v2 schema).
+ *
+ * ── Architecture Overview ──────────────────────────────────────────
+ *
+ * Data pipeline:
+ *   1. init() fetches reported.json and calls transformV2() to flatten
+ *      the nested scheme→config→benchmark structure into a flat array
+ *      of "entities" (one per scheme-variant). Each entity carries the
+ *      primary benchmark metrics (largest DB, best tier).
+ *   2. computeCompositeScores() ranks all entities on 4 core metrics
+ *      and produces percentile ranks, absolute log-normalizations, and
+ *      a composite score used for default sorting.
+ *   3. The DB-size tab system (tiny/small/medium/large/1-bit) filters
+ *      entities to a specific tier and swaps in tier-specific metrics
+ *      via filterByDbSize(). Charts are re-rendered on tab change.
+ *   4. Individual render functions produce Plotly traces from the
+ *      filtered entity array.
+ *
+ * Chart inventory (in render order):
+ *   1. Heatmap         — sorted by composite, 7 metrics, color = rank
+ *   2. Comm Scatter    — query vs response KB (log-log)
+ *   3a. Throughput Bars — GB/s horizontal bars
+ *   3b. Server Time    — server_time_ms bars
+ *   4. Client Cost     — client_time_ms bars
+ *   5. Offline/Storage — offline_comm_mb + client_storage_mb grouped bars
+ *   6a–c. Pareto 2D    — three comm/server/storage/client combinations
+ *   6d–e. Pareto 3D    — two 3-metric scatter3d plots
+ *   6f. Radar          — per-scheme polar plots (tabbed by DB-size tier)
+ *   7. Timeline        — throughput evolution by year (post-2020)
+ *   8. Catalog         — sortable/filterable scheme table
+ *
+ * Key concepts:
+ *   - "Data tier": confidence level of benchmark numbers.
+ *       Tier 1 = exact (author-reported), Tier 2 = approximate (read
+ *       from figures), Tier 3 = derived from asymptotics/estimates.
+ *   - "DB-size tier": database size category the benchmark was run on.
+ *       tiny (≤1GB), small (1–8GB), medium (8–32GB), large (>32GB),
+ *       1-bit (single-bit entries, a special PIR problem class).
+ *   - "Variant": some schemes have multiple protocol variants (e.g.
+ *       SimplePIR, DoublePIR). Each variant may have its own benchmarks.
+ *   - "Variant consolidation": when multiple variants of the same scheme
+ *       have similar metric values (within 10%), they are merged into a
+ *       single plot point to reduce visual clutter. The merged point uses
+ *       the first variant's data as representative, and the hover text
+ *       lists all consolidated variant names. See consolidateVariants().
+ *   - "Composite score": a 0–1 score combining percentile ranks across
+ *       4 core metrics. Used for default heatmap sort order.
+ *   - "Theory-only": a scheme with no open-source implementation AND no
+ *       author-reported concrete benchmarks. These are purely theoretical
+ *       constructions included for completeness in the catalog.
+ *   - "Open-source impl": whether independently-verifiable source code
+ *       exists. Catalog column shows "Yes" (linked), "No" (authors claim
+ *       benchmarks but code isn't public), or "Theory-only".
+ *
+ * Rendering notes:
+ *   - All charts use Plotly 2.35.2 via CDN.
+ *   - Dark/light theme adapts via prefers-color-scheme media query.
+ *   - Charts re-render on theme change and window resize (debounced).
+ *   - After initial render, anchor scroll is triggered after a 700ms
+ *     delay to wait for Plotly's async layout.
+ *   - 3D scatter plots (scatter3d) only support a limited symbol set;
+ *     Pareto-optimal points use a "ring overlay" trace workaround.
+ *   - Group X (Extensions) is excluded from radar and top-level scatter
+ *     plots per project convention (different problem class).
+ */
 
 (function () {
   'use strict';
 
   // ── Constants ──────────────────────────────────────────
+  //
+  // PIR scheme groups per taxonomy (https://hackmd.io/@keewoolee/SJyGoXCzZe#Taxonomy):
+  //   A = FHE-Based PIR (homomorphic encryption on server side)
+  //   B = Stateless single-server PIR (no preprocessing)
+  //   C = Client-independent preprocessing (offline phase doesn't depend on query)
+  //   D = Client-dependent preprocessing (offline phase is query-specific)
+  //   X = Extensions (keyword PIR, batch PIR — different problem class)
   var GROUP_COLORS = { A: '#1f77b4', B: '#2ca02c', C: '#ff7f0e', D: '#d62728', X: '#7f7f7f' };
   var GROUP_NAMES = {
     A: 'FHE-Based', B: 'Stateless', C: 'Client-Indep. Preprocessing',
     D: 'Client-Dep. Preprocessing', X: 'Extensions'
   };
+  // Plotly scatter3d only supports: circle, circle-open, cross, diamond,
+  // diamond-open, square, square-open, x — no 'star' or 'triangle'.
   var GROUP_SYMBOLS_3D = { A: 'circle', B: 'square', C: 'diamond', D: 'cross', X: 'x' };
 
+  // Database size tiers — benchmarks are categorized by the total DB size
+  // (num_entries × entry_size_bytes) they were measured on. The tab system
+  // lets users compare schemes at the same scale.
   var DB_SIZE_TIERS = ['tiny', 'small', 'medium', 'large', '1-bit'];
   var DB_SIZE_LABELS = {
     tiny: '\u22641GB db', small: '1\u20138GB db', medium: '8\u201332GB db',
@@ -22,13 +99,18 @@
     tiny: '#9b59b6', small: '#3498db', medium: '#e67e22',
     large: '#e74c3c', '1-bit': '#17becf'
   };
+  // Data confidence tiers — visual encoding:
+  //   Tier 1: full opacity, circle marker, solid radar line, no badge
+  //   Tier 2: 80% opacity, square marker, dashed radar line, † badge
+  //   Tier 3: 55% opacity, diamond marker, dotted radar line, * badge
   var TIER_OPACITY = { 1: 1.0, 2: 0.8, 3: 0.55 };
   var TIER_LABELS = { 1: 'Exact', 2: 'Approx', 3: 'Asymp.' };
   var TIER_BADGE = { 1: '', 2: '\u2020', 3: '*' };
 
-  // core metrics for composite scoring
+  // Core metrics used for composite scoring (the 4 most universally reported).
+  // ALL_METRICS adds client_time, offline comm, and client storage for the
+  // heatmap and radar views.
   var CORE_METRICS = ['query_size_kb', 'response_size_kb', 'server_time_ms', 'throughput_gbps'];
-  // all display metrics
   var ALL_METRICS = ['query_size_kb', 'response_size_kb', 'server_time_ms', 'throughput_gbps',
     'client_time_ms', 'offline_comm_mb', 'client_storage_mb'];
   var METRIC_LABELS = {
@@ -49,7 +131,8 @@
     client_time_ms: 'ms', offline_comm_mb: 'MB',
     client_storage_mb: 'MB'
   };
-  // lower is better for all except throughput
+  // Directionality: lower is better for all metrics except throughput.
+  // This affects ranking (sort direction) and normalization (inversion).
   var HIGHER_IS_BETTER = { throughput_gbps: true };
 
   var BASE_URL = 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/';
@@ -60,9 +143,23 @@
   }
 
   // ── Helpers ────────────────────────────────────────────
+
+  // Extract a metric value from a flat entity. Entity's `concrete` object
+  // holds the benchmark metrics (e.g. { query_size_kb: 14, ... }).
   function getVal(s, metric) {
-    return s.concrete ? s.concrete[metric] : null;
+    if (!s.concrete) return null;
+    var v = s.concrete[metric];
+    return v !== undefined ? v : null;
   }
+
+  // True if v is a finite number > 0. All PIR benchmark metrics are strictly
+  // positive when reported, so this is the canonical check for "has data".
+  // Catches null, undefined, NaN, 0, strings, and objects in one test.
+  function isPos(v) { return typeof v === 'number' && isFinite(v) && v > 0; }
+
+  // True if v is a finite number >= 0. For computed ranks/norms (0–1 scale)
+  // where 0 is a valid value meaning "best".
+  function isNum(v) { return typeof v === 'number' && isFinite(v) && v >= 0; }
 
   function isDark() {
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -97,12 +194,12 @@
   function isMobile() { return window.innerWidth <= 900; }
 
   function dbSizeBytes(s) {
-    return s._db_size_bytes || null;
+    return isPos(s._db_size_bytes) ? s._db_size_bytes : null;
   }
 
   function dbSizeLabel(s) {
     var bytes = dbSizeBytes(s);
-    if (bytes === null) return null;
+    if (!isPos(bytes)) return null;
     if (bytes >= 1e12) return (bytes / 1e12).toFixed(1) + ' TB';
     if (bytes >= 1e9) return (bytes / 1e9).toFixed(1) + ' GB';
     if (bytes >= 1e6) return (bytes / 1e6).toFixed(0) + ' MB';
@@ -115,6 +212,147 @@
     return s._entry_size_label || null;
   }
 
+  // ── Variant Consolidation ──────────────────────────────
+  //
+  // Problem: some schemes (e.g. SimplePIR/DoublePIR, or iSimplePIR with
+  // row-level/entry-level variants) produce multiple data points that are
+  // visually on top of each other, cluttering scatter/bar/Pareto plots.
+  //
+  // Solution: group entities by scheme ID, then cluster variants whose
+  // metric values are all within `threshold` (default 10%) of each other.
+  // Clusters of 2+ variants are merged into a single representative point.
+  //
+  // The representative inherits the first variant's data and gets a
+  // `_consolidated` array of all merged variant display names. The helper
+  // functions consolidatedName() and consolidatedHoverSuffix() use this
+  // to show a common prefix as the label and list variants on hover.
+  //
+  // Variants that differ by >15% on any metric remain as separate points.
+  // Variants with null metric values are always kept standalone (can't compare).
+  //
+  // Applied to: Communication Scatter, Throughput/Server/Client/Offline bars,
+  // all three Pareto 2D charts, both Pareto 3D charts. NOT applied to
+  // Heatmap (needs all variants for ranking) or Radar (per-scheme view).
+  function consolidateVariants(data, metricKeys, threshold) {
+    if (!threshold) threshold = 0.10;
+    var schemeMap = {};
+    var schemeOrder = [];
+    data.forEach(function (s) {
+      var key = s.id;
+      if (!schemeMap[key]) { schemeMap[key] = []; schemeOrder.push(key); }
+      schemeMap[key].push(s);
+    });
+    var result = [];
+    schemeOrder.forEach(function (key) {
+      var variants = schemeMap[key];
+      if (variants.length <= 1) { result.push(variants[0]); return; }
+      // Cluster variants by proximity on the given metrics
+      var clusters = [];
+      variants.forEach(function (v) {
+        var vals = metricKeys.map(function (m) { return getVal(v, m); });
+        if (vals.some(function (x) { return !isPos(x); })) {
+          // Can't compare — keep as standalone
+          result.push(v);
+          return;
+        }
+        // Try to merge into existing cluster
+        var merged = false;
+        for (var i = 0; i < clusters.length; i++) {
+          var cVals = metricKeys.map(function (m) { return getVal(clusters[i].rep, m); });
+          var close = metricKeys.every(function (m, mi) {
+            var a = vals[mi], b = cVals[mi];
+            if (a === 0 && b === 0) return true;
+            var maxAb = Math.max(Math.abs(a), Math.abs(b));
+            return maxAb > 0 && Math.abs(a - b) / maxAb <= threshold;
+          });
+          if (close) { clusters[i].members.push(v); merged = true; break; }
+        }
+        if (!merged) clusters.push({ rep: v, members: [v] });
+      });
+      clusters.forEach(function (c) {
+        if (c.members.length === 1) { result.push(c.rep); return; }
+        // Build consolidated entity from the first member (cluster representative)
+        var copy = {};
+        Object.keys(c.rep).forEach(function (k) { copy[k] = c.rep[k]; });
+        copy._consolidated = c.members.map(function (m) {
+          var vals = {};
+          metricKeys.forEach(function (mk) { vals[mk] = getVal(m, mk); });
+          return { name: m.display_name, vals: vals };
+        });
+        copy._consolidatedThreshold = threshold;
+        copy._consolidatedMetricKeys = metricKeys;
+        result.push(copy);
+      });
+    });
+    return result;
+  }
+
+  // Helper: display name for a possibly-consolidated entity
+  function consolidatedName(s) {
+    if (!s._consolidated || s._consolidated.length <= 1) return s.display_name;
+    // Find common prefix of all variant names
+    var names = s._consolidated.map(function (c) { return c.name; });
+    var prefix = names.reduce(function (a, b) {
+      var i = 0;
+      while (i < a.length && i < b.length && a[i] === b[i]) i++;
+      return a.substring(0, i);
+    }).replace(/[\s\-\(]+$/, '').replace(/-[a-z]$/i, '');
+    if (prefix.length > 3) return prefix;
+    return s.display_name;
+  }
+
+  // Helper: hover text suffix for consolidated variants.
+  // Shows each variant with its metric values, plus the merge threshold.
+  // e.g. "Merged (within 10%): SimplePIR (9.9 GB/s), DoublePIR (7.4 GB/s)"
+  function consolidatedHoverSuffix(s) {
+    if (!s._consolidated || s._consolidated.length <= 1) return '';
+    var pct = Math.round((s._consolidatedThreshold || 0.15) * 100);
+    var keys = s._consolidatedMetricKeys || [];
+    var parts = s._consolidated.map(function (c) {
+      var valParts = keys.map(function (mk) {
+        var v = c.vals[mk];
+        return isPos(v) ? formatNum(v) + ' ' + (METRIC_UNITS[mk] || '') : 'N/A';
+      });
+      return c.name + ' (' + valParts.join(', ') + ')';
+    });
+    return '<br><i>Variants merged (because \u2264' + pct + '% different): ' + parts.join('; ') + '</i>';
+  }
+
+  // ── Text Overlap Avoidance ─────────────────────────────
+  //
+  // For log-log scatter plots and Pareto charts, data points that are close
+  // in log-space would have overlapping text labels if all set to 'top center'.
+  // This function assigns each point a text position from a rotating list
+  // based on how many nearby points precede it.
+  //
+  // pts: array of {x, y, key} where x,y are raw (pre-log) axis values.
+  // Returns: map from key → Plotly textposition string.
+  // Proximity threshold: 0.4 decades in both log(x) and log(y).
+  function avoidTextOverlap(pts) {
+    var positions = ['top center', 'bottom center', 'top right', 'bottom right', 'top left', 'bottom left', 'middle right', 'middle left'];
+    var logPts = pts.map(function (p) {
+      return { lx: Math.log10(Math.max(p.x, 1e-6)), ly: Math.log10(Math.max(p.y, 1e-6)), key: p.key };
+    });
+    logPts.sort(function (a, b) { return a.lx - b.lx || a.ly - b.ly; });
+    var posMap = {};
+    logPts.forEach(function (pt, i) {
+      var nearby = 0;
+      for (var j = 0; j < i; j++) {
+        if (Math.abs(logPts[j].lx - pt.lx) < 0.4 && Math.abs(logPts[j].ly - pt.ly) < 0.4) {
+          nearby++;
+        }
+      }
+      posMap[pt.key] = positions[nearby % positions.length];
+    });
+    return posMap;
+  }
+
+  // Filter entities to those that have benchmarks in the given DB-size tier,
+  // and swap in tier-specific metrics. Each entity may have benchmarks across
+  // multiple DB sizes (e.g. a scheme tested on both 1GB and 8GB databases).
+  // This function picks the tier-specific benchmark and creates a shallow copy
+  // with that benchmark's metrics, data_tier, source_ref, estimation_meta, and config details.
+  // Used by the DB-size tab system to re-render charts for a specific scale.
   function filterByDbSize(data, tier) {
     return data.filter(function (s) {
       return s.db_size_categories && s.db_size_categories.indexOf(tier) >= 0;
@@ -141,13 +379,35 @@
   }
 
   function formatNum(v) {
-    if (v === null || v === undefined) return '\u2014';
+    if (typeof v !== 'number' || !isFinite(v)) return '\u2014';
     if (v >= 1000) return v.toLocaleString('en-US', { maximumFractionDigits: 1 });
     if (v >= 1) return v.toFixed(v < 10 ? 2 : 1);
     return v.toPrecision(3);
   }
 
   // ── Composite Scoring ──────────────────────────────────
+  //
+  // Computes three things on each entity:
+  //
+  // 1. _composite (0–1): average percentile rank across 4 core metrics
+  //    (query_size, response_size, server_time, throughput). Lower = better.
+  //    - Rank 0 = best value in the dataset, rank 1 = worst.
+  //    - Tier 3 discount: ranks are compressed toward midpoint (×0.8+0.1)
+  //      to avoid giving asymptotic estimates the same weight as measured data.
+  //    - Coverage penalty: +0.1 per missing core metric, but only when fewer
+  //      than 3 of 4 are available (1 missing = no penalty; 2 missing = +0.2;
+  //      3 missing = +0.3; 0 available = composite forced to 1.0).
+  //      so schemes with incomplete data don't unfairly rank high.
+  //    - Used for: heatmap default sort, radar sort within groups.
+  //
+  // 2. _ranks (per ALL_METRICS): percentile rank for each of the 7 metrics.
+  //    Used for: heatmap cell colors (green=best, red=worst), radar "relative" mode.
+  //    Note: tied values get the same rank via indexOf (min-rank, not midpoint).
+  //
+  // 3. _absNorm (per ALL_METRICS): log-scale min-max normalization (0=best, 1=worst).
+  //    Used for: radar "absolute" mode. Unlike percentile ranks which only care
+  //    about ordering, absNorm preserves the magnitude of differences.
+  //
   function computeCompositeScores(data) {
     // Step 1: collect values per core metric for percentile ranking
     var metricVals = {};
@@ -156,7 +416,7 @@
     data.forEach(function (s) {
       CORE_METRICS.forEach(function (m) {
         var v = getVal(s, m);
-        if (v !== null && v !== undefined) metricVals[m].push(v);
+        if (isPos(v)) metricVals[m].push(v);
       });
     });
 
@@ -175,7 +435,7 @@
       var available = 0;
       CORE_METRICS.forEach(function (m) {
         var v = getVal(s, m);
-        if (v !== null && v !== undefined) {
+        if (isPos(v)) {
           var idx = metricVals[m].indexOf(v);
           var rank = metricVals[m].length > 1 ? idx / (metricVals[m].length - 1) : 0.5;
           // Tier 3 discount: push toward midpoint
@@ -187,6 +447,9 @@
         }
       });
 
+      // Penalize schemes missing core metrics: +0.1 per missing metric when <3 available.
+      // A scheme reporting only 1 of 4 core metrics gets +0.3 penalty, making it rank lower
+      // than a scheme with full data. Schemes with 0 metrics get composite = 1.0 (worst).
       var coveragePenalty = available < 3 ? 0.1 * (4 - available) : 0;
       s._composite = ranks.length > 0 ? (ranks.reduce(function (a, b) { return a + b; }, 0) / ranks.length) + coveragePenalty : 1.0;
       s._coreAvailable = available;
@@ -198,7 +461,7 @@
     data.forEach(function (s) {
       ALL_METRICS.forEach(function (m) {
         var v = getVal(s, m);
-        if (v !== null && v !== undefined) allMetricVals[m].push(v);
+        if (isPos(v)) allMetricVals[m].push(v);
       });
     });
     ALL_METRICS.forEach(function (m) {
@@ -213,7 +476,7 @@
       s._ranks = {};
       ALL_METRICS.forEach(function (m) {
         var v = getVal(s, m);
-        if (v !== null && v !== undefined) {
+        if (isPos(v)) {
           var idx = allMetricVals[m].indexOf(v);
           s._ranks[m] = allMetricVals[m].length > 1 ? idx / (allMetricVals[m].length - 1) : 0.5;
         } else {
@@ -222,7 +485,10 @@
       });
     });
 
-    // Absolute normalization: log-scale min-max per metric (0 = best, 1 = worst)
+    // Absolute normalization: map each metric value to [0,1] using log-scale min-max.
+    // Unlike percentile ranks which only preserve ordinal position, this preserves
+    // the relative magnitude of differences (e.g. a 10ms vs 10000ms gap is wider
+    // than 10ms vs 20ms). Used for radar "absolute" mode.
     var absMin = {}, absMax = {};
     ALL_METRICS.forEach(function (m) {
       var vals = allMetricVals[m].filter(function (v) { return v > 0; });
@@ -235,7 +501,7 @@
       s._absNorm = {};
       ALL_METRICS.forEach(function (m) {
         var v = getVal(s, m);
-        if (v !== null && v !== undefined && v > 0) {
+        if (isPos(v)) {
           var logV = Math.log(v);
           var range = absMax[m] - absMin[m];
           var norm = range > 0 ? (logV - absMin[m]) / range : 0.5;
@@ -251,8 +517,18 @@
   }
 
   // ── 1. Sorted Heatmap ─────────────────────────────────
-  // Y-axis = scheme names (sorted best→worst top→bottom)
-  // X-axis = 7 metrics
+  //
+  // A color-coded matrix: Y-axis = scheme names (sorted by composite score,
+  // best at top), X-axis = 7 metrics. Cell color encodes percentile rank
+  // (green = best, yellow = mid, red = worst). Cell text shows the raw value
+  // with a tier badge († for Tier 2, * for Tier 3).
+  //
+  // Clicking any cell re-sorts by that cell's metric column. The heatmap operates
+  // on un-consolidated data (all variants shown) since ranking needs the
+  // full population.
+  //
+  // Title: "Data Reported in the Paper" — emphasizes these are author-reported numbers.
+  //
   function buildHeatmapData(sorted) {
     var metricLabels = ALL_METRICS.map(function (m) { return METRIC_LABELS[m]; });
     // z[scheme_idx][metric_idx] for Plotly heatmap (y=schemes, x=metrics)
@@ -266,12 +542,12 @@
       var hRow = [];
       ALL_METRICS.forEach(function (m) {
         var rank = s._ranks[m];
-        row.push(rank !== null ? rank : NaN);
+        row.push(isNum(rank) ? rank : NaN);
         var raw = getVal(s, m);
-        tRow.push(raw !== null ? formatNum(raw) + TIER_BADGE[s.data_tier] : '');
+        tRow.push(isPos(raw) ? formatNum(raw) + TIER_BADGE[s.data_tier] : '');
         var lbl = METRIC_LABELS[m];
         var lblMatch = lbl.match(/^(.+?) \((.+)\)$/);
-        if (raw === null || raw === undefined) {
+        if (!isPos(raw)) {
           hRow.push('');
         } else {
           var hoverVal = lblMatch ? formatNum(raw) + ' ' + lblMatch[2] : formatNum(raw);
@@ -373,8 +649,8 @@
       var reSorted = data.slice().sort(function (a, b) {
         var va = getVal(a, metric);
         var vb = getVal(b, metric);
-        var aMissing = va === null || va === undefined;
-        var bMissing = vb === null || vb === undefined;
+        var aMissing = !isPos(va);
+        var bMissing = !isPos(vb);
         if (aMissing && bMissing) return 0;
         if (aMissing) return -1; // nulls at bottom (index 0 in Plotly = visual bottom)
         if (bMissing) return 1;
@@ -399,29 +675,44 @@
   }
 
   // ── 2. Communication Scatter ──────────────────────────
+  //
+  // Log-log scatter: X = query size (KB), Y = response size (KB).
+  // Marker size encodes server_time_ms (log-scaled). Marker shape encodes
+  // data tier (circle/square/diamond). Color encodes group (A–D, X).
+  // Diagonal reference lines at 10/100/1K/10K KB. On log-log axes these are
+  // straight lines (iso-product), serving as approximate visual guides for
+  // total communication magnitude (exact iso-sum curves would be hyperbolic).
+  // Variant consolidation merges nearby same-scheme variants into one dot.
+  // Text positions are assigned by avoidTextOverlap() to reduce label collisions.
+  //
   function renderCommunicationScatter(data) {
     var el = document.getElementById('chart-communication');
     if (!el) return;
     var t = themeColors();
+    data = consolidateVariants(data, ['query_size_kb', 'response_size_kb']);
 
     var traces = [];
     var groups = {};
-    data.forEach(function (s) {
+    var overlapPts = [];
+    data.forEach(function (s, idx) {
       var qk = getVal(s, 'query_size_kb');
       var rk = getVal(s, 'response_size_kb');
-      if (qk === null || rk === null) return;
-      if (!groups[s.group]) groups[s.group] = { x: [], y: [], text: [], names: [], marker: { color: [], opacity: [], size: [], symbol: [] } };
+      if (!isPos(qk) || !isPos(rk)) return;
+      overlapPts.push({ x: qk, y: rk, key: idx });
+      if (!groups[s.group]) groups[s.group] = { x: [], y: [], text: [], names: [], positions: [], marker: { color: [], opacity: [], size: [], symbol: [] } };
       var g = groups[s.group];
       g.x.push(qk);
       g.y.push(rk);
-      g.names.push(s.display_name);
-      g.text.push(s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Query: ' + formatNum(qk) + ' KB<br>Response: ' + formatNum(rk) + ' KB<br>Source: ' + (s.source_ref || 'N/A'));
+      g.names.push(consolidatedName(s));
+      g.positions.push(idx);
+      g.text.push(consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Query: ' + formatNum(qk) + ' KB<br>Response: ' + formatNum(rk) + ' KB<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s));
       g.marker.color.push(GROUP_COLORS[s.group]);
       g.marker.opacity.push(TIER_OPACITY[s.data_tier]);
       var st = getVal(s, 'server_time_ms');
-      g.marker.size.push(st ? Math.max(8, Math.min(30, Math.log10(st + 1) * 8)) : 10);
+      g.marker.size.push(isPos(st) ? Math.max(8, Math.min(30, Math.log10(st + 1) * 8)) : 10);
       g.marker.symbol.push(s.data_tier === 3 ? 'diamond' : s.data_tier === 2 ? 'square' : 'circle');
     });
+    var posMap = avoidTextOverlap(overlapPts);
 
     // Group legend entries — thick line for rectangular color patches
     Object.keys(groups).forEach(function (g) {
@@ -448,7 +739,7 @@
         showlegend: false,
         legendgroup: 'group-' + g,
         text: groups[g].names,
-        textposition: 'top right',
+        textposition: groups[g].positions.map(function (idx) { return posMap[idx] || 'top center'; }),
         cliponaxis: false,
         textfont: { size: isMobile() ? 7 : 9, color: t.muted },
         hovertext: groups[g].text,
@@ -517,17 +808,21 @@
   }
 
   // ── 3a. Throughput Bars ───────────────────────────────
+  // Horizontal bars ranked by throughput (GB/s). Higher is better.
+  // Only Tier 1 schemes typically report throughput; annotation notes this.
+  // Consolidated variants share a single bar with merged hover text.
   function renderThroughputBars(data) {
     var el = document.getElementById('chart-throughput');
     if (!el) return;
     var t = themeColors();
+    data = consolidateVariants(data, ['throughput_gbps']);
 
-    var items = data.filter(function (s) { return getVal(s, 'throughput_gbps') !== null; });
+    var items = data.filter(function (s) { return isPos(getVal(s, 'throughput_gbps')); });
     items.sort(function (a, b) { return getVal(b, 'throughput_gbps') - getVal(a, 'throughput_gbps'); });
 
     var traces = [];
     traces.push({
-      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + s.display_name; }),
+      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); }),
       x: items.map(function (s) { return getVal(s, 'throughput_gbps'); }),
       type: 'bar', orientation: 'h',
       showlegend: false,
@@ -539,7 +834,7 @@
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Source: ' + (s.source_ref || 'N/A');
+        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
     });
@@ -558,17 +853,19 @@
   }
 
   // ── 3b. Server Time Bars ──────────────────────────────
+  // Horizontal bars ranked by server_time_ms (lower is better, ascending sort).
   function renderServerTimeBars(data) {
     var el = document.getElementById('chart-server-time');
     if (!el) return;
     var t = themeColors();
+    data = consolidateVariants(data, ['server_time_ms']);
 
-    var items = data.filter(function (s) { return getVal(s, 'server_time_ms') !== null; });
+    var items = data.filter(function (s) { return isPos(getVal(s, 'server_time_ms')); });
     items.sort(function (a, b) { return getVal(a, 'server_time_ms') - getVal(b, 'server_time_ms'); });
 
     var traces = [];
     traces.push({
-      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + s.display_name; }),
+      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); }),
       x: items.map(function (s) { return getVal(s, 'server_time_ms'); }),
       type: 'bar', orientation: 'h',
       showlegend: false,
@@ -580,7 +877,7 @@
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server Time: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A');
+        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server Time: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
     });
@@ -599,16 +896,18 @@
   }
 
   // ── 4. Client Compute Bars ───────────────────────────────
+  // Horizontal bars ranked by client_time_ms (lower is better).
   function renderClientCost(data) {
     var el = document.getElementById('chart-client-cost');
     if (!el) return;
     var t = themeColors();
+    data = consolidateVariants(data, ['client_time_ms']);
 
-    var items = data.filter(function (s) { return getVal(s, 'client_time_ms') !== null; });
+    var items = data.filter(function (s) { return isPos(getVal(s, 'client_time_ms')); });
     items.sort(function (a, b) { return getVal(a, 'client_time_ms') - getVal(b, 'client_time_ms'); });
 
     Plotly.newPlot(el, [{
-      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + s.display_name; }),
+      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); }),
       x: items.map(function (s) { return getVal(s, 'client_time_ms'); }),
       type: 'bar', orientation: 'h',
       marker: {
@@ -619,7 +918,7 @@
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A');
+        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
     }], baseLayout('Client Computation Time (ms)', {
@@ -631,16 +930,20 @@
   }
 
   // ── 5. Offline & Storage Bar Chart ───────────────────
+  // Grouped horizontal bars: blue = offline communication (MB),
+  // amber = client-side storage (MB). Sorted by max of the two values.
+  // These metrics only apply to preprocessing-based schemes (Groups C, D).
   function renderOfflineStorage(data) {
     var el = document.getElementById('chart-offline-storage');
     if (!el) return;
     var t = themeColors();
+    data = consolidateVariants(data, ['offline_comm_mb', 'client_storage_mb']);
 
     var HINT_COLOR = '#3b82f6';
     var STORAGE_COLOR = '#f59e0b';
 
     var items = data.filter(function (s) {
-      return getVal(s, 'offline_comm_mb') !== null || getVal(s, 'client_storage_mb') !== null;
+      return isPos(getVal(s, 'offline_comm_mb')) || isPos(getVal(s, 'client_storage_mb'));
     });
 
     // sort by max of the two values (largest at top)
@@ -650,7 +953,7 @@
       return aMax - bMax;
     });
 
-    var schemes = items.map(function (s) { return s.display_name; });
+    var schemes = items.map(function (s) { return consolidatedName(s); });
     var traces = [];
 
     // Offline comm bars
@@ -662,13 +965,13 @@
       marker: { color: HINT_COLOR, opacity: 0.85 },
       text: items.map(function (s) {
         var v = getVal(s, 'offline_comm_mb');
-        return v !== null ? formatNum(v) + ' MB' : '';
+        return isPos(v) ? formatNum(v) + ' MB' : '';
       }),
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'offline_comm_mb');
-        return v !== null ? s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Offline: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') : '';
+        return isPos(v) ? consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Offline: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s) : '';
       }),
       hoverinfo: 'text'
     });
@@ -682,13 +985,13 @@
       marker: { color: STORAGE_COLOR, opacity: 0.85 },
       text: items.map(function (s) {
         var v = getVal(s, 'client_storage_mb');
-        return v !== null ? formatNum(v) + ' MB' : '';
+        return isPos(v) ? formatNum(v) + ' MB' : '';
       }),
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'client_storage_mb');
-        return v !== null ? s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Client Storage: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') : '';
+        return isPos(v) ? consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Client Storage: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s) : '';
       }),
       hoverinfo: 'text'
     });
@@ -703,22 +1006,41 @@
     }), plotConfig());
   }
 
-  // ── 6a. Pareto Frontier ───────────────────────────────
+  // ── 6a. Pareto Frontier — Total Comm vs Server Time ──
+  //
+  // Log-log scatter of total communication (query+response KB) vs server time (ms).
+  // Pareto-optimal points are those not dominated by any other scheme (no other
+  // scheme is weakly better on all axes and strictly better on at least one). Marked with star symbols
+  // and connected by a dashed purple step-line.
+  //
+  // All three 2D Pareto charts (6a–c) follow the same structure:
+  //   1. Consolidate nearby variants
+  //   2. Filter to items with required metrics
+  //   3. Compute derived axis (_totalComm = query + response)
+  //   4. Identify Pareto-optimal set
+  //   5. Compute text overlap avoidance positions
+  //   6. Render: legend swatches → group scatter traces → Pareto line → tier legend
+  //
   function renderPareto(data) {
     var el = document.getElementById('chart-pareto');
     if (!el) return;
     var t = themeColors();
+    data = consolidateVariants(data, ['query_size_kb', 'response_size_kb', 'server_time_ms']);
 
     var items = data.filter(function (s) {
-      return getVal(s, 'query_size_kb') !== null && getVal(s, 'response_size_kb') !== null && getVal(s, 'server_time_ms') !== null;
+      return isPos(getVal(s, 'query_size_kb')) && isPos(getVal(s, 'response_size_kb')) && isPos(getVal(s, 'server_time_ms'));
     });
 
-    // total communication
+    // Derived axis: total communication = query + response.
+    // Note: _totalComm is mutated onto shared data objects. Multiple Pareto
+    // functions compute the same value, so this is benign but technically a
+    // shared-state mutation (flagged in audit C2 as code smell).
     items.forEach(function (s) {
       s._totalComm = getVal(s, 'query_size_kb') + getVal(s, 'response_size_kb');
     });
 
-    // find Pareto-optimal: no other scheme has both lower comm AND lower server time
+    // Pareto optimality (standard dominance): s is Pareto-optimal iff no other
+    // scheme o is weakly better on all axes AND strictly better on at least one.
     var pareto = items.filter(function (s) {
       return !items.some(function (o) {
         return o !== s && o._totalComm <= s._totalComm && getVal(o, 'server_time_ms') <= getVal(s, 'server_time_ms') &&
@@ -726,6 +1048,12 @@
       });
     });
     pareto.sort(function (a, b) { return a._totalComm - b._totalComm; });
+
+    var posMap = avoidTextOverlap(items.map(function (s, i) {
+      return { x: s._totalComm, y: getVal(s, 'server_time_ms'), key: i };
+    }));
+    var itemIdx = {};
+    items.forEach(function (s, i) { itemIdx[s.id + '|' + s.display_name] = i; });
 
     var traces = [];
 
@@ -749,8 +1077,8 @@
         y: gItems.map(function (s) { return getVal(s, 'server_time_ms'); }),
         mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
         showlegend: false,
-        text: gItems.map(function (s) { return s.display_name; }),
-        textposition: 'top center',
+        text: gItems.map(function (s) { return consolidatedName(s); }),
+        textposition: gItems.map(function (s) { return posMap[itemIdx[s.id + '|' + s.display_name]] || 'top center'; }),
         cliponaxis: false,
         textfont: { size: 9, color: t.muted },
         marker: {
@@ -761,8 +1089,8 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms' +
-            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms' +
+            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
         }),
         hoverinfo: 'text'
       });
@@ -802,14 +1130,18 @@
     }), plotConfig());
   }
 
-  // ── 6b. Pareto — Communication vs Client Storage ────
+  // ── 6b. Pareto — Total Comm vs Client Storage ───────
+  // Same structure as 6a but Y-axis = client_storage_mb.
+  // Shows the comm/storage tradeoff — preprocessing schemes (C, D) trade
+  // higher client storage for lower online communication.
   function renderParetoCommStorage(data) {
     var el = document.getElementById('chart-pareto-comm-storage');
     if (!el) return;
     var t = themeColors();
+    data = consolidateVariants(data, ['query_size_kb', 'response_size_kb', 'client_storage_mb']);
 
     var items = data.filter(function (s) {
-      return getVal(s, 'query_size_kb') !== null && getVal(s, 'response_size_kb') !== null && getVal(s, 'client_storage_mb') !== null;
+      return isPos(getVal(s, 'query_size_kb')) && isPos(getVal(s, 'response_size_kb')) && isPos(getVal(s, 'client_storage_mb'));
     });
     items.forEach(function (s) {
       s._totalComm = getVal(s, 'query_size_kb') + getVal(s, 'response_size_kb');
@@ -822,6 +1154,12 @@
       });
     });
     pareto.sort(function (a, b) { return a._totalComm - b._totalComm; });
+
+    var posMap = avoidTextOverlap(items.map(function (s, i) {
+      return { x: s._totalComm, y: getVal(s, 'client_storage_mb'), key: i };
+    }));
+    var itemIdx = {};
+    items.forEach(function (s, i) { itemIdx[s.id + '|' + s.display_name] = i; });
 
     var traces = [];
     Object.keys(GROUP_COLORS).forEach(function (g) {
@@ -840,8 +1178,8 @@
         y: gItems.map(function (s) { return getVal(s, 'client_storage_mb'); }),
         mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
         showlegend: false,
-        text: gItems.map(function (s) { return s.display_name; }),
-        textposition: 'top center', cliponaxis: false,
+        text: gItems.map(function (s) { return consolidatedName(s); }),
+        textposition: gItems.map(function (s) { return posMap[itemIdx[s.id + '|' + s.display_name]] || 'top center'; }), cliponaxis: false,
         textfont: { size: 9, color: t.muted },
         marker: {
           size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 14 : 8; }),
@@ -851,8 +1189,8 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' +
-            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' +
+            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
         }),
         hoverinfo: 'text'
       });
@@ -888,14 +1226,16 @@
     }), plotConfig());
   }
 
-  // ── 6c. Pareto — Communication vs Client Time ──────
+  // ── 6c. Pareto — Total Comm vs Client Time ──────────
+  // Same structure as 6a but Y-axis = client_time_ms.
   function renderParetoCommClient(data) {
     var el = document.getElementById('chart-pareto-comm-client');
     if (!el) return;
     var t = themeColors();
+    data = consolidateVariants(data, ['query_size_kb', 'response_size_kb', 'client_time_ms']);
 
     var items = data.filter(function (s) {
-      return getVal(s, 'query_size_kb') !== null && getVal(s, 'response_size_kb') !== null && getVal(s, 'client_time_ms') !== null;
+      return isPos(getVal(s, 'query_size_kb')) && isPos(getVal(s, 'response_size_kb')) && isPos(getVal(s, 'client_time_ms'));
     });
     items.forEach(function (s) {
       s._totalComm = getVal(s, 'query_size_kb') + getVal(s, 'response_size_kb');
@@ -908,6 +1248,12 @@
       });
     });
     pareto.sort(function (a, b) { return a._totalComm - b._totalComm; });
+
+    var posMap = avoidTextOverlap(items.map(function (s, i) {
+      return { x: s._totalComm, y: getVal(s, 'client_time_ms'), key: i };
+    }));
+    var itemIdx = {};
+    items.forEach(function (s, i) { itemIdx[s.id + '|' + s.display_name] = i; });
 
     var traces = [];
     Object.keys(GROUP_COLORS).forEach(function (g) {
@@ -926,8 +1272,8 @@
         y: gItems.map(function (s) { return getVal(s, 'client_time_ms'); }),
         mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
         showlegend: false,
-        text: gItems.map(function (s) { return s.display_name; }),
-        textposition: 'top center', cliponaxis: false,
+        text: gItems.map(function (s) { return consolidatedName(s); }),
+        textposition: gItems.map(function (s) { return posMap[itemIdx[s.id + '|' + s.display_name]] || 'top center'; }), cliponaxis: false,
         textfont: { size: 9, color: t.muted },
         marker: {
           size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 14 : 8; }),
@@ -937,8 +1283,8 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
-            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
         }),
         hoverinfo: 'text'
       });
@@ -974,15 +1320,23 @@
     }), plotConfig());
   }
 
-  // ── 6d. 3D Scatter — Comm x Client Storage x Client Time ──
+  // ── 6d. 3D Scatter — Comm × Client Storage × Client Time ──
+  //
+  // Three-axis Plotly scatter3d. Pareto-optimal points are highlighted with
+  // a "ring overlay" — a separate trace with transparent fill and purple outline,
+  // since scatter3d doesn't support 'star' markers.
+  // Text overlap avoidance is not applied here because scatter3d only accepts
+  // a single textposition string (not per-point arrays), and users can rotate
+  // the 3D view to resolve overlaps manually.
   function renderPareto3DComm(data) {
     var el = document.getElementById('chart-pareto-3d-comm');
     if (!el) return;
     var t = themeColors();
+    data = consolidateVariants(data, ['query_size_kb', 'response_size_kb', 'client_storage_mb', 'client_time_ms']);
 
     var items = data.filter(function (s) {
-      return getVal(s, 'query_size_kb') !== null && getVal(s, 'response_size_kb') !== null &&
-        getVal(s, 'client_storage_mb') !== null && getVal(s, 'client_time_ms') !== null;
+      return isPos(getVal(s, 'query_size_kb')) && isPos(getVal(s, 'response_size_kb')) &&
+        isPos(getVal(s, 'client_storage_mb')) && isPos(getVal(s, 'client_time_ms'));
     });
     items.forEach(function (s) {
       s._totalComm = getVal(s, 'query_size_kb') + getVal(s, 'response_size_kb');
@@ -1019,7 +1373,7 @@
         z: gItems.map(function (s) { return getVal(s, 'client_time_ms'); }),
         mode: 'markers+text', type: 'scatter3d', name: GROUP_NAMES[g],
         showlegend: false,
-        text: gItems.map(function (s) { return s.display_name; }),
+        text: gItems.map(function (s) { return consolidatedName(s); }),
         textposition: 'top center',
         textfont: { size: 9, color: t.muted },
         marker: {
@@ -1030,8 +1384,8 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
-            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
         }),
         hoverinfo: 'text'
       });
@@ -1045,8 +1399,8 @@
         mode: 'markers', type: 'scatter3d', name: 'Pareto-optimal',
         marker: { size: 14, color: 'rgba(0,0,0,0)', symbol: 'circle', line: { width: 3, color: '#a855f7' } },
         hovertext: pareto.map(function (s) {
-          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
-            '<br><b>Pareto-optimal \u2605</b><br>Source: ' + (s.source_ref || 'N/A');
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+            '<br><b>Pareto-optimal \u2605</b><br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
         }),
         hoverinfo: 'text'
       });
@@ -1065,15 +1419,17 @@
     }), plotConfig());
   }
 
-  // ── 6e. 3D Scatter — Server Time x Client Storage x Client Time ──
+  // ── 6e. 3D Scatter — Server Time × Client Storage × Client Time ──
+  // Same structure as 6d but X-axis = server_time_ms instead of total comm.
   function renderPareto3DServer(data) {
     var el = document.getElementById('chart-pareto-3d-server');
     if (!el) return;
     var t = themeColors();
+    data = consolidateVariants(data, ['server_time_ms', 'client_storage_mb', 'client_time_ms']);
 
     var items = data.filter(function (s) {
-      return getVal(s, 'server_time_ms') !== null &&
-        getVal(s, 'client_storage_mb') !== null && getVal(s, 'client_time_ms') !== null;
+      return isPos(getVal(s, 'server_time_ms')) &&
+        isPos(getVal(s, 'client_storage_mb')) && isPos(getVal(s, 'client_time_ms'));
     });
 
     var pareto = items.filter(function (s) {
@@ -1107,7 +1463,7 @@
         z: gItems.map(function (s) { return getVal(s, 'client_time_ms'); }),
         mode: 'markers+text', type: 'scatter3d', name: GROUP_NAMES[g],
         showlegend: false,
-        text: gItems.map(function (s) { return s.display_name; }),
+        text: gItems.map(function (s) { return consolidatedName(s); }),
         textposition: 'top center',
         textfont: { size: 9, color: t.muted },
         marker: {
@@ -1118,8 +1474,8 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
-            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A');
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
         }),
         hoverinfo: 'text'
       });
@@ -1133,8 +1489,8 @@
         mode: 'markers', type: 'scatter3d', name: 'Pareto-optimal',
         marker: { size: 14, color: 'rgba(0,0,0,0)', symbol: 'circle', line: { width: 3, color: '#a855f7' } },
         hovertext: pareto.map(function (s) {
-          return s.display_name + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
-            '<br><b>Pareto-optimal \u2605</b><br>Source: ' + (s.source_ref || 'N/A');
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+            '<br><b>Pareto-optimal \u2605</b><br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
         }),
         hoverinfo: 'text'
       });
@@ -1154,7 +1510,34 @@
     }), plotConfig());
   }
 
-  // ── 6f. Radar — Tabbed per DB-size tier, 2-per-row grid ──
+  // ── 6f. Radar — Per-Scheme Polar Plots ────────────────
+  //
+  // One polar plot per scheme, arranged in a 2-per-row grid. Each radar
+  // shows the scheme's performance across all 7 metrics. Axes go from
+  // 0 (best) to 1 (worst) at the outer edge.
+  //
+  // Two modes (toggled by Relative/Absolute tabs):
+  //   - Relative: axes show percentile rank among peers in the same DB-size
+  //     tier. A scheme at 0.2 is in the top 20% for that metric.
+  //   - Absolute: axes show log-scale min-max normalization. Preserves the
+  //     magnitude of performance gaps (a 100× difference isn't flattened to
+  //     a single rank increment).
+  //
+  // Tab system: "Raw" tab shows the heatmap; per-tier tabs (≤1GB, 1–8GB, etc.)
+  // show radar grids filtered to schemes benchmarked at that scale.
+  //
+  // Visual encoding:
+  //   - Line color = group color (A–D)
+  //   - Line style = data tier (solid/dashed/dotted)
+  //   - Fill opacity = data tier (full/light/none)
+  //   - Red "?" markers at outer edge = missing data for that metric
+  //   - "(no impl)" annotation below radar if scheme has no open-source code
+  //
+  // Group X (Extensions) is excluded from radar per project convention.
+  //
+  // hoverdistance: -1 makes hover trigger anywhere on the radar, not just
+  // when directly over a data point marker.
+  //
   var _lastRadarTab = null;
   var _radarMode = 'relative'; // 'relative' | 'absolute'
 
@@ -1212,7 +1595,7 @@
     }
 
     var radarMetrics = ALL_METRICS.filter(function (m) {
-      return data.some(function (s) { return getVal(s, m) !== null; });
+      return data.some(function (s) { return isPos(getVal(s, m)); });
     });
     var theta = radarMetrics.map(function (m) { return METRIC_LABELS[m]; });
     theta.push(theta[0]);
@@ -1299,7 +1682,7 @@
 
         var vals = useAbs ? s._absNorm : s._ranks;
         var r = radarMetrics.map(function (m) {
-          return vals[m] !== null ? vals[m] : 1;
+          return isNum(vals[m]) ? vals[m] : 1;
         });
         r.push(r[0]);
 
@@ -1317,9 +1700,9 @@
             var ht = radarMetrics.map(function (m) {
               var raw = getVal(s, m);
               var rankLine = useAbs
-                ? 'Log-norm: ' + (s._absNorm[m] !== null ? (s._absNorm[m] * 100).toFixed(0) + '%' : 'N/A')
-                : 'Rank: ' + (s._ranks[m] !== null ? (s._ranks[m] * 100).toFixed(0) + '%' : 'N/A');
-              var valStr = raw !== null ? formatNum(raw) + ' ' + METRIC_UNITS[m] : 'N/A';
+                ? 'Log-norm: ' + (isNum(s._absNorm[m]) ? (s._absNorm[m] * 100).toFixed(0) + '%' : 'N/A')
+                : 'Rank: ' + (isNum(s._ranks[m]) ? (s._ranks[m] * 100).toFixed(0) + '%' : 'N/A');
+              var valStr = isPos(raw) ? formatNum(raw) + ' ' + METRIC_UNITS[m] : 'N/A';
               var dbEntry = 'DB / Entry: ' + (dbSizeLabel(s) || 'N/A') + ' / ' + (s._entry_size_label || 'N/A');
               return METRIC_NAMES[m] + ': ' + valStr +
                 '<br>' + rankLine +
@@ -1335,7 +1718,7 @@
         // Missing-data markers: red "?" at outer edge where data is null
         var missingR = [], missingTheta = [], missingText = [];
         radarMetrics.forEach(function (m, i) {
-          if (vals[m] === null) {
+          if (!isNum(vals[m])) {
             missingR.push(1);
             missingTheta.push(theta[i]);
             missingText.push(METRIC_LABELS[m] + ': no data');
@@ -1435,18 +1818,31 @@
       });
     }
 
-    // restore last tab or default to <= 1 GB
+    // restore last tab or default to 'tiny' (≤1GB)
     if (_lastRadarTab === 'all') { showAll(); }
     else { drawTier(_lastRadarTab || 'tiny'); }
   }
 
-  // ── 7. Timeline ───────────────────────────────────────
+  // ── 7. Timeline — Throughput Evolution by Year ───────
+  //
+  // Scatter plot: X = publication year, Y = throughput (GB/s, log scale).
+  // Filtered to year >= 2020 (earlier schemes lack throughput data).
+  //
+  // Uses its own variant consolidation (not consolidateVariants()) because
+  // it needs to pick the best-throughput variant as representative and list
+  // all variants' throughputs in the hover text. Multi-variant schemes get
+  // a common-prefix name (e.g. "SimplePIR" from "SimplePIR-Row" + "SimplePIR-Col").
+  //
+  // Marker size encodes communication cost (inverse log — smaller comm = bigger dot).
+  // Text overlap avoidance uses the position-cycling algorithm (similar to
+  // avoidTextOverlap but with different proximity thresholds for year/logY).
+  //
   function renderTimeline(data) {
     var el = document.getElementById('chart-timeline');
     if (!el) return;
     var t = themeColors();
 
-    var withTput = data.filter(function (s) { return getVal(s, 'throughput_gbps') !== null && s.year >= 2020; });
+    var withTput = data.filter(function (s) { return isPos(getVal(s, 'throughput_gbps')) && s.year >= 2020; });
 
     // Consolidate variants per scheme: keep best throughput, list others in hover
     var schemeMap = {};
@@ -1506,7 +1902,7 @@
 
     // Pre-compute text positions to avoid overlaps
     var allPts = items.map(function (s) {
-      return { year: s.year, logY: Math.log10(s._throughput || 0.01), id: s.id };
+      return { year: s.year, logY: Math.log10(isPos(s._throughput) ? s._throughput : 0.01), id: s.id };
     });
     var posMap = {};
     var positions = ['top center', 'bottom center', 'top right', 'bottom right', 'top left', 'bottom left'];
@@ -1536,7 +1932,7 @@
         marker: {
           color: GROUP_COLORS[g],
           size: gItems.map(function (s) {
-            var comm = (s._query_kb || 100) + (s._response_kb || 100);
+            var comm = (isPos(s._query_kb) ? s._query_kb : 100) + (isPos(s._response_kb) ? s._response_kb : 100);
             return Math.max(10, Math.min(40, 50 / Math.log10(comm + 1)));
           }),
           opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
@@ -1572,6 +1968,30 @@
   }
 
   // ── 8. Scheme Catalog Table ───────────────────────────
+  //
+  // Sortable, filterable HTML table listing all 31 schemes.
+  //
+  // Columns: Scheme (linked to notes), Group, DB Sizes (colored pills),
+  // Year, Open-Source Impl?, Tier, and 5 metric columns (query, response,
+  // server time, throughput, client time).
+  //
+  // "Open-Source Impl?" column values and their semantics:
+  //   - "Yes" (linked)   — an independently-verifiable open-source implementation
+  //                         exists. Link goes to the repository (implementation_url).
+  //   - "No"             — the authors claim to have implemented and benchmarked the
+  //                         scheme (concrete numbers exist in reported.json), but the
+  //                         source code is not publicly available for independent verification.
+  //   - "Theory-only"    — no implementation exists at all (neither open-source nor
+  //                         author-internal). The scheme is a purely theoretical
+  //                         construction with no concrete benchmark data. These schemes
+  //                         have theory_only=true in reported.json and empty metrics.
+  //
+  // Filter pills: Tier (1/2/3), Include Theory-only (on by default), Group (A–X),
+  // DB size (tiny–1-bit). "Clear" deselects all; "Select all" resets.
+  //
+  // Default sort: by year descending (newest first). Clicking column headers
+  // toggles ascending/descending sort on that column.
+  //
   function renderCatalog(data) {
     var el = document.getElementById('catalog-body');
     var headerRow = document.getElementById('catalog-header');
@@ -1645,8 +2065,8 @@
             va = a[col.key];
             vb = b[col.key];
           }
-          if (va === null || va === undefined) return 1;
-          if (vb === null || vb === undefined) return -1;
+          if (va == null || (typeof va === 'number' && !isFinite(va))) return 1;
+          if (vb == null || (typeof vb === 'number' && !isFinite(vb))) return -1;
           if (typeof va === 'string') return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
           return sortAsc ? va - vb : vb - va;
         });
@@ -1680,8 +2100,8 @@
             if (col && col.metric) { va = getVal(a, sortCol); vb = getVal(b, sortCol); }
             else if (sortCol === 'db_size') { va = (a.db_size_categories || []).length; vb = (b.db_size_categories || []).length; }
             else { va = a[sortCol]; vb = b[sortCol]; }
-            if (va === null || va === undefined) return 1;
-            if (vb === null || vb === undefined) return -1;
+            if (va == null || (typeof va === 'number' && !isFinite(va))) return 1;
+            if (vb == null || (typeof vb === 'number' && !isFinite(vb))) return -1;
             if (typeof va === 'string') return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
             return sortAsc ? va - vb : vb - va;
           });
@@ -1797,6 +2217,15 @@
   }
 
   // ── DB Size Tab System ───────────────────────────────
+  //
+  // The tab bar (tiny / small / medium / large / 1-bit) appears at the top of
+  // the page and controls which DB-size tier's data is shown in all charts
+  // (except Heatmap, Radar, Timeline, and Catalog which use their own logic).
+  //
+  // On tab click: setActiveDbTier() calls filterByDbSize() on the cached data
+  // to get tier-specific entities, then re-renders all filtered charts.
+  // The active tab state is synced across all tab bar instances on the page.
+  //
   var _activeDbTier = 'tiny';
 
   function renderFilteredCharts(data) {
@@ -1835,6 +2264,34 @@
   }
 
   // ── v2 Data Transformation ────────────────────────────
+  //
+  // Flattens the nested v2 JSON schema into a flat array of "entities" for plotting.
+  //
+  // v2 schema structure (reported.json):
+  //   { schemes: [
+  //       { id, display_name, group, year, theory_only, implementation_url,
+  //         configs: [ { config_id, num_entries, entry_size_bytes, ... } ],
+  //         variants: ["SimplePIR", "DoublePIR"],
+  //         benchmarks: [ { variant, config_id, data_tier, metrics: {...}, ... } ]
+  //       }
+  //   ]}
+  //
+  // For each scheme-variant combination, transformV2:
+  //   1. Looks up the config for each benchmark to compute db_size_bytes.
+  //   2. Classifies each benchmark into a DB-size tier (tiny/small/medium/large/1-bit).
+  //   3. Within each tier, picks the benchmark with the largest DB as representative.
+  //   4. Across tiers, picks the primary benchmark: largest DB, with ties broken
+  //      by preferring lower data_tier (more reliable data).
+  //   5. Emits one entity per variant, carrying:
+  //      - Primary benchmark's metrics as `concrete`
+  //      - All tier benchmarks in `_tierBenchmarks` (for the tab system)
+  //      - List of DB-size categories the scheme covers
+  //
+  // Variants with no benchmarks are silently skipped.
+  // Schemes with a single variant get display_name = scheme name.
+  // Multi-variant schemes get display_name = "SchemeName (VariantName)" unless
+  // the variant name already starts with the scheme name.
+  //
   function classifyDbTier(dbBytes, entrySizeBytes) {
     if (entrySizeBytes <= 0.125) return '1-bit';
     if (dbBytes <= 1e9) return 'tiny';
@@ -1941,6 +2398,21 @@
   }
 
   // ── Data Loading & Init ───────────────────────────────
+  //
+  // Startup sequence:
+  //   1. init() fetches reported.json (path resolved relative to script location)
+  //   2. transformV2() flattens to entities
+  //   3. computeCompositeScores() adds ranking/normalization metadata
+  //   4. initDbSizeTabs() wires up tab click handlers
+  //   5. renderCharts() renders all visualizations
+  //   6. renderCatalog() builds the sortable table
+  //   7. After 700ms, page loading overlay is removed and anchor scroll fires
+  //
+  // _cachedData holds the full scored entity array. It's reused on:
+  //   - Theme change (dark↔light)
+  //   - Window resize (debounced 200ms)
+  //   - DB-size tab switches
+  //
   var _cachedData = null;
 
   function renderCharts(data) {
@@ -1948,7 +2420,9 @@
     var filtered = filterByDbSize(data, _activeDbTier);
     renderFilteredCharts(filtered);
 
-    // Disable scroll-zoom on 3D plots while preserving page scroll
+    // Disable scroll-zoom on 3D plots: by default Plotly captures wheel
+    // events for 3D rotation, preventing page scroll. stopPropagation in
+    // capture phase prevents Plotly from receiving the event.
     ['chart-pareto-3d-comm', 'chart-pareto-3d-server'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.addEventListener('wheel', function (e) { e.stopPropagation(); }, true);
@@ -1996,7 +2470,8 @@
       });
   }
 
-  // re-render charts on theme change (preserve catalog filters/sort)
+  // Re-render charts on theme change (dark ↔ light). Catalog filters and
+  // sort state are preserved because renderCatalog isn't called again.
   if (window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
       if (_cachedData) {
@@ -2005,7 +2480,8 @@
     });
   }
 
-  // debounced re-render on window resize / zoom to prevent Plotly height feedback loop
+  // Debounced re-render on window resize. Without debouncing, Plotly's responsive
+  // mode can trigger a height-feedback loop (resize → re-render → height change → resize).
   var _resizeTimer = null;
   window.addEventListener('resize', function () {
     clearTimeout(_resizeTimer);

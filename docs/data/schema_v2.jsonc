@@ -439,55 +439,55 @@
 
     // ── EXAMPLE: theory-only scheme (Tier 3) ──
     {
-      "id": "ck20_2019",
-      "display_name": "CK20",
+      "id": "plinko_2024",
+      "display_name": "Plinko",
       "group": "D",
-      "year": 2019,
+      "year": 2024,
       "theory_only": true,
       "implementation_url": null,
-      "source_pdf": "Group.D.Client.Dependent.Preprocessing/ck20_2019/CK20_2019_165.pdf",
-      "notes_path": "Group.D.Client.Dependent.Preprocessing/ck20_2019/CK20_2019_notes.md",
+      "source_pdf": "Group.D.Client.Dependent.Preprocessing/plinko_2024/Plinko_2024_1573.pdf",
+      "notes_path": "Group.D.Client.Dependent.Preprocessing/plinko_2024/Plinko_2024_notes.md",
 
       "hardware": null,
 
       "asymptotic": {
-        "query_size": "O(sqrt(n))",
-        "response_size": "O(1)",
-        "server_computation": "O(sqrt(n))",
-        "client_computation": "O(sqrt(n))",
-        "preprocessing": "O(n)"
+        "query_size": "O(lambda * log n)",
+        "response_size": "O(w)",
+        "server_computation": "O~(n / sqrt(n))",
+        "client_computation": "O~(sqrt(n))",
+        "preprocessing": "O~(n)"
       },
 
       "group_specific": {
         "preprocessing_model": "client-dependent",
-        "assumption": "puncturable PRF"
+        "assumption": "invertible PRF"
       },
 
-      "variants": ["CK20"],
+      "variants": ["Plinko"],
 
       "configs": [
         {
-          "config_id": "2^29x64B",
-          "num_entries": 536870912,
-          "num_entries_label": "2^29",
-          "entry_size_bytes": 64,
-          "entry_size_label": "64 B"
+          "config_id": "2^20x256B",
+          "num_entries": 1048576,
+          "num_entries_label": "2^20",
+          "entry_size_bytes": 256,
+          "entry_size_label": "256 B"
         }
       ],
 
       "benchmarks": [
         {
-          "variant": "CK20",
-          "config_id": "2^29x64B",
+          "variant": "Plinko",
+          "config_id": "2^20x256B",
           "data_tier": 3,
-          "source_ref": "Theorem 1.1",
+          "source_ref": "Figure 1, Figure 6",
           "threading": null,
           "estimation_meta": {
             "confidence": "low",
-            "method": "Derived from O(sqrt(n)) asymptotics with n=2^29, lambda=128, 64B entries, 32 GB DB"
+            "method": "Derived from O~(n/r) asymptotics at r=sqrt(n) for N=2^20 entries; no implementation"
           },
           "metrics": {},
-          "footnotes": ["Theory only. First sublinear-server cPIR. No implementation. Metrics estimated from asymptotics."]
+          "footnotes": ["Theory only. Invertible PRFs with O~(1) updates. No implementation."]
         }
       ]
     },

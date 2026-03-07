@@ -5,7 +5,7 @@
 **TLDR**: [Deep reading](https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434) of PIR papers to extract eng. notes ([eg](research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md)) and [visualize](https://0xalizk.github.io/PIR-Eng-Notes/) comparative benchs/asymptotics. The correctness of these notes are [continuously validated](checkups/README.md#checking-correctness-of-cited-claims):
 - Scheme grouping [based on this taxonomy](https://hackmd.io/@keewoolee/SJyGoXCzZe#Taxonomy)
 - Multi-server schemes are excluded
-- Engineering notes ([eg](/research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md)) for 34 Private Information Retrieval (PIR) research papers with [validated](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/checkups#checking-correctness-of-cited-claims) [[2]](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/.claude/skills/footnotes-checkup) footnotes [eg](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-1-3308a358ac26db24fd1f223243da4392)
+- Engineering notes ([eg](/research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md)) for 30 Private Information Retrieval (PIR) research papers with [validated](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/checkups#checking-correctness-of-cited-claims) [[2]](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/.claude/skills/footnotes-checkup) footnotes [eg](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-1-3308a358ac26db24fd1f223243da4392)
 - Per-scheme notes are produced by reading the source PDF (incl. tables/figures which Claude can do) using a [standardized methodology](.claude/skills/pir-paper-analyzer/SKILL.md). 
 
 
@@ -57,13 +57,9 @@
 |-------------------------------|-----------------|
 | 2025 [IshaiShiWichs](research/Group.D.Client.Dependent.Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md) | IT-PIR constructions + OWF/SZK lower bounds |
 | 2024 [WangRen](research/Group.D.Client.Dependent.Preprocessing/wangren_2024/WangRen_2024_notes.md) | Tight ST = O(nw) tradeoff (theory) |
-| 2024 [SinglePass](research/Group.D.Client.Dependent.Preprocessing/singlepass_2024/SinglePass_2024_notes.md) | Streaming single-pass preprocessing, deterministic |
 | 2024 [Plinko](research/Group.D.Client.Dependent.Preprocessing/plinko_2024/Plinko_2024_notes.md) | Invertible PRFs, Õ(1) updates (theory) |
 | 2024 [RMS24](research/Group.D.Client.Dependent.Preprocessing/rms24_2024/RMS24_2024_notes.md) | Dummy subsets, standard correctness |
-| 2023 [TreePIR](research/Group.D.Client.Dependent.Preprocessing/treepir_2023/TreePIR_2023_notes.md) | 2-server sublinear via wpPRF primitive |
 | 2023 [Piano](research/Group.D.Client.Dependent.Preprocessing/piano_2023/Piano_2023_notes.md) | First practical sublinear-server, PRF-only |
-| 2021 [IncPIR](research/Group.D.Client.Dependent.Preprocessing/incpir_2021/IncPIR_2021_notes.md) | Incremental hint updates, mutation model |
-| 2019 [CK20](research/Group.D.Client.Dependent.Preprocessing/ck20_2019/CK20_2019_notes.md) | First sublinear-server cPIR (theory), puncturable pseudorandom sets |
 
 ### Group X — Extensions
 
