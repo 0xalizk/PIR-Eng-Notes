@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "pdf-parse": "^2.2.2",
-    "pdfjs-dist": "^3.11.174"
-  }
-}
