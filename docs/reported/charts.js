@@ -1711,6 +1711,9 @@
 
       var schemes = filterByDbSize(data, tier)
         .filter(function (s) { return s.group !== 'X'; }) // Group X excluded from radar
+        .filter(function (s) { // skip schemes with zero reported metrics
+          return radarMetrics.some(function (m) { return isPos(getVal(s, m)); });
+        })
         .sort(function (a, b) {
           if (a.group !== b.group) return a.group.localeCompare(b.group);
           return a._composite - b._composite;
@@ -1857,6 +1860,8 @@
     allBtn.textContent = 'Raw';
     allBtn.style.fontWeight = 'bold';
     allBtn.style.marginRight = '16px';
+    allBtn.style.background = 'linear-gradient(135deg, rgba(34,197,94,0.25) 0%, rgba(234,179,8,0.18) 50%, rgba(239,68,68,0.25) 100%)';
+    allBtn.style.borderColor = 'rgba(34,197,94,0.4)';
     allBtn.addEventListener('click', function () { showAll(); });
     tabsEl.appendChild(allBtn);
 
