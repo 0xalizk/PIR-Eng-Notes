@@ -593,7 +593,7 @@
         {
           "variant": "FastPIR",
           "config_id": "32768x96B",
-          "data_tier": 1,
+          "data_tier": 2,
           "source_ref": "Figure 10",
           "threading": "single",
           "estimation_meta": null,
@@ -1284,12 +1284,12 @@
         {
           "variant": "ThorPIR-proven",
           "config_id": "2^30x360B",
-          "data_tier": 3,
+          "data_tier": 2,
           "source_ref": "Table 2",
           "threading": null,
           "estimation_meta": {
-            "confidence": "low",
-            "method": "Estimates from counting FHE operations + measured per-op costs. 128K GPUs assumed for preprocessing. No implementation."
+            "confidence": "medium",
+            "method": "Analytical cost model from Table 2: FHE op counts x measured per-op costs. No end-to-end implementation."
           },
           "metrics": {
             "query_size_kb": 389,
@@ -1305,12 +1305,12 @@
         {
           "variant": "ThorPIR-conjectured",
           "config_id": "2^30x360B",
-          "data_tier": 3,
+          "data_tier": 2,
           "source_ref": "Table 2",
           "threading": null,
           "estimation_meta": {
-            "confidence": "very low",
-            "method": "Estimates under unproven Conjecture 3.3 (45 Thorp rounds). No implementation. 128K GPUs assumed."
+            "confidence": "low",
+            "method": "Same cost model as proven variant but under unproven Conjecture 3.3 (45 Thorp rounds)."
           },
           "metrics": {
             "query_size_kb": 389,
@@ -2838,62 +2838,6 @@
       "theory_only": false
     },
     {
-      "id": "barelydoublyefficient_2025",
-      "display_name": "BarelyDoublyEfficient",
-      "group": "C",
-      "year": 2025,
-      "implementation_url": null,
-      "source_pdf": "Group.C.Client.Independent.Preprocessing/barelydoublyefficient_2025/BarelyDoublyEfficient_2025_1305.pdf",
-      "notes_path": "Group.C.Client.Independent.Preprocessing/barelydoublyefficient_2025/BarelyDoublyEfficient_2025_notes.md",
-      "hardware": null,
-      "asymptotic": {
-        "query_size": "O~(sqrt(N)) * poly(lambda)",
-        "response_size": "O~(sqrt(N)) * poly(lambda)",
-        "server_computation": "O(N / (epsilon * log N)^2) * polyloglog(N) * poly(lambda)",
-        "client_computation": "O~(sqrt(N)) * poly(lambda)",
-        "preprocessing": "O~(N^{1+epsilon}) * poly(lambda)"
-      },
-      "group_specific": {
-        "preprocessing_type": "client-independent (theoretical)",
-        "trust_model": "CRS model",
-        "assumption": "plain LWE with polynomial modulus-to-noise ratio",
-        "depir_type": "barely doubly-efficient",
-        "server_speedup_factor": "log^2(N)"
-      },
-      "variants": [
-        "BarelyDoublyEfficient"
-      ],
-      "configs": [
-        {
-          "config_id": "2^29x64B",
-          "num_entries": 536870912,
-          "num_entries_label": "2^29",
-          "entry_size_bytes": 64,
-          "entry_size_label": "64 B"
-        }
-      ],
-      "benchmarks": [
-        {
-          "variant": "BarelyDoublyEfficient",
-          "config_id": "2^29x64B",
-          "data_tier": 3,
-          "source_ref": "Theorem 3.1",
-          "threading": null,
-          "estimation_meta": {
-            "confidence": "low",
-            "method": "Theory only. No implementation. Derived from O(N/log^2 N) server computation and O~(sqrt(N)) communication asymptotics. Williams' technique constants and poly(lambda) factors are unknown."
-          },
-          "metrics": {},
-          "footnotes": [
-            "Theory only. First DEPIR construction from plain LWE. Server online computation O(N/log^2 N) — a 'barely' sublinear improvement.",
-            "No concrete parameter instantiation provided. The poly(lambda) and polyloglog factors hidden in asymptotic notation could be substantial.",
-            "Requires CRS model. Communication per query is O~(sqrt(N)) * poly(lambda), dominated by sending H = D-hat * A."
-          ]
-        }
-      ],
-      "theory_only": true
-    },
-    {
       "id": "incrementalpir_2026",
       "display_name": "IncrementalPIR",
       "group": "C",
@@ -3245,12 +3189,18 @@
           "source_ref": "Theorem 5.3, p.20",
           "threading": null,
           "estimation_meta": {
-            "confidence": "low",
-            "method": "Theory only. Derived from O~(n/r) asymptotics with r=sqrt(n). No implementation."
+            "confidence": "medium",
+            "method": "Server/comm from RMS24 (identical kernel, confirmed at N=64). Client time omitted: iPRF intractable (~409K SHAKE calls/query)."
           },
-          "metrics": {},
+          "metrics": {
+            "query_size_kb": 50,
+            "response_size_kb": 0.125,
+            "server_time_ms": 4
+          },
           "footnotes": [
-            "Theory only. First single-server PIR with optimal r*t=O(n) tradeoff for all r, and worst-case O~(1) updates. No implementation."
+            "Server kernel identical to RMS24 (both 12us at N=64). Query/response format identical.",
+            "Client time omitted: iPRF inverse needs ~409K SHAKE calls/query; intractable.",
+            "Query ~50 KB (from RMS24 at 2^28). Response = 2 x 64B = 128B."
           ]
         }
       ],
@@ -3475,59 +3425,6 @@
           "metrics": {},
           "footnotes": [
             "Theory only. First single-server client preprocessing PIR achieving tight space-time tradeoff ST=O(nw) for w=Omega(log n). Deterministic correctness. No implementation."
-          ]
-        }
-      ],
-      "theory_only": true
-    },
-    {
-      "id": "ishaishiwichs_2025",
-      "display_name": "IshaiShiWichs",
-      "group": "D",
-      "year": 2025,
-      "implementation_url": null,
-      "source_pdf": "Group.D.Client.Dependent.Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_976.pdf",
-      "notes_path": "Group.D.Client.Dependent.Preprocessing/ishaishiwichs_2025/IshaiShiWichs_2025_notes.md",
-      "hardware": null,
-      "asymptotic": {
-        "query_size": "O~(n^{1/3})",
-        "response_size": "O~(n^{1/3})",
-        "server_computation": "O~(n^{2/3})",
-        "client_computation": "O~(n^{1/2})",
-        "preprocessing": "O(n)"
-      },
-      "group_specific": {
-        "preprocessing_model": "client-dependent",
-        "assumption": "information-theoretic (no computational assumptions)",
-        "security_model": "perfect privacy",
-        "lower_bounds": "IT preprocessing PIR with sublinear hint AND bandwidth implies OWF"
-      },
-      "variants": [
-        "IshaiShiWichs"
-      ],
-      "configs": [
-        {
-          "config_id": "2^29x64B",
-          "num_entries": 536870912,
-          "num_entries_label": "2^29",
-          "entry_size_bytes": 64,
-          "entry_size_label": "64 B"
-        }
-      ],
-      "benchmarks": [
-        {
-          "variant": "IshaiShiWichs",
-          "config_id": "2^29x64B",
-          "data_tier": 3,
-          "source_ref": "Theorem 4.4 / Theorem A.3",
-          "threading": null,
-          "estimation_meta": {
-            "confidence": "low",
-            "method": "Theory only. First IT single-server preprocessing PIR. Asymptotics from Theorem A.3: O~(n^{1/3}) bandwidth, O~(n^{2/3}) server time. No implementation."
-          },
-          "metrics": {},
-          "footnotes": [
-            "Theory only. First information-theoretic single-server preprocessing PIR. Also proves OWF and SZK lower bounds for breaking sqrt(n) tradeoff. No implementation."
           ]
         }
       ],

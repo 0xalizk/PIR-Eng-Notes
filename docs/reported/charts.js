@@ -1,6 +1,6 @@
 /* ── PIR Engineering Notes — charts.js ────────────────────────────────
  *
- * Main visualization engine for the "Benching PIR" site.
+ * Main visualization engine for the "Benching PIR (WIP)" site.
  * Renders all Plotly charts from ../data/reported.json (v2 schema).
  *
  * ── Architecture Overview ──────────────────────────────────────────
@@ -26,8 +26,8 @@
  *   3b. Server Time    — server_time_ms bars
  *   4. Client Cost     — client_time_ms bars
  *   5. Offline/Storage — offline_comm_mb + client_storage_mb grouped bars
- *   6a–c. Pareto 2D    — three comm/server/storage/client combinations
- *   6d–e. Pareto 3D    — two 3-metric scatter3d plots
+ *   6a–d. Pareto 2D    — four 2-metric scatter plots (comm/server/storage/client)
+ *         Pareto 3D    — (commented out) two 3-metric scatter3d plots
  *   6f. Radar          — per-scheme polar plots (tabbed by DB-size tier)
  *   7. Timeline        — throughput evolution by year (post-2020)
  *   8. Catalog         — sortable/filterable scheme table
@@ -104,7 +104,7 @@
   //   Tier 2: 80% opacity, square marker, dashed radar line, † badge
   //   Tier 3: 55% opacity, diamond marker, dotted radar line, * badge
   var TIER_OPACITY = { 1: 1.0, 2: 0.8, 3: 0.55 };
-  var TIER_LABELS = { 1: 'Exact', 2: 'Approx', 3: 'Asymp.' };
+  var TIER_LABELS = { 1: 'From data', 2: 'From figures/analytics', 3: 'From asymptotics' };
   var TIER_BADGE = { 1: '', 2: '\u2020', 3: '*' };
 
   // Core metrics used for composite scoring (the 4 most universally reported).
@@ -231,7 +231,7 @@
   // Variants with null metric values are always kept standalone (can't compare).
   //
   // Applied to: Communication Scatter, Throughput/Server/Client/Offline bars,
-  // all three Pareto 2D charts, both Pareto 3D charts. NOT applied to
+  // all four Pareto 2D charts. NOT applied to
   // Heatmap (needs all variants for ranking) or Radar (per-scheme view).
   function consolidateVariants(data, metricKeys, threshold) {
     if (!threshold) threshold = 0.10;
@@ -591,7 +591,7 @@
     // sort best (lowest composite) at top → reverse so Plotly puts index 0 at bottom
     var sorted = data.slice().sort(function (a, b) { return b._composite - a._composite; });
     var t = themeColors();
-    var schemes = sorted.map(function (s) { return s.display_name; });
+    var schemes = sorted.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + s.display_name; });
     var hd = buildHeatmapData(sorted);
 
     var trace = {
@@ -605,13 +605,7 @@
       textfont: { size: isMobile() ? 8 : 10 },
       hovertext: hd.hoverText,
       hoverinfo: 'text',
-      showscale: true,
-      colorbar: {
-        title: { text: 'Rank', font: { size: 11 } },
-        tickvals: [0, 0.5, 1],
-        ticktext: ['Best', 'Mid', 'Worst'],
-        len: 0.4
-      },
+      showscale: false,
       zmin: 0, zmax: 1,
       xgap: 2, ygap: 1
     };
@@ -658,7 +652,7 @@
         return HIGHER_IS_BETTER[metric] ? va - vb : vb - va;
       });
 
-      var newSchemes = reSorted.map(function (s) { return s.display_name; });
+      var newSchemes = reSorted.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + s.display_name; });
       var nhd = buildHeatmapData(reSorted);
 
       Plotly.react(el, [{
@@ -667,8 +661,7 @@
         colorscale: [[0, '#22c55e'], [0.5, '#eab308'], [1, '#ef4444']],
         text: nhd.text, texttemplate: '%{text}', textfont: { size: isMobile() ? 8 : 10 },
         hovertext: nhd.hoverText, hoverinfo: 'text',
-        showscale: true,
-        colorbar: { title: { text: 'Rank', font: { size: 11 } }, tickvals: [0, 0.5, 1], ticktext: ['Best', 'Mid', 'Worst'], len: 0.4 },
+        showscale: false,
         zmin: 0, zmax: 1, xgap: 2, ygap: 1
       }], Object.assign({}, layout, { shapes: nhd.shapes }), plotConfig());
     });
@@ -756,7 +749,7 @@
 
     // Tier legend entries — unfilled shapes
     var tierShapes = { 1: 'circle', 2: 'square', 3: 'diamond' };
-    var tierNames = { 1: 'T1 (Exact)', 2: 'T2 (Approx)', 3: 'T3 (Asymptotic)' };
+    var tierNames = { 1: 'From data', 2: 'From figures/analytics', 3: 'From asymptotics' };
     [1, 2, 3].forEach(function (tier) {
       traces.push({
         x: [null], y: [null],
@@ -764,7 +757,7 @@
         type: 'scatter',
         name: tierNames[tier],
         legendgroup: 'tiers',
-        legendgrouptitle: { text: 'Data Tiers', font: { size: 11, color: t.muted } },
+        legendgrouptitle: { text: 'Data Source', font: { size: 11, color: t.muted } },
         legendrank: 2,
         marker: {
           symbol: tierShapes[tier],
@@ -786,7 +779,7 @@
       });
     });
 
-    var layout = baseLayout('Communication Design Space (Query vs Response)', {
+    var layout = baseLayout('Query v Response', {
       xaxis: {
         title: 'Query Size', type: 'log', gridcolor: t.grid,
         tickvals: isMobile() ? [0.1, 1, 10, 100, 1000, 10000] : [0.01, 0.1, 1, 10, 100, 1000, 10000],
@@ -839,13 +832,13 @@
       hoverinfo: 'text'
     });
 
-    Plotly.newPlot(el, traces, baseLayout('Server Throughput (GB/s) — Higher is Better', {
+    Plotly.newPlot(el, traces, baseLayout('Server Throughput (GB/s)', {
       yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: { text: 'Throughput (GB/s)', standoff: 20 }, gridcolor: t.grid },
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 80 },
       height: Math.max(350, items.length * 30 + 120),
       annotations: [{
-        text: '<i>All Tier 1; no throughput reported in Tiers 2&amp;3</i>',
+        text: '<i>All from data; no throughput reported for figures/asymptotics tiers</i>',
         xref: 'paper', yref: 'paper', x: 0, y: 0, yanchor: 'top', yshift: -60,
         showarrow: false, font: { size: 11, color: t.muted }
       }]
@@ -882,16 +875,11 @@
       hoverinfo: 'text'
     });
 
-    Plotly.newPlot(el, traces, baseLayout('Server Time (ms) — Lower is Better', {
-      yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
+    Plotly.newPlot(el, traces, baseLayout('Server Time (ms)', {
+      yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: { text: 'Server Time (ms)', standoff: 20 }, type: 'log', gridcolor: t.grid },
-      margin: { l: barLeftMargin(), r: 60, t: 48, b: 80 },
-      height: Math.max(350, items.length * 26 + 120),
-      annotations: [{
-        text: '\u2020 approx &nbsp;&nbsp; * asymptotic',
-        xref: 'paper', yref: 'paper', x: 0, y: 0, yanchor: 'top', yshift: -60,
-        showarrow: false, font: { size: 11, color: t.muted }
-      }]
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
+      height: Math.max(350, items.length * 26 + 120)
     }), plotConfig());
   }
 
@@ -1110,13 +1098,13 @@
     // Shape legend: Tier 1 (circle) and Tier 3 (diamond)
     traces.push({
       x: [null], y: [null], mode: 'markers', type: 'scatter',
-      name: 'Tier 1 (exact)',
+      name: 'From data',
       marker: { symbol: 'circle-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
       hoverinfo: 'skip'
     });
     traces.push({
       x: [null], y: [null], mode: 'markers', type: 'scatter',
-      name: 'Tier 3 (from asymptotics)',
+      name: 'From asymptotics',
       marker: { symbol: 'diamond-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
       hoverinfo: 'skip'
     });
@@ -1206,13 +1194,13 @@
     }
     traces.push({
       x: [null], y: [null], mode: 'markers', type: 'scatter',
-      name: 'Tier 1 (exact)',
+      name: 'From data',
       marker: { symbol: 'circle-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
       hoverinfo: 'skip'
     });
     traces.push({
       x: [null], y: [null], mode: 'markers', type: 'scatter',
-      name: 'Tier 3 (from asymptotics)',
+      name: 'From asymptotics',
       marker: { symbol: 'diamond-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
       hoverinfo: 'skip'
     });
@@ -1300,13 +1288,13 @@
     }
     traces.push({
       x: [null], y: [null], mode: 'markers', type: 'scatter',
-      name: 'Tier 1 (exact)',
+      name: 'From data',
       marker: { symbol: 'circle-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
       hoverinfo: 'skip'
     });
     traces.push({
       x: [null], y: [null], mode: 'markers', type: 'scatter',
-      name: 'Tier 3 (from asymptotics)',
+      name: 'From asymptotics',
       marker: { symbol: 'diamond-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
       hoverinfo: 'skip'
     });
@@ -1320,14 +1308,98 @@
     }), plotConfig());
   }
 
-  // ── 6d. 3D Scatter — Comm × Client Storage × Client Time ──
-  //
-  // Three-axis Plotly scatter3d. Pareto-optimal points are highlighted with
-  // a "ring overlay" — a separate trace with transparent fill and purple outline,
-  // since scatter3d doesn't support 'star' markers.
-  // Text overlap avoidance is not applied here because scatter3d only accepts
-  // a single textposition string (not per-point arrays), and users can rotate
-  // the 3D view to resolve overlaps manually.
+  // ── 6d. Pareto — Server Time vs Client Time ─────────
+  // Shows the server/client compute tradeoff.
+  function renderParetoServerClient(data) {
+    var el = document.getElementById('chart-pareto-server-client');
+    if (!el) return;
+    var t = themeColors();
+    data = consolidateVariants(data, ['server_time_ms', 'client_time_ms']);
+
+    var items = data.filter(function (s) {
+      return isPos(getVal(s, 'server_time_ms')) && isPos(getVal(s, 'client_time_ms'));
+    });
+
+    var pareto = items.filter(function (s) {
+      return !items.some(function (o) {
+        return o !== s && getVal(o, 'server_time_ms') <= getVal(s, 'server_time_ms') && getVal(o, 'client_time_ms') <= getVal(s, 'client_time_ms') &&
+          (getVal(o, 'server_time_ms') < getVal(s, 'server_time_ms') || getVal(o, 'client_time_ms') < getVal(s, 'client_time_ms'));
+      });
+    });
+    pareto.sort(function (a, b) { return getVal(a, 'server_time_ms') - getVal(b, 'server_time_ms'); });
+
+    var posMap = avoidTextOverlap(items.map(function (s, i) {
+      return { x: getVal(s, 'server_time_ms'), y: getVal(s, 'client_time_ms'), key: i };
+    }));
+    var itemIdx = {};
+    items.forEach(function (s, i) { itemIdx[s.id + '|' + s.display_name] = i; });
+
+    var traces = [];
+    Object.keys(GROUP_COLORS).forEach(function (g) {
+      if (!items.some(function (s) { return s.group === g; })) return;
+      traces.push({
+        x: [null], y: [null], mode: 'lines', type: 'scatter',
+        name: GROUP_NAMES[g], line: { color: GROUP_COLORS[g], width: 10 },
+        hoverinfo: 'skip'
+      });
+    });
+    Object.keys(GROUP_COLORS).forEach(function (g) {
+      var gItems = items.filter(function (s) { return s.group === g; });
+      if (!gItems.length) return;
+      traces.push({
+        x: gItems.map(function (s) { return getVal(s, 'server_time_ms'); }),
+        y: gItems.map(function (s) { return getVal(s, 'client_time_ms'); }),
+        mode: 'markers+text', type: 'scatter', name: GROUP_NAMES[g],
+        showlegend: false,
+        text: gItems.map(function (s) { return consolidatedName(s); }),
+        textposition: gItems.map(function (s) { return posMap[itemIdx[s.id + '|' + s.display_name]] || 'top center'; }), cliponaxis: false,
+        textfont: { size: 9, color: t.muted },
+        marker: {
+          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 14 : 8; }),
+          color: GROUP_COLORS[g],
+          symbol: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 'star' : (s.data_tier === 3 ? 'diamond' : 'circle'); }),
+          opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+          line: { width: 1, color: t.text }
+        },
+        hovertext: gItems.map(function (s) {
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server Time: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+            (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+        }),
+        hoverinfo: 'text'
+      });
+    });
+    if (pareto.length > 1) {
+      traces.push({
+        x: pareto.map(function (s) { return getVal(s, 'server_time_ms'); }),
+        y: pareto.map(function (s) { return getVal(s, 'client_time_ms'); }),
+        mode: 'lines', type: 'scatter',
+        line: { shape: 'hv', width: 2, dash: 'dash', color: '#a855f7' },
+        name: 'Pareto frontier', hoverinfo: 'skip'
+      });
+    }
+    traces.push({
+      x: [null], y: [null], mode: 'markers', type: 'scatter',
+      name: 'From data',
+      marker: { symbol: 'circle-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
+      hoverinfo: 'skip'
+    });
+    traces.push({
+      x: [null], y: [null], mode: 'markers', type: 'scatter',
+      name: 'From asymptotics',
+      marker: { symbol: 'diamond-open', size: 8, color: t.text, line: { width: 1.5, color: t.text } },
+      hoverinfo: 'skip'
+    });
+
+    Plotly.newPlot(el, traces, baseLayout('', {
+      xaxis: { title: 'Server Time (ms)', type: 'log', gridcolor: t.grid },
+      yaxis: { title: 'Client Time (ms)', type: 'log', gridcolor: t.grid },
+      margin: { t: 16, r: 48, b: 100, l: 60 },
+      legend: { orientation: 'h', y: -0.2 },
+      height: 605
+    }), plotConfig());
+  }
+
+  /* ── 3D Pareto plots (commented out — may revisit) ──────────────────
   function renderPareto3DComm(data) {
     var el = document.getElementById('chart-pareto-3d-comm');
     if (!el) return;
@@ -1509,6 +1581,7 @@
       height: 700
     }), plotConfig());
   }
+  ── end commented-out 3D Pareto plots ── */
 
   // ── 6f. Radar — Per-Scheme Polar Plots ────────────────
   //
@@ -1569,9 +1642,9 @@
       tierDiv.className = 'construction-legend';
       tierDiv.style.marginTop = '6px';
       [
-        { label: 'Tier 1 (Exact)',   dash: '' },
-        { label: 'Tier 2 (Approx.)', dash: '6,4' },
-        { label: 'Tier 3 (Asymp.)',  dash: '2,3' }
+        { label: 'From data',              dash: '' },
+        { label: 'From figures/analytics', dash: '6,4' },
+        { label: 'From asymptotics',      dash: '2,3' }
       ].forEach(function (t) {
         var item = document.createElement('span');
         item.className = 'construction-legend-item';
@@ -1969,7 +2042,7 @@
 
   // ── 8. Scheme Catalog Table ───────────────────────────
   //
-  // Sortable, filterable HTML table listing all 31 schemes.
+  // Sortable, filterable HTML table listing all 29 schemes.
   //
   // Columns: Scheme (linked to notes), Group, DB Sizes (colored pills),
   // Year, Open-Source Impl?, Tier, and 5 metric columns (query, response,
@@ -2118,7 +2191,7 @@
       [1, 2, 3].forEach(function (tier) {
         var pill = document.createElement('button');
         pill.className = 'filter-pill active';
-        pill.textContent = 'Tier ' + tier;
+        pill.textContent = TIER_LABELS[tier];
         pill.addEventListener('click', function () {
           if (activeTiers.has(tier)) { activeTiers.delete(tier); pill.classList.remove('active'); }
           else { activeTiers.add(tier); pill.classList.add('active'); }
@@ -2237,8 +2310,9 @@
     renderPareto(data);
     renderParetoCommStorage(data);
     renderParetoCommClient(data);
-    renderPareto3DComm(data);
-    renderPareto3DServer(data);
+    renderParetoServerClient(data);
+    // renderPareto3DComm(data);
+    // renderPareto3DServer(data);
   }
 
   function setActiveDbTier(tier) {
@@ -2420,13 +2494,11 @@
     var filtered = filterByDbSize(data, _activeDbTier);
     renderFilteredCharts(filtered);
 
-    // Disable scroll-zoom on 3D plots: by default Plotly captures wheel
-    // events for 3D rotation, preventing page scroll. stopPropagation in
-    // capture phase prevents Plotly from receiving the event.
-    ['chart-pareto-3d-comm', 'chart-pareto-3d-server'].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) el.addEventListener('wheel', function (e) { e.stopPropagation(); }, true);
-    });
+    // 3D scroll-zoom handler disabled (3D plots commented out)
+    // ['chart-pareto-3d-comm', 'chart-pareto-3d-server'].forEach(function (id) {
+    //   var el = document.getElementById(id);
+    //   if (el) el.addEventListener('wheel', function (e) { e.stopPropagation(); }, true);
+    // });
 
     renderRadar(data);
     renderTimeline(data);

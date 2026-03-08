@@ -4,7 +4,7 @@
 
   // Detect base path: works on both GitHub Pages (/PIR-Eng-Notes/) and local dev (/)
   var BASE = '/PIR-Eng-Notes/';
-  var knownDirs = ['reported/pareto/', 'reported/db_config.html', 'reported/', 'replicated/', 'standardized/', 'misc/'];
+  var knownDirs = ['reported/pareto/', 'reported/db_config.html', 'reported/data_sources.html', 'reported/', 'replicated/', 'standardized/', 'misc/'];
   var p = location.pathname;
   for (var i = 0; i < knownDirs.length; i++) {
     var idx = p.indexOf(knownDirs[i]);
@@ -29,9 +29,11 @@
           { label: 'Comm × Server', anchor: '#pareto-comm-server' },
           { label: 'Comm × Client', anchor: '#pareto-comm-client' },
           { label: 'Comm × Storage', anchor: '#pareto-comm-storage' },
-          { label: 'Comm × Storage × Client', anchor: '#pareto-3d-comm' },
-          { label: 'Server × Storage × Client', anchor: '#pareto-3d-server' }
+          { label: 'Server × Client', anchor: '#pareto-server-client' }
+          // { label: 'Comm × Storage × Client', anchor: '#pareto-3d-comm' },
+          // { label: 'Server × Storage × Client', anchor: '#pareto-3d-server' }
         ]},
+        { label: 'Data Sources', href: 'reported/data_sources.html' },
         { label: 'DB Configs', href: 'reported/db_config.html' }
       ]
     },

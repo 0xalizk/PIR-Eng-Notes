@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Benching PIR — Pareto Frontiers</title>
+  <title>Benching PIR (WIP) — Pareto Frontiers</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
 
 <!-- Sidebar -->
 <aside class="sidebar">
-  <a href="../../" class="sidebar-title">Benching PIR</a>
+  <a href="../../" class="sidebar-title">Benching PIR (WIP)</a>
   <nav id="sidebar-nav"></nav>
 </aside>
 
@@ -61,6 +61,17 @@
   </div>
   <div class="chart-container" id="chart-pareto-comm-storage"></div>
 
+  <h4 id="pareto-server-client"><a href="#pareto-server-client">Server Time vs Client Time:</a></h4>
+  <div class="db-size-tabs">
+    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
+    <button class="db-tab" data-tier="small">1–8GB db</button>
+    <button class="db-tab" data-tier="medium">8–32GB db</button>
+    <button class="db-tab" data-tier="large">&gt;32GB db</button>
+    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
+  </div>
+  <div class="chart-container" id="chart-pareto-server-client"></div>
+
+  <!-- 3D Pareto plots (commented out — may revisit)
   <h4 id="pareto-3d-comm"><a href="#pareto-3d-comm">Communication × Client Storage × Client Time:</a></h4>
   <div class="db-size-tabs">
     <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
@@ -84,6 +95,7 @@
   <div style="display:flex;align-items:center;max-width:none;width:calc(100% + 320px);margin-left:-160px;margin-top:12px">
     <div class="chart-container wide" id="chart-pareto-3d-server" style="flex:1;min-width:0"></div>
   </div>
+  -->
 </section>
 
 </main>

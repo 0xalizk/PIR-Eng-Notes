@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Benching PIR (WIP) — Data Sources</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<!-- Hamburger (mobile) -->
+<button class="hamburger" aria-label="Menu">&#9776;</button>
+<div class="sidebar-overlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <a href="../" class="sidebar-title">Benching PIR (WIP)</a>
+  <nav id="sidebar-nav"></nav>
+</aside>
+
+<!-- Main Content -->
+<main class="content">
+<section id="data-sources">
+  <h2><a href="#data-sources">Data Sources</a></h2>
+  <p class="desc">
+    Paper-reported benchmarks across 29 single-server PIR schemes, grouped by data source.
+  </p>
+
+  <h3 id="from-perf-data"><a href="#from-perf-data">From Performance Data</a> <span style="font-size:14px;font-weight:normal;color:var(--text-muted)">(21 schemes)</span></h3>
+  <p class="desc">Exact values from reported benchmarks in the paper.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Scheme</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>2026 IncrementalPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.C.Client.Independent.Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md" target="_blank" rel="noopener noreferrer">Table 2</a></td></tr>
+        <tr><td>2025 DistributionalPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.X.Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md" target="_blank" rel="noopener noreferrer">Section 7.2.1, Figure 9, Figure 10, Table 12</a></td></tr>
+        <tr><td>2025 InsPIRe</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/inspire_2025/InsPIRe_2025_notes.md" target="_blank" rel="noopener noreferrer">Table 2, Table 3</a></td></tr>
+        <tr><td>2026 NPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/npir_2026/NPIR_2026_notes.md" target="_blank" rel="noopener noreferrer">Table 1</a></td></tr>
+        <tr><td>2025 OnionPIRv2</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/onionpirv2_2025/onionpirv2_2025_notes.md" target="_blank" rel="noopener noreferrer">Table 2</a></td></tr>
+        <tr><td>2025 Pirouette</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/pirouette_2025/Pirouette_2025_notes.md" target="_blank" rel="noopener noreferrer">Table 7</a></td></tr>
+        <tr><td>2025 VIA</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/via_2025/VIA_2025_notes.md" target="_blank" rel="noopener noreferrer">Table 1, Table 2</a></td></tr>
+        <tr><td>2024 Respire</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/respire_2024/Respire_2024_notes.md" target="_blank" rel="noopener noreferrer">Table 1, Table 2</a></td></tr>
+        <tr><td>2024 YPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/ypir_2024/YPIR_2024_notes.md" target="_blank" rel="noopener noreferrer">Table 2</a></td></tr>
+        <tr><td>2023 HintlessPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/hintlesspir_2023/HintlessPIR_2023_notes.md" target="_blank" rel="noopener noreferrer">Table 1, Table 2</a></td></tr>
+        <tr><td>2023 Piano</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/piano_2023/Piano_2023_notes.md" target="_blank" rel="noopener noreferrer">Table 1</a></td></tr>
+        <tr><td>2024 RMS24</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/rms24_2024/RMS24_2024_notes.md" target="_blank" rel="noopener noreferrer">Table 2, Table 3</a></td></tr>
+        <tr><td>2022 CwPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/cwpir_2022/cwpir_2022_notes.md" target="_blank" rel="noopener noreferrer">Table 7, Table 8</a></td></tr>
+        <tr><td>2022 DoublePIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md" target="_blank" rel="noopener noreferrer">Table 1, Table 8</a></td></tr>
+        <tr><td>2022 FrodoPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/frodopir_2022/frodopir_2022_notes.md" target="_blank" rel="noopener noreferrer">Table 6, Table 7</a></td></tr>
+        <tr><td>2022 SimplePIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md" target="_blank" rel="noopener noreferrer">Table 1, Table 8</a></td></tr>
+        <tr><td>2022 Spiral</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/spiral_2022/spiral_2022_notes.md" target="_blank" rel="noopener noreferrer">Table 3, Table 5</a></td></tr>
+        <tr><td>2021 OnionPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/onionpir_2021/onionpir_2021_notes.md" target="_blank" rel="noopener noreferrer">Table 3, Table 4</a></td></tr>
+        <tr><td>2019 KeywordPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.X.Extensions/keywordpir_2019/KeywordPIR_2019_notes.md" target="_blank" rel="noopener noreferrer">Table 3, Table 4</a></td></tr>
+        <tr><td>2018 SealPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/sealpir_2018/sealpir_2018_notes.md" target="_blank" rel="noopener noreferrer">Figure 9</a></td></tr>
+        <tr><td>2014 XPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/xpir_2014/xpir_2014_notes.md" target="_blank" rel="noopener noreferrer">Table 2, Table 3</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="from-figures"><a href="#from-figures">From Figures</a> <span style="font-size:14px;font-weight:normal;color:var(--text-muted)">(5 schemes)</span></h3>
+  <p class="desc">Approximate values read from paper figures or analytical cost models (no end-to-end implementation).</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Scheme</th><th>Source</th><th>How estimated</th></tr></thead>
+      <tbody>
+        <tr><td>2024 ThorPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md" target="_blank" rel="noopener noreferrer">Table 2</a></td><td>Analytical cost model: FHE op counts x measured per-op costs at N=2<sup>30</sup></td></tr>
+        <tr><td>2024 VeriSimplePIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.C.Client.Independent.Preprocessing/verisimplepir_2024/VeriSimplePIR_2024_notes.md" target="_blank" rel="noopener noreferrer">Figure 7, Figure 8</a></td><td>Values read from paper figures (approximate)</td></tr>
+        <tr><td>2024 WhisPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.B.Stateless.Single.Server.PIR/whispir_2024/WhisPIR_2024_notes.md" target="_blank" rel="noopener noreferrer">Figure 1, Figure 2, Figure 4</a></td><td>Values read from paper figures (approximate)</td></tr>
+        <tr><td>2021 Addra/FastPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/addra_2021/addra_2021_notes.md" target="_blank" rel="noopener noreferrer">Figure 9, Figure 10</a></td><td>Values read from paper figures (approximate, log-scale)</td></tr>
+        <tr><td>2016 XPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/xpir_2016/xpir_2016_notes.md" target="_blank" rel="noopener noreferrer">Figure 6, Figure 7, Figure 8</a></td><td>Values read from paper figures (approximate, log-scale charts)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="from-asymptotics"><a href="#from-asymptotics">From Asymptotics</a> <span style="font-size:14px;font-weight:normal;color:var(--text-muted)">(3 schemes)</span></h3>
+  <p class="desc">Derived from theoretical complexity bounds only.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Scheme</th><th>Source</th><th>How derived</th></tr></thead>
+      <tbody>
+        <tr><td>2024 Plinko</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/plinko_2024/Plinko_2024_notes.md" target="_blank" rel="noopener noreferrer">Figure 1, Figure 6</a></td><td>Asymptotic O&#771;(n/r) at r=&radic;n for N=2<sup>20</sup> entries; no implementation</td></tr>
+        <tr><td>2024 WangRen</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.D.Client.Dependent.Preprocessing/wangren_2024/WangRen_2024_notes.md" target="_blank" rel="noopener noreferrer">Theorem 4.1</a></td><td>Balanced tradeoff T=&radic;n at N=2<sup>20</sup> entries; calibrated vs RMS24</td></tr>
+        <tr><td>2019 MulPIR</td><td><a href="https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/mulpir_2019/mulpir_2019_notes.md" target="_blank" rel="noopener noreferrer">Section 5, Appendix A</a></td><td>Analytical cost model: rate=4/9, ~1.72 mults/byte, ring dim 2<sup>12</sup></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+</main>
+
+<script src="../nav.js"></script>
+<script src="../script.js"></script>
+</body>
+</html>
