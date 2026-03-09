@@ -1093,37 +1093,39 @@
       hoverinfo: 'text'
     });
 
-    // Legend line 1: solid = server, hatched = client
-    traces.push({
-      name: 'Server', type: 'bar', orientation: 'h',
-      x: [null], y: [''], showlegend: true, legendgroup: 'type',
-      marker: { color: t.text }, hoverinfo: 'skip'
-    });
-    traces.push({
-      name: 'Client', type: 'bar', orientation: 'h',
-      x: [null], y: [''], showlegend: true, legendgroup: 'type',
-      marker: { color: t.text, pattern: { shape: '/' } }, hoverinfo: 'skip'
-    });
-    // Legend line 2: group colors
+    // Collect which groups are present for the HTML legend
     var seenGroups = {};
     items.forEach(function (s) { seenGroups[s.group] = true; });
-    ['A', 'B', 'C', 'D', 'X'].forEach(function (g) {
-      if (!seenGroups[g]) return;
-      traces.push({
-        name: GROUP_NAMES[g], type: 'bar', orientation: 'h',
-        x: [null], y: [''], showlegend: true, legendgroup: 'group',
-        marker: { color: GROUP_COLORS[g] }, hoverinfo: 'skip'
-      });
-    });
 
     Plotly.newPlot(el, traces, baseLayout('Preprocessing / Offline Computation Time', {
       barmode: 'group',
+      showlegend: false,
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
-      xaxis: { title: 'Time (ms)', type: 'log', gridcolor: t.grid },
-      legend: { orientation: 'h', x: 0, y: -0.08, font: { size: 11 }, traceorder: 'normal', tracegroupgap: 4 },
-      margin: { l: isMobile() ? 140 : 200, r: 80, t: 48, b: 100 },
-      height: Math.max(300, items.length * 30 + 140)
+      xaxis: { title: { text: 'Time (ms)', standoff: 20 }, type: 'log', gridcolor: t.grid },
+      margin: { l: isMobile() ? 140 : 200, r: 80, t: 48, b: 50 },
+      height: Math.max(300, items.length * 30 + 80)
     }), plotConfig());
+
+    // HTML legend below the chart
+    var legendId = 'preproc-legend';
+    var existing = document.getElementById(legendId);
+    if (existing) existing.remove();
+    var lg = document.createElement('div');
+    lg.id = legendId;
+    lg.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;font-size:12px;color:' + t.text + ';margin-top:-2px;';
+    // Row 1: server/client distinction
+    var solidSvg = '<svg width="14" height="14" style="vertical-align:middle;margin-right:3px"><rect width="14" height="14" fill="' + t.text + '"/></svg>';
+    var hatchSvg = '<svg width="14" height="14" style="vertical-align:middle;margin-right:3px">' +
+      '<defs><pattern id="pp-hatch" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">' +
+      '<line x1="0" y1="0" x2="0" y2="4" stroke="' + t.text + '" stroke-width="2"/></pattern></defs>' +
+      '<rect width="14" height="14" fill="url(#pp-hatch)" stroke="' + t.text + '" stroke-width="1"/></svg>';
+    lg.innerHTML = '<span>' + solidSvg + ' Server</span><span>' + hatchSvg + ' Client</span><span style="width:36px"></span>';
+    // Row 2: group colors
+    ['A', 'B', 'C', 'D', 'X'].forEach(function (g) {
+      if (!seenGroups[g]) return;
+      lg.innerHTML += '<span><svg width="14" height="14" style="vertical-align:middle;margin-right:3px"><rect width="14" height="14" fill="' + GROUP_COLORS[g] + '"/></svg> ' + GROUP_NAMES[g] + '</span>';
+    });
+    el.parentNode.insertBefore(lg, el.nextSibling);
   }
 
   // ── 6a. Pareto Frontier — Total Comm vs Server Time ──
