@@ -5,12 +5,11 @@
 **TLDR**: [Deep reading](https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434) of PIR papers to extract eng. notes ([eg](research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md)) and [visualize](https://0xalizk.github.io/PIR-Eng-Notes/) comparative benchs/asymptotics. The correctness of these notes are [continuously validated](checkups/README.md#checking-correctness-of-cited-claims):
 - Scheme grouping [based on this taxonomy](https://hackmd.io/@keewoolee/SJyGoXCzZe#Taxonomy)
 - Multi-server schemes are excluded
-- Engineering notes ([eg](/research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md)) for 28 Private Information Retrieval (PIR) research papers with [validated](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/checkups#checking-correctness-of-cited-claims) [[2]](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/.claude/skills/footnotes-checkup) footnotes [eg](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-1-3308a358ac26db24fd1f223243da4392)
-- Per-scheme notes are produced by reading the source PDF (incl. tables/figures which Claude can do) using a [standardized methodology](.claude/skills/pir-paper-analyzer/SKILL.md). 
+- Engineering notes ([eg](/research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md)) for 28 Private Information Retrieval (PIR) research papers with  [validated](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/.claude/skills/footnotes-checkup) [[2]](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/checkups#checking-correctness-of-cited-claims) footnotes [eg](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-1-3308a358ac26db24fd1f223243da4392)
+- Per-scheme notes are produced by reading the source PDF (incl. tables/figures which Claude can do) using a [standardized methodology](.claude/skills/pir-paper-analyzer/SKILL.md).
 
-
-| [![Communication](data/output/top_level/T1_communication_scatter.png)](https://0xalizk.github.io/PIR-Eng-Notes/#communication) | [![Client Compute](data/output/top_level/T7_client_compute.png)](https://0xalizk.github.io/PIR-Eng-Notes/#client-cost) | [![Offline & Storage](data/output/top_level/T8_offline_storage.png)](https://0xalizk.github.io/PIR-Eng-Notes/#offline-storage) |
-|:---:|:---:|:---:|
+| [Communication](https://0xalizk.github.io/PIR-Eng-Notes/reported/#communication) | [Server Performance](https://0xalizk.github.io/PIR-Eng-Notes/reported/#server-perf) | [Client Cost](https://0xalizk.github.io/PIR-Eng-Notes/reported/#client-cost) | [Offline & Storage](https://0xalizk.github.io/PIR-Eng-Notes/reported/#offline-storage) |
+|:---:|:---:|:---:|:---:|
 
 ### Group A — FHE-Based PIR
 
