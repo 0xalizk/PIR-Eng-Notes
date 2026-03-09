@@ -1111,7 +1111,7 @@
       showlegend: false,
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: { text: 'Time (ms)', standoff: 20 }, type: 'log', gridcolor: t.grid },
-      margin: { l: isMobile() ? 140 : 200, r: 80, t: 48, b: 50 },
+      margin: { l: isMobile() ? 140 : 160, r: 80, t: 48, b: 50 },
       height: Math.max(300, items.length * 30 + 80)
     }), plotConfig());
 
@@ -2644,7 +2644,9 @@
     if (!isMultiVariant) return schemeName;
     if (variant === schemeName) return schemeName;
     if (variant.toLowerCase().indexOf(schemeName.toLowerCase()) === 0) return variant;
-    return schemeName + ' (' + variant + ')';
+    var combined = schemeName + ' (' + variant + ')';
+    if (combined.length > 28) return schemeName + '<br>(' + variant + ')';
+    return combined;
   }
 
   function transformV2(raw) {
