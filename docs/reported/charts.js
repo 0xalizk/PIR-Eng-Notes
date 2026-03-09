@@ -617,7 +617,9 @@
       xgap: 2, ygap: 1
     };
 
-    var layout = baseLayout('Data Reported in the Paper<br><span style="font-size:11px;font-weight:normal;color:' + t.muted + '"><i>Click inside a column to sort by it</i></span>', {
+    var titleText = 'Data Reported in the Paper<br><span style="font-size:11px;font-weight:normal;color:' + t.muted + '"><i>Click inside a column to sort by it</i></span>';
+    var layout = baseLayout(titleText, {
+      title: { text: titleText, font: { size: 16, color: t.text, family: t.font.family }, y: 0.98, yanchor: 'top', pad: { b: 0 } },
       xaxis: {
         tickfont: { size: isMobile() ? 9 : 11 }, side: 'top',
         gridcolor: t.grid
@@ -626,7 +628,7 @@
         tickfont: { size: isMobile() ? 8 : 10 }, autorange: true,
         gridcolor: t.grid
       },
-      margin: { t: 100, r: isMobile() ? 20 : 80, b: 24, l: isMobile() ? 72 : 160 },
+      margin: { t: 150, r: isMobile() ? 20 : 80, b: 24, l: isMobile() ? 72 : 160 },
       shapes: hd.shapes,
       height: Math.max(500, sorted.length * 22 + 120),
       annotations: hd.annotations || []
