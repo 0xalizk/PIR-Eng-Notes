@@ -8,8 +8,8 @@
 - Engineering notes ([eg](/research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md)) for 28 Private Information Retrieval (PIR) research papers with  [validated](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/.claude/skills/footnotes-checkup) [[2]](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/checkups#checking-correctness-of-cited-claims) footnotes [eg](https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md#user-content-fn-1-3308a358ac26db24fd1f223243da4392)
 - Per-scheme notes are produced by reading the source PDF (incl. tables/figures which Claude can do) using a [standardized methodology](.claude/skills/pir-paper-analyzer/SKILL.md).
 
-| [Communication](https://0xalizk.github.io/PIR-Eng-Notes/reported/#communication) | [Server Performance](https://0xalizk.github.io/PIR-Eng-Notes/reported/#server-perf) | [Client Cost](https://0xalizk.github.io/PIR-Eng-Notes/reported/#client-cost) | [Offline & Storage](https://0xalizk.github.io/PIR-Eng-Notes/reported/#offline-storage) |
-|:---:|:---:|:---:|:---:|
+| [![Communication](docs/img/communication.png)](https://0xalizk.github.io/PIR-Eng-Notes/reported/#communication) | [![Server Performance](docs/img/server-perf.png)](https://0xalizk.github.io/PIR-Eng-Notes/reported/#server-perf) | [![Offline & Storage](docs/img/offline-storage.png)](https://0xalizk.github.io/PIR-Eng-Notes/reported/#offline-storage) |
+|:---:|:---:|:---:|
 
 ### Group A — FHE-Based PIR
 
