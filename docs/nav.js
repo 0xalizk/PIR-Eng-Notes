@@ -33,12 +33,12 @@
           // { label: 'Comm × Storage × Client', anchor: '#pareto-3d-comm' },
           // { label: 'Server × Storage × Client', anchor: '#pareto-3d-server' }
         ]},
-        { label: 'Data Sources', href: 'reported/data_sources.html' },
-        { label: 'DB Configs', href: 'reported/db_config.html' },
-        { label: 'Misc Metrics', href: 'reported/misc/', children: [
+        { label: 'Misc Metrics', href: 'reported/misc/', dividerAfter: true, children: [
           { label: 'Rate', anchor: '#rate' },
           { label: 'Amortized Offline', anchor: '#amortized-offline' }
-        ]}
+        ]},
+        { label: 'Data Sources', href: 'reported/data_sources.html' },
+        { label: 'DB Configs', href: 'reported/db_config.html', dividerAfter: true }
       ]
     },
     {
@@ -120,10 +120,12 @@
             html += '<a href="' + subHref + '" class="nav-link nav-nested">' + sub.label + '</a>';
           });
           html += '</div>';
+          if (child.dividerAfter) html += '<div class="divider"></div>';
         } else {
           // Regular anchor link within section page, or cross-page href
           var childHref = child.href ? (BASE + child.href) : (isOnSecPage ? child.anchor : (sectionUrl + child.anchor));
           html += '<a href="' + childHref + '" class="nav-link">' + child.label + '</a>';
+          if (child.dividerAfter) html += '<div class="divider"></div>';
         }
       });
     } else {
