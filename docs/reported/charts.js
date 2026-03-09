@@ -25,7 +25,8 @@
  *   3a. Throughput Bars — GB/s horizontal bars
  *   3b. Server Time    — server_time_ms bars
  *   4. Client Cost     — client_time_ms bars
- *   5. Offline/Storage — offline_comm_mb + client_storage_mb grouped bars
+ *   5a. Offline/Storage — offline_comm_mb + client_storage_mb grouped bars
+ *   5b. Preprocessing  — server_preprocessing_time_ms / client_preprocessing_time_ms bars (offline computation cost)
  *   6a–d. Pareto 2D    — four 2-metric scatter plots (comm/server/storage/client)
  *         Pareto 3D    — (commented out) two 3-metric scatter3d plots
  *   6f. Radar          — per-scheme polar plots (tabbed by DB-size tier)
@@ -112,28 +113,34 @@
   // heatmap and radar views.
   var CORE_METRICS = ['query_size_kb', 'response_size_kb', 'server_time_ms', 'throughput_gbps'];
   var ALL_METRICS = ['query_size_kb', 'response_size_kb', 'server_time_ms', 'throughput_gbps',
-    'client_time_ms', 'offline_comm_mb', 'client_storage_mb'];
+    'client_time_ms', 'offline_comm_mb', 'client_storage_mb',
+    'server_preprocessing_time_ms', 'client_preprocessing_time_ms'];
   var METRIC_LABELS = {
     query_size_kb: 'Query (KB)', response_size_kb: 'Response (KB)',
     server_time_ms: 'Server (ms)', throughput_gbps: 'Throughput (GB/s)',
     client_time_ms: 'Client (ms)', offline_comm_mb: 'Offline (MB)',
-    client_storage_mb: 'Storage (MB)'
+    client_storage_mb: 'Storage (MB)',
+    server_preprocessing_time_ms: 'Server Preprocessing (ms)',
+    client_preprocessing_time_ms: 'Client Preprocessing (ms)'
   };
   var METRIC_NAMES = {
     query_size_kb: 'Query', response_size_kb: 'Response',
     server_time_ms: 'Server', throughput_gbps: 'Throughput',
     client_time_ms: 'Client', offline_comm_mb: 'Offline',
-    client_storage_mb: 'Storage'
+    client_storage_mb: 'Storage',
+    server_preprocessing_time_ms: 'Server Preproc.',
+    client_preprocessing_time_ms: 'Client Preproc.'
   };
   var METRIC_UNITS = {
     query_size_kb: 'KB', response_size_kb: 'KB',
     server_time_ms: 'ms', throughput_gbps: 'GB/s',
     client_time_ms: 'ms', offline_comm_mb: 'MB',
-    client_storage_mb: 'MB'
+    client_storage_mb: 'MB',
+    server_preprocessing_time_ms: 'ms', client_preprocessing_time_ms: 'ms'
   };
   // Directionality: lower is better for all metrics except throughput.
   // This affects ranking (sort direction) and normalization (inversion).
-  var HIGHER_IS_BETTER = { throughput_gbps: true };
+  var HIGHER_IS_BETTER = { throughput_gbps: true, rate: true };
 
   var BASE_URL = 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/';
 
@@ -991,6 +998,84 @@
       legend: { orientation: 'h', x: 0, y: -0.12, font: { size: 11 } },
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 100 },
       height: Math.max(400, items.length * 40 + 160)
+    }), plotConfig());
+  }
+
+  // ── 5b. Preprocessing Time Bar Chart ──────────────────
+  // Horizontal grouped bars: server_preprocessing_time_ms (blue-ish) and
+  // client_preprocessing_time_ms (orange-ish). Log x-axis, sorted by max of the two.
+  function renderPreprocessingTime(data) {
+    var el = document.getElementById('chart-preprocessing-time');
+    if (!el) return;
+    var t = themeColors();
+    data = consolidateVariants(data, ['server_preprocessing_time_ms', 'client_preprocessing_time_ms']);
+
+    var items = data.filter(function (s) {
+      return isPos(getVal(s, 'server_preprocessing_time_ms')) || isPos(getVal(s, 'client_preprocessing_time_ms'));
+    });
+    items.sort(function (a, b) {
+      var av = Math.max(getVal(a, 'server_preprocessing_time_ms') || 0, getVal(a, 'client_preprocessing_time_ms') || 0);
+      var bv = Math.max(getVal(b, 'server_preprocessing_time_ms') || 0, getVal(b, 'client_preprocessing_time_ms') || 0);
+      return av - bv;
+    });
+
+    function fmtTime(v) { return v >= 1000 ? formatNum(v / 1000) + ' s' : formatNum(v) + ' ms'; }
+
+    var yLabels = items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); });
+
+    var traces = [];
+    var srvVals = items.map(function (s) { return getVal(s, 'server_preprocessing_time_ms') || 0; });
+    var cliVals = items.map(function (s) { return getVal(s, 'client_preprocessing_time_ms') || 0; });
+
+    var hasSrv = srvVals.some(function (v) { return v > 0; });
+    var hasCli = cliVals.some(function (v) { return v > 0; });
+
+    if (hasSrv) traces.push({
+      name: 'Server',
+      y: yLabels,
+      x: srvVals.map(function (v) { return v || null; }),
+      type: 'bar', orientation: 'h',
+      marker: {
+        color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
+      },
+      text: srvVals.map(function (v) { return v > 0 ? fmtTime(v) : ''; }),
+      textposition: 'outside', cliponaxis: false,
+      hovertext: items.map(function (s) {
+        var v = getVal(s, 'server_preprocessing_time_ms');
+        if (!isPos(v)) return '';
+        return consolidatedName(s) + '<br>Server Preproc: ' + fmtTime(v) + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+      }),
+      hoverinfo: 'text'
+    });
+
+    if (hasCli) traces.push({
+      name: 'Client',
+      y: yLabels,
+      x: cliVals.map(function (v) { return v || null; }),
+      type: 'bar', orientation: 'h',
+      marker: {
+        color: items.map(function () { return '#f59e0b'; }),
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+        pattern: { shape: '/' }
+      },
+      text: cliVals.map(function (v) { return v > 0 ? fmtTime(v) : ''; }),
+      textposition: 'outside', cliponaxis: false,
+      hovertext: items.map(function (s) {
+        var v = getVal(s, 'client_preprocessing_time_ms');
+        if (!isPos(v)) return '';
+        return consolidatedName(s) + '<br>Client Preproc: ' + fmtTime(v) + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+      }),
+      hoverinfo: 'text'
+    });
+
+    Plotly.newPlot(el, traces, baseLayout('Preprocessing / Offline Computation Time', {
+      barmode: 'group',
+      yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
+      xaxis: { title: 'Time (ms)', type: 'log', gridcolor: t.grid },
+      legend: { orientation: 'h', x: 0, y: -0.12, font: { size: 11 } },
+      margin: { l: barLeftMargin(), r: 80, t: 48, b: 80 },
+      height: Math.max(300, items.length * 30 + 120)
     }), plotConfig());
   }
 
@@ -2304,6 +2389,117 @@
   // to get tier-specific entities, then re-renders all filtered charts.
   // The active tab state is synced across all tab bar instances on the page.
   //
+  // ── Misc: Communication Rate Bars ───────────────────────
+  // Horizontal bars ranked by rate (higher is better).
+  function renderRateBars(data) {
+    var el = document.getElementById('chart-rate');
+    if (!el) return;
+    var t = themeColors();
+    data = consolidateVariants(data, ['rate']);
+
+    var items = data.filter(function (s) { return isPos(getVal(s, 'rate')); });
+    items.sort(function (a, b) { return getVal(b, 'rate') - getVal(a, 'rate'); });
+
+    Plotly.newPlot(el, [{
+      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); }),
+      x: items.map(function (s) { return getVal(s, 'rate'); }),
+      type: 'bar', orientation: 'h',
+      showlegend: false,
+      marker: {
+        color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
+      },
+      text: items.map(function (s) { return getVal(s, 'rate').toFixed(3); }),
+      textposition: 'outside',
+      cliponaxis: false,
+      hovertext: items.map(function (s) {
+        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') +
+          '<br>Rate: ' + getVal(s, 'rate').toFixed(4) +
+          '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+      }),
+      hoverinfo: 'text'
+    }], baseLayout('Communication Rate (plaintext / ciphertext)', {
+      yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
+      xaxis: { title: { text: 'Rate (higher = better, 1.0 = optimal)', standoff: 20 }, range: [0, 1.05], gridcolor: t.grid },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
+      height: Math.max(350, items.length * 30 + 120)
+    }), plotConfig());
+  }
+
+  // ── Misc: Amortized Offline Communication Bars ─────────
+  // Horizontal bars ranked by amortized_offline_comm_kb (lower is better).
+  function renderAmortizedOfflineComm(data) {
+    var el = document.getElementById('chart-amortized-offline-comm');
+    if (!el) return;
+    var t = themeColors();
+    data = consolidateVariants(data, ['amortized_offline_comm_kb']);
+
+    var items = data.filter(function (s) { return isPos(getVal(s, 'amortized_offline_comm_kb')); });
+    items.sort(function (a, b) { return getVal(a, 'amortized_offline_comm_kb') - getVal(b, 'amortized_offline_comm_kb'); });
+
+    Plotly.newPlot(el, [{
+      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); }),
+      x: items.map(function (s) { return getVal(s, 'amortized_offline_comm_kb'); }),
+      type: 'bar', orientation: 'h',
+      showlegend: false,
+      marker: {
+        color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
+      },
+      text: items.map(function (s) { return formatNum(getVal(s, 'amortized_offline_comm_kb')) + ' KB'; }),
+      textposition: 'outside',
+      cliponaxis: false,
+      hovertext: items.map(function (s) {
+        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') +
+          '<br>Amortized Offline Comm: ' + formatNum(getVal(s, 'amortized_offline_comm_kb')) + ' KB/query' +
+          '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+      }),
+      hoverinfo: 'text'
+    }], baseLayout('Amortized Offline Communication (KB/query)', {
+      yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
+      xaxis: { title: { text: 'Amortized Offline Comm (KB/query)', standoff: 20 }, type: 'log', gridcolor: t.grid },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
+      height: Math.max(350, items.length * 30 + 120)
+    }), plotConfig());
+  }
+
+  // ── Misc: Amortized Offline Time Bars ──────────────────
+  // Horizontal bars ranked by amortized_offline_time_ms (lower is better).
+  function renderAmortizedOfflineTime(data) {
+    var el = document.getElementById('chart-amortized-offline-time');
+    if (!el) return;
+    var t = themeColors();
+    data = consolidateVariants(data, ['amortized_offline_time_ms']);
+
+    var items = data.filter(function (s) { return isPos(getVal(s, 'amortized_offline_time_ms')); });
+    items.sort(function (a, b) { return getVal(a, 'amortized_offline_time_ms') - getVal(b, 'amortized_offline_time_ms'); });
+
+    Plotly.newPlot(el, [{
+      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); }),
+      x: items.map(function (s) { return getVal(s, 'amortized_offline_time_ms'); }),
+      type: 'bar', orientation: 'h',
+      showlegend: false,
+      marker: {
+        color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
+      },
+      text: items.map(function (s) { return formatNum(getVal(s, 'amortized_offline_time_ms')) + ' ms'; }),
+      textposition: 'outside',
+      cliponaxis: false,
+      hovertext: items.map(function (s) {
+        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') +
+          '<br>Amortized Offline Time: ' + formatNum(getVal(s, 'amortized_offline_time_ms')) + ' ms/query' +
+          '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+      }),
+      hoverinfo: 'text'
+    }], baseLayout('Amortized Offline Time (ms/query)', {
+      yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
+      xaxis: { title: { text: 'Amortized Offline Time (ms/query)', standoff: 20 }, type: 'log', gridcolor: t.grid },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
+      height: Math.max(350, items.length * 30 + 120)
+    }), plotConfig());
+  }
+
   var _activeDbTier = 'tiny';
 
   function renderFilteredCharts(data) {
@@ -2312,12 +2508,16 @@
     renderServerTimeBars(data);
     renderClientCost(data);
     renderOfflineStorage(data);
+    renderPreprocessingTime(data);
     renderPareto(data);
     renderParetoCommStorage(data);
     renderParetoCommClient(data);
     renderParetoServerClient(data);
     // renderPareto3DComm(data);
     // renderPareto3DServer(data);
+    renderRateBars(data);
+    renderAmortizedOfflineComm(data);
+    renderAmortizedOfflineTime(data);
   }
 
   function setActiveDbTier(tier) {

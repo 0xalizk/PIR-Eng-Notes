@@ -1025,6 +1025,40 @@ The 34 papers in this collection primarily address **computational PIR** (cPIR) 
 - **Groups A/B (2024+):** Also extract 1 GB and 32 GB benchmarks — these papers target larger databases.
 - **Group D sublinear schemes:** Compare at 1 GB and 100 GB (Group D benchmarks differ substantially).
 
+#### reported.json metric conventions
+
+`docs/data/reported.json` is the source of truth for paper-reported benchmarks.
+
+**Problem:** PIR papers use inconsistent terminology for the same metrics. A paper may call server computation "online comp," "answer time," or "server time." Preprocessing may appear as "setup time," "offline computation," "hint generation," or "offline cost." You must recognize these aliases and normalize to the standard keys below — both in `*_notes.md` files and in `reported.json` entries.
+
+**Standard metric keys:**
+
+| Metric key | Unit | Paper aliases (normalize these) |
+|---|---|---|
+| `query_size_kb` | KB | query size, online upload, request size, upload communication |
+| `response_size_kb` | KB | response size, online download, answer size, download communication |
+| `server_time_ms` | ms | online computation, server computation, answer time, online time, online comp |
+| `client_time_ms` | ms | client computation, query generation + decode, client time, client comp |
+| `throughput_gbps` | GB/s | throughput (= db_size / server_time) |
+| `server_preprocessing_time_ms` | ms | server preprocessing, DB encoding time, NTT preprocessing, hint generation time (server-side), offline computation (server) |
+| `client_preprocessing_time_ms` | ms | client preprocessing, key generation time, hint download + processing, streaming preprocessing, client setup, offline computation (client) |
+| `offline_comm_mb` | MB | offline communication (total of ↑ upload + ↓ download), hint size (download), eval key size (upload) |
+| `client_storage_mb` | MB | client storage, hint size, persistent storage, client state |
+| `amortized_offline_time_ms` | ms | amortized preprocessing time per query |
+| `amortized_offline_comm_kb` | KB | amortized offline communication per query |
+| `rate` | (unitless) | communication rate (plaintext_bits / response_bits) |
+
+**Key rules:**
+- **Preprocessing is split into server and client.** Use `server_preprocessing_time_ms` for server-side offline work (DB encoding, NTT conversion, hint generation for client-independent schemes). Use `client_preprocessing_time_ms` for client-side offline work (key generation, streaming hint download + local computation, hint updates). When a paper reports a single "preprocessing" or "offline computation" number, determine from context which actor performs it. Do NOT use the deprecated keys `setup_time_ms`, `preprocessing_time_s`, or the unsplit `preprocessing_time_ms`.
+- **`offline_comm_mb`** is the **total** of upload and download. When a paper reports only one direction (e.g., "14.8 MB evaluation key upload" or "121 MB hint download"), that IS the total. When both directions are reported, sum them. Typical patterns by group:
+  - Groups A/B (↑ upload): client sends evaluation keys / public parameters to server
+  - Groups C/D (↓ download): client downloads hints / preprocessed data from server
+  - Rare bidirectional: IncrementalPIR, VeriSimplePIR
+- **`client_storage_mb`** is the canonical key for client-side persistent state. Do NOT use `hint_size_mb` — it is a deprecated alias.
+- **`server_time_ms`** = online (per-query) server computation. Verify via throughput cross-check: `server_time_ms ≈ db_size_bytes / (throughput_gbps × 10⁶)`. Do NOT confuse with client computation — some papers label columns ambiguously (e.g., VIA's "Online Comp." is server time, confirmed via throughput cross-check).
+- **All times in milliseconds.** Convert seconds → ms (×1000) before storing.
+- **In `*_notes.md` files**, use the standard terminology in Complexity table headers (e.g., "Server computation" not "online comp"). The Notes template already uses standard names; do not invent alternate column headers.
+
 ### 7.5 Common cryptographic building blocks
 
 | Primitive | Used by | Role |

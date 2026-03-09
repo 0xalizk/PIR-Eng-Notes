@@ -418,7 +418,7 @@
           ]
         }
       ],
-      "theory_only": false
+      "theory_only": true
     },
     {
       "id": "onionpir_2021",
@@ -842,8 +842,8 @@
             "client_time_ms": 31,
             "offline_comm_mb": 14,
             "client_storage_mb": 14,
-            "setup_time_ms": 700,
-            "rate": 0.0122
+            "rate": 0.0122,
+            "client_preprocessing_time_ms": 700
           },
           "footnotes": []
         },
@@ -862,8 +862,8 @@
             "client_time_ms": 31,
             "offline_comm_mb": 18,
             "client_storage_mb": 18,
-            "setup_time_ms": 700,
-            "rate": 0.3573
+            "rate": 0.3573,
+            "client_preprocessing_time_ms": 700
           },
           "footnotes": []
         },
@@ -882,8 +882,8 @@
             "client_time_ms": 31,
             "offline_comm_mb": 17,
             "client_storage_mb": 17,
-            "setup_time_ms": 700,
-            "rate": 0.4129
+            "rate": 0.4129,
+            "client_preprocessing_time_ms": 700
           },
           "footnotes": []
         },
@@ -1141,10 +1141,11 @@
             "server_time_ms": 45.013,
             "client_time_ms": 0.38,
             "offline_comm_mb": 5.55,
-            "setup_time_ms": 104570
+            "server_preprocessing_time_ms": 104570,
+            "client_preprocessing_time_ms": 582
           },
           "footnotes": [
-            "Client download 5682 KB. DB preprocessing 104.57s. Client per-query preproc 0.147s. Client derive A 0.58s."
+            "Client download 5682 KB. DB preprocessing 104.57s. Client per-query preproc 0.147s. Client derive A 0.58s (one-time per client)."
           ]
         },
         {
@@ -1160,10 +1161,11 @@
             "server_time_ms": 188.36,
             "client_time_ms": 0.444,
             "offline_comm_mb": 5.55,
-            "setup_time_ms": 429070
+            "server_preprocessing_time_ms": 429070,
+            "client_preprocessing_time_ms": 2212
           },
           "footnotes": [
-            "Client download 5682 KB. DB preprocessing 429.07s. Client per-query preproc 0.58s."
+            "Client download 5682 KB. DB preprocessing 429.07s. Client per-query preproc 0.58s. Client derive A 2.21s (one-time per client)."
           ]
         },
         {
@@ -1179,11 +1181,12 @@
             "server_time_ms": 825.37,
             "client_time_ms": 0.777,
             "offline_comm_mb": 6.16,
-            "setup_time_ms": 1895200,
-            "throughput_gbps": 1.21
+            "throughput_gbps": 1.21,
+            "server_preprocessing_time_ms": 1895200,
+            "client_preprocessing_time_ms": 9250
           },
           "footnotes": [
-            "Client download 6313 KB. DB preprocessing 1895.2s. Client per-query preproc 2.34s. Throughput ~1.21 GB/s."
+            "Client download 6313 KB. DB preprocessing 1895.2s. Client per-query preproc 2.34s. Client derive A 9.25s (one-time per client). Throughput ~1.21 GB/s."
           ]
         },
         {
@@ -1538,9 +1541,12 @@
             "response_size_kb": 288,
             "server_time_ms": 233,
             "throughput_gbps": 0.035,
-            "client_time_ms": 4.78
+            "client_time_ms": 4.78,
+            "server_preprocessing_time_ms": 3110
           },
-          "footnotes": []
+          "footnotes": [
+            "Server preprocessing 3.11s from Table 2, p.29."
+          ]
         },
         {
           "variant": "HintlessPIR",
@@ -1554,9 +1560,12 @@
             "response_size_kb": 1540,
             "server_time_ms": 385,
             "throughput_gbps": 0.697,
-            "client_time_ms": 25.5
+            "client_time_ms": 25.5,
+            "server_preprocessing_time_ms": 51570
           },
-          "footnotes": []
+          "footnotes": [
+            "Server preprocessing 51.57s from Table 2, p.29."
+          ]
         },
         {
           "variant": "HintlessPIR",
@@ -1570,9 +1579,12 @@
             "response_size_kb": 2212,
             "server_time_ms": 478,
             "throughput_gbps": 1.121,
-            "client_time_ms": 36.66
+            "client_time_ms": 36.66,
+            "server_preprocessing_time_ms": 93580
           },
-          "footnotes": []
+          "footnotes": [
+            "Server preprocessing 93.58s from Table 2, p.29."
+          ]
         },
         {
           "variant": "HintlessPIR",
@@ -1586,9 +1598,12 @@
             "response_size_kb": 3080,
             "server_time_ms": 613,
             "throughput_gbps": 1.749,
-            "client_time_ms": 51
+            "client_time_ms": 51,
+            "server_preprocessing_time_ms": 199150
           },
-          "footnotes": []
+          "footnotes": [
+            "Server preprocessing 199.15s from Table 2, p.29."
+          ]
         },
         {
           "variant": "HintlessPIR",
@@ -1602,9 +1617,12 @@
             "response_size_kb": 3080,
             "server_time_ms": 1347,
             "throughput_gbps": 6.374,
-            "client_time_ms": 52.32
+            "client_time_ms": 52.32,
+            "server_preprocessing_time_ms": 2128000
           },
-          "footnotes": []
+          "footnotes": [
+            "Server preprocessing 2128s from Table 2, p.29."
+          ]
         }
       ],
       "theory_only": false
@@ -1735,9 +1753,12 @@
             "response_size_kb": 2,
             "server_time_ms": 1260,
             "throughput_gbps": 0.204,
-            "offline_comm_mb": 3.9
+            "offline_comm_mb": 3.9,
+            "server_preprocessing_time_ms": 16800
           },
-          "footnotes": []
+          "footnotes": [
+            "SetupDB 16.8s for 256 MB database (footnote 12 in notes)."
+          ]
         },
         {
           "variant": "Respire",
@@ -1767,9 +1788,12 @@
             "response_size_kb": 2,
             "server_time_ms": 20840,
             "throughput_gbps": 0.393,
-            "offline_comm_mb": 3.9
+            "offline_comm_mb": 3.9,
+            "server_preprocessing_time_ms": 569000
           },
-          "footnotes": []
+          "footnotes": [
+            "SetupDB 569s for 8 GB database (footnote 12 in notes)."
+          ]
         }
       ],
       "theory_only": false
@@ -1956,7 +1980,23 @@
             "response_size_kb": 15.5,
             "server_time_ms": 442,
             "throughput_gbps": 2.26,
-            "setup_time_ms": 1060
+            "server_preprocessing_time_ms": 1060
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "VIA",
+          "config_id": "4GBx1B",
+          "data_tier": 1,
+          "source_ref": "Table 1, p.18",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 587.1,
+            "response_size_kb": 15.5,
+            "server_time_ms": 1361,
+            "throughput_gbps": 2.94,
+            "server_preprocessing_time_ms": 4195
           },
           "footnotes": []
         },
@@ -1972,7 +2012,7 @@
             "response_size_kb": 15.5,
             "server_time_ms": 10286,
             "throughput_gbps": 3.11,
-            "setup_time_ms": 33340
+            "server_preprocessing_time_ms": 33340
           },
           "footnotes": []
         },
@@ -1989,7 +2029,24 @@
             "server_time_ms": 830,
             "throughput_gbps": 1.2,
             "offline_comm_mb": 14.8,
-            "setup_time_ms": 2090
+            "server_preprocessing_time_ms": 2090
+          },
+          "footnotes": []
+        },
+        {
+          "variant": "VIA-C",
+          "config_id": "4GBx1B",
+          "data_tier": 1,
+          "source_ref": "Table 1, p.18",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 0.604,
+            "response_size_kb": 1.439,
+            "server_time_ms": 2777,
+            "throughput_gbps": 1.44,
+            "offline_comm_mb": 14.8,
+            "server_preprocessing_time_ms": 7786
           },
           "footnotes": []
         },
@@ -2006,7 +2063,7 @@
             "server_time_ms": 20307,
             "throughput_gbps": 1.58,
             "offline_comm_mb": 14.8,
-            "setup_time_ms": 67539
+            "server_preprocessing_time_ms": 67539
           },
           "footnotes": []
         },
@@ -2127,10 +2184,10 @@
             "query_size_kb": 193,
             "response_size_kb": 52,
             "server_time_ms": 480,
-            "throughput_gbps": 2.877
+            "throughput_gbps": 2.237
           },
           "footnotes": [
-            "Upload keys 80 KB + query 113 KB = 193 KB total upload; total comm 245 KB"
+            "Upload keys 80 KB + query 113 KB = 193 KB total upload; total comm 245 KB. Throughput corrected: paper Table 2 reports 2880 MB/s but this is inconsistent with 480 ms server time for 1.074 GB DB; computed as 1.074/0.480 = 2.237 GB/s."
           ]
         },
         {
@@ -2465,10 +2522,14 @@
             "server_time_ms": 5840,
             "throughput_gbps": 0.175,
             "client_time_ms": 1.61,
-            "client_storage_mb": 0.89,
-            "rate": 0.25
+            "offline_comm_mb": 0.89,
+            "rate": 0.25,
+            "server_preprocessing_time_ms": 13320
           },
-          "footnotes": []
+          "footnotes": [
+            "Storage (0.89 MB) = public parameter upload size, not client storage. Client stores only secret key f.",
+            "Preprocessing 13.32s from Table 1."
+          ]
         },
         {
           "variant": "NPIR",
@@ -2483,10 +2544,13 @@
             "server_time_ms": 14870,
             "throughput_gbps": 0.551,
             "client_time_ms": 1.62,
-            "client_storage_mb": 1.22,
-            "rate": 0.25
+            "offline_comm_mb": 1.22,
+            "rate": 0.25,
+            "server_preprocessing_time_ms": 111060
           },
-          "footnotes": []
+          "footnotes": [
+            "Storage (1.22 MB) = public parameter upload size. Preprocessing 111.06s from Table 1."
+          ]
         },
         {
           "variant": "NPIR",
@@ -2501,10 +2565,13 @@
             "server_time_ms": 45820,
             "throughput_gbps": 0.715,
             "client_time_ms": 1.61,
-            "client_storage_mb": 1.44,
-            "rate": 0.25
+            "offline_comm_mb": 1.44,
+            "rate": 0.25,
+            "server_preprocessing_time_ms": 437690
           },
-          "footnotes": []
+          "footnotes": [
+            "Storage (1.44 MB) = public parameter upload size. Preprocessing 437.69s from Table 1."
+          ]
         }
       ],
       "theory_only": false
@@ -2563,12 +2630,14 @@
             "response_size_kb": 121,
             "throughput_gbps": 10.138,
             "offline_comm_mb": 121,
-            "client_storage_mb": 121
+            "client_storage_mb": 121,
+            "server_preprocessing_time_ms": 300000
           },
           "footnotes": [
             "Table 8 (p.13): SimplePIR online upload 121 KB, download 121 KB, offline upload 0 MB, offline download 121 MB, throughput 10,138 MB/s.",
             "Table 1 (p.3): SimplePIR max throughput 10,305 MB/s (slightly different measurement point).",
-            "Client computation < 1 ms (Section 10, p.15)."
+            "Client computation < 1 ms (Section 10, p.15).",
+            "Server preprocessing ~5 core-minutes for 1 GB DB (approximate, from Figure 17, p.30)."
           ]
         },
         {
@@ -2643,11 +2712,13 @@
             "throughput_gbps": 7.622,
             "offline_comm_mb": 16,
             "client_storage_mb": 16,
-            "client_time_ms": 100
+            "client_time_ms": 100,
+            "server_preprocessing_time_ms": 300000
           },
           "footnotes": [
             "Table 8 (p.13): DoublePIR online upload 313 KB, download 32 KB, offline upload 0 MB, offline download 16 MB, throughput 7,622 MB/s.",
-            "Client query+recover time ~100 ms for 1 GB DB (Figure 18, p.30)."
+            "Client query+recover time ~100 ms for 1 GB DB (Figure 18, p.30).",
+            "Server preprocessing ~5 core-minutes for 1 GB DB (approximate, from Figure 17, p.30)."
           ]
         },
         {
@@ -2868,7 +2939,7 @@
         ],
         "lwe_dimension_n": 1024,
         "ciphertext_modulus_log_q": 32,
-        "hint_size_mb": 121
+        "client_storage_mb": 121
       },
       "variants": [
         "iSimplePIR (Row-level)",
@@ -2896,8 +2967,8 @@
             "response_size_kb": 120.5,
             "server_time_ms": 95.73,
             "throughput_gbps": 10.4,
-            "preprocessing_time_s": 1.77,
-            "offline_comm_mb": 1.26
+            "offline_comm_mb": 1.26,
+            "client_preprocessing_time_ms": 1770
           },
           "footnotes": [
             "Table 2 (p.18): Row-major scenario, 1 GB DB, 1-bit entries, 1% update. Online comm 241 KB total (split ~120.5 KB each way).",
@@ -2916,8 +2987,8 @@
             "response_size_kb": 120,
             "server_time_ms": 94.62,
             "throughput_gbps": 10.6,
-            "preprocessing_time_s": 1.7,
-            "offline_comm_mb": 1.26
+            "offline_comm_mb": 1.26,
+            "client_preprocessing_time_ms": 1700
           },
           "footnotes": [
             "Table 2 (p.18): Row-major scenario, 1 GB DB, 1-bit entries, 1% update. Online comm 240 KB total.",
@@ -2936,8 +3007,8 @@
             "response_size_kb": 120,
             "server_time_ms": 97.23,
             "throughput_gbps": 10.3,
-            "preprocessing_time_s": 172.45,
-            "offline_comm_mb": 120.75
+            "offline_comm_mb": 120.75,
+            "client_preprocessing_time_ms": 172450
           },
           "footnotes": [
             "Table 2 (p.18): Col-major scenario, 1 GB DB, 1-bit entries, 1% update. Online comm 240 KB.",
@@ -2956,8 +3027,8 @@
             "response_size_kb": 120,
             "server_time_ms": 95.63,
             "throughput_gbps": 10.5,
-            "preprocessing_time_s": 0.77,
-            "offline_comm_mb": 28.5
+            "offline_comm_mb": 28.5,
+            "client_preprocessing_time_ms": 770
           },
           "footnotes": [
             "Table 2 (p.18): Col-major scenario, 1 GB DB, 1-bit entries, 1% update. Online comm 240 KB.",
@@ -3029,14 +3100,14 @@
           "estimation_meta": null,
           "metrics": {
             "query_size_kb": 32,
-            "response_size_kb": 0.0625,
+            "response_size_kb": 0.0078125,
             "server_time_ms": 3,
             "client_time_ms": 3,
             "offline_comm_mb": 1024,
             "client_storage_mb": 61,
-            "preprocessing_time_s": 629,
             "amortized_offline_time_ms": 2.9,
-            "amortized_offline_comm_kb": 4.9
+            "amortized_offline_comm_kb": 4.9,
+            "client_preprocessing_time_ms": 629000
           },
           "footnotes": []
         },
@@ -3049,14 +3120,14 @@
           "estimation_meta": null,
           "metrics": {
             "query_size_kb": 32,
-            "response_size_kb": 0.0625,
+            "response_size_kb": 0.0078125,
             "server_time_ms": 3,
             "client_time_ms": 3,
             "offline_comm_mb": 1024,
             "client_storage_mb": 61,
-            "preprocessing_time_s": 111,
             "amortized_offline_time_ms": 0.5,
-            "amortized_offline_comm_kb": 4.9
+            "amortized_offline_comm_kb": 4.9,
+            "client_preprocessing_time_ms": 111000
           },
           "footnotes": []
         },
@@ -3069,14 +3140,14 @@
           "estimation_meta": null,
           "metrics": {
             "query_size_kb": 64,
-            "response_size_kb": 0.0625,
+            "response_size_kb": 0.0078125,
             "server_time_ms": 3.4,
             "client_time_ms": 3.4,
             "offline_comm_mb": 2048,
             "client_storage_mb": 71,
-            "preprocessing_time_s": 1471,
             "amortized_offline_time_ms": 4.6,
-            "amortized_offline_comm_kb": 6.6
+            "amortized_offline_comm_kb": 6.6,
+            "client_preprocessing_time_ms": 1471000
           },
           "footnotes": []
         },
@@ -3089,14 +3160,14 @@
           "estimation_meta": null,
           "metrics": {
             "query_size_kb": 64,
-            "response_size_kb": 0.0625,
+            "response_size_kb": 0.0078125,
             "server_time_ms": 3.4,
             "client_time_ms": 3.4,
             "offline_comm_mb": 2048,
             "client_storage_mb": 71,
-            "preprocessing_time_s": 257,
             "amortized_offline_time_ms": 0.8,
-            "amortized_offline_comm_kb": 6.6
+            "amortized_offline_comm_kb": 6.6,
+            "client_preprocessing_time_ms": 257000
           },
           "footnotes": []
         },
@@ -3114,9 +3185,9 @@
             "client_time_ms": 11.9,
             "offline_comm_mb": 102400,
             "client_storage_mb": 839,
-            "preprocessing_time_s": 11520,
             "amortized_offline_time_ms": 13.2,
-            "amortized_offline_comm_kb": 120.5
+            "amortized_offline_comm_kb": 120.5,
+            "client_preprocessing_time_ms": 11520000
           },
           "footnotes": [
             "WAN benchmarks (Table 2, 60ms RTT, 2 Gbps): 72.6 ms end-to-end latency at 100 GB"
@@ -3136,9 +3207,9 @@
             "client_time_ms": 11.9,
             "offline_comm_mb": 102400,
             "client_storage_mb": 839,
-            "preprocessing_time_s": 1920,
             "amortized_offline_time_ms": 2.2,
-            "amortized_offline_comm_kb": 120.5
+            "amortized_offline_comm_kb": 120.5,
+            "client_preprocessing_time_ms": 1920000
           },
           "footnotes": [
             "WAN benchmarks (Table 2, 60ms RTT, 2 Gbps): 72.6 ms end-to-end latency at 100 GB"
@@ -3283,12 +3354,13 @@
           "estimation_meta": null,
           "metrics": {
             "query_size_kb": 2.18,
+            "response_size_kb": 0.0625,
             "server_time_ms": 0.14,
             "client_storage_mb": 6.25,
             "offline_comm_mb": 32,
-            "setup_time_ms": 4000,
             "amortized_offline_comm_kb": 2.99,
-            "amortized_offline_time_ms": 0.25
+            "amortized_offline_time_ms": 0.25,
+            "client_preprocessing_time_ms": 4000
           },
           "footnotes": [
             "Single-server. Online comm 2.18 KB, amortized total comm 2.99 KB."
@@ -3303,12 +3375,13 @@
           "estimation_meta": null,
           "metrics": {
             "query_size_kb": 8.56,
+            "response_size_kb": 0.0625,
             "server_time_ms": 0.62,
             "client_storage_mb": 25,
             "offline_comm_mb": 512,
-            "setup_time_ms": 65000,
             "amortized_offline_comm_kb": 11.76,
-            "amortized_offline_time_ms": 1
+            "amortized_offline_time_ms": 1,
+            "client_preprocessing_time_ms": 65000
           },
           "footnotes": [
             "Single-server. Online comm 8.56 KB, amortized total comm 11.76 KB."
@@ -3323,12 +3396,13 @@
           "estimation_meta": null,
           "metrics": {
             "query_size_kb": 34.02,
+            "response_size_kb": 0.015625,
             "server_time_ms": 2.4,
             "client_storage_mb": 40,
             "offline_comm_mb": 2048,
-            "setup_time_ms": 989000,
             "amortized_offline_comm_kb": 37.22,
-            "amortized_offline_time_ms": 3.9
+            "amortized_offline_time_ms": 3.9,
+            "client_preprocessing_time_ms": 989000
           },
           "footnotes": [
             "Single-server. Offline compute 989 s."
@@ -3343,12 +3417,13 @@
           "estimation_meta": null,
           "metrics": {
             "query_size_kb": 34.06,
+            "response_size_kb": 0.0625,
             "server_time_ms": 2.7,
             "client_storage_mb": 100,
             "offline_comm_mb": 8192,
-            "setup_time_ms": 1146000,
             "amortized_offline_comm_kb": 46.86,
-            "amortized_offline_time_ms": 4.5
+            "amortized_offline_time_ms": 4.5,
+            "client_preprocessing_time_ms": 1146000
           },
           "footnotes": [
             "Single-server. Offline compute 1146 s."
@@ -3363,12 +3438,13 @@
           "estimation_meta": null,
           "metrics": {
             "query_size_kb": 34.5,
+            "response_size_kb": 0.5,
             "server_time_ms": 4.2,
             "client_storage_mb": 660,
             "offline_comm_mb": 65536,
-            "setup_time_ms": 2327000,
             "amortized_offline_comm_kb": 136.9,
-            "amortized_offline_time_ms": 7.8
+            "amortized_offline_time_ms": 7.8,
+            "client_preprocessing_time_ms": 2327000
           },
           "footnotes": [
             "Single-server. Offline compute 2327 s."
