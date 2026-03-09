@@ -168,6 +168,13 @@
   // where 0 is a valid value meaning "best".
   function isNum(v) { return typeof v === 'number' && isFinite(v) && v >= 0; }
 
+  // Annotation for metrics that need clarification (e.g. OnionPIRv2 client_storage is server-side)
+  var STORAGE_NOTE_IDS = { 'onionpirv2_2025': true };
+  var STORAGE_NOTE_TEXT = '<br><br><i>NOTE: server-side per-client storage<br>(evaluation keys the server holds),<br>not client-side storage</i>';
+  function storageNote(s) {
+    return STORAGE_NOTE_IDS[s.id] ? STORAGE_NOTE_TEXT : '';
+  }
+
   function isDark() {
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
@@ -991,7 +998,7 @@
       cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'client_storage_mb');
-        return isPos(v) ? consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Client Storage: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s) : '';
+        return isPos(v) ? consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Client Storage: ' + formatNum(v) + ' MB' + storageNote(s) + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s) : '';
       }),
       hoverinfo: 'text'
     });
@@ -1313,7 +1320,7 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' +
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' + storageNote(s) +
             (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
         }),
         hoverinfo: 'text'
@@ -1592,7 +1599,7 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' + storageNote(s) + '<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
             (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
         }),
         hoverinfo: 'text'
@@ -1607,7 +1614,7 @@
         mode: 'markers', type: 'scatter3d', name: 'Pareto-optimal',
         marker: { size: 14, color: 'rgba(0,0,0,0)', symbol: 'circle', line: { width: 3, color: '#a855f7' } },
         hovertext: pareto.map(function (s) {
-          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' + storageNote(s) + '<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
             '<br><b>Pareto-optimal \u2605</b><br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
         }),
         hoverinfo: 'text'
@@ -1682,7 +1689,7 @@
           line: { width: 1, color: t.text }
         },
         hovertext: gItems.map(function (s) {
-          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' + storageNote(s) + '<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
             (pareto.indexOf(s) >= 0 ? '<br><b>Pareto-optimal \u2605</b>' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
         }),
         hoverinfo: 'text'
@@ -1697,7 +1704,7 @@
         mode: 'markers', type: 'scatter3d', name: 'Pareto-optimal',
         marker: { size: 14, color: 'rgba(0,0,0,0)', symbol: 'circle', line: { width: 3, color: '#a855f7' } },
         hovertext: pareto.map(function (s) {
-          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
+          return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' + storageNote(s) + '<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
             '<br><b>Pareto-optimal \u2605</b><br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
         }),
         hoverinfo: 'text'
