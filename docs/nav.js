@@ -25,6 +25,7 @@
         { label: 'Server', anchor: '#server-perf' },
         { label: 'Client', anchor: '#client-cost' },
         { label: 'Offline & Storage', anchor: '#offline-storage' },
+        { label: 'Preprocessing', anchor: '#preprocessing-time' },
         { label: 'Pareto Frontiers', href: 'reported/pareto/', children: [
           { label: 'Comm × Server', anchor: '#pareto-comm-server' },
           { label: 'Comm × Client', anchor: '#pareto-comm-client' },

@@ -828,7 +828,8 @@
       showlegend: false,
       marker: {
         color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
-        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+        line: { color: items.map(function (s) { return GROUP_COLORS[s.group]; }), width: 1.5 }
       },
       text: items.map(function (s) { return formatNum(getVal(s, 'throughput_gbps')) + ' GB/s'; }),
       textposition: 'outside',
@@ -871,7 +872,8 @@
       showlegend: false,
       marker: {
         color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
-        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+        line: { color: items.map(function (s) { return GROUP_COLORS[s.group]; }), width: 1.5 }
       },
       text: items.map(function (s) { return formatNum(getVal(s, 'server_time_ms')) + ' ms'; }),
       textposition: 'outside',
@@ -907,7 +909,8 @@
       type: 'bar', orientation: 'h',
       marker: {
         color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
-        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+        line: { color: items.map(function (s) { return GROUP_COLORS[s.group]; }), width: 1.5 }
       },
       text: items.map(function (s) { return formatNum(getVal(s, 'client_time_ms')) + ' ms'; }),
       textposition: 'outside',
@@ -957,7 +960,7 @@
       x: items.map(function (s) { return getVal(s, 'offline_comm_mb'); }),
       type: 'bar', orientation: 'h',
       name: 'Offline',
-      marker: { color: HINT_COLOR, opacity: 0.85 },
+      marker: { color: HINT_COLOR, opacity: 0.85, line: { color: HINT_COLOR, width: 1.5 } },
       text: items.map(function (s) {
         var v = getVal(s, 'offline_comm_mb');
         return isPos(v) ? formatNum(v) + ' MB' : '';
@@ -977,7 +980,7 @@
       x: items.map(function (s) { return getVal(s, 'client_storage_mb'); }),
       type: 'bar', orientation: 'h',
       name: 'Client Storage',
-      marker: { color: STORAGE_COLOR, opacity: 0.85 },
+      marker: { color: STORAGE_COLOR, opacity: 0.85, line: { color: STORAGE_COLOR, width: 1.5 } },
       text: items.map(function (s) {
         var v = getVal(s, 'client_storage_mb');
         return isPos(v) ? formatNum(v) + ' MB' : '';
@@ -1037,7 +1040,8 @@
       type: 'bar', orientation: 'h',
       marker: {
         color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
-        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+        line: { color: items.map(function (s) { return GROUP_COLORS[s.group]; }), width: 1.5 }
       },
       text: srvVals.map(function (v) { return v > 0 ? fmtTime(v) : ''; }),
       textposition: 'outside', cliponaxis: false,
@@ -1057,7 +1061,8 @@
       marker: {
         color: items.map(function () { return '#f59e0b'; }),
         opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
-        pattern: { shape: '/' }
+        pattern: { shape: '.' },
+        line: { color: '#f59e0b', width: 1.5 }
       },
       text: cliVals.map(function (v) { return v > 0 ? fmtTime(v) : ''; }),
       textposition: 'outside', cliponaxis: false,
@@ -1074,7 +1079,7 @@
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: 'Time (ms)', type: 'log', gridcolor: t.grid },
       legend: { orientation: 'h', x: 0, y: -0.12, font: { size: 11 } },
-      margin: { l: barLeftMargin(), r: 80, t: 48, b: 80 },
+      margin: { l: isMobile() ? 140 : 200, r: 80, t: 48, b: 80 },
       height: Math.max(300, items.length * 30 + 120)
     }), plotConfig());
   }
@@ -2407,7 +2412,8 @@
       showlegend: false,
       marker: {
         color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
-        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+        line: { color: items.map(function (s) { return GROUP_COLORS[s.group]; }), width: 1.5 }
       },
       text: items.map(function (s) { return getVal(s, 'rate').toFixed(3); }),
       textposition: 'outside',
@@ -2444,7 +2450,8 @@
       showlegend: false,
       marker: {
         color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
-        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+        line: { color: items.map(function (s) { return GROUP_COLORS[s.group]; }), width: 1.5 }
       },
       text: items.map(function (s) { return formatNum(getVal(s, 'amortized_offline_comm_kb')) + ' KB'; }),
       textposition: 'outside',
@@ -2481,7 +2488,8 @@
       showlegend: false,
       marker: {
         color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
-        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; })
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+        line: { color: items.map(function (s) { return GROUP_COLORS[s.group]; }), width: 1.5 }
       },
       text: items.map(function (s) { return formatNum(getVal(s, 'amortized_offline_time_ms')) + ' ms'; }),
       textposition: 'outside',

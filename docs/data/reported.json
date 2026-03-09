@@ -1754,10 +1754,12 @@
             "server_time_ms": 1260,
             "throughput_gbps": 0.204,
             "offline_comm_mb": 3.9,
-            "server_preprocessing_time_ms": 16800
+            "server_preprocessing_time_ms": 16800,
+            "client_preprocessing_time_ms": 80
           },
           "footnotes": [
-            "SetupDB 16.8s for 256 MB database (footnote 12 in notes)."
+            "SetupDB 16.8s for 256 MB database (footnote 12 in notes).",
+            "Client setup <=80 ms (Section 4.2, p.20)."
           ]
         },
         {
@@ -1772,9 +1774,12 @@
             "response_size_kb": 2,
             "server_time_ms": 3480,
             "throughput_gbps": 0.295,
-            "offline_comm_mb": 3.9
+            "offline_comm_mb": 3.9,
+            "client_preprocessing_time_ms": 80
           },
-          "footnotes": []
+          "footnotes": [
+            "Client setup <=80 ms (Section 4.2, p.20)."
+          ]
         },
         {
           "variant": "Respire",
@@ -1789,10 +1794,12 @@
             "server_time_ms": 20840,
             "throughput_gbps": 0.393,
             "offline_comm_mb": 3.9,
-            "server_preprocessing_time_ms": 569000
+            "server_preprocessing_time_ms": 569000,
+            "client_preprocessing_time_ms": 80
           },
           "footnotes": [
-            "SetupDB 569s for 8 GB database (footnote 12 in notes)."
+            "SetupDB 569s for 8 GB database (footnote 12 in notes).",
+            "Client setup <=80 ms (Section 4.2, p.20)."
           ]
         }
       ],

@@ -154,9 +154,19 @@
     <b>Storage</b> — persistent state the client must maintain to issue queries.
   </p>
   <div class="chart-container" id="chart-offline-storage"></div>
-  <p class="desc">
-    <b>Preprocessing Time</b> — one-time offline computation cost (database encoding, hint generation, key setup).
-  </p>
+</section>
+
+<!-- 5b. Preprocessing Time -->
+<section id="preprocessing-time">
+  <h2><a href="#preprocessing-time">Preprocessing Time</a></h2>
+  <p class="desc">One-time offline computation cost (database encoding, hint generation, key setup).</p>
+  <div class="db-size-tabs">
+    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
+    <button class="db-tab" data-tier="small">1–8GB db</button>
+    <button class="db-tab" data-tier="medium">8–32GB db</button>
+    <button class="db-tab" data-tier="large">&gt;32GB db</button>
+    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
+  </div>
   <div class="chart-container" id="chart-preprocessing-time"></div>
 </section>
 
