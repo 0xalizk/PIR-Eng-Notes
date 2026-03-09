@@ -1007,6 +1007,21 @@
   // ── 5b. Preprocessing Time Bar Chart ──────────────────
   // Horizontal grouped bars: server_preprocessing_time_ms (blue-ish) and
   // client_preprocessing_time_ms (orange-ish). Log x-axis, sorted by max of the two.
+  var PREPROC_DESC = {
+    simplepir_2022: 'Build LWE hint matrix',
+    doublepir_2022: 'Build compressed LWE hints',
+    frodopir_2022: 'Server: M=A·D; Client: derive A from seed',
+    hintlesspir_2023: 'Encode DB into RLWE-friendly form',
+    respire_2024: 'Pack DB via ring packing + NTT',
+    npir_2026: 'Encode DB as NTRU polynomials',
+    incrementalpir_2026: 'Download + store incremental hint',
+    piano_2023: 'Stream DB, build PRF hint sets',
+    rms24_2024: 'Stream DB, build partition hints',
+    spiral_2022: 'Generate + upload evaluation keys',
+    onionpirv2_2025: 'Convert DB to NTT domain',
+    thorpir_2024: 'Client-dependent FHE preprocessing'
+  };
+
   function renderPreprocessingTime(data) {
     var el = document.getElementById('chart-preprocessing-time');
     if (!el) return;
@@ -1038,6 +1053,7 @@
       y: yLabels,
       x: srvVals.map(function (v) { return v || null; }),
       type: 'bar', orientation: 'h',
+      showlegend: false,
       marker: {
         color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
         opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
@@ -1048,7 +1064,8 @@
       hovertext: items.map(function (s) {
         var v = getVal(s, 'server_preprocessing_time_ms');
         if (!isPos(v)) return '';
-        return consolidatedName(s) + '<br>Server Preproc: ' + fmtTime(v) + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+        var desc = PREPROC_DESC[s.id] || '';
+        return consolidatedName(s) + (desc ? '<br><i>' + desc + '</i>' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
     });
@@ -1058,29 +1075,54 @@
       y: yLabels,
       x: cliVals.map(function (v) { return v || null; }),
       type: 'bar', orientation: 'h',
+      showlegend: false,
       marker: {
-        color: items.map(function () { return '#f59e0b'; }),
+        color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
         opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
-        pattern: { shape: '.' },
-        line: { color: '#f59e0b', width: 1.5 }
+        pattern: { shape: '/' },
+        line: { color: items.map(function (s) { return GROUP_COLORS[s.group]; }), width: 1.5 }
       },
       text: cliVals.map(function (v) { return v > 0 ? fmtTime(v) : ''; }),
       textposition: 'outside', cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'client_preprocessing_time_ms');
         if (!isPos(v)) return '';
-        return consolidatedName(s) + '<br>Client Preproc: ' + fmtTime(v) + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+        var desc = PREPROC_DESC[s.id] || '';
+        return consolidatedName(s) + (desc ? '<br><i>' + desc + '</i>' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
+    });
+
+    // Legend line 1: solid = server, hatched = client
+    traces.push({
+      name: 'Server', type: 'bar', orientation: 'h',
+      x: [null], y: [''], showlegend: true, legendgroup: 'type',
+      marker: { color: t.text }, hoverinfo: 'skip'
+    });
+    traces.push({
+      name: 'Client', type: 'bar', orientation: 'h',
+      x: [null], y: [''], showlegend: true, legendgroup: 'type',
+      marker: { color: t.text, pattern: { shape: '/' } }, hoverinfo: 'skip'
+    });
+    // Legend line 2: group colors
+    var seenGroups = {};
+    items.forEach(function (s) { seenGroups[s.group] = true; });
+    ['A', 'B', 'C', 'D', 'X'].forEach(function (g) {
+      if (!seenGroups[g]) return;
+      traces.push({
+        name: GROUP_NAMES[g], type: 'bar', orientation: 'h',
+        x: [null], y: [''], showlegend: true, legendgroup: 'group',
+        marker: { color: GROUP_COLORS[g] }, hoverinfo: 'skip'
+      });
     });
 
     Plotly.newPlot(el, traces, baseLayout('Preprocessing / Offline Computation Time', {
       barmode: 'group',
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: 'Time (ms)', type: 'log', gridcolor: t.grid },
-      legend: { orientation: 'h', x: 0, y: -0.12, font: { size: 11 } },
-      margin: { l: isMobile() ? 140 : 200, r: 80, t: 48, b: 80 },
-      height: Math.max(300, items.length * 30 + 120)
+      legend: { orientation: 'h', x: 0, y: -0.08, font: { size: 11 }, traceorder: 'normal', tracegroupgap: 4 },
+      margin: { l: isMobile() ? 140 : 200, r: 80, t: 48, b: 100 },
+      height: Math.max(300, items.length * 30 + 140)
     }), plotConfig());
   }
 
