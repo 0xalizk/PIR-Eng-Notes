@@ -3,7 +3,7 @@
   'use strict';
 
   function fetchData() {
-    return fetch('../data/reported.json')
+    return fetch('data/reported.json')
       .then(function (r) { return r.json(); })
       .then(function (raw) { return raw.schemes || raw; });
   }

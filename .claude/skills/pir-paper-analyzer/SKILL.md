@@ -1027,7 +1027,7 @@ The 34 papers in this collection primarily address **computational PIR** (cPIR) 
 
 #### reported.json metric conventions
 
-`docs/data/reported.json` is the source of truth for paper-reported benchmarks.
+`docs/reported/data/reported.json` is the source of truth for paper-reported benchmarks.
 
 **Problem:** PIR papers use inconsistent terminology for the same metrics. A paper may call server computation "online comp," "answer time," or "server time." Preprocessing may appear as "setup time," "offline computation," "hint generation," or "offline cost." You must recognize these aliases and normalize to the standard keys below — both in `*_notes.md` files and in `reported.json` entries.
 

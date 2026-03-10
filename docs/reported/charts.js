@@ -1,7 +1,7 @@
 /* ── PIR Engineering Notes — charts.js ────────────────────────────────
  *
  * Main visualization engine for the "Benching PIR (WIP)" site.
- * Renders all Plotly charts from ../data/reported.json (v2 schema).
+ * Renders all Plotly charts from data/reported.json (v2 schema).
  *
  * ── Architecture Overview ──────────────────────────────────────────
  *
@@ -173,6 +173,22 @@
   var STORAGE_NOTE_TEXT = '<br><br><i>NOTE: server-side per-client storage<br>(evaluation keys the server holds),<br>not client-side storage</i>';
   function storageNote(s) {
     return STORAGE_NOTE_IDS[s.id] ? STORAGE_NOTE_TEXT : '';
+  }
+
+  // Returns a Plotly annotation explaining † (Tier 2) and * (Tier 3) badges,
+  // or null if all items are Tier 1.
+  function tierBadgeLegend(items, t) {
+    var has2 = items.some(function (s) { return s.data_tier === 2; });
+    var has3 = items.some(function (s) { return s.data_tier === 3; });
+    if (!has2 && !has3) return null;
+    var parts = [];
+    if (has2) parts.push('\u2020 from figures/analytics');
+    if (has3) parts.push('* from asymptotics');
+    return {
+      text: '<i>' + parts.join(' &nbsp; ') + '</i>',
+      xref: 'paper', yref: 'paper', x: 0, y: 0, yanchor: 'top', yshift: -60,
+      showarrow: false, font: { size: 11, color: t.muted }
+    };
   }
 
   function isDark() {
@@ -893,12 +909,15 @@
       hoverinfo: 'text'
     });
 
-    Plotly.newPlot(el, traces, baseLayout('Server Time (ms)', {
+    var layout = baseLayout('Server Time (ms)', {
       yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: { text: 'Server Time (ms)', standoff: 20 }, type: 'log', gridcolor: t.grid },
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
       height: Math.max(350, items.length * 26 + 120)
-    }), plotConfig());
+    });
+    var badge = tierBadgeLegend(items, t);
+    if (badge) { layout.annotations = (layout.annotations || []).concat(badge); layout.margin.b = 80; }
+    Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
   // ── 4. Client Compute Bars ───────────────────────────────
@@ -912,7 +931,7 @@
     var items = data.filter(function (s) { return isPos(getVal(s, 'client_time_ms')); });
     items.sort(function (a, b) { return getVal(a, 'client_time_ms') - getVal(b, 'client_time_ms'); });
 
-    Plotly.newPlot(el, [{
+    var traces = [{
       y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); }),
       x: items.map(function (s) { return getVal(s, 'client_time_ms'); }),
       type: 'bar', orientation: 'h',
@@ -928,12 +947,16 @@
         return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
-    }], baseLayout('Client Computation Time (ms)', {
+    }];
+    var layout = baseLayout('Client Computation Time (ms)', {
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: 'Client Time (ms)', type: 'log', gridcolor: t.grid },
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
       height: Math.max(300, items.length * 30 + 100)
-    }), plotConfig());
+    });
+    var badge = tierBadgeLegend(items, t);
+    if (badge) { layout.annotations = (layout.annotations || []).concat(badge); layout.margin.b = 80; }
+    Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
   // ── 5. Offline & Storage Bar Chart ───────────────────
@@ -1003,14 +1026,17 @@
       hoverinfo: 'text'
     });
 
-    Plotly.newPlot(el, traces, baseLayout('Offline & Client Storage', {
+    var layout = baseLayout('Offline & Client Storage', {
       barmode: 'group',
       xaxis: { title: 'Size (MB)', gridcolor: t.grid },
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
       legend: { orientation: 'h', x: 0, y: -0.12, font: { size: 11 } },
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 100 },
       height: Math.max(400, items.length * 40 + 160)
-    }), plotConfig());
+    });
+    var badge = tierBadgeLegend(items, t);
+    if (badge) { badge.yshift = -70; layout.annotations = (layout.annotations || []).concat(badge); }
+    Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
   // ── 5b. Preprocessing Time Bar Chart ──────────────────
@@ -1106,14 +1132,17 @@
     var seenGroups = {};
     items.forEach(function (s) { seenGroups[s.group] = true; });
 
-    Plotly.newPlot(el, traces, baseLayout('Preprocessing / Offline Computation Time', {
+    var layout = baseLayout('Preprocessing / Offline Computation Time', {
       barmode: 'group',
       showlegend: false,
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: { text: 'Time (ms)', standoff: 20 }, type: 'log', gridcolor: t.grid },
       margin: { l: isMobile() ? 140 : 160, r: 80, t: 48, b: 50 },
       height: Math.max(300, items.length * 30 + 80)
-    }), plotConfig());
+    });
+    var badge = tierBadgeLegend(items, t);
+    if (badge) { layout.annotations = (layout.annotations || []).concat(badge); layout.margin.b = 80; }
+    Plotly.newPlot(el, traces, layout, plotConfig());
 
     // HTML legend below the chart
     var legendId = 'preproc-legend';
@@ -2458,7 +2487,7 @@
     var items = data.filter(function (s) { return isPos(getVal(s, 'rate')); });
     items.sort(function (a, b) { return getVal(b, 'rate') - getVal(a, 'rate'); });
 
-    Plotly.newPlot(el, [{
+    var traces = [{
       y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); }),
       x: items.map(function (s) { return getVal(s, 'rate'); }),
       type: 'bar', orientation: 'h',
@@ -2477,12 +2506,16 @@
           '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
-    }], baseLayout('Communication Rate (plaintext / ciphertext)', {
+    }];
+    var layout = baseLayout('Communication Rate (plaintext / ciphertext)', {
       yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: { text: 'Rate (higher = better, 1.0 = optimal)', standoff: 20 }, range: [0, 1.05], gridcolor: t.grid },
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
       height: Math.max(350, items.length * 30 + 120)
-    }), plotConfig());
+    });
+    var badge = tierBadgeLegend(items, t);
+    if (badge) { layout.annotations = (layout.annotations || []).concat(badge); layout.margin.b = 80; }
+    Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
   // ── Misc: Amortized Offline Communication Bars ─────────
@@ -2496,7 +2529,7 @@
     var items = data.filter(function (s) { return isPos(getVal(s, 'amortized_offline_comm_kb')); });
     items.sort(function (a, b) { return getVal(a, 'amortized_offline_comm_kb') - getVal(b, 'amortized_offline_comm_kb'); });
 
-    Plotly.newPlot(el, [{
+    var traces = [{
       y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); }),
       x: items.map(function (s) { return getVal(s, 'amortized_offline_comm_kb'); }),
       type: 'bar', orientation: 'h',
@@ -2515,12 +2548,16 @@
           '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
-    }], baseLayout('Amortized Offline Communication (KB/query)', {
+    }];
+    var layout = baseLayout('Amortized Offline Communication (KB/query)', {
       yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: { text: 'Amortized Offline Comm (KB/query)', standoff: 20 }, type: 'log', gridcolor: t.grid },
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
       height: Math.max(350, items.length * 30 + 120)
-    }), plotConfig());
+    });
+    var badge = tierBadgeLegend(items, t);
+    if (badge) { layout.annotations = (layout.annotations || []).concat(badge); layout.margin.b = 80; }
+    Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
   // ── Misc: Amortized Offline Time Bars ──────────────────
@@ -2534,7 +2571,7 @@
     var items = data.filter(function (s) { return isPos(getVal(s, 'amortized_offline_time_ms')); });
     items.sort(function (a, b) { return getVal(a, 'amortized_offline_time_ms') - getVal(b, 'amortized_offline_time_ms'); });
 
-    Plotly.newPlot(el, [{
+    var traces = [{
       y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); }),
       x: items.map(function (s) { return getVal(s, 'amortized_offline_time_ms'); }),
       type: 'bar', orientation: 'h',
@@ -2553,12 +2590,16 @@
           '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
-    }], baseLayout('Amortized Offline Time (ms/query)', {
+    }];
+    var layout = baseLayout('Amortized Offline Time (ms/query)', {
       yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
       xaxis: { title: { text: 'Amortized Offline Time (ms/query)', standoff: 20 }, type: 'log', gridcolor: t.grid },
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
       height: Math.max(350, items.length * 30 + 120)
-    }), plotConfig());
+    });
+    var badge = tierBadgeLegend(items, t);
+    if (badge) { layout.annotations = (layout.annotations || []).concat(badge); layout.margin.b = 80; }
+    Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
   var _activeDbTier = 'tiny';
@@ -2776,7 +2817,7 @@
     // Resolve data path: charts.js lives in reported/, data in data/
     var scriptEl = document.querySelector('script[src$="charts.js"]');
     var prefix = scriptEl ? scriptEl.getAttribute('src').replace('charts.js', '') : '';
-    fetch(prefix + '../data/reported.json')
+    fetch(prefix + 'data/reported.json')
       .then(function (r) { return r.json(); })
       .then(function (raw) {
         // clear loading indicators
@@ -2806,7 +2847,7 @@
       .catch(function (err) {
         console.error('Failed to load PIR data:', err);
         var el = document.getElementById('chart-heatmap');
-        if (el) el.innerHTML = '<p style="color:red;padding:20px">Failed to load data. Ensure data/reported.json exists.</p>';
+        if (el) el.innerHTML = '<p style="color:red;padding:20px">Failed to load data. Ensure reported/data/reported.json exists.</p>';
       });
   }
 
