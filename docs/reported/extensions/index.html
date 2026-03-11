@@ -29,6 +29,11 @@
 <section id="keyword-pir">
   <h2><a href="#keyword-pir">Keyword PIR</a></h2>
   <p class="desc">
+    Standard PIR retrieves rows by numeric index, but real applications — like looking up an Ethereum address or transaction hash — need lookup by key.
+    Keyword PIR solves this via eg cuckoo hashing.
+    Performance scales with DB size, not key-space size.
+  </p>
+  <p class="desc">
     Multi-paradigm comparison of three PIR approaches — additive HE (SealPIR),
     somewhat HE (MulPIR), and number-theoretic (Gentry-Ramzan) — applied to
     keyword-based queries (lookup by key, not index).
