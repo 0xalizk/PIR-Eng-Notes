@@ -82,108 +82,16 @@
   </div>
 </section>
 
-<!-- 2. Communication -->
-<section id="communication">
-  <h2><a href="#communication">Communication</a></h2>
-  <p class="desc">Dot size = server time (larger = slower).</p>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
-    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
-  </div>
-  <div class="chart-container" id="chart-communication"></div>
-</section>
-
-<!-- 3. Server Performance -->
-<section id="server-perf">
-  <h2><a href="#server-perf">Server Performance</a></h2>
-  <p class="subtitle">Throughput and server computation time</p>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
-    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
-  </div>
-  <div class="chart-pair">
-    <div class="chart-container" id="chart-throughput"></div>
-    <div class="chart-container" id="chart-server-time"></div>
-  </div>
-</section>
-
-<!-- 4. Client Compute -->
-<section id="client-cost">
-  <h2><a href="#client-cost">Client Compute</a></h2>
-  <p class="subtitle">Client-side computation time (only 10 schemes report this metric)</p>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
-    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
-  </div>
-  <div class="chart-container" id="chart-client-cost"></div>
-</section>
-
-<!-- 5. Offline & Storage -->
-<section id="offline-storage">
-  <h2><a href="#offline-storage">Offline &amp; Storage</a></h2>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
-    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
-  </div>
-  <details class="data-sources-toggle">
-    <summary><b>Offline</b> — init client-server data exchange before querying can begin</summary>
-    <table class="inline-table">
-      <thead><tr><th>Scheme</th><th>Who generates?</th></tr></thead>
-      <tbody>
-        <tr><td>SimplePIR, DoublePIR</td><td>Server precomputes, client downloads</td></tr>
-        <tr><td>IncrementalPIR</td><td>Server sends initial hint, client maintains updates locally</td></tr>
-        <tr><td>Respire</td><td>Client generates secret-key-dependent params and uploads to server</td></tr>
-        <tr><td>Spiral</td><td>Client uploads public params (not a traditional hint)</td></tr>
-        <tr><td>DistributionalPIR</td><td>Depends on underlying scheme, here SimplePIR-based hint (benchmarked on 38 GB Twitter DB)</td></tr>
-      </tbody>
-    </table>
-  </details>
-  <p class="desc">
-    <b>Storage</b> — persistent state the client must maintain to issue queries.
-  </p>
-  <div class="chart-container" id="chart-offline-storage"></div>
-</section>
-
-<!-- 5b. Preprocessing Time -->
-<section id="preprocessing-time">
-  <h2><a href="#preprocessing-time">Preprocessing Time</a></h2>
-  <p class="desc">One-time offline computation cost (database encoding, hint generation, key setup).</p>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
-    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
-  </div>
-  <div class="chart-container" id="chart-preprocessing-time"></div>
-</section>
-
-<!-- 6. Pareto Frontiers -->
-<section id="pareto">
-  <h2><a href="#pareto">Pareto Frontiers</a></h2>
-  <p class="desc">
-    Starred points are Pareto-optimal (no other scheme is better on all axes).
-    Purple step-line connects 2D frontiers.
-  </p>
-  <div class="pareto-links">
-    <a href="pareto/#pareto-comm-server">Communication vs Server Time</a>
-    <a href="pareto/#pareto-comm-client">Communication vs Client Time</a>
-    <a href="pareto/#pareto-comm-storage">Communication vs Client Storage</a>
-    <a href="pareto/#pareto-server-client">Server Time vs Client Time</a>
-  </div>
-</section>
+<nav class="page-nav-tiles overview-grid">
+  <a href="communication/" class="page-nav-tile">Communication</a>
+  <a href="compute/" class="page-nav-tile">Client / Server</a>
+  <a href="offline/" class="page-nav-tile">Offline / Preprocessing</a>
+  <a href="pareto/" class="page-nav-tile">Pareto Frontiers</a>
+  <a href="misc/" class="page-nav-tile">Misc Metrics</a>
+  <a href="extensions/" class="page-nav-tile">Extensions</a>
+  <a href="data_sources.html" class="page-nav-tile">Data Sources</a>
+  <a href="db_config.html" class="page-nav-tile">DB Configs</a>
+</nav>
 
 </main>
 

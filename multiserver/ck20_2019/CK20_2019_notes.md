@@ -34,7 +34,7 @@
 |-------|-------|
 | **Paper** | [Private Information Retrieval with Sublinear Online Time](https://eprint.iacr.org/2019/1075) (2019, Eurocrypt 2020) |
 | **Archetype** | Construction (theory-only) + Building-block (puncturable pseudorandom sets) + Model/definition (offline/online PIR) |
-| **PIR Category** | Group D — Client-Dependent Preprocessing |
+| **PIR Category** | Group 2b — Interactive-Hint |
 | **Security model** | Two-server non-colluding (statistical or computational); single-server (computational) |
 | **Additional assumptions** | OWF (for puncturable PRFs from GGM tree); PRGs (for computational variant); linearly homomorphic encryption + standard single-server PIR (for single-server constructions); FHE (for optimal single-server variant) |
 | **Correctness model** | Probabilistic (failure per-read <= 1/2, amplified to 2^{-λ} via λ parallel repetitions) |
@@ -49,7 +49,7 @@
 |-------|--------|
 | **Builds on** | CGKS95 (original two-server PIR); BIM04 (PIR with preprocessing — encoded database); DIO01 (server-side encoding for sublinear time); BGI14/BGI16 (distributed point functions); BW13/KPTZ13 (puncturable PRFs from GGM tree); IKOS04 (batch PIR codes) |
 | **What changed** | All prior offline/online PIR schemes require either linear online server time or extra server storage proportional to the database. CK20 introduces *puncturable pseudorandom sets* to compress the client's offline query to O(λ log n) bits while achieving sublinear online server time Õ(sqrt(n)), with servers storing only the unmodified database. |
-| **Superseded by** | Piano (2024), Plinko (2024), TreePIR (2023), and other Group D schemes improve on practical aspects (streaming preprocessing, concrete efficiency), but CK20 remains the foundational theoretical result for sublinear-online PIR without extra server storage. |
+| **Superseded by** | Piano (2024), Plinko (2024), TreePIR (2023), and other Group 2b schemes improve on practical aspects (streaming preprocessing, concrete efficiency), but CK20 remains the foundational theoretical result for sublinear-online PIR without extra server storage. |
 | **Concurrent work** | BLW17 (privately constrained PRFs for offline/online PIR with linear online time); PPY18 (private stateful information retrieval with sublinear public-key operations but linear online time) |
 
 [^1]: Abstract: "We present the first protocols for private information retrieval that allow fast (sublinear-time) database lookups without increasing the server-side storage requirements."
@@ -384,7 +384,7 @@ All columns omit poly(λ) factors and polylog(n) factors.&#8201;[^42]
 - **Puncturable pseudorandom sets as a building block:** The primitive is independently useful wherever one needs a compact representation of a pseudorandom set that can be privately punctured. Potential applications beyond PIR include anonymous credentials, private set membership, and oblivious RAM.
 - **Shift-based set derandomization:** The technique of generating multiple sets from a single base set via random shifts (Section 1.5, p.10) reduces communication from O(n log n) (sending explicit sets) to Õ(sqrt(n)), and is reusable in any scheme based on parity hints over random subsets.
 - **Sparse DPF abstraction (Appendix G):** The sparse DPF framework provides a clean interface for future constructions: any primitive satisfying the sparse DPF interface yields an offline/online PIR scheme. Improving sparse DPF key sizes would directly improve PIR communication.
-- **Hint refresh via puncture-and-replace (Section 4.1):** The multi-query scheme's technique of refreshing consumed hints by generating a new set constrained to contain the queried index (GenWith) and obtaining the new parity from the left server is reused in later Group D schemes (Piano, Plinko, TreePIR).
+- **Hint refresh via puncture-and-replace (Section 4.1):** The multi-query scheme's technique of refreshing consumed hints by generating a new set constrained to contain the queried index (GenWith) and obtaining the new parity from the left server is reused in later Group 2b schemes (Piano, Plinko, TreePIR).
 
 <a id="deployment-considerations"></a>
 
@@ -424,7 +424,7 @@ The paper lists the following open questions (Section 7, p.29):&#8201;[^43]
 
 ### Uncertainties <a href="#toc">⤴</a>
 
-- The paper uses "n" exclusively for the database size in bits (n = total bits, not N records of w bits). This is consistent with multi-server PIR conventions but differs from Group A/B/C papers that typically use N for the number of records.
+- The paper uses "n" exclusively for the database size in bits (n = total bits, not N records of w bits). This is consistent with multi-server PIR conventions but differs from Group 1a/1b/2a papers that typically use N for the number of records.
 - Remark 12 (p.18) states that the poly(λ, log n) hidden factors "can be made as small as O(λ log n)" but does not provide a worked example with concrete parameters.
 - The relationship between Construction 16 (single-query) and Construction 44 (multi-query) involves subtle changes to the hint structure: in Construction 44, the client holds m *independent* set keys rather than shifts of a single key, which changes the client storage structure and the offline communication pattern.
 - Remark 5 (p.14): Construction 4 (puncturable pseudorandom set from puncturable PRF) has imperfect correctness -- Gen may fail with negligible probability. This is handled by treating sk = bottom as a fixed set, but the security analysis must account for this.

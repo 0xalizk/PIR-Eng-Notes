@@ -1,4 +1,4 @@
-## Communication-Computation Trade-offs in PIR — Engineering Notes
+## Communication-Computation Trade-offs in PIR (KeywordPIR) — Engineering Notes
 
 <a id="toc"></a>
 
@@ -41,7 +41,7 @@
 
 | Field | Value |
 |-------|--------|
-| **Builds on** | SealPIR (Angel et al., S&P 2018, Group A); XPIR (Aguilar-Melchor et al., 2016, Group A); Gentry-Ramzan PIR (ICALP 2005); Chor et al. keyword PIR (1998); Stern's d-dimensional recursion (1998); Borodin-Moenck modular interpolation (1974) |
+| **Builds on** | SealPIR (Angel et al., S&P 2018, Group 1a); XPIR (Aguilar-Melchor et al., 2016, Group 1a); Gentry-Ramzan PIR (ICALP 2005); Chor et al. keyword PIR (1998); Stern's d-dimensional recursion (1998); Borodin-Moenck modular interpolation (1974) |
 | **What changed** | (1) Optimizes SealPIR communication by 75-80% via secret-key encryption, modulus switching, and new oblivious expansion; (2) Introduces MulPIR, which replaces additive-only recursion with multiplicative homomorphism to reduce communication for large entries; (3) Improves Gentry-Ramzan with fast modular interpolation and client-aided exponentiation, reducing server computation by up to 85%; (4) Introduces keyword PIR via simple hashing and cuckoo hashing for sparse databases |
 | **Superseded by** | OnionPIR (2021, builds on MulPIR with external products); Spiral (2022, further optimizes FHE-based PIR communication); SimplePIR/DoublePIR (2023, lattice-based with preprocessing) |
 | **Concurrent work** | SHECS-PIR (Park and Tibouchi, ESORICS 2020) — also uses GSW-style multiplicative homomorphism for PIR&#8201;[^1] |

@@ -4,7 +4,7 @@
 
   // Detect base path: works on both GitHub Pages (/PIR-Eng-Notes/) and local dev (/)
   var BASE = '/PIR-Eng-Notes/';
-  var knownDirs = ['reported/misc/', 'reported/pareto/', 'reported/db_config.html', 'reported/data_sources.html', 'reported/', 'replicated/', 'standardized/', 'misc/'];
+  var knownDirs = ['reported/communication/', 'reported/compute/', 'reported/offline/', 'reported/extensions/', 'reported/misc/', 'reported/pareto/', 'reported/db_config.html', 'reported/data_sources.html', 'reported/', 'replicated/', 'standardized/', 'misc/'];
   var p = location.pathname;
   for (var i = 0; i < knownDirs.length; i++) {
     var idx = p.indexOf(knownDirs[i]);
@@ -21,11 +21,15 @@
       path: 'reported/',
       children: [
         { label: 'Overview', anchor: '#overview' },
-        { label: 'Communication', anchor: '#communication' },
-        { label: 'Server', anchor: '#server-perf' },
-        { label: 'Client', anchor: '#client-cost' },
-        { label: 'Offline & Storage', anchor: '#offline-storage' },
-        { label: 'Preprocessing', anchor: '#preprocessing-time' },
+        { label: 'Communication', href: 'reported/communication/' },
+        { label: 'Client / Server', href: 'reported/compute/', children: [
+          { label: 'Server', anchor: '#server-perf' },
+          { label: 'Client', anchor: '#client-cost' }
+        ]},
+        { label: 'Offline / Preprocessing', href: 'reported/offline/', children: [
+          { label: 'Offline & Storage', anchor: '#offline-storage' },
+          { label: 'Preprocessing', anchor: '#preprocessing-time' }
+        ]},
         { label: 'Pareto Frontiers', href: 'reported/pareto/', children: [
           { label: 'Comm × Server', anchor: '#pareto-comm-server' },
           { label: 'Comm × Client', anchor: '#pareto-comm-client' },
@@ -34,9 +38,13 @@
           // { label: 'Comm × Storage × Client', anchor: '#pareto-3d-comm' },
           // { label: 'Server × Storage × Client', anchor: '#pareto-3d-server' }
         ]},
-        { label: 'Misc Metrics', href: 'reported/misc/', dividerAfter: true, children: [
+        { label: 'Misc Metrics', href: 'reported/misc/', children: [
           { label: 'Rate', anchor: '#rate' },
           { label: 'Amortized Offline', anchor: '#amortized-offline' }
+        ]},
+        { label: 'Extensions', href: 'reported/extensions/', dividerAfter: true, children: [
+          { label: 'Keyword PIR', anchor: '#keyword-pir' },
+          { label: 'Distributional PIR', anchor: '#distributional-pir' }
         ]},
         { label: 'Data Sources', href: 'reported/data_sources.html' },
         { label: 'DB Configs', href: 'reported/db_config.html', dividerAfter: true }
@@ -114,7 +122,7 @@
           var nestedAnchors = child.children.map(function (s) { return s.anchor; });
           var expandNested = isOnChildPage ||
             (isOnSecPage && nestedAnchors.indexOf(location.hash) !== -1);
-          html += '<a href="' + childPageUrl + '" class="nav-link nav-has-nested">' + child.label + '</a>';
+          html += '<a href="' + childPageUrl + '" class="nav-link nav-has-nested' + (isOnChildPage ? ' active' : '') + '">' + child.label + '</a>';
           html += '<div class="nav-nested-group' + (expandNested ? ' open' : '') + '">';
           child.children.forEach(function (sub) {
             var subHref = isOnChildPage ? sub.anchor : (childPageUrl + sub.anchor);
@@ -125,7 +133,8 @@
         } else {
           // Regular anchor link within section page, or cross-page href
           var childHref = child.href ? (BASE + child.href) : (isOnSecPage ? child.anchor : (sectionUrl + child.anchor));
-          html += '<a href="' + childHref + '" class="nav-link">' + child.label + '</a>';
+          var isChildActive = child.href && path === child.href;
+          html += '<a href="' + childHref + '" class="nav-link' + (isChildActive ? ' active' : '') + '">' + child.label + '</a>';
           if (child.dividerAfter) html += '<div class="divider"></div>';
         }
       });
@@ -145,6 +154,30 @@
       var group = this.nextElementSibling;
       if (group && group.classList.contains('nav-nested-group')) {
         group.classList.toggle('open');
+      }
+    });
+  });
+
+  // Highlight nav link matching current hash
+  function highlightHash() {
+    var hash = location.hash;
+    container.querySelectorAll('.nav-link').forEach(function (a) {
+      var href = a.getAttribute('href');
+      // Match anchor links on the current page
+      var isActive = hash && href && (href === hash || href.endsWith(hash));
+      a.classList.toggle('active', isActive);
+    });
+  }
+  highlightHash();
+  window.addEventListener('hashchange', highlightHash);
+
+  // Also highlight on click (for same-page anchors before hashchange fires)
+  container.querySelectorAll('.nav-link').forEach(function (a) {
+    a.addEventListener('click', function () {
+      var href = a.getAttribute('href');
+      if (href && href.charAt(0) === '#') {
+        container.querySelectorAll('.nav-link.active').forEach(function (el) { el.classList.remove('active'); });
+        a.classList.add('active');
       }
     });
   });

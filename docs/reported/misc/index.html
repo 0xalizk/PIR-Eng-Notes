@@ -31,11 +31,15 @@
     Rate = plaintext bits / response bits. Higher is better (1.0 = optimal, no expansion).
     Only schemes that explicitly report this metric are shown.
   </p>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
+  <div class="dim-tabs-container">
+    <div class="db-tab-row primary">
+      <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="tiny">&le;1GB</button>
+        <button class="dim-tab" data-value="small">1–8GB</button>
+        <button class="dim-tab" data-value="medium">8–32GB</button>
+        <button class="dim-tab" data-value="large">&gt;32GB</button>
+      </div>
+    </div>
   </div>
   <div class="chart-container" id="chart-rate"><div class="chart-loading">Loading charts...</div></div>
 </section>
@@ -49,24 +53,38 @@
 
   <h3 id="amortized-comm"><a href="#amortized-comm">Amortized Offline Communication</a></h3>
   <p class="subtitle">Offline communication cost divided by the amortization window (KB per query)</p>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
+  <div class="dim-tabs-container">
+    <div class="db-tab-row primary">
+      <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="tiny">&le;1GB</button>
+        <button class="dim-tab" data-value="small">1–8GB</button>
+        <button class="dim-tab" data-value="medium">8–32GB</button>
+        <button class="dim-tab" data-value="large">&gt;32GB</button>
+      </div>
+    </div>
   </div>
   <div class="chart-container" id="chart-amortized-offline-comm"><div class="chart-loading">Loading charts...</div></div>
 
   <h3 id="amortized-time"><a href="#amortized-time">Amortized Offline Time</a></h3>
   <p class="subtitle">Offline computation cost divided by the amortization window (ms per query)</p>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
+  <div class="dim-tabs-container">
+    <div class="db-tab-row primary">
+      <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="tiny">&le;1GB</button>
+        <button class="dim-tab" data-value="small">1–8GB</button>
+        <button class="dim-tab" data-value="medium">8–32GB</button>
+        <button class="dim-tab" data-value="large">&gt;32GB</button>
+      </div>
+    </div>
   </div>
   <div class="chart-container" id="chart-amortized-offline-time"><div class="chart-loading">Loading charts...</div></div>
 </section>
+
+<nav class="page-nav-tiles">
+  <a href="../" class="page-nav-tile home" title="Overview">&#8962;</a>
+  <a href="../pareto/" class="page-nav-tile prev">Pareto Frontiers</a>
+  <a href="../extensions/" class="page-nav-tile next">Extensions</a>
+</nav>
 
 </main>
 

@@ -34,7 +34,7 @@
 |-------|-------|
 | **Paper** | [PIR with Client-Side Preprocessing: Information-Theoretic Constructions and Lower Bounds](https://eprint.iacr.org/2024/976) (2025) |
 | **Archetype** | Theory (information-theoretic constructions + lower bounds) |
-| **PIR Category** | Group D — Client-dependent preprocessing |
+| **PIR Category** | Group 2b — Interactive-Hint |
 | **Security model** | Information-theoretic (perfect privacy against semi-honest server) |
 | **Additional assumptions** | None (information-theoretic; no computational assumptions) |
 | **Correctness model** | Probabilistic (failure prob amplifiable to negl(n) via parallel repetition); adaptive correctness achieved for 1-server constructions |
@@ -467,10 +467,10 @@ The paper identifies an explicit adaptive correctness attack against Piano [ZPSZ
 
 ### Related Papers in Collection <a href="#toc">⤴</a>
 
-- **Piano [Group D]:** OWF-based single-server preprocessing PIR with O_tilde(sqrt(n)) bandwidth and client space; this paper proves Piano's tradeoff is nearly optimal in Minicrypt and identifies an adaptive correctness attack.
-- **CK20 [Group D]:** First sublinear-server cPIR without extra server storage; introduced the puncturable pseudorandom set paradigm that this paper combines with classical IT-PIR techniques.
-- **Mughees-Ren / MIR23 [Group D]:** Practical sublinear PIR with adaptive correctness; this paper derives a naive IT construction from MIR23 (Theorem 3.2) and uses it as a baseline.
-- **WangRen [Group D]:** Proves tight space-time tradeoff ST = O(nw) for computational preprocessing PIR; this paper's lower bounds are complementary (tradeoff between client space and bandwidth rather than space and time).
+- **Piano [Group 2b]:** OWF-based single-server preprocessing PIR with O_tilde(sqrt(n)) bandwidth and client space; this paper proves Piano's tradeoff is nearly optimal in Minicrypt and identifies an adaptive correctness attack.
+- **CK20 [Group 2b]:** First sublinear-server cPIR without extra server storage; introduced the puncturable pseudorandom set paradigm that this paper combines with classical IT-PIR techniques.
+- **Mughees-Ren / MIR23 [Group 2b]:** Practical sublinear PIR with adaptive correctness; this paper derives a naive IT construction from MIR23 (Theorem 3.2) and uses it as a baseline.
+- **WangRen [Group 2b]:** Proves tight space-time tradeoff ST = O(nw) for computational preprocessing PIR; this paper's lower bounds are complementary (tradeoff between client space and bandwidth rather than space and time).
 
 <a id="uncertainties"></a>
 

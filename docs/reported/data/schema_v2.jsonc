@@ -34,12 +34,12 @@
       // ── SCHEME METADATA (one per paper/scheme) ──────────
       "id": "spiral_2022",
       "display_name": "Spiral",
-      "group": "A",
+      "group": "1a",   // 1a/1b/2a/2b/X — see taxonomy in research/README.md
       "year": 2022,
       "theory_only": false,              // true when implementation_url is null (no open-source impl)
       "implementation_url": "https://github.com/menonsamir/spiral",  // null if no open-source impl
-      "source_pdf": "Group.A.FHE.Based.PIR/spiral_2022/Spiral_stream_2022_368.pdf",
-      "notes_path": "Group.A.FHE.Based.PIR/spiral_2022/spiral_2022_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/spiral_2022/Spiral_stream_2022_368.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/spiral_2022/spiral_2022_notes.md",
 
       // Hardware used for ALL benchmarks in this paper
       // (null for theory-only schemes)
@@ -337,8 +337,8 @@
       "year": 2024,
       "theory_only": false,
       "implementation_url": "https://github.com/menonsamir/ypir",
-      "source_pdf": "Group.B.Stateless.Single.Server.PIR/ypir_2024/YPIR_2024_270.pdf",
-      "notes_path": "Group.B.Stateless.Single.Server.PIR/ypir_2024/YPIR_2024_notes.md",
+      "source_pdf": "Group.1b.Stateless.Client.Stateless.Server/ypir_2024/YPIR_2024_270.pdf",
+      "notes_path": "Group.1b.Stateless.Client.Stateless.Server/ypir_2024/YPIR_2024_notes.md",
 
       "hardware": {
         "cpu": "Intel Xeon Platinum 8375C @ 2.9 GHz",
@@ -445,8 +445,8 @@
       "year": 2024,
       "theory_only": true,
       "implementation_url": null,
-      "source_pdf": "Group.D.Client.Dependent.Preprocessing/plinko_2024/Plinko_2024_1573.pdf",
-      "notes_path": "Group.D.Client.Dependent.Preprocessing/plinko_2024/Plinko_2024_notes.md",
+      "source_pdf": "Group.2b.Interactive.Hint/plinko_2024/Plinko_2024_1573.pdf",
+      "notes_path": "Group.2b.Interactive.Hint/plinko_2024/Plinko_2024_notes.md",
 
       "hardware": null,
 
@@ -500,8 +500,8 @@
       "year": 2023,
       "theory_only": false,
       "implementation_url": "https://github.com/wuwuz/Piano-PIR-new",
-      "source_pdf": "Group.D.Client.Dependent.Preprocessing/piano_2023/Piano_2023_174.pdf",
-      "notes_path": "Group.D.Client.Dependent.Preprocessing/piano_2023/Piano_2023_notes.md",
+      "source_pdf": "Group.2b.Interactive.Hint/piano_2023/Piano_2023_174.pdf",
+      "notes_path": "Group.2b.Interactive.Hint/piano_2023/Piano_2023_notes.md",
 
       "hardware": {
         "cpu": "AWS m5.8xlarge",

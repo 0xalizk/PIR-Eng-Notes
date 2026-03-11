@@ -34,7 +34,7 @@
 |-------|-------|
 | **Paper** | [TreePIR: Sublinear-Time and Polylog-Bandwidth Private Information Retrieval from DDH](https://eprint.iacr.org/2023/204) (2023) |
 | **Archetype** | Construction (primary) + Building-block (secondary: weak privately puncturable PRF / wpPRF) |
-| **PIR Category** | **Group D** -- Client-dependent preprocessing, 2-server non-colluding |
+| **PIR Category** | **Group 2b** — Interactive-Hint, 2-server non-colluding |
 | **Security model** | Semi-honest 2-server non-colluding&#8201;[^1] |
 | **Additional assumptions** | OWF (for wpPRF / TreePIR base); DDH (only for the polylog-bandwidth variant via Dottling et al. single-server PIR recursion)&#8201;[^2] |
 | **Correctness model** | Probabilistic (failure prob ≤ negl(λ)); deterministic variant via shift optimization (Appendix A.1)&#8201;[^3] |
@@ -59,7 +59,7 @@
 |-------|--------|
 | **Builds on** | Corrigan-Gibbs and Kogan (EUROCRYPT 2020) [15] (PRP-PIR model); Kogan and Corrigan-Gibbs (Checklist) [33] (puncturable pseudorandom sets); Shi et al. (CRYPTO 2021) [43] (privately puncturable PRFs for PIR); GGM PRF construction [23] |
 | **What changed** | Prior client-preprocessing PIR schemes either required O(N log N) client storage (Checklist [33]), O(sqrt(N) log N) bandwidth (PRP-PIR [15]), or heavy cryptographic machinery (Shi et al. [43] used LWE-based privately puncturable PRFs with estimated >400 MB communication). TreePIR introduces weak privately puncturable PRFs (wpPRFs), a new primitive built from simple GGM-tree PRFs requiring only OWF, achieving O(sqrt(N)) client storage and O(sqrt(N)) bandwidth with O(sqrt(N) log N) server time.&#8201;[^5] |
-| **Superseded by** | N/A (as of 2023; subsequent work includes Piano [Group D], SinglePass [Group D], Plinko [Group D]) |
+| **Superseded by** | N/A (as of 2023; subsequent work includes Piano [Group 2b], SinglePass [Group 2b], Plinko [Group 2b]) |
 | **Concurrent work** | N/A |
 
 [^5]: Figure 1 (p.4): Comparison table shows TreePIR achieves O(sqrt(N) log N) server time, O(sqrt(N) log N) client storage, O(sqrt(N)) bandwidth from OWF; or O(sqrt(N) log N) server time, O(sqrt(N)) client storage, O(polylog N) bandwidth from DDH. The Shi et al. scheme has the big-O notation hiding factors very large in the security parameter.
@@ -439,11 +439,11 @@ Query time amortized over 2000 queries.&#8201;[^37]
 
 ### Related Papers in Collection <a href="#toc">⤴</a>
 
-- **CK20 [Group D]:** First sublinear-server cPIR; uses puncturable pseudorandom sets from standard puncturable PRFs. TreePIR's wpPRF is a simpler alternative achieving similar functionality from weaker assumptions.
-- **Piano [Group D]:** PRF-only practical sublinear PIR; single-server model (different from TreePIR's 2-server). Uses PRF-based partitioned sets without private puncturing.
-- **Checklist [Group D]:** Compared directly in benchmarks. Uses puncturable pseudorandom sets with O(N log N) client storage. TreePIR achieves 8,190x less client storage.
-- **SinglePass [Group D]:** 2-server scheme with streaming preprocessing (single-pass). Uses permutations, not PRFs. Different design philosophy from TreePIR.
-- **Spiral [Group A]:** Used as the recursion partner in TreePIR + SPIRAL benchmarks. Provides polylog-bandwidth single-server PIR on the sqrt(N)-element sub-database.
+- **CK20 [Group 2b]:** First sublinear-server cPIR; uses puncturable pseudorandom sets from standard puncturable PRFs. TreePIR's wpPRF is a simpler alternative achieving similar functionality from weaker assumptions.
+- **Piano [Group 2b]:** PRF-only practical sublinear PIR; single-server model (different from TreePIR's 2-server). Uses PRF-based partitioned sets without private puncturing.
+- **Checklist [Group 2b]:** Compared directly in benchmarks. Uses puncturable pseudorandom sets with O(N log N) client storage. TreePIR achieves 8,190x less client storage.
+- **SinglePass [Group 2b]:** 2-server scheme with streaming preprocessing (single-pass). Uses permutations, not PRFs. Different design philosophy from TreePIR.
+- **Spiral [Group 1a]:** Used as the recursion partner in TreePIR + SPIRAL benchmarks. Provides polylog-bandwidth single-server PIR on the sqrt(N)-element sub-database.
 
 ---
 

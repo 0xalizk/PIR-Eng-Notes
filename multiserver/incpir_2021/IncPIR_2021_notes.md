@@ -37,7 +37,7 @@
 |-------|-------|
 | **Paper** | [Incremental Offline/Online PIR (extended version)](https://eprint.iacr.org/2021/1438) (2021) |
 | **Archetype** | Construction + Update/maintenance |
-| **PIR Category** | Group D — Client-Dependent Preprocessing |
+| **PIR Category** | Group 2b — Interactive-Hint |
 | **Security model** | 2-server non-colluding, semi-honest |
 | **Additional assumptions** | OWF (for PRF/PRP instantiation); non-collusion between offline and online servers |
 | **Correctness model** | Probabilistic (failure probability grows over DB mutations; see Correctness Analysis) |
@@ -50,9 +50,9 @@
 
 | Field | Value |
 |-------|--------|
-| **Builds on** | Corrigan-Gibbs and Kogan (CK) [Group D] two-server offline/online PIR scheme [^1]; Shi, Aqeel, Chandrasekaran, and Maggs (SACM) [Group D] puncturable PRS-based scheme [^2] |
+| **Builds on** | Corrigan-Gibbs and Kogan (CK) [Group 2b] two-server offline/online PIR scheme [^1]; Shi, Aqeel, Chandrasekaran, and Maggs (SACM) [Group 2b] puncturable PRS-based scheme [^2] |
 | **What changed** | CK and SACM assume immutable databases; all existing offline/online PIR schemes require complete repreprocessing from scratch when the database mutates. IncPIR introduces *incremental preprocessing* that updates existing hints at cost proportional to the number of mutations m, not the database size n. The key technical contribution is an *incremental pseudorandom set* (PRS) that extends a compressed set representation to new database ranges without re-sampling from scratch. |
-| **Superseded by** | IncrementalPIR (2026) [Group C] addresses single-server incremental preprocessing for SimplePIR but in a fundamentally different model (LWE-based, not XOR/set-based) |
+| **Superseded by** | IncrementalPIR (2026) [Group 2a] addresses single-server incremental preprocessing for SimplePIR but in a fundamentally different model (LWE-based, not XOR/set-based) |
 | **Concurrent work** | Checklist [40] (Kogan and Corrigan-Gibbs, USENIX Security 2021) addresses additions via ORAM-inspired bucket splitting; fundamentally different approach |
 
 [^1]: Section 4 (p.5): "We start by describing the CK protocol and then we describe our approach to make its preprocessing incremental."
@@ -486,11 +486,11 @@ Client local storage grows over time due to accumulated auxiliary information in
 
 ### Related Papers in Collection <a href="#toc">⤴</a>
 
-- **CK (Corrigan-Gibbs & Kogan, 2020) [Group D]:** Base scheme that IncPIR makes incremental. CK introduces the offline/online model with puncturable pseudorandom sets.
-- **SACM (Shi et al., 2021) [Group D]:** Alternative base scheme; IncPIR provides an incremental version in Appendix E, but it is not yet practical.
-- **Checklist (Kogan & Corrigan-Gibbs, 2021) [Group D]:** Concurrent work addressing database additions via ORAM-inspired bucket splitting. Fundamentally different approach: Checklist uses exponentially-growing buckets and requires the client to query log(n) buckets.
-- **Piano (2023) [Group D]:** Later single-server sublinear PIR with PRF-based sets; could potentially benefit from IncPIR's hypergeometric set extension technique.
-- **IncrementalPIR (2026) [Group C]:** Later work addressing incremental preprocessing for SimplePIR in the single-server model; cites IncPIR as inspiration for the multi-server incremental definition.
+- **CK (Corrigan-Gibbs & Kogan, 2020) [Group 2b]:** Base scheme that IncPIR makes incremental. CK introduces the offline/online model with puncturable pseudorandom sets.
+- **SACM (Shi et al., 2021) [Group 2b]:** Alternative base scheme; IncPIR provides an incremental version in Appendix E, but it is not yet practical.
+- **Checklist (Kogan & Corrigan-Gibbs, 2021) [Group 2b]:** Concurrent work addressing database additions via ORAM-inspired bucket splitting. Fundamentally different approach: Checklist uses exponentially-growing buckets and requires the client to query log(n) buckets.
+- **Piano (2023) [Group 2b]:** Later single-server sublinear PIR with PRF-based sets; could potentially benefit from IncPIR's hypergeometric set extension technique.
+- **IncrementalPIR (2026) [Group 2a]:** Later work addressing incremental preprocessing for SimplePIR in the single-server model; cites IncPIR as inspiration for the multi-server incremental definition.
 
 <a id="uncertainties"></a>
 

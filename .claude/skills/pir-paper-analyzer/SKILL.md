@@ -17,31 +17,27 @@ Before reading, determine the paper's **group** and **archetype** to route yours
 
 | Group | Notation focus | De-prioritize | Reading notes |
 |-------|---------------|---------------|---------------|
-| **A — FHE-based** | §3.1 (Lattice/FHE) | §3.2, §3.3 | Full FHE template. Pre-2017 papers (XPIR) may use NTRU or additive-only HE — skip post-2017 notation rows (RGSW, gadget decomposition, automorphisms) if N/A. |
-| **B — Stateless single-server** | §3.1 (Lattice/FHE) | §3.2, §3.3 | Identify sub-model first (see below). |
-| **C — Client-independent preprocessing** | §3.1 (often plain LWE) | §3.2, §3.3 | Many use plain LWE — skip RLWE/GSW notation if so. DEPIR papers (BarelyDoublyEfficient) are theory/feasibility results. |
-| **D — Client-dependent preprocessing** | §3.2 (PRF/symmetric) | §3.1 (unless paper uses FHE) | PRF-first; use §3.7b for Group D parameters. **Not all Group D schemes have probabilistic correctness** — check whether deterministic (SinglePass, WangRen) or probabilistic (Piano, RMS24, CK20). |
+| **1a — Stateless Client, Stateful Server** | §3.1 (Lattice/FHE) | §3.2, §3.3 | Server caches per-client eval keys. Full FHE template. Pre-2017 papers (XPIR) may use NTRU or additive-only HE — skip post-2017 notation rows (RGSW, gadget decomposition, automorphisms) if N/A. Includes both BFV/BGV/Regev+GSW eval-key schemes and schemes that upload eval keys (WhisPIR, Respire, Pirouette, NPIR). |
+| **1b — Stateless Client, Stateless Server** | §3.1 (Lattice/FHE) | §3.2, §3.3 | No per-client state on either side. Hintless schemes (HintlessPIR, YPIR, InsPIRe, VIA) — no offline communication at all. |
+| **2a — Download-Hint** | §3.1 (often plain LWE) | §3.2, §3.3 | Client downloads server-computed global hint. Many use plain LWE — skip RLWE/GSW notation if so. DEPIR papers (BarelyDoublyEfficient) are theory/feasibility results. Includes FrodoPIR (plain LWE with global hint). |
+| **2b — Interactive-Hint** | §3.2 (PRF/symmetric) | §3.1 (unless paper uses FHE) | Bidirectional hint generation, sublinear server. PRF-first; use §3.7b for Group 2b parameters. **Not all Group 2b schemes have probabilistic correctness** — check whether deterministic (SinglePass, WangRen) or probabilistic (Piano, RMS24, CK20). Includes ThorPIR (client-dependent FHE preprocessing). |
 | **X — Extensions** | Varies — see per-paper routing below | Check archetype first | Per-paper routing: **KeywordPIR** → §3.1 + number-theoretic; **DistributionalPIR** → §3.1 + §3.6 |
 
-**Group B sub-models** (identify during Pass 0):
+**Group 1a/1b distinction** (identify during Pass 0):
 
-| Sub-model | Offline communication | Examples |
-|-----------|----------------------|----------|
-| **Hintless** | None — no offline phase at all | YPIR, HintlessPIR |
-| **CRS / query-bundled** | Keys/parameters from CRS or sent per-query | WhisPIR, InsPIRe |
-| **Public-parameter upload** | Client sends public key material offline (not secret-dependent) | NPIR, Spiral |
-| **Client-hint upload** | Client uploads secret-key-dependent evaluation keys offline | Pirouette, VIA-C, Respire |
+| Question | If yes → | If no → |
+|----------|----------|---------|
+| Does the server store per-client state (eval keys, secret-key-dependent material) across queries? | **1a** (Stateful Server) | Continue below |
+| Is there any offline communication at all? | Probably **2a** or **2b** (see preprocessing groups) | **1b** (Stateless Server) |
 
 ### Cross-group filing exceptions
 
-Some papers are filed in one group but functionally belong to another. Route by function, not directory:
+Some papers may sit near group boundaries. Route by function, not directory:
 
 | Paper | Filed in | Route as | Reason |
 |-------|----------|----------|--------|
-| FrodoPIR | Group A | **Group C** | Plain LWE with client-independent global hint |
-| ThorPIR (FHEPIR_2024) | Group A | **Group A + D** | Client-dependent FHE preprocessing |
-| VIA-C variant | Group B | **Group B/C border** | Has offline communication (client-hint upload) |
-| BarelyDoublyEfficient | Group C | **Group C (theory)** | DEPIR feasibility result — no implementation |
+| VIA-C variant | Group 1b | **Group 1a/2a border** | Has offline communication (client-hint upload) |
+| BarelyDoublyEfficient | Group 2a | **Group 2a (theory)** | DEPIR feasibility result — no implementation |
 
 ### Step 2 — Classify the archetype (§1) and select reading path (§2)
 
@@ -141,7 +137,7 @@ Many filenames use community-assigned names that do not appear in the paper. Alw
 |------|-------------|-----------------|
 | **0 — Structure scan** | Pages 1–2 (expand to pages 5, 10, 15 if section headings not visible — common for papers with 5+ page introductions) | Section headings, page ranges, total length, appendix length. Plan which pages to read for each pass. |
 | **1 — Abstract + Intro** | Page 1 through end of Section 1 (may be 2–12 pages; theory papers and papers with technical overviews have long introductions — read the full intro) | Scheme name, year, core contribution, claimed improvements, threat model. **Toy protocol / technical overview:** Look for sections titled "Technical Overview," "Our Techniques," "Intuition," or "Warmup." Read these carefully — they are often the most accessible description of the construction and explain WHY each design decision was made. Extract toy protocols as standalone mini-constructions. |
-| **2 — Background + Building Blocks** | From start of background/preliminaries section through start of core construction. Look for sections titled "Preliminaries," "Background," "Building Blocks," "Our Techniques," "Definitions," or equivalent. Include novel subroutines between preliminaries and main construction. For "Box" / modular presentations, scan Box interfaces during this pass. | Notation definitions, cryptographic building blocks, PIR definition used, novel sub-protocols. For PRF-only Group D papers with no "Preliminaries" section, merge Pass 2 into Pass 1. |
+| **2 — Background + Building Blocks** | From start of background/preliminaries section through start of core construction. Look for sections titled "Preliminaries," "Background," "Building Blocks," "Our Techniques," "Definitions," or equivalent. Include novel subroutines between preliminaries and main construction. For "Box" / modular presentations, scan Box interfaces during this pass. | Notation definitions, cryptographic building blocks, PIR definition used, novel sub-protocols. For PRF-only Group 2b papers with no "Preliminaries" section, merge Pass 2 into Pass 1. |
 | **3 — Evaluation** | **Locate by section title** — search for "Evaluation," "Experiments," "Implementation," "Performance," "Benchmarks," or "Comparison." Do NOT rely on page position. If no evaluation section exists, extract analytical estimates from theorem statements and inline text. | Performance tables, parameter choices, benchmark hardware, comparison data |
 | **4 — Core scheme** | Remaining construction/protocol sections | Algorithms (pseudocode), data structures, protocol phases, security claims |
 
@@ -269,9 +265,9 @@ For papers whose Related Work section exceeds 1.5 pages, scan for:
 
 For complex math (nested fractions, multi-level subscripts, decorated operators), the rendered page image is authoritative — the text-extraction layer may garble these. For simple expressions (single-level subscripts, standard operators), text extraction is reliable. When an expression looks syntactically incomplete, cross-reference against surrounding text and flag in ## Uncertainties.
 
-**Group-based routing:** Consult §0 to determine which subsections to read. Group A/B/C papers primarily need §3.1. Group D papers primarily need §3.2. Theory/survey papers may need §3.3. All papers benefit from §3.4 and §3.7.
+**Group-based routing:** Consult §0 to determine which subsections to read. Group 1a/1b/2a papers primarily need §3.1. Group 2b papers primarily need §3.2. Theory/survey papers may need §3.3. All papers benefit from §3.4 and §3.7.
 
-### 3.1 Lattice/FHE notation (Groups A, B, most of C)
+### 3.1 Lattice/FHE notation (Groups 1a, 1b, most of 2a)
 
 | Symbol class | Convention | Examples & context |
 |-------------|-----------|-------------------|
@@ -299,7 +295,7 @@ For complex math (nested fractions, multi-level subscripts, decorated operators)
 
 **Pre-2017 papers (XPIR):** May use NTRU, additive-only homomorphism, modulus chains (not gadget decomposition), and Hermite factor security estimation (not Lattice Estimator). Skip post-2017 notation rows if N/A.
 
-### 3.2 PRF/symmetric-key notation (Group D, some Group C)
+### 3.2 PRF/symmetric-key notation (Group 2b, some Group 2a)
 
 | Symbol class | Convention | Examples & context |
 |-------------|-----------|-------------------|
@@ -337,7 +333,7 @@ For complex math (nested fractions, multi-level subscripts, decorated operators)
 ### 3.4 Complexity notation
 
 - **Standard Big-O:** O(N), O(√N), O(N · poly(λ))
-- **O_λ():** Hides poly(λ) factors. Definition: f(n,λ) = O_λ(g(n)) means f(n,λ) = O(g(n) · poly(λ)). Common in Group D.
+- **O_λ():** Hides poly(λ) factors. Definition: f(n,λ) = O_λ(g(n)) means f(n,λ) = O(g(n) · poly(λ)). Common in Group 2b.
 - **Soft-O:** Õ(f) = O(f · polylog(f)). WARNING: some papers define Õ as hiding polylog(n) rather than polylog(f). Always check the paper's definition. Also Ω̃ for lower bounds.
 - **Concrete:** "64 KB query", "3.6× response overhead", "149 MB/s throughput"
 - Always note whether asymptotic expressions hide poly(λ) or polylog factors.
@@ -365,7 +361,7 @@ For complex math (nested fractions, multi-level subscripts, decorated operators)
 
 ### 3.7 Critical parameters to record
 
-#### 3.7a — FHE-based schemes (Groups A, B, most of C)
+#### 3.7a — FHE-based schemes (Groups 1a, 1b, most of 2a)
 
 For every scheme, extract if stated:
 - Ring dimension **n** or **d** (e.g., 2048, 4096, 8192)
@@ -380,7 +376,7 @@ For every scheme, extract if stated:
 - **Packing parameters** — how database elements map to plaintext slots (column-wise vs. row-wise for BFV SIMD; packing ratio for Respire/InsPIRe; packing number φ and column count ℓ for NPIR)
 - **Interpolation degree / folding factor** (for InsPIRe and similar schemes)
 
-#### 3.7b — PRF/symmetric-key schemes (Group D)
+#### 3.7b — PRF/symmetric-key schemes (Group 2b)
 
 - **Set size** |S| — number of DB entries per pseudorandom set
 - **Number of sets** Q — total hint entries / amortization window
@@ -498,7 +494,7 @@ Aim for **15–30 footnotes per construction paper** (fewer for short/theory pap
 |-------|-------|
 | **Paper** | [<Title>](<ePrint or arXiv URL>) (<Year>) |
 | **Archetype** | <Primary (+ secondary archetypes) — see §1> |
-| **PIR Category** | <Group letter and name — see §7 Taxonomy> |
+| **PIR Category** | <Group ID and name — see §7 Taxonomy> |
 | **Security model** | <e.g., Semi-honest single-server / Malicious / 2-server non-colluding / Information-theoretic> |
 | **Additional assumptions** | <e.g., Circular security / KDM / ROM / CRS model / none> |
 | **Correctness model** | <Deterministic / Probabilistic (failure prob ≤ negl(κ)) / Conditional (requires non-adaptive queries) / Occasional (constant failure, amplifiable) / Probabilistic (failure grows over Q queries) / Distribution-dependent / Inherited from base scheme> |
@@ -720,7 +716,7 @@ _For distributional PIR and similar models._
 | Throughput | — | <e.g., 149 MB/s> | Online |
 | Response overhead | <e.g., O(1)> | <e.g., 3.6×> | — |
 
-### Preprocessing metrics (include for Groups C, D, and schemes with offline phases)
+### Preprocessing metrics (include for Groups 2a, 2b, and schemes with offline phases)
 
 _Note: "Server preprocessing" here means PIR-specific preprocessing (hint generation), distinct from general DB encoding (NTT conversion, matrix layout) which all schemes may have._
 
@@ -733,7 +729,7 @@ _Note: "Server preprocessing" here means PIR-specific preprocessing (hint genera
 | Amortized offline/query | <e.g., O(√N)> | <e.g., 12 ms> | Amortized over Q = <window> queries |
 | Client persistent storage | <e.g., O(√N)> | <e.g., 16 MB> | — |
 
-### Preprocessing Characterization (for Group D and streaming schemes)
+### Preprocessing Characterization (for Group 2b and streaming schemes)
 
 | Aspect | Value |
 |--------|-------|
@@ -742,7 +738,7 @@ _Note: "Server preprocessing" here means PIR-specific preprocessing (hint genera
 | **Number of DB passes** | <e.g., 1> |
 | **Hint refresh mechanism** | <Pipelining / Full re-download / Incremental> |
 
-### FHE-specific metrics (include for Groups A, B, and FHE-based schemes)
+### FHE-specific metrics (include for Groups 1a, 1b, and FHE-based schemes)
 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
@@ -950,7 +946,7 @@ _List with status if known from later papers in the collection._
 ## Commentary / Author Reflections (if present)
 
 ## Historical Significance
-_Which results became foundations for modern schemes in Groups A–D._
+_Which results became foundations for modern schemes in Groups 1a–2b._
 ```
 
 ---
@@ -960,46 +956,46 @@ _Which results became foundations for modern schemes in Groups A–D._
 ### 7.1 Scope
 
 The 34 papers in this collection primarily address **computational PIR** (cPIR) — security from computational hardness assumptions. Key exceptions:
-- **IshaiShiWichs (Group D):** Proves information-theoretic constructions and lower bounds (perfect privacy, no computational assumptions).
-- **TreePIR, SinglePass, CK20 (Group D):** Use **two-server non-colluding** models alongside or instead of single-server.
+- **IshaiShiWichs (Group 2b):** Proves information-theoretic constructions and lower bounds (perfect privacy, no computational assumptions).
+- **TreePIR, SinglePass, CK20 (Group 2b):** Use **two-server non-colluding** models alongside or instead of single-server.
 
-### 7.2 Taxonomy (5 groups)
+### 7.2 Taxonomy (5 groups — client state architecture)
+
+The taxonomy is organized by **client state architecture**, not cryptographic technique. The FHE/lattice vs PRF distinction still matters for notation and reading strategy (see §0, §3) but does not determine group membership.
 
 | Group | Key property | Representative schemes |
 |-------|-------------|----------------------|
-| **A — FHE/HE-based** | Server computes homomorphically on the client's encrypted query against the plaintext database. Includes BFV, BGV, GSW, NTRU, and Regev+GSW composition — not limited to "fully" homomorphic encryption. | XPIR, SealPIR, MulPIR, OnionPIR, OnionPIRv2, CwPIR, FastPIR/Addra, Spiral |
-| **B — Stateless single-server** | No persistent per-client state on the **client** between queries. Server may store ephemeral per-query evaluation keys but NOT persistent per-client state. **Sub-models:** *Hintless* (no offline comm: YPIR, HintlessPIR), *CRS/query-bundled* (keys from CRS or per-query: WhisPIR, InsPIRe), *Public-parameter upload* (public key material offline: NPIR), *Client-hint upload* (secret-key-dependent keys offline: Pirouette, VIA-C, Respire). | HintlessPIR, YPIR, Respire, WhisPIR, Pirouette, InsPIRe, NPIR, VIA |
-| **C — Client-independent preprocessing** | Server generates one global hint shared by all clients ("global preprocessing"). Client downloads it once. DEPIR papers (BarelyDoublyEfficient) achieve sublinear server computation — currently theoretical. | SimplePIR, DoublePIR, FrodoPIR, VeriSimplePIR, IncrementalPIR |
-| **D — Client-dependent preprocessing** | Each client gets a personalized offline hint. Includes both single-server and two-server schemes. Not all Group D schemes have probabilistic correctness (SinglePass, WangRen are deterministic). | Piano, Plinko, TreePIR (2-server), CK20 (2-server+1-server), IncPIR (2-server), SinglePass (2-server), WangRen, IshaiShiWichs, RMS24 |
+| **1a — Stateless Client, Stateful Server** | Client is stateless between queries; server caches per-client evaluation keys or secret-key-dependent material. Includes BFV, BGV, GSW, NTRU, and Regev+GSW composition schemes that upload eval keys. | XPIR, SealPIR, MulPIR, OnionPIR, OnionPIRv2, CwPIR, FastPIR/Addra, Spiral, WhisPIR, Respire, Pirouette, NPIR |
+| **1b — Stateless Client, Stateless Server** | No per-client state on either side. No offline communication at all. Hintless schemes operating in CRS or random oracle model. | HintlessPIR, YPIR, InsPIRe, VIA |
+| **2a — Download-Hint** | Client downloads a server-computed global hint shared by all clients. Many use plain LWE. DEPIR papers (BarelyDoublyEfficient) achieve sublinear server computation — currently theoretical. | SimplePIR, DoublePIR, FrodoPIR, VeriSimplePIR, IncrementalPIR, BarelyDoublyEfficient |
+| **2b — Interactive-Hint** | Bidirectional hint generation; each client gets a personalized offline hint. Sublinear server computation. Includes both single-server and two-server schemes. Not all Group 2b schemes have probabilistic correctness (SinglePass, WangRen are deterministic). Includes ThorPIR (client-dependent FHE preprocessing). | Piano, Plinko, TreePIR (2-server), CK20 (2-server+1-server), IncPIR (2-server), SinglePass (2-server), WangRen, IshaiShiWichs, RMS24, ThorPIR |
 | **X — Extensions** | Keyword PIR, symmetric PIR, distributional PIR, model-defining papers, foundational surveys, and multi-contribution comparison papers | SealPIR/KeywordPIR, DistributionalPIR |
 
 **Key concept — DEPIR:** Doubly-Efficient PIR achieves sublinear server computation via preprocessing. BarelyDoublyEfficient is the first from plain LWE in the CRS model (a theory/feasibility result, not yet practical).
 
-**Server preprocessing vs PIR preprocessing:** "Server preprocessing" (NTT conversion, database encoding) is present in almost all PIR schemes. This is distinct from PIR-specific preprocessing: *client-independent* (Group C global hint), *client-dependent* (Group D per-client hints), and *offline communication* (Group B client uploads). Do not conflate them.
+**Server preprocessing vs PIR preprocessing:** "Server preprocessing" (NTT conversion, database encoding) is present in almost all PIR schemes. This is distinct from PIR-specific preprocessing: *download-hint* (Group 2a global hint), *interactive-hint* (Group 2b per-client hints), and *eval-key upload* (Group 1a client uploads). Do not conflate them.
 
-**CRS model:** Several Group B papers (HintlessPIR, YPIR, InsPIRe, BarelyDoublyEfficient) operate in the Common Reference String model, where a trusted setup produces public parameters. This is distinct from the random oracle model (used by YPIR for Fiat-Shamir).
+**CRS model:** Several Group 1b papers (HintlessPIR, YPIR, InsPIRe) and BarelyDoublyEfficient (Group 2a) operate in the Common Reference String model, where a trusted setup produces public parameters. This is distinct from the random oracle model (used by YPIR for Fiat-Shamir).
 
 **Cross-group notes:**
-- FrodoPIR is filed in Group A but uses plain LWE with client-independent preprocessing — functionally Group C.
-- ThorPIR (FHEPIR_2024_482) is filed in Group A but its contribution is client-dependent FHE preprocessing — functionally Group D.
-- VIA-C has offline communication, straddling Group B and Group C.
+- VIA-C has offline communication (client-hint upload), straddling Group 1b and Group 1a/2a.
 
 ### 7.3 Scheme evolution (key lineages)
 
-**FHE-based (Group A):**
+**FHE-based eval-key schemes (Group 1a):**
 - **XPIR lineage:** XPIR-2014 (Doroz et al., NTRU-based PIR, ePrint 2014/232) and XPIR-2016 (Aguilar-Melchor et al., Ring-LWE-based system with auto-optimization, ePrint 2014/1025) are separate papers. XPIR-2016 was the first practical cPIR system with configurable parameters.
 - **Selection-vector branch:** SealPIR (2017, paradigm shift: query compression via BFV oblivious expansion) → MulPIR (2019, GSW-based compressible FHE for high communication rate, has concrete parameter analysis but no running implementation) → OnionPIR (2021, external products for noise control, first to achieve <1 second at scale) → OnionPIRv2 (2025, engineering-optimized with multi-base decomposition and NTT-domain DB).
 - **Regev+GSW composition branch:** Gentry-Halevi (2019, theoretical) → Spiral (2022, practical ciphertext translation, 4 variants with Pareto-optimal tradeoffs).
 - **Equality-operator branch:** CwPIR (2022, constant-weight equality operators, enables practical single-round keyword PIR — orthogonal to the selection-vector line). **Note:** FastPIR/Addra (2021) uses one-hot selection vectors (NOT equality operators) — it is a system paper embedding a BFV-based PIR scheme, distinct from CwPIR.
 - **NTRU-based sub-lineage:** XPIR-2014 (NTRU) → ... → NPIR (2025, NTRU packing for high communication rate).
 
-**Two fundamental approaches within Group A:**
+**Two fundamental approaches within Group 1a:**
 1. **Selection-vector communication:** Client sends encrypted selection vector, expanded via oblivious expansion on server (SealPIR, MulPIR, OnionPIR, FastPIR/Addra).
 2. **Equality-operator computation:** Server computes selection vector using encrypted equality operators against each DB identifier (CwPIR). Naturally supports keyword PIR without extra rounds.
 
-**Preprocessing elimination (Groups B/C):** SimplePIR (2022, 10 GB/s via plain LWE) → DoublePIR (2022, smaller hints) → HintlessPIR (2023, eliminates hint via composable RLWE preprocessing, introduces LinPIR) → YPIR (2024, eliminates offline comm via CDKS packing) → Respire (2024, subring techniques for small records) → VIA (2025, DMux-CMux replaces coefficient expansion). Branch from Spiral: WhisPIR (2024, BGV-based, builds on Spiral not SimplePIR). InsPIRe (2025, novel ring packing InspiRING). NPIR (2025, NTRU-based packing). Pirouette (2025, 36-byte queries via high-precision bit decomposition).
+**Hintless / download-hint evolution (Groups 1b/2a):** SimplePIR (2022, Group 2a, 10 GB/s via plain LWE) → DoublePIR (2022, Group 2a, smaller hints) → HintlessPIR (2023, Group 1b, eliminates hint via composable RLWE preprocessing, introduces LinPIR) → YPIR (2024, Group 1b, eliminates offline comm via CDKS packing) → Respire (2024, Group 1a, subring techniques for small records) → VIA (2025, Group 1b, DMux-CMux replaces coefficient expansion). Branch from Spiral: WhisPIR (2024, Group 1a, BGV-based, builds on Spiral not SimplePIR). InsPIRe (2025, Group 1b, novel ring packing InspiRING). NPIR (2025, Group 1a, NTRU-based packing). Pirouette (2025, Group 1a, 36-byte queries via high-precision bit decomposition).
 
-**Sublinear server (Group D):** CK20 (2019, first sublinear-server cPIR without extra server storage, theory-only, puncturable pseudorandom sets) → Piano (2023, PRF-only, first practical sublinear) → Plinko (2024, invertible PRFs, worst-case O̅(1) updates, theory-only). TreePIR (2023, 2-server, weak privately puncturable PRFs — NOT DPFs, NOT equivalent to puncturable PRFs). SinglePass (2024, 2-server, single-pass streaming preprocessing, permutation-based — NOT PRF-based). RMS24 (2024, dummy subsets, standard correctness). WangRen (2024, tight space-time tradeoff ST = O(nw), relocation data structure, theory-only). IshaiShiWichs (2024, information-theoretic constructions + lower bounds).
+**Sublinear server (Group 2b):** CK20 (2019, first sublinear-server cPIR without extra server storage, theory-only, puncturable pseudorandom sets) → Piano (2023, PRF-only, first practical sublinear) → Plinko (2024, invertible PRFs, worst-case O̅(1) updates, theory-only). TreePIR (2023, 2-server, weak privately puncturable PRFs — NOT DPFs, NOT equivalent to puncturable PRFs). SinglePass (2024, 2-server, single-pass streaming preprocessing, permutation-based — NOT PRF-based). RMS24 (2024, dummy subsets, standard correctness). WangRen (2024, tight space-time tradeoff ST = O(nw), relocation data structure, theory-only). IshaiShiWichs (2024, information-theoretic constructions + lower bounds). ThorPIR (2024, client-dependent FHE preprocessing).
 
 **Verifiable/incremental:** VeriSimplePIR (2024, adds verifiability to SimplePIR via SIS commitments + VLHE). IncrementalPIR (2026, entry-level incremental preprocessing for SimplePIR). IncPIR (2021, incremental hint updates for mutable databases, 2-server).
 
@@ -1013,17 +1009,17 @@ The 34 papers in this collection primarily address **computational PIR** (cPIR) 
 - **Server computation** — CPU time or throughput (MB/s). For sublinear schemes, use query latency.
 - **Throughput** — database_size / server_time. Meaningful only for linear-computation schemes. Memory-bandwidth-limited for schemes like YPIR, SimplePIR.
 - **Memory bandwidth utilization** — Core metric for SimplePIR-family and YPIR. These schemes are memory-bound, not compute-bound.
-- **Client storage** — hint size for preprocessing schemes (0 for hintless Group B)
+- **Client storage** — hint size for preprocessing schemes (0 for hintless Group 1b)
 - **Financial cost** — $/query on cloud infrastructure. Combine CPU + network costs. May be the metric that resolves communication-computation tradeoffs.
 - **Multiplicative depth** — For FHE schemes, often the binding constraint on parameters. Lower depth → smaller q → smaller F → less communication. Not relevant for XPIR (additive-only) or PRF-based schemes.
-- **Query format** — LWE ciphertext / RLWE ciphertext / packed RLWE / evaluation keys / PRF seed. A key differentiator for Group B schemes.
+- **Query format** — LWE ciphertext / RLWE ciphertext / packed RLWE / evaluation keys / PRF seed. A key differentiator for Group 1a/1b schemes.
 - **Keyword PIR support** — native (single-round, equality operators) / reducible (hash table + extra round) / not supported.
 - **Record-size regime** — Small (≤10 KB), Moderate (10–100 KB), Large (≥100 KB). Some schemes excel in one regime but not others (e.g., Respire optimized for small records, NPIR for moderate).
 
 **Benchmark normalization:**
-- **Groups A/B (pre-2024):** N = 2²⁰ × 256 bytes (256 MB) as the canonical comparison point.
-- **Groups A/B (2024+):** Also extract 1 GB and 32 GB benchmarks — these papers target larger databases.
-- **Group D sublinear schemes:** Compare at 1 GB and 100 GB (Group D benchmarks differ substantially).
+- **Groups 1a/1b (pre-2024):** N = 2²⁰ × 256 bytes (256 MB) as the canonical comparison point.
+- **Groups 1a/1b (2024+):** Also extract 1 GB and 32 GB benchmarks — these papers target larger databases.
+- **Group 2b sublinear schemes:** Compare at 1 GB and 100 GB (Group 2b benchmarks differ substantially).
 
 #### reported.json metric conventions
 
@@ -1051,8 +1047,8 @@ The 34 papers in this collection primarily address **computational PIR** (cPIR) 
 **Key rules:**
 - **Preprocessing is split into server and client.** Use `server_preprocessing_time_ms` for server-side offline work (DB encoding, NTT conversion, hint generation for client-independent schemes). Use `client_preprocessing_time_ms` for client-side offline work (key generation, streaming hint download + local computation, hint updates). When a paper reports a single "preprocessing" or "offline computation" number, determine from context which actor performs it. Do NOT use the deprecated keys `setup_time_ms`, `preprocessing_time_s`, or the unsplit `preprocessing_time_ms`.
 - **`offline_comm_mb`** is the **total** of upload and download. When a paper reports only one direction (e.g., "14.8 MB evaluation key upload" or "121 MB hint download"), that IS the total. When both directions are reported, sum them. Typical patterns by group:
-  - Groups A/B (↑ upload): client sends evaluation keys / public parameters to server
-  - Groups C/D (↓ download): client downloads hints / preprocessed data from server
+  - Groups 1a/1b (↑ upload): client sends evaluation keys / public parameters to server
+  - Groups 2a/2b (↓ download): client downloads hints / preprocessed data from server
   - Rare bidirectional: IncrementalPIR, VeriSimplePIR
 - **`client_storage_mb`** is the canonical key for client-side persistent state. Do NOT use `hint_size_mb` — it is a deprecated alias.
 - **`server_time_ms`** = online (per-query) server computation. Verify via throughput cross-check: `server_time_ms ≈ db_size_bytes / (throughput_gbps × 10⁶)`. Do NOT confuse with client computation — some papers label columns ambiguously (e.g., VIA's "Online Comp." is server time, confirmed via throughput cross-check).
@@ -1067,7 +1063,7 @@ The 34 papers in this collection primarily address **computational PIR** (cPIR) 
 | BGV | WhisPIR | Leveled HE with modulus switching. Non-compact variant may have >2 ciphertext components. |
 | Regev + GSW composition | Spiral, Respire, YPIR, VIA, HintlessPIR | High-rate HE via external products |
 | BFV SIMD batching | SealPIR, XPIR-2016, FastPIR/Addra, OnionPIR | Packing multiple DB elements into BFV plaintext slots |
-| RLWE / Ring-LWE | Most Groups A & B | Hardness assumption; NTT-based polynomial arithmetic |
+| RLWE / Ring-LWE | Most Groups 1a & 1b | Hardness assumption; NTT-based polynomial arithmetic |
 | RLWE' (Gadget RLWE) | Pirouette, Spiral, Respire, VIA | Encryptions under gadget vector; used in external products |
 | LWE (plain) | SimplePIR, DoublePIR, FrodoPIR | No ring structure — matrix-vector multiply |
 | MLWE (Module-LWE) | VIA-C, VIA-B | Bridges LWE and RLWE; parameterized by module rank m |
@@ -1106,7 +1102,7 @@ The 34 papers in this collection primarily address **computational PIR** (cPIR) 
 | Invertible PRF (iPRF) | Plinko | PRF that can be inverted with the key; enables O̅(1) updates |
 | wpPRF (weak privately puncturable PRF) | TreePIR | Hides punctured index in GGM tree. Weaker than standard puncturable PRF. |
 | Fisher-Yates shuffle / random permutations | SinglePass | Seed-compressed permutations for streaming preprocessing |
-| OWF (One-way functions) | CK20, Piano, Plinko, WangRen | Minimal assumption for Group D schemes |
+| OWF (One-way functions) | CK20, Piano, Plinko, WangRen | Minimal assumption for Group 2b schemes |
 | SIS (Short Integer Solution) | VeriSimplePIR | Commitment scheme for verifiable PIR |
 | VLHE (Verifiable Linearly Homomorphic Encryption) | VeriSimplePIR | Novel primitive enabling verifiable PIR |
 | Fiat-Shamir transform | VeriSimplePIR, YPIR | Converting interactive proofs to non-interactive in ROM |
@@ -1126,7 +1122,7 @@ The 34 papers in this collection primarily address **computational PIR** (cPIR) 
   - Security depends on the (n, log q, σ) triple. Increasing q without increasing n weakens security.
 - Concrete parameters follow the HE Standard and the Lattice Estimator.
 - **Statistical security κ** (separate from computational λ): Used in Piano, CK20, RMS24 for probabilistic correctness. Typically κ = 40.
-- **Circular security / KDM:** Some Group B papers (HintlessPIR, Pirouette, VIA) require circular security or key-dependent message security assumptions. Flag these in the metadata table.
+- **Circular security / KDM:** Some Group 1a/1b papers (HintlessPIR, Pirouette, VIA) require circular security or key-dependent message security assumptions. Flag these in the metadata table.
 - **Conjectured security:** Some papers use parameter sets whose security relies on unproven conjectures (e.g., ThorPIR's LWR-based parameters). Flag in Uncertainties.
 
 ### 7.7 Parameter relationships (engineering intuition)
@@ -1136,11 +1132,11 @@ The 34 papers in this collection primarily address **computational PIR** (cPIR) 
 - **Expansion factor:** F ≈ q/t. Larger q → larger F → more communication. With modulus switching, effective F uses the post-switch modulus.
 - **Noise budget:** Larger q/t ratio → more room for noise → supports deeper circuits.
 - **Dimension tradeoff:** Higher hypercube dimension d reduces response overhead but increases server computation and noise complexity.
-- **Multi-modulus chains:** Modern Group B schemes use 3–5 moduli (q₁, q₂, ...) with different ring dimensions. Each modulus switch trades noise headroom for smaller ciphertexts.
+- **Multi-modulus chains:** Modern Group 1a/1b schemes use 3–5 moduli (q₁, q₂, ...) with different ring dimensions. Each modulus switch trades noise headroom for smaller ciphertexts.
 - **Multiplicative depth:** For BFV/BGV schemes, often THE primary optimization target. Lower depth → smaller q → smaller F → less communication.
 - **Recursion depth d:** Higher d reduces query size (from O(n) to O(d · n^{1/d})) but increases response size and server computation. d=1 (no recursion) has the largest queries but smallest answers. FastPIR/Addra achieves good performance at d=1; most other BFV-based schemes require d≥2.
 
-#### Preprocessing-specific (Group D)
+#### Preprocessing-specific (Group 2b)
 - **Space-time tradeoff:** Client storage S × online server time T = O(nw) is the fundamental lower bound (WangRen). More storage → faster queries.
 - **Amortization:** Q queries amortize the offline preprocessing cost. Larger Q → lower per-query cost but higher upfront cost. Two dimensions: offline communication / Q and offline computation / Q.
 - **Consumable hints:** Some schemes (Piano) consume hint entries per query. Backup/replacement mechanisms handle exhaustion.
@@ -1158,7 +1154,7 @@ Tag every extracted value: **"exact"** (copied from table), **"approximate"** (r
 Do not interrupt the user for ambiguous notation during batch processing. Record all ambiguities in `## Uncertainties`. Only ask interactively when processing a single paper AND the ambiguity would change the scheme's fundamental classification.
 
 ### Cross-references
-When a scheme builds on or compares to another paper in this collection, name it with its group: e.g., "builds on SealPIR [Group A]." Add a `## Related Papers in Collection` section listing related papers and relationships.
+When a scheme builds on or compares to another paper in this collection, name it with its group: e.g., "builds on SealPIR [Group 1a]." Add a `## Related Papers in Collection` section listing related papers and relationships.
 
 ### Multi-variant papers
 Produce ONE note file per paper. Use the Variants table for a structured comparison. Add separate rows in Complexity and Benchmarks per variant. Note variant differences inline in Protocol Phases.

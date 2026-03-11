@@ -13,9 +13,9 @@
  *   2. computeCompositeScores() ranks all entities on 4 core metrics
  *      and produces percentile ranks, absolute log-normalizations, and
  *      a composite score used for default sorting.
- *   3. The DB-size tab system (tiny/small/medium/large/1-bit) filters
- *      entities to a specific tier and swaps in tier-specific metrics
- *      via filterByDbSize(). Charts are re-rendered on tab change.
+ *   3. Each chart section has its own independent tab state (DB tier,
+ *      entry bucket, primary dimension, secondary filters). Tab clicks
+ *      only re-render charts within that section via filterData().
  *   4. Individual render functions produce Plotly traces from the
  *      filtered entity array.
  *
@@ -73,32 +73,41 @@
 
   // ── Constants ──────────────────────────────────────────
   //
-  // PIR scheme groups per taxonomy (https://hackmd.io/@keewoolee/SJyGoXCzZe#Taxonomy):
-  //   A = FHE-Based PIR (homomorphic encryption on server side)
-  //   B = Stateless single-server PIR (no preprocessing)
-  //   C = Client-independent preprocessing (offline phase doesn't depend on query)
-  //   D = Client-dependent preprocessing (offline phase is query-specific)
-  //   X = Extensions (keyword PIR, batch PIR — different problem class)
-  var GROUP_COLORS = { A: '#1f77b4', B: '#2ca02c', C: '#ff7f0e', D: '#d62728', X: '#7f7f7f' };
+  // PIR scheme groups per taxonomy (https://notes.ethereum.org/U9xM4VOPR9isPK7lOZJUQg?view#41-Taxonomy):
+  //   1a = Stateless Client, Stateful Server (server caches per-client eval keys)
+  //   1b = Stateless Client, Stateless Server (no per-client state anywhere)
+  //   2a = Download-Hint (client downloads server-computed global hint)
+  //   2b = Interactive-Hint (bidirectional hint generation, sublinear server)
+  //   X  = Extensions (keyword PIR, distributional PIR — different problem class)
+  var GROUP_COLORS = { '1a': '#1f77b4', '1b': '#2ca02c', '2a': '#ff7f0e', '2b': '#d62728', X: '#7f7f7f' };
   var GROUP_NAMES = {
-    A: 'FHE-Based', B: 'Stateless', C: 'Client-Indep. Preprocessing',
-    D: 'Client-Dep. Preprocessing', X: 'Extensions'
+    '1a': 'Stateless Client, Stateful Server', '1b': 'Stateless Client, Stateless Server',
+    '2a': 'Download-Hint', '2b': 'Interactive-Hint', X: 'Extensions'
   };
   // Plotly scatter3d only supports: circle, circle-open, cross, diamond,
   // diamond-open, square, square-open, x — no 'star' or 'triangle'.
-  var GROUP_SYMBOLS_3D = { A: 'circle', B: 'square', C: 'diamond', D: 'cross', X: 'x' };
+  var GROUP_SYMBOLS_3D = { '1a': 'circle', '1b': 'square', '2a': 'diamond', '2b': 'cross', X: 'x' };
 
   // Database size tiers — benchmarks are categorized by the total DB size
   // (num_entries × entry_size_bytes) they were measured on. The tab system
   // lets users compare schemes at the same scale.
-  var DB_SIZE_TIERS = ['tiny', 'small', 'medium', 'large', '1-bit'];
+  var DB_SIZE_TIERS = ['tiny', 'small', 'medium', 'large'];
   var DB_SIZE_LABELS = {
-    tiny: '\u22641GB db', small: '1\u20138GB db', medium: '8\u201332GB db',
-    large: '>32GB db', '1-bit': '1-bit entry'
+    tiny: '\u22641GB', small: '1\u20138GB', medium: '8\u201332GB', large: '>32GB'
   };
   var DB_SIZE_COLORS = {
-    tiny: '#9b59b6', small: '#3498db', medium: '#e67e22',
-    large: '#e74c3c', '1-bit': '#17becf'
+    tiny: '#9b59b6', small: '#3498db', medium: '#e67e22', large: '#e74c3c'
+  };
+
+  // Entry size buckets — benchmarks categorized by the per-entry size.
+  var ENTRY_BUCKETS = ['1-bit', 'lt256', '256-1k', '1k-32k', 'gt32k'];
+  var ENTRY_BUCKET_LABELS = {
+    '1-bit': '1 bit', 'lt256': '< 256 B', '256-1k': '256 B\u20131 KB',
+    '1k-32k': '1\u201332 KB', 'gt32k': '> 32 KB'
+  };
+  var ENTRY_BUCKET_COLORS = {
+    '1-bit': '#17becf', 'lt256': '#bcbd22', '256-1k': '#e377c2',
+    '1k-32k': '#8c564b', 'gt32k': '#7f7f7f'
   };
   // Data confidence tiers — visual encoding:
   //   Tier 1: full opacity, circle marker, solid radar line, no badge
@@ -177,15 +186,43 @@
 
   // Returns a Plotly annotation explaining † (Tier 2) and * (Tier 3) badges,
   // or null if all items are Tier 1.
-  function tierBadgeLegend(items, t) {
-    var has2 = items.some(function (s) { return s.data_tier === 2; });
-    var has3 = items.some(function (s) { return s.data_tier === 3; });
-    if (!has2 && !has3) return null;
-    var parts = [];
-    if (has2) parts.push('\u2020 from figures/analytics');
-    if (has3) parts.push('* from asymptotics');
+  // Returns a Plotly annotation with colored squares for each group present in items.
+  // Positioned below the chart, stacking below the tier badge if both are used.
+  function groupColorLegend(items, t, colorMap, nameMap) {
+    colorMap = colorMap || GROUP_COLORS;
+    nameMap = nameMap || GROUP_NAMES;
+    var groups = Object.keys(colorMap);
+    if (groups.length <= 1) return null;
+    var parts = groups.map(function (g) {
+      return '<span style="color:' + (colorMap[g] || '#999') + '">\u25A0</span> ' + (nameMap[g] || g);
+    });
     return {
-      text: '<i>' + parts.join(' &nbsp; ') + '</i>',
+      text: parts.join(' &nbsp; '),
+      xref: 'paper', yref: 'paper', x: 0.5, xanchor: 'center', y: 0, yanchor: 'top', yshift: -60,
+      showarrow: false, font: { size: 11, color: t.muted }
+    };
+  }
+
+  // Appends group + tier annotations to a layout, adjusting bottom margin as needed.
+  function addLegendAnnotations(layout, items, t, colorMap, nameMap) {
+    var anns = layout.annotations || [];
+    var badge = tierBadgeLegend(items, t);
+    var groupLeg = groupColorLegend(items, t, colorMap, nameMap);
+    if (badge) anns = anns.concat(badge);
+    if (groupLeg) {
+      // Stack group legend below tier badge if both present
+      if (badge) groupLeg.yshift = -78;
+      anns = anns.concat(groupLeg);
+    }
+    if (badge || groupLeg) {
+      layout.annotations = anns;
+      layout.margin.b = groupLeg && badge ? 100 : 80;
+    }
+  }
+
+  function tierBadgeLegend(items, t) {
+    return {
+      text: '<i>\u2020 from figures/analytics &nbsp; * from asymptotics</i>',
       xref: 'paper', yref: 'paper', x: 0, y: 0, yanchor: 'top', yshift: -60,
       showarrow: false, font: { size: 11, color: t.muted }
     };
@@ -383,25 +420,82 @@
   // This function picks the tier-specific benchmark and creates a shallow copy
   // with that benchmark's metrics, data_tier, source_ref, estimation_meta, and config details.
   // Used by the DB-size tab system to re-render charts for a specific scale.
-  function filterByDbSize(data, tier) {
-    return data.filter(function (s) {
-      return s.db_size_categories && s.db_size_categories.indexOf(tier) >= 0;
-    }).map(function (s) {
-      var tb = s._tierBenchmarks && s._tierBenchmarks[tier];
-      if (!tb) return s;
-      // Swap in tier-specific metrics
+  // General filter: select benchmarks matching both a DB tier and entry bucket.
+  // dbTier: string or null (null = any DB size)
+  // entryBuckets: Set of bucket ids, or null (null/empty = any entry size)
+  // Returns a new entity array with metrics swapped to the best matching benchmark.
+  // Filter data using a section state object { primaryDim, activeDbTier, activeEntryBucket, secondaryFilters }
+  function filterData(data, sectionState) {
+    var dbTier, entryBuckets;
+    if (!sectionState || typeof sectionState === 'string') {
+      // Legacy call: filterData(data, tierString) — used by radar/heatmap
+      dbTier = sectionState || null;
+      entryBuckets = null;
+    } else if (sectionState.primaryDim === 'entry') {
+      dbTier = null;
+      entryBuckets = null;
+      // Filter by entry bucket primary + optional DB tier pills
+      var activeEntry = sectionState.activeEntryBucket;
+      var dbPills = sectionState.secondaryFilters.size > 0 ? sectionState.secondaryFilters : null;
+      return data.map(function (s) {
+        var best = null;
+        (s._allBenchmarks || []).forEach(function (rec) {
+          var entryOk = rec._entryBucket === activeEntry;
+          var dbOk = !dbPills || dbPills.has(rec._dbTier);
+          if (!entryOk || !dbOk) return;
+          if (!best || rec._db_size_bytes > best._db_size_bytes ||
+              (rec._db_size_bytes === best._db_size_bytes && rec.data_tier < best.data_tier)) {
+            best = rec;
+          }
+        });
+        if (!best) return null;
+        var copy = {};
+        Object.keys(s).forEach(function (k) { copy[k] = s[k]; });
+        copy.concrete = best.metrics;
+        copy.data_tier = best.data_tier;
+        copy.source_ref = best.source_ref;
+        copy.estimation_meta = best.estimation_meta;
+        copy._db_size_bytes = best._db_size_bytes;
+        copy._entry_size_bytes = best._config.entry_size_bytes;
+        copy._entry_size_label = best._config.entry_size_label;
+        copy._num_entries = best._config.num_entries;
+        return copy;
+      }).filter(Boolean);
+    } else {
+      // DB primary
+      dbTier = sectionState.activeDbTier;
+      entryBuckets = sectionState.secondaryFilters.size > 0 ? sectionState.secondaryFilters : null;
+    }
+    var hasEntryFilter = entryBuckets && entryBuckets.size > 0;
+    return data.map(function (s) {
+      var best = null;
+      (s._allBenchmarks || []).forEach(function (rec) {
+        var dbOk = !dbTier || rec._dbTier === dbTier;
+        var entryOk = !hasEntryFilter || entryBuckets.has(rec._entryBucket);
+        if (!dbOk || !entryOk) return;
+        if (!best || rec._db_size_bytes > best._db_size_bytes ||
+            (rec._db_size_bytes === best._db_size_bytes && rec.data_tier < best.data_tier)) {
+          best = rec;
+        }
+      });
+      if (!best) return null;
       var copy = {};
       Object.keys(s).forEach(function (k) { copy[k] = s[k]; });
-      copy.concrete = tb.metrics;
-      copy.data_tier = tb.data_tier;
-      copy.source_ref = tb.source_ref;
-      copy.estimation_meta = tb.estimation_meta;
-      copy._db_size_bytes = tb._db_size_bytes;
-      copy._entry_size_bytes = tb._config.entry_size_bytes;
-      copy._entry_size_label = tb._config.entry_size_label;
-      copy._num_entries = tb._config.num_entries;
+      copy.concrete = best.metrics;
+      copy.data_tier = best.data_tier;
+      copy.source_ref = best.source_ref;
+      copy.estimation_meta = best.estimation_meta;
+      copy._db_size_bytes = best._db_size_bytes;
+      copy._entry_size_bytes = best._config.entry_size_bytes;
+      copy._entry_size_label = best._config.entry_size_label;
+      copy._num_entries = best._config.num_entries;
       return copy;
-    });
+    }).filter(Boolean);
+  }
+
+  // Convenience wrapper matching old filterByDbSize signature (used by radar)
+  function filterByDbSize(data, tier) {
+    return filterData(data, tier);
   }
 
   function plotConfig() {
@@ -703,7 +797,7 @@
   //
   // Log-log scatter: X = query size (KB), Y = response size (KB).
   // Marker size encodes server_time_ms (log-scaled). Marker shape encodes
-  // data tier (circle/square/diamond). Color encodes group (A–D, X).
+  // data tier (circle/square/diamond). Color encodes group (1a/1b/2a/2b/X).
   // Diagonal reference lines at 10/100/1K/10K KB. On log-log axes these are
   // straight lines (iso-product), serving as approximate visual guides for
   // total communication magnitude (exact iso-sum curves would be hyperbolic).
@@ -832,91 +926,184 @@
     Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
-  // ── 3a. Throughput Bars ───────────────────────────────
-  // Horizontal bars ranked by throughput (GB/s). Higher is better.
-  // Only Tier 1 schemes typically report throughput; annotation notes this.
-  // Consolidated variants share a single bar with merged hover text.
-  function renderThroughputBars(data) {
+  // ── 3. Server Performance (Throughput + Server Time) ─────────
+  // Both charts share the same height so they align in the chart-pair layout.
+  // Reported values shown as solid bars; derived values shown hatched.
+  // Long y-labels are wrapped to two lines.
+
+  function _wrapLabel(label, maxLen) {
+    if (label.length <= maxLen) return label;
+    // Break at space nearest to the midpoint
+    var mid = Math.floor(maxLen * 0.6);
+    var best = -1;
+    for (var i = 0; i < label.length; i++) {
+      if (label[i] === ' ' && (best < 0 || Math.abs(i - mid) < Math.abs(best - mid))) best = i;
+    }
+    if (best > 0) return label.slice(0, best) + '<br>' + label.slice(best + 1);
+    return label;
+  }
+
+  function _serverPerfLabel(s) {
+    return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + _wrapLabel(consolidatedName(s), 22);
+  }
+
+  // Shared annotation builder for server perf charts
+  function _serverPerfAnnotations(items, t, hasDerived, derivedText) {
+    var anns = [];
+    var yPos = -60;
+    var badge = tierBadgeLegend(items, t);
+    if (badge) { anns = anns.concat(badge); yPos -= 18; }
+    anns.push({
+      text: '\u2588 reported &nbsp; <span style="letter-spacing:-2px">///</span> ' + derivedText,
+      xref: 'paper', yref: 'paper', x: 0.5, xanchor: 'center', y: 0, yanchor: 'top', yshift: yPos,
+      showarrow: false, font: { size: 11, color: t.muted }
+    });
+    yPos -= 18;
+    // Group color legend — always show all groups, split into two lines
+    var groups = Object.keys(GROUP_COLORS);
+    if (groups.length > 1) {
+      var parts = groups.map(function (g) {
+        return '<span style="color:' + (GROUP_COLORS[g] || '#999') + '">\u25A0</span> ' + (GROUP_NAMES[g] || g);
+      });
+      var mid = Math.ceil(parts.length / 2);
+      var line1 = parts.slice(0, mid).join(' &nbsp; ');
+      var line2 = parts.slice(mid).join(' &nbsp; ');
+      anns.push({
+        text: line1 + '<br>' + line2,
+        xref: 'paper', yref: 'paper', x: 0.5, xanchor: 'center', y: 0, yanchor: 'top', yshift: yPos,
+        showarrow: false, font: { size: 11, color: t.muted }
+      });
+      yPos -= 36;
+    }
+    var bottomPad = 48 + Math.abs(yPos + 60) + 10;
+    return { anns: anns, bottomPad: bottomPad };
+  }
+
+  // Prepare throughput items (with derivation from server_time)
+  function _prepareThroughputItems(data) {
+    var augmented = data.map(function (s) {
+      var reported = getVal(s, 'throughput_gbps');
+      var st = getVal(s, 'server_time_ms');
+      var dbBytes = s._db_size_bytes || 0;
+      if (!isPos(reported) && isPos(st) && dbBytes > 0) {
+        var copy = {}; Object.keys(s).forEach(function (k) { copy[k] = s[k]; });
+        copy.concrete = {}; Object.keys(s.concrete).forEach(function (k) { copy.concrete[k] = s.concrete[k]; });
+        copy.concrete.throughput_gbps = (dbBytes / 1e9) / (st / 1000);
+        copy._tputDerived = true;
+        return copy;
+      }
+      return s;
+    });
+    augmented = consolidateVariants(augmented, ['throughput_gbps']);
+    var items = augmented.filter(function (s) { return isPos(getVal(s, 'throughput_gbps')); });
+    items.forEach(function (s) {
+      s._tput = getVal(s, 'throughput_gbps');
+      if (!s.hasOwnProperty('_tputDerived')) s._tputDerived = false;
+    });
+    items.sort(function (a, b) { return b._tput - a._tput; });
+    return items;
+  }
+
+  // Prepare server-time items (with derivation from throughput)
+  function _prepareServerTimeItems(data) {
+    var augmented = data.map(function (s) {
+      var reported = getVal(s, 'server_time_ms');
+      var tput = getVal(s, 'throughput_gbps');
+      var dbBytes = s._db_size_bytes || 0;
+      if (!isPos(reported) && isPos(tput) && dbBytes > 0) {
+        var copy = {}; Object.keys(s).forEach(function (k) { copy[k] = s[k]; });
+        copy.concrete = {}; Object.keys(s.concrete).forEach(function (k) { copy.concrete[k] = s.concrete[k]; });
+        copy.concrete.server_time_ms = (dbBytes / 1e9) / tput * 1000;
+        copy._stDerived = true;
+        return copy;
+      }
+      return s;
+    });
+    augmented = consolidateVariants(augmented, ['server_time_ms']);
+    var items = augmented.filter(function (s) { return isPos(getVal(s, 'server_time_ms')); });
+    items.forEach(function (s) {
+      s._st = getVal(s, 'server_time_ms');
+      if (!s.hasOwnProperty('_stDerived')) s._stDerived = false;
+    });
+    items.sort(function (a, b) { return a._st - b._st; });
+    return items;
+  }
+
+  function renderThroughputBars(tputItems, sharedHeight) {
     var el = document.getElementById('chart-throughput');
     if (!el) return;
     var t = themeColors();
-    data = consolidateVariants(data, ['throughput_gbps']);
+    var items = tputItems;
+    var hasDerived = items.some(function (s) { return s._tputDerived; });
 
-    var items = data.filter(function (s) { return isPos(getVal(s, 'throughput_gbps')); });
-    items.sort(function (a, b) { return getVal(b, 'throughput_gbps') - getVal(a, 'throughput_gbps'); });
-
-    var traces = [];
-    traces.push({
-      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); }),
-      x: items.map(function (s) { return getVal(s, 'throughput_gbps'); }),
+    var traces = [{
+      y: items.map(function (s) { return _serverPerfLabel(s); }),
+      x: items.map(function (s) { return s._tput; }),
       type: 'bar', orientation: 'h',
       showlegend: false,
       marker: {
         color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
         opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+        pattern: { shape: items.map(function (s) { return s._tputDerived ? '/' : ''; }) },
         line: { color: items.map(function (s) { return GROUP_COLORS[s.group]; }), width: 1.5 }
       },
-      text: items.map(function (s) { return formatNum(getVal(s, 'throughput_gbps')) + ' GB/s'; }),
+      text: items.map(function (s) { return formatNum(s._tput) + ' GB/s'; }),
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Throughput: ' + formatNum(getVal(s, 'throughput_gbps')) + ' GB/s<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+        var derivedNote = s._tputDerived ? '<br><i>Derived from DB size \u00F7 server time</i>' : '';
+        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + derivedNote + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
-    });
+    }];
 
-    Plotly.newPlot(el, traces, baseLayout('Server Throughput (GB/s)', {
+    var ann = _serverPerfAnnotations(items, t, hasDerived, 'derived from DB size \u00F7 server time');
+    var layout = baseLayout('Server Throughput — DB Scan Rate (GB/s)', {
       yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
-      xaxis: { title: { text: 'Throughput (GB/s)', standoff: 20 }, gridcolor: t.grid },
-      margin: { l: barLeftMargin(), r: 60, t: 48, b: 80 },
-      height: Math.max(350, items.length * 30 + 120),
-      annotations: [{
-        text: '<i>All from data; no throughput reported for figures/asymptotics tiers</i>',
-        xref: 'paper', yref: 'paper', x: 0, y: 0, yanchor: 'top', yshift: -60,
-        showarrow: false, font: { size: 11, color: t.muted }
-      }]
-    }), plotConfig());
+      xaxis: { title: { text: 'Throughput (log)', standoff: 20 }, type: 'log', gridcolor: t.grid },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: ann.bottomPad },
+      height: sharedHeight,
+      annotations: ann.anns
+    });
+    Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
-  // ── 3b. Server Time Bars ──────────────────────────────
-  // Horizontal bars ranked by server_time_ms (lower is better, ascending sort).
-  function renderServerTimeBars(data) {
+  function renderServerTimeBars(stItems, sharedHeight) {
     var el = document.getElementById('chart-server-time');
     if (!el) return;
     var t = themeColors();
-    data = consolidateVariants(data, ['server_time_ms']);
+    var items = stItems;
+    var hasDerived = items.some(function (s) { return s._stDerived; });
 
-    var items = data.filter(function (s) { return isPos(getVal(s, 'server_time_ms')); });
-    items.sort(function (a, b) { return getVal(a, 'server_time_ms') - getVal(b, 'server_time_ms'); });
-
-    var traces = [];
-    traces.push({
-      y: items.map(function (s) { return (TIER_BADGE[s.data_tier] ? TIER_BADGE[s.data_tier] + ' ' : '') + consolidatedName(s); }),
-      x: items.map(function (s) { return getVal(s, 'server_time_ms'); }),
+    var traces = [{
+      y: items.map(function (s) { return _serverPerfLabel(s); }),
+      x: items.map(function (s) { return s._st; }),
       type: 'bar', orientation: 'h',
       showlegend: false,
       marker: {
         color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
         opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+        pattern: { shape: items.map(function (s) { return s._stDerived ? '/' : ''; }) },
         line: { color: items.map(function (s) { return GROUP_COLORS[s.group]; }), width: 1.5 }
       },
-      text: items.map(function (s) { return formatNum(getVal(s, 'server_time_ms')) + ' ms'; }),
+      text: items.map(function (s) { return formatNum(s._st) + ' ms'; }),
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server Time: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+        var derivedNote = s._stDerived ? '<br><i>Derived from DB size \u00F7 throughput</i>' : '';
+        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + derivedNote + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
-    });
+    }];
 
+    var ann = _serverPerfAnnotations(items, t, hasDerived, 'derived from DB size \u00F7 throughput');
     var layout = baseLayout('Server Time (ms)', {
       yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
-      xaxis: { title: { text: 'Server Time (ms)', standoff: 20 }, type: 'log', gridcolor: t.grid },
-      margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
-      height: Math.max(350, items.length * 26 + 120)
+      xaxis: { title: { text: 'Server Time (log)', standoff: 20 }, type: 'log', gridcolor: t.grid },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: ann.bottomPad },
+      height: sharedHeight,
+      annotations: ann.anns
     });
-    var badge = tierBadgeLegend(items, t);
-    if (badge) { layout.annotations = (layout.annotations || []).concat(badge); layout.margin.b = 80; }
     Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
@@ -954,8 +1141,7 @@
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
       height: Math.max(300, items.length * 30 + 100)
     });
-    var badge = tierBadgeLegend(items, t);
-    if (badge) { layout.annotations = (layout.annotations || []).concat(badge); layout.margin.b = 80; }
+    addLegendAnnotations(layout, items, t);
     Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
@@ -1042,9 +1228,13 @@
   // ── 5b. Preprocessing Time Bar Chart ──────────────────
   // Horizontal grouped bars: server_preprocessing_time_ms (blue-ish) and
   // client_preprocessing_time_ms (orange-ish). Log x-axis, sorted by max of the two.
+  var CLIENT_PREPROC_NOTE = {
+    simplepir_2022: 'NOTE: seed expansion estimate — A ∈ Z_q^{~31K×1024}, ~127 MB PRG at ~2.5 GB/s (Section 4.1 p.7, Figure 18 p.30)',
+    doublepir_2022: 'NOTE: seed expansion estimate — A_1+A_2 ∈ Z_q^{~80K×1024}, ~328 MB PRG at ~2.5 GB/s (Section 5.1 p.8, Figure 18 p.30)'
+  };
   var PREPROC_DESC = {
-    simplepir_2022: 'Build LWE hint matrix',
-    doublepir_2022: 'Build compressed LWE hints',
+    simplepir_2022: 'Expand A from seed + download hint',
+    doublepir_2022: 'Expand A_1,A_2 from seeds + download hint',
     frodopir_2022: 'Server: M=A·D; Client: derive A from seed',
     hintlesspir_2023: 'Encode DB into RLWE-friendly form',
     respire_2024: 'Pack DB via ring packing + NTT',
@@ -1123,7 +1313,8 @@
         var v = getVal(s, 'client_preprocessing_time_ms');
         if (!isPos(v)) return '';
         var desc = PREPROC_DESC[s.id] || '';
-        return consolidatedName(s) + (desc ? '<br><i>' + desc + '</i>' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+        var note = CLIENT_PREPROC_NOTE[s.id] || '';
+        return consolidatedName(s) + (desc ? '<br><i>' + desc + '</i>' : '') + (note ? '<br>' + note : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
     });
@@ -1159,7 +1350,7 @@
       '<rect width="14" height="14" fill="url(#pp-hatch)" stroke="' + t.text + '" stroke-width="1"/></svg>';
     lg.innerHTML = '<span>' + solidSvg + ' Server</span><span>' + hatchSvg + ' Client</span><span style="width:36px"></span>';
     // Row 2: group colors
-    ['A', 'B', 'C', 'D', 'X'].forEach(function (g) {
+    ['1a', '1b', '2a', '2b', 'X'].forEach(function (g) {
       if (!seenGroups[g]) return;
       lg.innerHTML += '<span><svg width="14" height="14" style="vertical-align:middle;margin-right:3px"><rect width="14" height="14" fill="' + GROUP_COLORS[g] + '"/></svg> ' + GROUP_NAMES[g] + '</span>';
     });
@@ -1292,7 +1483,7 @@
 
   // ── 6b. Pareto — Total Comm vs Client Storage ───────
   // Same structure as 6a but Y-axis = client_storage_mb.
-  // Shows the comm/storage tradeoff — preprocessing schemes (C, D) trade
+  // Shows the comm/storage tradeoff — preprocessing schemes (2a, 2b) trade
   // higher client storage for lower online communication.
   function renderParetoCommStorage(data) {
     var el = document.getElementById('chart-pareto-comm-storage');
@@ -1772,7 +1963,7 @@
   // show radar grids filtered to schemes benchmarked at that scale.
   //
   // Visual encoding:
-  //   - Line color = group color (A–D)
+  //   - Line color = group color (1a/1b/2a/2b)
   //   - Line style = data tier (solid/dashed/dotted)
   //   - Fill opacity = data tier (full/light/none)
   //   - Red "?" markers at outer edge = missing data for that metric
@@ -2040,7 +2231,7 @@
     // Per DB-size tier tabs
     DB_SIZE_TIERS.forEach(function (tier) {
       var btn = document.createElement('button');
-      btn.className = 'radar-tab' + (tier === '1-bit' ? ' onebit-tab' : '');
+      btn.className = 'radar-tab';
       btn.dataset.tier = tier;
       btn.textContent = DB_SIZE_LABELS[tier];
       btn.addEventListener('click', function () { drawTier(tier); });
@@ -2469,11 +2660,10 @@
   // ── DB Size Tab System ───────────────────────────────
   //
   // The tab bar (tiny / small / medium / large / 1-bit) appears at the top of
-  // the page and controls which DB-size tier's data is shown in all charts
-  // (except Heatmap, Radar, Timeline, and Catalog which use their own logic).
-  //
-  // On tab click: setActiveDbTier() calls filterByDbSize() on the cached data
-  // to get tier-specific entities, then re-renders all filtered charts.
+  // each section and controls which DB-size tier's data is shown.
+  // Each tab container has its own independent state (DB tier, entry bucket,
+  // primary dimension, secondary filters). Tab clicks only re-render
+  // charts owned by that section.
   // The active tab state is synced across all tab bar instances on the page.
   //
   // ── Misc: Communication Rate Bars ───────────────────────
@@ -2513,8 +2703,7 @@
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
       height: Math.max(350, items.length * 30 + 120)
     });
-    var badge = tierBadgeLegend(items, t);
-    if (badge) { layout.annotations = (layout.annotations || []).concat(badge); layout.margin.b = 80; }
+    addLegendAnnotations(layout, items, t);
     Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
@@ -2555,8 +2744,7 @@
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
       height: Math.max(350, items.length * 30 + 120)
     });
-    var badge = tierBadgeLegend(items, t);
-    if (badge) { layout.annotations = (layout.annotations || []).concat(badge); layout.margin.b = 80; }
+    addLegendAnnotations(layout, items, t);
     Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
@@ -2597,50 +2785,234 @@
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 48 },
       height: Math.max(350, items.length * 30 + 120)
     });
-    var badge = tierBadgeLegend(items, t);
-    if (badge) { layout.annotations = (layout.annotations || []).concat(badge); layout.margin.b = 80; }
+    addLegendAnnotations(layout, items, t);
     Plotly.newPlot(el, traces, layout, plotConfig());
   }
 
-  var _activeDbTier = 'tiny';
+  // ── Per-section chart state ──────────────────────────
+  //
+  // Each .dim-tabs-container has its own independent filter state.
+  // Clicking a tab in one section only re-renders charts in that section.
+  //
+  // Chart ID → render function mapping (populated once in init).
+  var _chartRenderers = {};
+  // Map from chart ID → the _SectionState that owns it.
+  var _chartToSection = {};
 
-  function renderFilteredCharts(data) {
-    renderCommunicationScatter(data);
-    renderThroughputBars(data);
-    renderServerTimeBars(data);
-    renderClientCost(data);
-    renderOfflineStorage(data);
-    renderPreprocessingTime(data);
-    renderPareto(data);
-    renderParetoCommStorage(data);
-    renderParetoCommClient(data);
-    renderParetoServerClient(data);
-    // renderPareto3DComm(data);
-    // renderPareto3DServer(data);
-    renderRateBars(data);
-    renderAmortizedOfflineComm(data);
-    renderAmortizedOfflineTime(data);
+  function _buildChartRenderers(data) {
+    var cache = {};
+    function make(id, fn) { cache[id] = fn; }
+    make('chart-communication', function () { renderCommunicationScatter(filterData(_cachedData, _chartToSection['chart-communication'])); });
+    make('chart-throughput', function () {
+      var st = _chartToSection['chart-throughput'];
+      var d = filterData(_cachedData, st);
+      var items = _prepareThroughputItems(d);
+      var stItems = _prepareServerTimeItems(d);
+      var maxBars = Math.max(items.length, stItems.length);
+      var h = Math.max(350, maxBars * 28 + 120);
+      renderThroughputBars(items, h);
+    });
+    make('chart-server-time', function () {
+      var st = _chartToSection['chart-server-time'];
+      var d = filterData(_cachedData, st);
+      var tputItems = _prepareThroughputItems(d);
+      var stItems = _prepareServerTimeItems(d);
+      var maxBars = Math.max(tputItems.length, stItems.length);
+      var h = Math.max(350, maxBars * 28 + 120);
+      renderServerTimeBars(stItems, h);
+    });
+    make('chart-client-cost', function () { renderClientCost(filterData(_cachedData, _chartToSection['chart-client-cost'])); });
+    make('chart-offline-storage', function () { renderOfflineStorage(filterData(_cachedData, _chartToSection['chart-offline-storage'])); });
+    make('chart-preprocessing-time', function () { renderPreprocessingTime(filterData(_cachedData, _chartToSection['chart-preprocessing-time'])); });
+    make('chart-pareto', function () { renderPareto(filterData(_cachedData, _chartToSection['chart-pareto'])); });
+    make('chart-pareto-comm-storage', function () { renderParetoCommStorage(filterData(_cachedData, _chartToSection['chart-pareto-comm-storage'])); });
+    make('chart-pareto-comm-client', function () { renderParetoCommClient(filterData(_cachedData, _chartToSection['chart-pareto-comm-client'])); });
+    make('chart-pareto-server-client', function () { renderParetoServerClient(filterData(_cachedData, _chartToSection['chart-pareto-server-client'])); });
+    make('chart-rate', function () { renderRateBars(filterData(_cachedData, _chartToSection['chart-rate'])); });
+    make('chart-amortized-offline-comm', function () { renderAmortizedOfflineComm(filterData(_cachedData, _chartToSection['chart-amortized-offline-comm'])); });
+    make('chart-amortized-offline-time', function () { renderAmortizedOfflineTime(filterData(_cachedData, _chartToSection['chart-amortized-offline-time'])); });
+    _chartRenderers = cache;
   }
 
-  function setActiveDbTier(tier) {
-    _activeDbTier = tier;
-    // Sync all tab UIs across all pages
-    document.querySelectorAll('.db-size-tabs .db-tab').forEach(function (b) {
-      b.classList.toggle('active', b.dataset.tier === tier);
+  // Render only the charts owned by a given section state
+  function _renderSectionCharts(sectionState) {
+    sectionState.chartIds.forEach(function (id) {
+      var fn = _chartRenderers[id];
+      if (fn) fn();
     });
-    if (_cachedData) {
-      var filtered = filterByDbSize(_cachedData, tier);
-      renderFilteredCharts(filtered);
+  }
+
+  // Render all filterable charts (used on initial load)
+  function renderFilteredCharts() {
+    Object.keys(_chartRenderers).forEach(function (id) {
+      var fn = _chartRenderers[id];
+      if (document.getElementById(id)) fn();
+    });
+  }
+
+  // ── Per-section tab management ──────────────────────
+
+  // Discover chart IDs owned by a .dim-tabs-container.
+  // Walks forward through subsequent siblings collecting .chart-container elements
+  // (or .chart-container elements inside .chart-pair wrappers) until hitting
+  // another .dim-tabs-container, a heading, or end of parent.
+  function _discoverChartIds(tabContainer) {
+    var ids = [];
+    var sib = tabContainer.nextElementSibling;
+    while (sib) {
+      if (sib.classList.contains('dim-tabs-container')) break;
+      if (/^H[1-6]$/.test(sib.tagName)) break;
+      if (sib.classList.contains('chart-container') && sib.id) {
+        ids.push(sib.id);
+      }
+      // .chart-pair wraps multiple chart containers (e.g. throughput + server-time)
+      if (sib.classList.contains('chart-pair')) {
+        sib.querySelectorAll('.chart-container').forEach(function (el) {
+          if (el.id) ids.push(el.id);
+        });
+      }
+      sib = sib.nextElementSibling;
+    }
+    return ids;
+  }
+
+  // Sync a single tab container's DOM to its section state
+  function _syncSectionTabUI(container, state) {
+    var dbRow = container.querySelector('.db-tab-row');
+    var entryRow = container.querySelector('.entry-tab-row');
+    var dbPills = container.querySelector('.db-pills');
+    var entryPills = container.querySelector('.entry-pills');
+    if (!dbRow || !entryRow) return;
+
+    if (state.primaryDim === 'db') {
+      dbRow.classList.add('primary');
+      dbRow.classList.remove('secondary');
+      entryRow.classList.add('secondary');
+      entryRow.classList.remove('primary');
+    } else {
+      entryRow.classList.add('primary');
+      entryRow.classList.remove('secondary');
+      dbRow.classList.add('secondary');
+      dbRow.classList.remove('primary');
+    }
+
+    // Sync active tab highlights
+    dbRow.querySelectorAll('.dim-tab').forEach(function (b) {
+      b.classList.toggle('active', state.primaryDim === 'db' && b.dataset.value === state.activeDbTier);
+    });
+    entryRow.querySelectorAll('.dim-tab').forEach(function (b) {
+      b.classList.toggle('active', state.primaryDim === 'entry' && b.dataset.value === state.activeEntryBucket);
+    });
+
+    // Rebuild secondary filter pills
+    function buildPills(el, items, labels) {
+      el.innerHTML = '';
+      items.forEach(function (id) {
+        var pill = document.createElement('button');
+        pill.className = 'secondary-pill' + (state.secondaryFilters.has(id) ? ' active' : '');
+        pill.dataset.value = id;
+        pill.textContent = labels[id];
+        pill.addEventListener('click', function () {
+          if (state.secondaryFilters.has(id)) {
+            state.secondaryFilters.delete(id);
+          } else {
+            state.secondaryFilters.add(id);
+          }
+          _syncSectionTabUI(container, state);
+          _renderSectionCharts(state);
+        });
+        el.appendChild(pill);
+      });
+    }
+
+    if (dbPills) {
+      if (state.primaryDim === 'db') {
+        buildPills(dbPills, ENTRY_BUCKETS, ENTRY_BUCKET_LABELS);
+      } else {
+        dbPills.innerHTML = '';
+      }
+    }
+    if (entryPills) {
+      if (state.primaryDim === 'entry') {
+        buildPills(entryPills, DB_SIZE_TIERS, DB_SIZE_LABELS);
+      } else {
+        entryPills.innerHTML = '';
+      }
     }
   }
 
-  function initDbSizeTabs() {
-    document.querySelectorAll('.db-size-tabs').forEach(function (container) {
-      container.querySelectorAll('.db-tab').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          setActiveDbTier(btn.dataset.tier);
-        });
+  function initDimensionTabs() {
+    document.querySelectorAll('.dim-tabs-container').forEach(function (container) {
+      // Each container gets its own independent state
+      var state = {
+        primaryDim: 'db',
+        activeDbTier: 'tiny',
+        activeEntryBucket: null,
+        secondaryFilters: new Set(),
+        chartIds: _discoverChartIds(container)
+      };
+
+      // Register chart→state mapping
+      state.chartIds.forEach(function (id) {
+        _chartToSection[id] = state;
       });
+
+      // DB tab row
+      var dbRow = container.querySelector('.db-tab-row');
+      if (dbRow) {
+        dbRow.querySelectorAll('.dim-tab').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            if (state.primaryDim !== 'db') {
+              state.primaryDim = 'db';
+              state.secondaryFilters = new Set();
+            }
+            state.activeDbTier = btn.dataset.value;
+            _syncSectionTabUI(container, state);
+            _renderSectionCharts(state);
+          });
+        });
+      }
+
+      // Entry tab row — generate dynamically
+      var entryRow = document.createElement('div');
+      entryRow.className = 'entry-tab-row secondary';
+      var entryBtns = document.createElement('div');
+      entryBtns.className = 'tab-row-buttons';
+      ENTRY_BUCKETS.forEach(function (bucket) {
+        var btn = document.createElement('button');
+        btn.className = 'dim-tab entry-tab';
+        btn.dataset.value = bucket;
+        btn.textContent = ENTRY_BUCKET_LABELS[bucket];
+        btn.addEventListener('click', function () {
+          if (state.primaryDim !== 'entry') {
+            state.primaryDim = 'entry';
+            state.secondaryFilters = new Set();
+          }
+          state.activeEntryBucket = bucket;
+          _syncSectionTabUI(container, state);
+          _renderSectionCharts(state);
+        });
+        entryBtns.appendChild(btn);
+      });
+      entryRow.appendChild(entryBtns);
+
+      // Secondary pills containers
+      var dbPills = document.createElement('div');
+      dbPills.className = 'secondary-pills db-pills';
+      dbRow.appendChild(dbPills);
+      var entryPills = document.createElement('div');
+      entryPills.className = 'secondary-pills entry-pills';
+      entryRow.appendChild(entryPills);
+
+      // Insert entry row after db row
+      if (dbRow) {
+        dbRow.parentNode.insertBefore(entryRow, dbRow.nextSibling);
+      } else {
+        container.appendChild(entryRow);
+      }
+
+      // Initial UI sync
+      _syncSectionTabUI(container, state);
     });
   }
 
@@ -2673,12 +3045,19 @@
   // Multi-variant schemes get display_name = "SchemeName (VariantName)" unless
   // the variant name already starts with the scheme name.
   //
-  function classifyDbTier(dbBytes, entrySizeBytes) {
-    if (entrySizeBytes <= 0.125) return '1-bit';
+  function classifyDbTier(dbBytes) {
     if (dbBytes <= 1e9) return 'tiny';
     if (dbBytes <= 8e9) return 'small';
     if (dbBytes <= 32e9) return 'medium';
     return 'large';
+  }
+
+  function classifyEntryBucket(entrySizeBytes) {
+    if (entrySizeBytes <= 0.125) return '1-bit';
+    if (entrySizeBytes < 256) return 'lt256';
+    if (entrySizeBytes <= 1024) return '256-1k';
+    if (entrySizeBytes <= 32768) return '1k-32k';
+    return 'gt32k';
   }
 
   function variantDisplayName(schemeName, variant, isMultiVariant) {
@@ -2717,39 +3096,51 @@
         var benches = benchByVariant[variant] || [];
         if (!benches.length) return;
 
-        // Classify benchmarks by DB size tier; pick representative per tier
+        // Store all benchmarks for cross-filtering; classify by DB tier and entry bucket
+        var allBenchmarks = [];
         var tierBenchmarks = {};
+        var entryBenchmarks = {};
         var dbCategories = {};
+        var entryCategories = {};
 
         benches.forEach(function (b) {
           var config = configMap[b.config_id];
           if (!config) return;
           var dbBytes = config._db_size_bytes;
-          var tier = classifyDbTier(dbBytes, config.entry_size_bytes);
+          var dbTier = classifyDbTier(dbBytes);
+          var entryBucket = classifyEntryBucket(config.entry_size_bytes);
 
-          dbCategories[tier] = true;
+          var rec = {
+            metrics: b.metrics,
+            data_tier: b.data_tier,
+            source_ref: b.source_ref,
+            estimation_meta: b.estimation_meta,
+            _db_size_bytes: dbBytes,
+            _config: config,
+            _dbTier: dbTier,
+            _entryBucket: entryBucket
+          };
+          allBenchmarks.push(rec);
 
-          if (!tierBenchmarks[tier] || dbBytes > tierBenchmarks[tier]._db_size_bytes) {
-            tierBenchmarks[tier] = {
-              metrics: b.metrics,
-              data_tier: b.data_tier,
-              source_ref: b.source_ref,
-              estimation_meta: b.estimation_meta,
-              _db_size_bytes: dbBytes,
-              _config: config
-            };
+          dbCategories[dbTier] = true;
+          entryCategories[entryBucket] = true;
+
+          if (!tierBenchmarks[dbTier] || dbBytes > tierBenchmarks[dbTier]._db_size_bytes) {
+            tierBenchmarks[dbTier] = rec;
+          }
+          if (!entryBenchmarks[entryBucket] || dbBytes > entryBenchmarks[entryBucket]._db_size_bytes) {
+            entryBenchmarks[entryBucket] = rec;
           }
         });
 
         // Pick primary benchmark: largest db_size, prefer lower data_tier
         var primary = null;
         var primaryDbSize = -1;
-        Object.keys(tierBenchmarks).forEach(function (tier) {
-          var tb = tierBenchmarks[tier];
-          if (tb._db_size_bytes > primaryDbSize ||
-              (tb._db_size_bytes === primaryDbSize && tb.data_tier < (primary ? primary.data_tier : 4))) {
-            primary = tb;
-            primaryDbSize = tb._db_size_bytes;
+        allBenchmarks.forEach(function (rec) {
+          if (rec._db_size_bytes > primaryDbSize ||
+              (rec._db_size_bytes === primaryDbSize && rec.data_tier < (primary ? primary.data_tier : 4))) {
+            primary = rec;
+            primaryDbSize = rec._db_size_bytes;
           }
         });
 
@@ -2772,7 +3163,10 @@
           _entry_size_label: primary._config.entry_size_label || null,
           _num_entries: primary._config.num_entries,
           db_size_categories: Object.keys(dbCategories),
-          _tierBenchmarks: tierBenchmarks
+          entry_size_categories: Object.keys(entryCategories),
+          _tierBenchmarks: tierBenchmarks,
+          _entryBenchmarks: entryBenchmarks,
+          _allBenchmarks: allBenchmarks
         });
       });
     });
@@ -2786,7 +3180,7 @@
   //   1. init() fetches reported.json (path resolved relative to script location)
   //   2. transformV2() flattens to entities
   //   3. computeCompositeScores() adds ranking/normalization metadata
-  //   4. initDbSizeTabs() wires up tab click handlers
+  //   4. initDimensionTabs() wires up DB-size and entry-size tab handlers
   //   5. renderCharts() renders all visualizations
   //   6. renderCatalog() builds the sortable table
   //   7. After 700ms, page loading overlay is removed and anchor scroll fires
@@ -2797,17 +3191,501 @@
   //   - DB-size tab switches
   //
   var _cachedData = null;
+  var _cachedRawSchemes = null;
+
+  // ── Extensions: KeywordPIR Charts ───────────────────
+  //
+  // These render functions work with the raw scheme data (not transformed
+  // entities) because they need all per-config benchmarks, not just the
+  // representative per DB-size tier.
+
+  var KW_VARIANT_COLORS = {
+    OptimizedSealPIR: '#1f77b4',
+    MulPIR: '#ff7f0e',
+    GentryRamzan: '#2ca02c',
+    ClientAidedGR: '#d62728'
+  };
+  var KW_VARIANT_LABELS = {
+    OptimizedSealPIR: 'SealPIR (Additive HE)',
+    MulPIR: 'MulPIR (Somewhat HE)',
+    GentryRamzan: 'Gentry-Ramzan (Number-theoretic)',
+    ClientAidedGR: 'Client-Aided GR (Number-theoretic)'
+  };
+
+  function getKwScheme(rawSchemes) {
+    return rawSchemes.find(function (s) { return s.id === 'keywordpir_2019'; });
+  }
+
+  function kwConfigMap(scheme) {
+    var map = {};
+    (scheme.configs || []).forEach(function (c) { map[c.config_id] = c; });
+    return map;
+  }
+
+  // Chart 1: Communication vs Server Time scatter (log-log)
+  function renderKwCommServer() {
+    var el = document.getElementById('chart-kw-comm-server');
+    if (!el || !_cachedRawSchemes) return;
+    var scheme = getKwScheme(_cachedRawSchemes);
+    if (!scheme) return;
+    var configs = kwConfigMap(scheme);
+    var t = themeColors();
+
+    var traces = [];
+    var variants = scheme.variants || [];
+    variants.forEach(function (variant) {
+      var benches = (scheme.benchmarks || []).filter(function (b) {
+        return b.variant === variant && isPos(b.metrics.server_time_ms) &&
+               (isPos(b.metrics.query_size_kb) || isPos(b.metrics.response_size_kb));
+      });
+      if (!benches.length) return;
+      var x = [], y = [], text = [];
+      benches.forEach(function (b) {
+        var totalComm = (b.metrics.query_size_kb || 0) + (b.metrics.response_size_kb || 0);
+        x.push(totalComm);
+        y.push(b.metrics.server_time_ms);
+        var c = configs[b.config_id];
+        text.push(
+          (KW_VARIANT_LABELS[variant] || variant) +
+          '<br>Config: ' + (c ? c.num_entries_label + ' × ' + c.entry_size_label : b.config_id) +
+          '<br>Query: ' + formatNum(b.metrics.query_size_kb || 0) + ' KB' +
+          '<br>Response: ' + formatNum(b.metrics.response_size_kb || 0) + ' KB' +
+          '<br>Total Comm: ' + formatNum(totalComm) + ' KB' +
+          '<br>Server: ' + formatNum(b.metrics.server_time_ms) + ' ms' +
+          '<br>Source: ' + b.source_ref
+        );
+      });
+      traces.push({
+        x: x, y: y, mode: 'markers', type: 'scatter', name: KW_VARIANT_LABELS[variant] || variant,
+        marker: { color: KW_VARIANT_COLORS[variant] || '#999', size: 12, line: { width: 1, color: t.text } },
+        hovertext: text, hoverinfo: 'text'
+      });
+    });
+
+    var layout = baseLayout('Communication vs Server Time — KeywordPIR Paradigm Trade-off', {
+      xaxis: { title: { text: 'Total Communication (KB)', standoff: 12 }, type: 'log', gridcolor: t.grid },
+      yaxis: { title: { text: 'Server Time (ms)', standoff: 12 }, type: 'log', gridcolor: t.grid },
+      legend: { orientation: 'h', y: -0.22, x: 0.5, xanchor: 'center', font: { size: 11 } },
+      margin: { l: 70, r: 24, t: 48, b: 100 },
+      height: 500
+    });
+    Plotly.newPlot(el, traces, layout, plotConfig());
+  }
+
+  // Chart 2: Server time grouped bars by config
+  function renderKwServerTime() {
+    var el = document.getElementById('chart-kw-server-time');
+    if (!el || !_cachedRawSchemes) return;
+    var scheme = getKwScheme(_cachedRawSchemes);
+    if (!scheme) return;
+    var configs = kwConfigMap(scheme);
+    var t = themeColors();
+
+    // Group benchmarks by config_id; only include configs that have ≥2 variants for comparison
+    var configOrder = (scheme.configs || []).map(function (c) { return c.config_id; });
+    var benchByConfig = {};
+    (scheme.benchmarks || []).forEach(function (b) {
+      if (!isPos(b.metrics.server_time_ms)) return;
+      if (!benchByConfig[b.config_id]) benchByConfig[b.config_id] = {};
+      benchByConfig[b.config_id][b.variant] = b;
+    });
+
+    // Filter to configs with data
+    var activeConfigs = configOrder.filter(function (cid) { return benchByConfig[cid]; });
+
+    var xLabels = activeConfigs.map(function (cid) {
+      var c = configs[cid];
+      return c ? c.num_entries_label + ' × ' + c.entry_size_label : cid;
+    });
+
+    var traces = [];
+    (scheme.variants || []).forEach(function (variant) {
+      var values = [], hoverTexts = [];
+      activeConfigs.forEach(function (cid) {
+        var b = benchByConfig[cid] && benchByConfig[cid][variant];
+        values.push(b ? b.metrics.server_time_ms : null);
+        if (b) {
+          hoverTexts.push(
+            (KW_VARIANT_LABELS[variant] || variant) +
+            '<br>Server: ' + formatNum(b.metrics.server_time_ms) + ' ms' +
+            '<br>Source: ' + b.source_ref
+          );
+        } else {
+          hoverTexts.push('');
+        }
+      });
+      traces.push({
+        x: xLabels, y: values, type: 'bar',
+        name: KW_VARIANT_LABELS[variant] || variant,
+        marker: { color: KW_VARIANT_COLORS[variant] || '#999' },
+        hovertext: hoverTexts, hoverinfo: 'text'
+      });
+    });
+
+    var layout = baseLayout('Server Time by Configuration', {
+      barmode: 'group',
+      xaxis: { title: { text: 'Database Configuration', standoff: 12 }, gridcolor: t.grid, tickangle: -30 },
+      yaxis: { title: { text: 'Server Time (ms)', standoff: 12 }, type: 'log', gridcolor: t.grid },
+      legend: { orientation: 'h', y: -0.35, x: 0.5, xanchor: 'center', font: { size: 10 } },
+      margin: { l: 70, r: 24, t: 48, b: 120 },
+      height: 500
+    });
+    Plotly.newPlot(el, traces, layout, plotConfig());
+  }
+
+  // Chart 3: Communication breakdown — query + response per variant/config
+  function renderKwCommBreakdown() {
+    var el = document.getElementById('chart-kw-comm-breakdown');
+    if (!el || !_cachedRawSchemes) return;
+    var scheme = getKwScheme(_cachedRawSchemes);
+    if (!scheme) return;
+    var configs = kwConfigMap(scheme);
+    var t = themeColors();
+
+    // Build data: one group per (variant, config) combination that has both query + response
+    var items = [];
+    (scheme.benchmarks || []).forEach(function (b) {
+      if (!isPos(b.metrics.query_size_kb) && !isPos(b.metrics.response_size_kb)) return;
+      var c = configs[b.config_id];
+      items.push({
+        label: (KW_VARIANT_LABELS[b.variant] || b.variant).split(' (')[0] +
+               '<br>' + (c ? c.num_entries_label + '×' + c.entry_size_label : b.config_id),
+        query: b.metrics.query_size_kb || 0,
+        response: b.metrics.response_size_kb || 0,
+        variant: b.variant,
+        source_ref: b.source_ref,
+        config: c
+      });
+    });
+
+    // Sort: group by variant, then by DB size within variant
+    var variantOrder = { OptimizedSealPIR: 0, MulPIR: 1, GentryRamzan: 2, ClientAidedGR: 3 };
+    items.sort(function (a, b) {
+      var va = variantOrder[a.variant] !== undefined ? variantOrder[a.variant] : 9;
+      var vb = variantOrder[b.variant] !== undefined ? variantOrder[b.variant] : 9;
+      if (va !== vb) return va - vb;
+      return (a.config ? a.config.num_entries : 0) - (b.config ? b.config.num_entries : 0);
+    });
+
+    var traces = [
+      {
+        y: items.map(function (i) { return i.label; }),
+        x: items.map(function (i) { return i.query; }),
+        type: 'bar', orientation: 'h', name: 'Query (upload)',
+        marker: { color: 'rgba(31,119,180,0.7)', line: { width: 1, color: 'rgba(31,119,180,1)' } },
+        hovertext: items.map(function (i) {
+          return i.label.replace('<br>', ' ') + '<br>Query: ' + formatNum(i.query) + ' KB<br>Source: ' + i.source_ref;
+        }),
+        hoverinfo: 'text'
+      },
+      {
+        y: items.map(function (i) { return i.label; }),
+        x: items.map(function (i) { return i.response; }),
+        type: 'bar', orientation: 'h', name: 'Response (download)',
+        marker: { color: 'rgba(255,127,14,0.7)', line: { width: 1, color: 'rgba(255,127,14,1)' } },
+        hovertext: items.map(function (i) {
+          return i.label.replace('<br>', ' ') + '<br>Response: ' + formatNum(i.response) + ' KB<br>Source: ' + i.source_ref;
+        }),
+        hoverinfo: 'text'
+      }
+    ];
+
+    var layout = baseLayout('Communication Breakdown — Query vs Response', {
+      barmode: 'stack',
+      xaxis: { title: { text: 'Communication (KB)', standoff: 12 }, type: 'log', gridcolor: t.grid },
+      yaxis: { autorange: 'reversed', tickfont: { size: 10 }, gridcolor: t.grid },
+      legend: { orientation: 'h', y: -0.15, x: 0.5, xanchor: 'center' },
+      margin: { l: 160, r: 24, t: 48, b: 80 },
+      height: Math.max(400, items.length * 35 + 140)
+    });
+    Plotly.newPlot(el, traces, layout, plotConfig());
+  }
+
+  // Chart 4: Client time bars
+  function renderKwClientTime() {
+    var el = document.getElementById('chart-kw-client-time');
+    if (!el || !_cachedRawSchemes) return;
+    var scheme = getKwScheme(_cachedRawSchemes);
+    if (!scheme) return;
+    var configs = kwConfigMap(scheme);
+    var t = themeColors();
+
+    var items = [];
+    (scheme.benchmarks || []).forEach(function (b) {
+      if (!isPos(b.metrics.client_time_ms)) return;
+      var c = configs[b.config_id];
+      items.push({
+        label: (KW_VARIANT_LABELS[b.variant] || b.variant).split(' (')[0] +
+               '<br>' + (c ? c.num_entries_label + '×' + c.entry_size_label : b.config_id),
+        value: b.metrics.client_time_ms,
+        variant: b.variant,
+        source_ref: b.source_ref,
+        config: c
+      });
+    });
+
+    var variantOrder = { OptimizedSealPIR: 0, MulPIR: 1, GentryRamzan: 2, ClientAidedGR: 3 };
+    items.sort(function (a, b) {
+      var va = variantOrder[a.variant] !== undefined ? variantOrder[a.variant] : 9;
+      var vb = variantOrder[b.variant] !== undefined ? variantOrder[b.variant] : 9;
+      if (va !== vb) return va - vb;
+      return (a.config ? a.config.num_entries : 0) - (b.config ? b.config.num_entries : 0);
+    });
+
+    var traces = [{
+      y: items.map(function (i) { return i.label; }),
+      x: items.map(function (i) { return i.value; }),
+      type: 'bar', orientation: 'h', showlegend: false,
+      marker: {
+        color: items.map(function (i) { return KW_VARIANT_COLORS[i.variant] || '#999'; }),
+        line: { width: 1, color: items.map(function (i) { return KW_VARIANT_COLORS[i.variant] || '#999'; }) }
+      },
+      text: items.map(function (i) { return formatNum(i.value) + ' ms'; }),
+      textposition: 'outside', cliponaxis: false,
+      hovertext: items.map(function (i) {
+        return i.label.replace('<br>', ' ') + '<br>Client: ' + formatNum(i.value) + ' ms<br>Source: ' + i.source_ref;
+      }),
+      hoverinfo: 'text'
+    }];
+
+    var layout = baseLayout('Client Computation Time', {
+      xaxis: { title: { text: 'Client Time (ms)', standoff: 12 }, type: 'log', gridcolor: t.grid },
+      yaxis: { autorange: 'reversed', tickfont: { size: 10 }, gridcolor: t.grid },
+      margin: { l: 160, r: 70, t: 48, b: 48 },
+      height: Math.max(350, items.length * 35 + 120)
+    });
+    // Variant color legend
+    var seen = {};
+    items.forEach(function (i) { seen[i.variant] = true; });
+    var variantKeys = Object.keys(seen);
+    if (variantKeys.length > 1) {
+      var parts = variantKeys.map(function (v) {
+        return '<span style="color:' + (KW_VARIANT_COLORS[v] || '#999') + '">\u25A0</span> ' + (KW_VARIANT_LABELS[v] || v).split(' (')[0];
+      });
+      layout.annotations = (layout.annotations || []).concat({
+        text: parts.join(' &nbsp; '),
+        xref: 'paper', yref: 'paper', x: 0.5, xanchor: 'center', y: 0, yanchor: 'top', yshift: -60,
+        showarrow: false, font: { size: 11, color: t.muted }
+      });
+      layout.margin.b = 80;
+    }
+    Plotly.newPlot(el, traces, layout, plotConfig());
+  }
+
+  // ── Extensions: DistributionalPIR Charts ────────────
+  //
+  // Sparse data: only 2 of 4 benchmarks have concrete metrics.
+
+  var DIST_VARIANT_COLORS = {
+    'DistPIR-SimplePIR': '#9467bd',
+    'DistPIR-Respire': '#8c564b',
+    'DistPIR-SCT': '#e377c2'
+  };
+
+  function getDistScheme(rawSchemes) {
+    return rawSchemes.find(function (s) { return s.id === 'distributionalpir_2025'; });
+  }
+
+  // Chart 1: Available metrics (multi-metric horizontal bars)
+  function renderDistMetrics() {
+    var el = document.getElementById('chart-dist-metrics');
+    if (!el || !_cachedRawSchemes) return;
+    var scheme = getDistScheme(_cachedRawSchemes);
+    if (!scheme) return;
+    var configMap = {};
+    (scheme.configs || []).forEach(function (c) { configMap[c.config_id] = c; });
+    var t = themeColors();
+
+    // Collect benchmarks with any concrete metric
+    var items = [];
+    (scheme.benchmarks || []).forEach(function (b) {
+      var m = b.metrics || {};
+      var hasData = isPos(m.server_time_ms) || isPos(m.response_size_kb) || isPos(m.client_storage_mb);
+      if (!hasData) return;
+      var c = configMap[b.config_id];
+      items.push({
+        label: b.variant + '<br>(' + (c ? c.num_entries_label + ' × ' + c.entry_size_label : b.config_id) + ')',
+        server_time_ms: m.server_time_ms || null,
+        response_size_kb: m.response_size_kb || null,
+        client_storage_mb: m.client_storage_mb || null,
+        variant: b.variant,
+        config: c,
+        source_ref: b.source_ref,
+        footnotes: b.footnotes || [],
+        data_tier: b.data_tier
+      });
+    });
+
+    if (!items.length) {
+      el.innerHTML = '<p class="chart-note">No concrete metrics available — only relative improvements reported in figures.</p>';
+      return;
+    }
+
+    // Create one subplot per metric
+    var metrics = [
+      { key: 'server_time_ms', label: 'Server Time (ms)', color: '#e74c3c' },
+      { key: 'response_size_kb', label: 'Response Size (KB)', color: '#3498db' },
+      { key: 'client_storage_mb', label: 'Client Storage (MB)', color: '#2ecc71' }
+    ];
+
+    var traces = [];
+    metrics.forEach(function (metric) {
+      var hasAny = items.some(function (i) { return isPos(i[metric.key]); });
+      if (!hasAny) return;
+      traces.push({
+        y: items.map(function (i) { return i.label; }),
+        x: items.map(function (i) { return i[metric.key]; }),
+        type: 'bar', orientation: 'h', name: metric.label,
+        marker: { color: metric.color, opacity: 0.8 },
+        text: items.map(function (i) {
+          return isPos(i[metric.key]) ? formatNum(i[metric.key]) + ' ' + metric.label.split(' (')[1].replace(')', '') : '';
+        }),
+        textposition: 'outside', cliponaxis: false,
+        hovertext: items.map(function (i) {
+          if (!isPos(i[metric.key])) return '';
+          return i.variant + ' (' + (i.config ? i.config.num_entries_label : '') + ')' +
+            '<br>' + metric.label + ': ' + formatNum(i[metric.key]) +
+            '<br>Tier: ' + TIER_LABELS[i.data_tier] +
+            '<br>Source: ' + i.source_ref +
+            (i.footnotes.length ? '<br><br>' + i.footnotes[0].substring(0, 120) + '...' : '');
+        }),
+        hoverinfo: 'text'
+      });
+    });
+
+    var layout = baseLayout('DistributionalPIR — Reported Metrics', {
+      barmode: 'group',
+      xaxis: { type: 'log', gridcolor: t.grid },
+      yaxis: { autorange: 'reversed', tickfont: { size: 10 }, gridcolor: t.grid },
+      legend: { orientation: 'h', y: -0.2, x: 0.5, xanchor: 'center' },
+      margin: { l: 160, r: 80, t: 48, b: 80 },
+      height: Math.max(350, items.length * 50 + 140)
+    });
+    Plotly.newPlot(el, traces, layout, plotConfig());
+  }
+
+  // Chart 2: Comparison with underlying schemes
+  function renderDistComparison() {
+    var el = document.getElementById('chart-dist-comparison');
+    if (!el || !_cachedRawSchemes) return;
+    var distScheme = getDistScheme(_cachedRawSchemes);
+    if (!distScheme) return;
+    var t = themeColors();
+
+    // Find underlying schemes for comparison
+
+    // Build comparison data: for each metric, show dist variant vs underlying scheme
+    // Focus on server_time_ms and response_size_kb which are the key value-adds
+    var rows = [];
+
+    // DistPIR-SCT vs YPIR (same DB class: ~5B 1-bit entries)
+    var ypir = _cachedRawSchemes.find(function (s) { return s.id === 'ypir_2024'; });
+    var distSCT = (distScheme.benchmarks || []).find(function (b) { return b.variant === 'DistPIR-SCT'; });
+
+    if (ypir && distSCT) {
+      // Find YPIR benchmark closest to SCT config (1-bit entries, large N)
+      var ypirBench = null;
+      (ypir.benchmarks || []).forEach(function (b) {
+        var c = (ypir.configs || []).find(function (cc) { return cc.config_id === b.config_id; });
+        if (c && c.entry_size_bytes <= 32) {
+          if (!ypirBench || c.num_entries > ypirBench._num) {
+            ypirBench = { metrics: b.metrics, source_ref: b.source_ref, _num: c.num_entries, config: c };
+          }
+        }
+      });
+      if (ypirBench) {
+        rows.push({ label: 'YPIR (baseline)', server: ypirBench.metrics.server_time_ms, response: ypirBench.metrics.response_size_kb, color: '#3498db', source: ypirBench.source_ref });
+        rows.push({ label: 'DistPIR-SCT', server: distSCT.metrics.server_time_ms, response: distSCT.metrics.response_size_kb, color: DIST_VARIANT_COLORS['DistPIR-SCT'], source: distSCT.source_ref });
+      }
+    }
+
+    // DistPIR-SimplePIR (CrowdSurf) vs SimplePIR
+    var simplePIR = _cachedRawSchemes.find(function (s) { return s.id === 'simplepir_2022'; });
+    var distSP = (distScheme.benchmarks || []).find(function (b) { return b.variant === 'DistPIR-SimplePIR' && b.config_id === '38GB-CrowdSurf'; });
+
+    if (simplePIR && distSP) {
+      var spBench = null;
+      (simplePIR.benchmarks || []).forEach(function (b) {
+        if (b.variant === 'SimplePIR' || !b.variant || b.variant === 'default') {
+          var c = (simplePIR.configs || []).find(function (cc) { return cc.config_id === b.config_id; });
+          if (c) {
+            var dbSize = c.num_entries * c.entry_size_bytes;
+            if (!spBench || dbSize > spBench._dbSize) {
+              spBench = { metrics: b.metrics, source_ref: b.source_ref, _dbSize: dbSize, config: c };
+            }
+          }
+        }
+      });
+      if (spBench) {
+        rows.push({ label: 'SimplePIR (baseline)', server: spBench.metrics.server_time_ms, response: spBench.metrics.response_size_kb, color: '#ff7f0e', source: spBench.source_ref });
+        rows.push({ label: 'DistPIR-SimplePIR<br>(CrowdSurf, 38 GB)', server: distSP.metrics.server_time_ms, response: distSP.metrics.response_size_kb, color: DIST_VARIANT_COLORS['DistPIR-SimplePIR'], source: distSP.source_ref });
+      }
+    }
+
+    if (!rows.length) {
+      el.innerHTML = '<p class="chart-note">No comparable baseline data available.</p>';
+      return;
+    }
+
+    var traces = [];
+    // Server time bars
+    var serverRows = rows.filter(function (r) { return isPos(r.server); });
+    if (serverRows.length) {
+      traces.push({
+        y: serverRows.map(function (r) { return r.label; }),
+        x: serverRows.map(function (r) { return r.server; }),
+        type: 'bar', orientation: 'h', name: 'Server Time (ms)',
+        marker: { color: serverRows.map(function (r) { return r.color; }), opacity: 0.85 },
+        text: serverRows.map(function (r) { return formatNum(r.server) + ' ms'; }),
+        textposition: 'outside', cliponaxis: false,
+        hovertext: serverRows.map(function (r) {
+          return r.label.replace('<br>', ' ') + '<br>Server: ' + formatNum(r.server) + ' ms<br>Source: ' + r.source;
+        }),
+        hoverinfo: 'text'
+      });
+    }
+
+    // Response size bars
+    var respRows = rows.filter(function (r) { return isPos(r.response); });
+    if (respRows.length) {
+      traces.push({
+        y: respRows.map(function (r) { return r.label; }),
+        x: respRows.map(function (r) { return r.response; }),
+        type: 'bar', orientation: 'h', name: 'Response (KB)',
+        marker: { color: respRows.map(function (r) { return r.color; }), opacity: 0.6 },
+        text: respRows.map(function (r) { return formatNum(r.response) + ' KB'; }),
+        textposition: 'outside', cliponaxis: false,
+        hovertext: respRows.map(function (r) {
+          return r.label.replace('<br>', ' ') + '<br>Response: ' + formatNum(r.response) + ' KB<br>Source: ' + r.source;
+        }),
+        hoverinfo: 'text'
+      });
+    }
+
+    var layout = baseLayout('DistributionalPIR vs Underlying Schemes', {
+      barmode: 'group',
+      xaxis: { type: 'log', gridcolor: t.grid, title: { text: 'Value (log scale — ms or KB)', standoff: 12 } },
+      yaxis: { autorange: 'reversed', tickfont: { size: 10 }, gridcolor: t.grid },
+      legend: { orientation: 'h', y: -0.2, x: 0.5, xanchor: 'center' },
+      margin: { l: 160, r: 80, t: 48, b: 80 },
+      height: Math.max(350, rows.length * 50 + 140)
+    });
+    Plotly.newPlot(el, traces, layout, plotConfig());
+  }
+
+  function renderExtensions() {
+    renderKwCommServer();
+    renderKwServerTime();
+    renderKwCommBreakdown();
+    renderKwClientTime();
+    renderDistMetrics();
+    renderDistComparison();
+  }
 
   function renderCharts(data) {
     renderHeatmap(data);
-    var filtered = filterByDbSize(data, _activeDbTier);
-    renderFilteredCharts(filtered);
-
-    // 3D scroll-zoom handler disabled (3D plots commented out)
-    // ['chart-pareto-3d-comm', 'chart-pareto-3d-server'].forEach(function (id) {
-    //   var el = document.getElementById(id);
-    //   if (el) el.addEventListener('wheel', function (e) { e.stopPropagation(); }, true);
-    // });
+    _buildChartRenderers(data);
+    renderFilteredCharts();
 
     renderRadar(data);
     renderTimeline(data);
@@ -2824,12 +3702,16 @@
         var loaders = document.querySelectorAll('.chart-loading');
         loaders.forEach(function (el) { el.remove(); });
 
+        // Cache raw scheme data for extension charts (need per-benchmark granularity)
+        _cachedRawSchemes = (raw && raw.schemes) ? raw.schemes : (Array.isArray(raw) ? raw : []);
+
         // Transform v2 schema into flat plotable entities
         var entities = transformV2(raw);
 
         _cachedData = computeCompositeScores(entities);
-        initDbSizeTabs();
+        initDimensionTabs();
         renderCharts(_cachedData);
+        renderExtensions();
         renderCatalog(_cachedData);
 
         // Reveal page after charts render, then jump to anchor instantly
@@ -2857,6 +3739,7 @@
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
       if (_cachedData) {
         renderCharts(_cachedData);
+        renderExtensions();
       }
     });
   }
@@ -2867,7 +3750,7 @@
   window.addEventListener('resize', function () {
     clearTimeout(_resizeTimer);
     _resizeTimer = setTimeout(function () {
-      if (_cachedData) renderCharts(_cachedData);
+      if (_cachedData) { renderCharts(_cachedData); renderExtensions(); }
     }, 200);
   });
 

@@ -42,7 +42,7 @@
 
 | Field | Value |
 |-------|--------|
-| **Builds on** | SimplePIR (Henzinger et al., 2023, Group A); Respire (Burton et al., 2024); batch-PIR via batch codes (Ishai et al., 2004); YPIR (Menon & Wu, 2024) |
+| **Builds on** | SimplePIR (Henzinger et al., 2023, Group 1a); Respire (Burton et al., 2024); batch-PIR via batch codes (Ishai et al., 2004); YPIR (Menon & Wu, 2024) |
 | **What changed** | Prior PIR schemes treat all database records uniformly, hitting the Omega(N) server-time lower bound. Distributional PIR introduces a new model that takes a popularity distribution P over records as input, relaxes correctness to probabilistic guarantees, and routes queries to a small "popular" sub-database with high probability — breaking the linear barrier in expected time for skewed distributions.&#8201;[^1] |
 | **Superseded by** | N/A (first paper to define this model, as of 2025) |
 | **Concurrent work** | Lam et al. (2023) explore "hot indices" in the two-server setting with a stronger correctness notion but no implementation.&#8201;[^2] Gomez-Leos & Heidarzadeh (2022) study side information in the information-theoretic PIR setting, focusing on communication rather than computation.&#8201;[^3] |

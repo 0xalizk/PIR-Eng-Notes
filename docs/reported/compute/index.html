@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Benching PIR (WIP) — Client / Server</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8" integrity="sha384-cCVCZkAjYNxaYKbM8lsArLznDF/SvMFr1jcZrvOpSTCa0W40ZAdLzHCEulnUa5i7" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- Hamburger (mobile) -->
+<button class="hamburger" aria-label="Menu">&#9776;</button>
+<div class="sidebar-overlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <a href="../../" class="sidebar-title">Benching PIR (WIP)</a>
+  <nav id="sidebar-nav"></nav>
+</aside>
+
+<!-- Main Content -->
+<main class="content loading">
+
+<!-- Server Performance -->
+<section id="server-perf">
+  <h2><a href="#server-perf">Server Performance</a></h2>
+  <details class="metric-note">
+    <summary>A note on the throughput metric in PIR literature</summary>
+    <p>&ldquo;Throughput&rdquo; in PIR literature means <em>DB scan rate</em>
+    (GB/s &equals; DB size &divide; server time) &mdash; not queries/sec.
+    For schemes with O(N) server work (Groups 1a, 1b, some 2a), this is bounded
+    by memory bandwidth. Preprocessing schemes (Groups 2a, 2b) with sublinear
+    online work can have very low server times but the rate metric is less meaningful.</p>
+
+    <p>Evidence from each scheme&rsquo;s paper that throughput &equals; DB&nbsp;size &divide; server&nbsp;time:</p>
+    <table class="evidence-table">
+      <thead>
+        <tr><th>Scheme</th><th>Evidence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>SealPIR</td><td>Table 2: throughput &equals; DB size &divide; reply generation time</td></tr>
+        <tr><td>MulPIR</td><td>Table 4: throughput &equals; DB size &divide; reply generation time (same methodology as SealPIR)</td></tr>
+        <tr><td>FastPIR (Addra)</td><td>Table 2: throughput &equals; DB size &divide; server response time</td></tr>
+        <tr><td>OnionPIR</td><td>Table 1: throughput &equals; DB size &divide; total server time</td></tr>
+        <tr><td>Spiral</td><td>Table 3 &amp; Figure 6: throughput &equals; DB size &divide; server time</td></tr>
+        <tr><td>SimplePIR</td><td>Table 1 &amp; Figure 5: throughput &equals; DB size &divide; server time; note near-bandwidth performance</td></tr>
+        <tr><td>DoublePIR</td><td>Table 1 &amp; Figure 5: throughput &equals; DB size &divide; server time</td></tr>
+        <tr><td>CWPIR (FastPIR)</td><td>Table 1: throughput &equals; DB size &divide; total time</td></tr>
+        <tr><td>OnionPIR v2</td><td>Table 2: throughput &equals; DB size &divide; server time</td></tr>
+        <tr><td>HintlessPIR</td><td>Table 1: throughput &equals; DB size &divide; server time</td></tr>
+        <tr><td>YPIR</td><td>Table 1: throughput &equals; DB size &divide; server time</td></tr>
+        <tr><td>Respire</td><td>Table 2: throughput &equals; DB size &divide; server time</td></tr>
+        <tr><td>WhisPIR</td><td>Table 1 &amp; Figure 3: throughput &equals; DB size &divide; server time</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Exception &mdash; XPIR (2016):</strong> XPIR defines &ldquo;PIR processing throughput&rdquo;
+    as the rate of homomorphic absorption operations (bits/s through crypto ops), and
+    &ldquo;user-perceived throughput&rdquo; as end-to-end including network transfer.
+    Neither is simply DB&nbsp;size &divide; server&nbsp;time. XPIR throughput values in our
+    charts use the standard definition for comparability.</p>
+  </details>
+  <div class="dim-tabs-container">
+    <div class="db-tab-row primary">
+      <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="tiny">&le;1GB</button>
+        <button class="dim-tab" data-value="small">1–8GB</button>
+        <button class="dim-tab" data-value="medium">8–32GB</button>
+        <button class="dim-tab" data-value="large">&gt;32GB</button>
+      </div>
+    </div>
+  </div>
+  <div class="chart-pair">
+    <div class="chart-container" id="chart-throughput"><div class="chart-loading">Loading charts...</div></div>
+    <div class="chart-container" id="chart-server-time"><div class="chart-loading">Loading charts...</div></div>
+  </div>
+</section>
+
+<!-- Client Compute -->
+<section id="client-cost">
+  <h2><a href="#client-cost">Client Compute</a></h2>
+  <p class="subtitle">Client-side computation time (only 10 schemes report this metric)</p>
+  <div class="dim-tabs-container">
+    <div class="db-tab-row primary">
+      <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="tiny">&le;1GB</button>
+        <button class="dim-tab" data-value="small">1–8GB</button>
+        <button class="dim-tab" data-value="medium">8–32GB</button>
+        <button class="dim-tab" data-value="large">&gt;32GB</button>
+      </div>
+    </div>
+  </div>
+  <div class="chart-container" id="chart-client-cost"><div class="chart-loading">Loading charts...</div></div>
+</section>
+
+<nav class="page-nav-tiles">
+  <a href="../" class="page-nav-tile home" title="Overview">&#8962;</a>
+  <a href="../communication/" class="page-nav-tile prev">Communication</a>
+  <a href="../offline/" class="page-nav-tile next">Offline / Preprocessing</a>
+</nav>
+
+</main>
+
+<script src="../../nav.js"></script>
+<script src="../../script.js"></script>
+<script src="../charts.js"></script>
+</body>
+</html>

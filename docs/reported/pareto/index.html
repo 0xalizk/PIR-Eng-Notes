@@ -32,71 +32,95 @@
     Purple step-line connects 2D frontiers.
   </p>
   <h4 id="pareto-comm-server"><a href="#pareto-comm-server">Communication vs Server Time:</a></h4>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
-    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
+  <div class="dim-tabs-container">
+    <div class="db-tab-row primary">
+      <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="tiny">&le;1GB</button>
+        <button class="dim-tab" data-value="small">1–8GB</button>
+        <button class="dim-tab" data-value="medium">8–32GB</button>
+        <button class="dim-tab" data-value="large">&gt;32GB</button>
+      </div>
+    </div>
   </div>
   <div class="chart-container" id="chart-pareto"></div>
 
   <h4 id="pareto-comm-client"><a href="#pareto-comm-client">Communication vs Client Time:</a></h4>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
-    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
+  <div class="dim-tabs-container">
+    <div class="db-tab-row primary">
+      <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="tiny">&le;1GB</button>
+        <button class="dim-tab" data-value="small">1–8GB</button>
+        <button class="dim-tab" data-value="medium">8–32GB</button>
+        <button class="dim-tab" data-value="large">&gt;32GB</button>
+      </div>
+    </div>
   </div>
   <div class="chart-container" id="chart-pareto-comm-client"></div>
 
   <h4 id="pareto-comm-storage"><a href="#pareto-comm-storage">Communication vs Client Storage:</a></h4>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
-    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
+  <div class="dim-tabs-container">
+    <div class="db-tab-row primary">
+      <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="tiny">&le;1GB</button>
+        <button class="dim-tab" data-value="small">1–8GB</button>
+        <button class="dim-tab" data-value="medium">8–32GB</button>
+        <button class="dim-tab" data-value="large">&gt;32GB</button>
+      </div>
+    </div>
   </div>
   <div class="chart-container" id="chart-pareto-comm-storage"></div>
 
   <h4 id="pareto-server-client"><a href="#pareto-server-client">Server Time vs Client Time:</a></h4>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
-    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
+  <div class="dim-tabs-container">
+    <div class="db-tab-row primary">
+      <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="tiny">&le;1GB</button>
+        <button class="dim-tab" data-value="small">1–8GB</button>
+        <button class="dim-tab" data-value="medium">8–32GB</button>
+        <button class="dim-tab" data-value="large">&gt;32GB</button>
+      </div>
+    </div>
   </div>
   <div class="chart-container" id="chart-pareto-server-client"></div>
 
   <!-- 3D Pareto plots (commented out — may revisit)
   <h4 id="pareto-3d-comm"><a href="#pareto-3d-comm">Communication × Client Storage × Client Time:</a></h4>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
-    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
+  <div class="dim-tabs-container">
+    <div class="db-tab-row primary">
+      <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="tiny">&le;1GB</button>
+        <button class="dim-tab" data-value="small">1–8GB</button>
+        <button class="dim-tab" data-value="medium">8–32GB</button>
+        <button class="dim-tab" data-value="large">&gt;32GB</button>
+      </div>
+    </div>
   </div>
   <div style="display:flex;align-items:center;max-width:none;width:calc(100% + 320px);margin-left:-160px;margin-top:12px">
     <div class="chart-container wide" id="chart-pareto-3d-comm" style="flex:1;min-width:0"></div>
   </div>
 
   <h4 id="pareto-3d-server"><a href="#pareto-3d-server">Server Time × Client Storage × Client Time:</a></h4>
-  <div class="db-size-tabs">
-    <button class="db-tab active" data-tier="tiny">&le;1GB db</button>
-    <button class="db-tab" data-tier="small">1–8GB db</button>
-    <button class="db-tab" data-tier="medium">8–32GB db</button>
-    <button class="db-tab" data-tier="large">&gt;32GB db</button>
-    <button class="db-tab onebit-tab" data-tier="1-bit">1-bit entry</button>
+  <div class="dim-tabs-container">
+    <div class="db-tab-row primary">
+      <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="tiny">&le;1GB</button>
+        <button class="dim-tab" data-value="small">1–8GB</button>
+        <button class="dim-tab" data-value="medium">8–32GB</button>
+        <button class="dim-tab" data-value="large">&gt;32GB</button>
+      </div>
+    </div>
   </div>
   <div style="display:flex;align-items:center;max-width:none;width:calc(100% + 320px);margin-left:-160px;margin-top:12px">
     <div class="chart-container wide" id="chart-pareto-3d-server" style="flex:1;min-width:0"></div>
   </div>
   -->
 </section>
+
+<nav class="page-nav-tiles">
+  <a href="../" class="page-nav-tile home" title="Overview">&#8962;</a>
+  <a href="../offline/" class="page-nav-tile prev">Offline / Preprocessing</a>
+  <a href="../misc/" class="page-nav-tile next">Misc Metrics</a>
+</nav>
 
 </main>
 

@@ -34,7 +34,7 @@
 |-------|-------|
 | **Paper** | [Single Pass Client-Preprocessing Private Information Retrieval](https://eprint.iacr.org/2024/303) (2024) |
 | **Archetype** | Construction |
-| **PIR Category** | Group D — Client-Dependent Preprocessing |
+| **PIR Category** | Group 2b — Interactive-Hint |
 | **Security model** | 2-server non-colluding (semi-honest, at least one server honest) |
 | **Additional assumptions** | PRG security (for seed-compressed permutations); information-theoretic correctness and security against each server individually |
 | **Correctness model** | Deterministic |
@@ -47,7 +47,7 @@
 
 | Field | Value |
 |-------|--------|
-| **Builds on** | Checklist [Group D] (Kogan & Corrigan-Gibbs, USENIX Security 2021); CK20 [Group D] (Corrigan-Gibbs & Kogan, EUROCRYPT 2020) for the client-preprocessing PIR model; Fisher-Yates shuffle (Durstenfeld 1964, Fisher & Yates 1963, Knuth 1969) |
+| **Builds on** | Checklist [Group 2b] (Kogan & Corrigan-Gibbs, USENIX Security 2021); CK20 [Group 2b] (Corrigan-Gibbs & Kogan, EUROCRYPT 2020) for the client-preprocessing PIR model; Fisher-Yates shuffle (Durstenfeld 1964, Fisher & Yates 1963, Knuth 1969) |
 | **What changed** | Prior client-preprocessing schemes (Checklist, TreePIR, MIR, Piano) require preprocessing proportional to λ * N database accesses because they sample λ * sqrt(N) independent pseudorandom subsets. SinglePass replaces pseudorandom subsets with random permutations via Fisher-Yates shuffle, achieving preprocessing in O(N) time with a single linear pass over the database, eliminating the λ factor.&#8201;[^1] |
 | **Superseded by** | N/A |
 | **Concurrent work** | MIR (Mughees, Ren; 2023) — also a 2-server client-preprocessing scheme, benchmarked against&#8201;[^2] |
@@ -381,8 +381,8 @@ Q is a tunable parameter in [N] controlling the tradeoff between query time and 
 
 ### Related Papers in Collection <a href="#toc">⤴</a>
 
-- **Checklist [Group D]** — Primary comparator. SinglePass eliminates the λ factor from Checklist's preprocessing.
-- **TreePIR [Group D]** — 2-server client-preprocessing scheme by the same authors. Benchmarked against in Section 4.
-- **CK20 [Group D]** — Foundational client-preprocessing PIR model paper (2-server + single-server). SinglePass follows the same model (Definition 2.1).
-- **Piano [Group D]** — Single-server client-preprocessing scheme. Different model (single-server, probabilistic correctness) but addresses the same preprocessing bottleneck.
-- **MIR [Group D]** — Concurrent 2-server client-preprocessing scheme. Benchmarked against in Section 4.
+- **Checklist [Group 2b]** — Primary comparator. SinglePass eliminates the λ factor from Checklist's preprocessing.
+- **TreePIR [Group 2b]** — 2-server client-preprocessing scheme by the same authors. Benchmarked against in Section 4.
+- **CK20 [Group 2b]** — Foundational client-preprocessing PIR model paper (2-server + single-server). SinglePass follows the same model (Definition 2.1).
+- **Piano [Group 2b]** — Single-server client-preprocessing scheme. Different model (single-server, probabilistic correctness) but addresses the same preprocessing bottleneck.
+- **MIR [Group 2b]** — Concurrent 2-server client-preprocessing scheme. Benchmarked against in Section 4.

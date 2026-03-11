@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Benching PIR (WIP) — Communication</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8" integrity="sha384-cCVCZkAjYNxaYKbM8lsArLznDF/SvMFr1jcZrvOpSTCa0W40ZAdLzHCEulnUa5i7" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- Hamburger (mobile) -->
+<button class="hamburger" aria-label="Menu">&#9776;</button>
+<div class="sidebar-overlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <a href="../../" class="sidebar-title">Benching PIR (WIP)</a>
+  <nav id="sidebar-nav"></nav>
+</aside>
+
+<!-- Main Content -->
+<main class="content loading">
+
+<section id="communication">
+  <h2><a href="#communication">Communication</a></h2>
+  <p class="desc">Dot size = server time (larger = slower).</p>
+  <div class="dim-tabs-container">
+    <div class="db-tab-row primary">
+      <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="tiny">&le;1GB</button>
+        <button class="dim-tab" data-value="small">1–8GB</button>
+        <button class="dim-tab" data-value="medium">8–32GB</button>
+        <button class="dim-tab" data-value="large">&gt;32GB</button>
+      </div>
+    </div>
+  </div>
+  <div class="chart-container" id="chart-communication"><div class="chart-loading">Loading charts...</div></div>
+</section>
+
+<nav class="page-nav-tiles">
+  <a href="../" class="page-nav-tile home" title="Overview">&#8962;</a>
+  <a href="../compute/" class="page-nav-tile next">Client / Server</a>
+</nav>
+
+</main>
+
+<script src="../../nav.js"></script>
+<script src="../../script.js"></script>
+<script src="../charts.js"></script>
+</body>
+</html>

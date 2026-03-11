@@ -3,11 +3,11 @@
     {
       "id": "xpir_2014",
       "display_name": "XPIR-2014",
-      "group": "A",
+      "group": "1a",
       "year": 2014,
       "implementation_url": null,
-      "source_pdf": "Group.A.FHE.Based.PIR/xpir_2014/XPIR_2014_232.pdf",
-      "notes_path": "Group.A.FHE.Based.PIR/xpir_2014/xpir_2014_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/xpir_2014/XPIR_2014_232.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/xpir_2014/xpir_2014_notes.md",
       "hardware": {
         "cpu": "Intel Pentium @ 3.5 GHz",
         "platform": "Desktop",
@@ -158,11 +158,11 @@
     {
       "id": "xpir_2016",
       "display_name": "XPIR",
-      "group": "A",
+      "group": "1a",
       "year": 2016,
       "implementation_url": "https://github.com/XPIR-team/XPIR",
-      "source_pdf": "Group.A.FHE.Based.PIR/xpir_2016/XPIR_computational_2014_1025.pdf",
-      "notes_path": "Group.A.FHE.Based.PIR/xpir_2016/xpir_2016_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/xpir_2016/XPIR_computational_2014_1025.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/xpir_2016/xpir_2016_notes.md",
       "hardware": {
         "cpu": "Intel Core i7-3630QM @ 2.67 GHz",
         "platform": "MSI GT60 laptop",
@@ -237,11 +237,11 @@
     {
       "id": "sealpir_2018",
       "display_name": "SealPIR",
-      "group": "A",
+      "group": "1a",
       "year": 2018,
       "implementation_url": "https://github.com/microsoft/SealPIR",
-      "source_pdf": "Group.A.FHE.Based.PIR/sealpir_2018/SealPIR_2017_1142.pdf",
-      "notes_path": "Group.A.FHE.Based.PIR/sealpir_2018/sealpir_2018_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/sealpir_2018/SealPIR_2017_1142.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/sealpir_2018/sealpir_2018_notes.md",
       "hardware": {
         "cpu": "Intel Xeon E5-2667 @ 3.6 GHz",
         "platform": "Azure H16",
@@ -346,11 +346,11 @@
     {
       "id": "mulpir_2019",
       "display_name": "MulPIR",
-      "group": "A",
+      "group": "1a",
       "year": 2019,
       "implementation_url": null,
-      "source_pdf": "Group.A.FHE.Based.PIR/mulpir_2019/MulPIR_2019_733.pdf",
-      "notes_path": "Group.A.FHE.Based.PIR/mulpir_2019/mulpir_2019_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/mulpir_2019/MulPIR_2019_733.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/mulpir_2019/mulpir_2019_notes.md",
       "hardware": null,
       "asymptotic": {
         "query_size": "O(N_1 * n'_1 * m'_1 * d * log Q)",
@@ -423,11 +423,11 @@
     {
       "id": "onionpir_2021",
       "display_name": "OnionPIR",
-      "group": "A",
+      "group": "1a",
       "year": 2021,
       "implementation_url": null,
-      "source_pdf": "Group.A.FHE.Based.PIR/onionpir_2021/OnionPIR_2021_1081.pdf",
-      "notes_path": "Group.A.FHE.Based.PIR/onionpir_2021/onionpir_2021_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/onionpir_2021/OnionPIR_2021_1081.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/onionpir_2021/onionpir_2021_notes.md",
       "hardware": {
         "cpu": "EC2 t2.2xlarge (8 CPU cores)",
         "platform": "Amazon EC2 t2.2xlarge",
@@ -552,11 +552,11 @@
     {
       "id": "addra_2021",
       "display_name": "FastPIR",
-      "group": "A",
+      "group": "1a",
       "year": 2021,
       "implementation_url": "https://github.com/ishtiyaque/FastPIR",
-      "source_pdf": "Group.A.FHE.Based.PIR/addra_2021/Addra_FastPIR_2021_044.pdf",
-      "notes_path": "Group.A.FHE.Based.PIR/addra_2021/addra_2021_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/addra_2021/Addra_FastPIR_2021_044.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/addra_2021/addra_2021_notes.md",
       "hardware": {
         "cpu": "Intel Xeon @ 3.6 GHz (48 vCPU)",
         "platform": "AWS c5.12xlarge",
@@ -612,11 +612,11 @@
     {
       "id": "cwpir_2022",
       "display_name": "CwPIR",
-      "group": "A",
+      "group": "1a",
       "year": 2022,
       "implementation_url": "https://github.com/RasoulAM/constant-weight-pir",
-      "source_pdf": "Group.A.FHE.Based.PIR/cwpir_2022/FastPIR_orig_arxiv_2202.07569.pdf",
-      "notes_path": "Group.A.FHE.Based.PIR/cwpir_2022/cwpir_2022_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/cwpir_2022/FastPIR_orig_arxiv_2202.07569.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/cwpir_2022/cwpir_2022_notes.md",
       "hardware": {
         "cpu": "Intel Xeon E5-4640 @ 2.40 GHz",
         "platform": "Server (32 physical cores)",
@@ -774,11 +774,11 @@
     {
       "id": "spiral_2022",
       "display_name": "Spiral",
-      "group": "A",
+      "group": "1a",
       "year": 2022,
       "implementation_url": "https://github.com/menonsamir/spiral",
-      "source_pdf": "Group.A.FHE.Based.PIR/spiral_2022/Spiral_stream_2022_368.pdf",
-      "notes_path": "Group.A.FHE.Based.PIR/spiral_2022/spiral_2022_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/spiral_2022/Spiral_stream_2022_368.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/spiral_2022/spiral_2022_notes.md",
       "hardware": {
         "cpu": "Intel Xeon Platinum 8124M @ 3 GHz",
         "platform": "Amazon EC2 c5n.2xlarge",
@@ -1055,11 +1055,11 @@
     {
       "id": "frodopir_2022",
       "display_name": "FrodoPIR",
-      "group": "A",
+      "group": "2a",
       "year": 2022,
       "implementation_url": "https://github.com/brave-experiments/frodo-pir",
-      "source_pdf": "Group.A.FHE.Based.PIR/frodopir_2022/FrodoPIR_2022_981.pdf",
-      "notes_path": "Group.A.FHE.Based.PIR/frodopir_2022/frodopir_2022_notes.md",
+      "source_pdf": "Group.2a.Download.Hint/frodopir_2022/FrodoPIR_2022_981.pdf",
+      "notes_path": "Group.2a.Download.Hint/frodopir_2022/frodopir_2022_notes.md",
       "hardware": {
         "cpu": "Amazon t2.2xlarge (8 CPU cores)",
         "platform": "Amazon EC2 t2.2xlarge",
@@ -1250,11 +1250,11 @@
     {
       "id": "thorpir_2024",
       "display_name": "ThorPIR",
-      "group": "A",
+      "group": "2b",
       "year": 2024,
       "implementation_url": null,
-      "source_pdf": "Group.A.FHE.Based.PIR/thorpir_2024/FHEPIR_2024_482.pdf",
-      "notes_path": "Group.A.FHE.Based.PIR/thorpir_2024/thorpir_2024_notes.md",
+      "source_pdf": "Group.2b.Interactive.Hint/thorpir_2024/FHEPIR_2024_482.pdf",
+      "notes_path": "Group.2b.Interactive.Hint/thorpir_2024/thorpir_2024_notes.md",
       "hardware": null,
       "asymptotic": {
         "query_size": "O(N^{1/3})",
@@ -1332,11 +1332,11 @@
     {
       "id": "onionpirv2_2025",
       "display_name": "OnionPIRv2",
-      "group": "A",
+      "group": "1a",
       "year": 2025,
       "implementation_url": "https://github.com/chenyue42/OnionPIRv2",
-      "source_pdf": "Group.A.FHE.Based.PIR/onionpirv2_2025/FHEPIR_2025_1142.pdf",
-      "notes_path": "Group.A.FHE.Based.PIR/onionpirv2_2025/onionpirv2_2025_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/onionpirv2_2025/FHEPIR_2025_1142.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/onionpirv2_2025/onionpirv2_2025_notes.md",
       "hardware": {
         "cpu": "Intel Xeon Platinum 8124M @ 3.00 GHz",
         "platform": "Amazon EC2 c5n.9xlarge",
@@ -1466,11 +1466,11 @@
     {
       "id": "hintlesspir_2023",
       "display_name": "HintlessPIR",
-      "group": "B",
+      "group": "1b",
       "year": 2023,
       "implementation_url": "https://github.com/google/hintless_pir",
-      "source_pdf": "Group.B.Stateless.Single.Server.PIR/hintlesspir_2023/HintlessPIR_2023_1733.pdf",
-      "notes_path": "Group.B.Stateless.Single.Server.PIR/hintlesspir_2023/HintlessPIR_2023_notes.md",
+      "source_pdf": "Group.1b.Stateless.Client.Stateless.Server/hintlesspir_2023/HintlessPIR_2023_1733.pdf",
+      "notes_path": "Group.1b.Stateless.Client.Stateless.Server/hintlesspir_2023/HintlessPIR_2023_notes.md",
       "hardware": {
         "cpu": "Intel Sapphire Rapids @ 3.00 GHz",
         "platform": "AWS r7iz.4xlarge",
@@ -1630,11 +1630,11 @@
     {
       "id": "whispir_2024",
       "display_name": "WhisPIR",
-      "group": "B",
+      "group": "1a",
       "year": 2024,
       "implementation_url": null,
-      "source_pdf": "Group.B.Stateless.Single.Server.PIR/whispir_2024/WhisPIR_2024_266.pdf",
-      "notes_path": "Group.B.Stateless.Single.Server.PIR/whispir_2024/WhisPIR_2024_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/whispir_2024/WhisPIR_2024_266.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/whispir_2024/WhisPIR_2024_notes.md",
       "hardware": {
         "cpu": "Intel i7 @ 2.5 GHz",
         "platform": "Ubuntu 20, 32 GB RAM",
@@ -1691,11 +1691,11 @@
     {
       "id": "respire_2024",
       "display_name": "Respire",
-      "group": "B",
+      "group": "1a",
       "year": 2024,
       "implementation_url": "https://github.com/AMACB/respire/",
-      "source_pdf": "Group.B.Stateless.Single.Server.PIR/respire_2024/Respire_2024_1165.pdf",
-      "notes_path": "Group.B.Stateless.Single.Server.PIR/respire_2024/Respire_2024_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/respire_2024/Respire_2024_1165.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/respire_2024/Respire_2024_notes.md",
       "hardware": {
         "cpu": "Intel Xeon Platinum 8488C @ 2.4 GHz",
         "platform": "AWS EC2 r7i.8xlarge",
@@ -1808,11 +1808,11 @@
     {
       "id": "ypir_2024",
       "display_name": "YPIR",
-      "group": "B",
+      "group": "1b",
       "year": 2024,
       "implementation_url": "https://github.com/menonsamir/ypir",
-      "source_pdf": "Group.B.Stateless.Single.Server.PIR/ypir_2024/YPIR_2024_270.pdf",
-      "notes_path": "Group.B.Stateless.Single.Server.PIR/ypir_2024/YPIR_2024_notes.md",
+      "source_pdf": "Group.1b.Stateless.Client.Stateless.Server/ypir_2024/YPIR_2024_270.pdf",
+      "notes_path": "Group.1b.Stateless.Client.Stateless.Server/ypir_2024/YPIR_2024_notes.md",
       "hardware": {
         "cpu": "Intel Xeon Platinum 8375C @ 2.9 GHz",
         "platform": "Amazon EC2 r6i.16xlarge",
@@ -1910,11 +1910,11 @@
     {
       "id": "via_2025",
       "display_name": "VIA",
-      "group": "B",
+      "group": "1b",
       "year": 2025,
       "implementation_url": "https://anonymous.4open.science/r/VIA-8888/",
-      "source_pdf": "Group.B.Stateless.Single.Server.PIR/via_2025/VIA_2025_2074.pdf",
-      "notes_path": "Group.B.Stateless.Single.Server.PIR/via_2025/VIA_2025_notes.md",
+      "source_pdf": "Group.1b.Stateless.Client.Stateless.Server/via_2025/VIA_2025_2074.pdf",
+      "notes_path": "Group.1b.Stateless.Client.Stateless.Server/via_2025/VIA_2025_notes.md",
       "hardware": {
         "cpu": "AMD 9950X",
         "platform": "Desktop, Ubuntu 22.04.5",
@@ -1933,9 +1933,7 @@
         "dmux_cmux_architecture": true
       },
       "variants": [
-        "VIA",
-        "VIA-C",
-        "VIA-B"
+        "VIA"
       ],
       "configs": [
         {
@@ -1956,20 +1954,6 @@
           "config_id": "32GBx1B",
           "num_entries": 34359738368,
           "num_entries_label": "~2^35",
-          "entry_size_bytes": 1,
-          "entry_size_label": "1 B"
-        },
-        {
-          "config_id": "256MBx1B",
-          "num_entries": 268435456,
-          "num_entries_label": "~2^28",
-          "entry_size_bytes": 1,
-          "entry_size_label": "1 B"
-        },
-        {
-          "config_id": "1GBx1B-batch",
-          "num_entries": 1073741824,
-          "num_entries_label": "~2^30",
           "entry_size_bytes": 1,
           "entry_size_label": "1 B"
         }
@@ -2022,7 +2006,77 @@
             "server_preprocessing_time_ms": 33340
           },
           "footnotes": []
+        }
+      ],
+      "theory_only": false
+    },
+    {
+      "id": "via_bc_2025",
+      "display_name": "VIA-BC",
+      "group": "1a",
+      "year": 2025,
+      "implementation_url": "https://anonymous.4open.science/r/VIA-8888/",
+      "source_pdf": "Group.1b.Stateless.Client.Stateless.Server/via_2025/VIA_2025_2074.pdf",
+      "notes_path": "Group.1b.Stateless.Client.Stateless.Server/via_2025/VIA_2025_notes.md",
+      "hardware": {
+        "cpu": "AMD 9950X",
+        "platform": "Desktop, Ubuntu 22.04.5",
+        "ram_gb": 128,
+        "notes": "Single-threaded; AVX-512DQ and AVX-512IFMA52; clang 19.1.7"
+      },
+      "asymptotic": {
+        "query_size": "O_lambda(log N)",
+        "response_size": "O_lambda(1)",
+        "server_computation": "O_lambda(N)",
+        "client_computation": null,
+        "preprocessing": "O_lambda(N)"
+      },
+      "group_specific": {
+        "security_bits": 110,
+        "dmux_cmux_architecture": true
+      },
+      "variants": [
+        "VIA-C",
+        "VIA-B"
+      ],
+      "configs": [
+        {
+          "config_id": "1GBx1B",
+          "num_entries": 1073741824,
+          "num_entries_label": "~2^30",
+          "entry_size_bytes": 1,
+          "entry_size_label": "1 B"
         },
+        {
+          "config_id": "4GBx1B",
+          "num_entries": 4294967296,
+          "num_entries_label": "~2^32",
+          "entry_size_bytes": 1,
+          "entry_size_label": "1 B"
+        },
+        {
+          "config_id": "32GBx1B",
+          "num_entries": 34359738368,
+          "num_entries_label": "~2^35",
+          "entry_size_bytes": 1,
+          "entry_size_label": "1 B"
+        },
+        {
+          "config_id": "256MBx1B",
+          "num_entries": 268435456,
+          "num_entries_label": "~2^28",
+          "entry_size_bytes": 1,
+          "entry_size_label": "1 B"
+        },
+        {
+          "config_id": "1GBx1B-batch",
+          "num_entries": 1073741824,
+          "num_entries_label": "~2^30",
+          "entry_size_bytes": 1,
+          "entry_size_label": "1 B"
+        }
+      ],
+      "benchmarks": [
         {
           "variant": "VIA-C",
           "config_id": "1GBx1B",
@@ -2112,11 +2166,11 @@
     {
       "id": "inspire_2025",
       "display_name": "InsPIRe",
-      "group": "B",
+      "group": "1b",
       "year": 2025,
       "implementation_url": "https://github.com/google/private-membership/tree/main/research/InsPIRe",
-      "source_pdf": "Group.B.Stateless.Single.Server.PIR/inspire_2025/InsPIRe_2025_1352.pdf",
-      "notes_path": "Group.B.Stateless.Single.Server.PIR/inspire_2025/InsPIRe_2025_notes.md",
+      "source_pdf": "Group.1b.Stateless.Client.Stateless.Server/inspire_2025/InsPIRe_2025_1352.pdf",
+      "notes_path": "Group.1b.Stateless.Client.Stateless.Server/inspire_2025/InsPIRe_2025_notes.md",
       "hardware": {
         "cpu": "Intel Xeon CPU @ 2.6 GHz",
         "platform": null,
@@ -2288,11 +2342,11 @@
     {
       "id": "pirouette_2025",
       "display_name": "Pirouette",
-      "group": "B",
+      "group": "1a",
       "year": 2025,
       "implementation_url": "https://github.com/KULeuven-COSIC/Pirouette",
-      "source_pdf": "Group.B.Stateless.Single.Server.PIR/pirouette_2025/Pirouette_2025_680.pdf",
-      "notes_path": "Group.B.Stateless.Single.Server.PIR/pirouette_2025/Pirouette_2025_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/pirouette_2025/Pirouette_2025_680.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/pirouette_2025/Pirouette_2025_notes.md",
       "hardware": {
         "cpu": "Intel Xeon Gold 6248R",
         "platform": "512 GB RAM, 32 cores",
@@ -2466,11 +2520,11 @@
     {
       "id": "npir_2026",
       "display_name": "NPIR",
-      "group": "B",
+      "group": "1a",
       "year": 2026,
       "implementation_url": "https://github.com/llllinyl/npir",
-      "source_pdf": "Group.B.Stateless.Single.Server.PIR/npir_2026/NPIR_2026_2257.pdf",
-      "notes_path": "Group.B.Stateless.Single.Server.PIR/npir_2026/NPIR_2026_notes.md",
+      "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/npir_2026/NPIR_2026_2257.pdf",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/npir_2026/NPIR_2026_notes.md",
       "hardware": {
         "cpu": "Intel Xeon Ice Lake Platinum 8369B @ 2.70 GHz",
         "platform": "Aliyun ECS.r7.16xlarge",
@@ -2586,11 +2640,11 @@
     {
       "id": "simplepir_2022",
       "display_name": "SimplePIR",
-      "group": "C",
+      "group": "2a",
       "year": 2022,
       "implementation_url": "https://github.com/ahenzinger/simplepir",
-      "source_pdf": "Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_949.pdf",
-      "notes_path": "Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md",
+      "source_pdf": "Group.2a.Download.Hint/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_949.pdf",
+      "notes_path": "Group.2a.Download.Hint/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md",
       "hardware": {
         "cpu": "AWS EC2 c5n.metal (Intel Xeon Platinum 8000-series)",
         "platform": "AWS EC2 c5n.metal",
@@ -2638,13 +2692,15 @@
             "throughput_gbps": 10.138,
             "offline_comm_mb": 121,
             "client_storage_mb": 121,
-            "server_preprocessing_time_ms": 300000
+            "server_preprocessing_time_ms": 300000,
+            "client_preprocessing_time_ms": 50
           },
           "footnotes": [
             "Table 8 (p.13): SimplePIR online upload 121 KB, download 121 KB, offline upload 0 MB, offline download 121 MB, throughput 10,138 MB/s.",
             "Table 1 (p.3): SimplePIR max throughput 10,305 MB/s (slightly different measurement point).",
-            "Client computation < 1 ms (Section 10, p.15).",
-            "Server preprocessing ~5 core-minutes for 1 GB DB (approximate, from Figure 17, p.30)."
+            "Client computation < 1 ms (Section 10, p.15) — covers Recover only (O(n) inner product); excludes Query generation (A*s).",
+            "Server preprocessing ~5 core-minutes for 1 GB DB (approximate, from Figure 17, p.30).",
+            "Client preprocessing ~50 ms (analytical estimate): seed expansion for A ∈ Z_q^{~31K×1024} ≈ 127 MB PRG output at ~2.5 GB/s AES-CTR. Derived from query size 121 KB (Section 4.1 p.7, Figure 18 p.30)."
           ]
         },
         {
@@ -2667,11 +2723,11 @@
     {
       "id": "doublepir_2022",
       "display_name": "DoublePIR",
-      "group": "C",
+      "group": "2a",
       "year": 2022,
       "implementation_url": "https://github.com/ahenzinger/simplepir",
-      "source_pdf": "Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_949.pdf",
-      "notes_path": "Group.C.Client.Independent.Preprocessing/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md",
+      "source_pdf": "Group.2a.Download.Hint/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_949.pdf",
+      "notes_path": "Group.2a.Download.Hint/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md",
       "hardware": {
         "cpu": "AWS EC2 c5n.metal (Intel Xeon Platinum 8000-series)",
         "platform": "AWS EC2 c5n.metal",
@@ -2720,12 +2776,14 @@
             "offline_comm_mb": 16,
             "client_storage_mb": 16,
             "client_time_ms": 100,
-            "server_preprocessing_time_ms": 300000
+            "server_preprocessing_time_ms": 300000,
+            "client_preprocessing_time_ms": 130
           },
           "footnotes": [
             "Table 8 (p.13): DoublePIR online upload 313 KB, download 32 KB, offline upload 0 MB, offline download 16 MB, throughput 7,622 MB/s.",
-            "Client query+recover time ~100 ms for 1 GB DB (Figure 18, p.30).",
-            "Server preprocessing ~5 core-minutes for 1 GB DB (approximate, from Figure 17, p.30)."
+            "Client query+recover time ~100 ms for 1 GB DB (Figure 18, p.30) — likely includes seed expansion for A_1, A_2 interleaved with matrix-vector products.",
+            "Server preprocessing ~5 core-minutes for 1 GB DB (approximate, from Figure 17, p.30).",
+            "Client preprocessing ~130 ms (analytical estimate): seed expansion for A_1+A_2 ∈ Z_q^{~80K×1024} ≈ 328 MB PRG output at ~2.5 GB/s AES-CTR. Derived from query size 313 KB (Section 5.1 p.8, Figure 18 p.30)."
           ]
         },
         {
@@ -2748,11 +2806,11 @@
     {
       "id": "verisimplepir_2024",
       "display_name": "VeriSimplePIR",
-      "group": "C",
+      "group": "2a",
       "year": 2024,
       "implementation_url": null,
-      "source_pdf": "Group.C.Client.Independent.Preprocessing/verisimplepir_2024/VeriSimplePIR_2024_341.pdf",
-      "notes_path": "Group.C.Client.Independent.Preprocessing/verisimplepir_2024/VeriSimplePIR_2024_notes.md",
+      "source_pdf": "Group.2a.Download.Hint/verisimplepir_2024/VeriSimplePIR_2024_341.pdf",
+      "notes_path": "Group.2a.Download.Hint/verisimplepir_2024/VeriSimplePIR_2024_notes.md",
       "hardware": {
         "cpu": "Intel i7 @ 2.5 GHz",
         "platform": "Desktop",
@@ -2918,11 +2976,11 @@
     {
       "id": "incrementalpir_2026",
       "display_name": "IncrementalPIR",
-      "group": "C",
+      "group": "2a",
       "year": 2026,
       "implementation_url": null,
-      "source_pdf": "Group.C.Client.Independent.Preprocessing/incrementalpir_2026/IncrementalPIR_2026_030.pdf",
-      "notes_path": "Group.C.Client.Independent.Preprocessing/incrementalpir_2026/IncrementalPIR_2026_notes.md",
+      "source_pdf": "Group.2a.Download.Hint/incrementalpir_2026/IncrementalPIR_2026_030.pdf",
+      "notes_path": "Group.2a.Download.Hint/incrementalpir_2026/IncrementalPIR_2026_notes.md",
       "hardware": {
         "cpu": "Intel i7 @ 3.3 GHz",
         "platform": "Desktop",
@@ -3048,11 +3106,11 @@
     {
       "id": "piano_2023",
       "display_name": "Piano",
-      "group": "D",
+      "group": "2b",
       "year": 2023,
       "implementation_url": "https://github.com/wuwuz/Piano-PIR-new",
-      "source_pdf": "Group.D.Client.Dependent.Preprocessing/piano_2023/Piano_2023_452.pdf",
-      "notes_path": "Group.D.Client.Dependent.Preprocessing/piano_2023/Piano_2023_notes.md",
+      "source_pdf": "Group.2b.Interactive.Hint/piano_2023/Piano_2023_452.pdf",
+      "notes_path": "Group.2b.Interactive.Hint/piano_2023/Piano_2023_notes.md",
       "hardware": {
         "cpu": "AWS m5.8xlarge",
         "platform": "AWS EC2 m5.8xlarge (two instances)",
@@ -3228,11 +3286,11 @@
     {
       "id": "plinko_2024",
       "display_name": "Plinko",
-      "group": "D",
+      "group": "2b",
       "year": 2024,
       "implementation_url": "https://github.com/keewoolee/rms24",
-      "source_pdf": "Group.D.Client.Dependent.Preprocessing/plinko_2024/Plinko_2024_318.pdf",
-      "notes_path": "Group.D.Client.Dependent.Preprocessing/plinko_2024/Plinko_2024_notes.md",
+      "source_pdf": "Group.2b.Interactive.Hint/plinko_2024/Plinko_2024_318.pdf",
+      "notes_path": "Group.2b.Interactive.Hint/plinko_2024/Plinko_2024_notes.md",
       "hardware": null,
       "asymptotic": {
         "query_size": "O~(n/r)",
@@ -3287,11 +3345,11 @@
     {
       "id": "rms24_2024",
       "display_name": "RMS24",
-      "group": "D",
+      "group": "2b",
       "year": 2024,
       "implementation_url": "https://github.com/renling/S3PIR/",
-      "source_pdf": "Group.D.Client.Dependent.Preprocessing/rms24_2024/RMS24_2024_1072.pdf",
-      "notes_path": "Group.D.Client.Dependent.Preprocessing/rms24_2024/RMS24_2024_notes.md",
+      "source_pdf": "Group.2b.Interactive.Hint/rms24_2024/RMS24_2024_1072.pdf",
+      "notes_path": "Group.2b.Interactive.Hint/rms24_2024/RMS24_2024_notes.md",
       "hardware": {
         "cpu": "Intel Xeon @ 3.1 GHz",
         "platform": "AWS EC2 m5.8xlarge",
@@ -3463,11 +3521,11 @@
     {
       "id": "wangren_2024",
       "display_name": "WangRen",
-      "group": "D",
+      "group": "2b",
       "year": 2024,
       "implementation_url": null,
-      "source_pdf": "Group.D.Client.Dependent.Preprocessing/wangren_2024/WangRen_2024_1845.pdf",
-      "notes_path": "Group.D.Client.Dependent.Preprocessing/wangren_2024/WangRen_2024_notes.md",
+      "source_pdf": "Group.2b.Interactive.Hint/wangren_2024/WangRen_2024_1845.pdf",
+      "notes_path": "Group.2b.Interactive.Hint/wangren_2024/WangRen_2024_notes.md",
       "hardware": null,
       "asymptotic": {
         "query_size": "O(T * log n)",

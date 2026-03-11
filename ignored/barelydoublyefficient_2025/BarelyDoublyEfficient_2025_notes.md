@@ -28,7 +28,7 @@
 |-------|-------|
 | **Paper** | [Barely Doubly-Efficient SimplePIR](https://eprint.iacr.org/2025/1305) (Keewoo Lee, 2025) |
 | **Archetype** | Construction (theory-only) / Feasibility |
-| **PIR Category** | Group C — Client-Independent Preprocessing |
+| **PIR Category** | Group 2a — Download-Hint |
 | **Security model** | Semi-honest single-server DEPIR in the CRS model (unkeyed); equivalently, keyed DEPIR with public preprocessing in the standard model |
 | **Additional assumptions** | Plain LWE with polynomial modulus-to-noise ratio (Definition 2.4); CRS model |
 | **Correctness model** | Statistical (overwhelming probability over Setup randomness) |
@@ -41,7 +41,7 @@
 
 | Field | Value |
 |-------|--------|
-| **Builds on** | SimplePIR (Henzinger et al., USENIX Security 2023, Group C); Williams' fast matrix-vector multiplication with preprocessing (SODA 2007); Brakerski-Vaikuntanathan SHE (BV11); Kedlaya-Umans fast modular composition (KU08) |
+| **Builds on** | SimplePIR (Henzinger et al., USENIX Security 2023, Group 2a); Williams' fast matrix-vector multiplication with preprocessing (SODA 2007); Brakerski-Vaikuntanathan SHE (BV11); Kedlaya-Umans fast modular composition (KU08) |
 | **What changed** | SimplePIR requires O(N) server computation online (naive matrix-vector multiply). This work applies Williams' sub-quadratic matrix-vector multiplication preprocessing to the database matrix, reducing online server computation to O(N/log N) — achieving the first DEPIR from plain LWE. The CRS (matrix **A**) is treated identically to SimplePIR, but the database matrix is preprocessed via CRT decomposition + Williams' technique. Also, **H** = **D-hat** * **A** is now sent as part of the online answer rather than the offline hint.&#8201;[^1] |
 | **Superseded by** | N/A (as of May 2025, this is the state-of-the-art for plain-LWE-based DEPIR) |
 | **Concurrent work** | CIMR25 (Chen-Ishai-Mour-Rosen): sk-DEPIR from the Learning Subspace with Noise (LSN) assumption, also achieving barely doubly-efficient O(N/log N) server computation&#8201;[^2] |
