@@ -27,8 +27,12 @@
           { label: 'Client', anchor: '#client-cost' }
         ]},
         { label: 'Offline / Preprocessing', href: 'reported/offline/', children: [
-          { label: 'Offline & Storage', anchor: '#offline-storage' },
+          { label: 'Offline & Client Storage', anchor: '#offline-storage' },
           { label: 'Preprocessing', anchor: '#preprocessing-time' }
+        ]},
+        { label: 'Extensions', href: 'reported/extensions/', children: [
+          { label: 'Keyword PIR', anchor: '#keyword-pir' },
+          { label: 'Distributional PIR', anchor: '#distributional-pir' }
         ]},
         { label: 'Pareto Frontiers', href: 'reported/pareto/', children: [
           { label: 'Comm × Server', anchor: '#pareto-comm-server' },
@@ -38,13 +42,9 @@
           // { label: 'Comm × Storage × Client', anchor: '#pareto-3d-comm' },
           // { label: 'Server × Storage × Client', anchor: '#pareto-3d-server' }
         ]},
-        { label: 'Misc Metrics', href: 'reported/misc/', children: [
+        { label: 'Misc Metrics', href: 'reported/misc/', dividerAfter: true, children: [
           { label: 'Rate', anchor: '#rate' },
           { label: 'Amortized Offline', anchor: '#amortized-offline' }
-        ]},
-        { label: 'Extensions', href: 'reported/extensions/', dividerAfter: true, children: [
-          { label: 'Keyword PIR', anchor: '#keyword-pir' },
-          { label: 'Distributional PIR', anchor: '#distributional-pir' }
         ]},
         { label: 'Data Sources', href: 'reported/data_sources.html' },
         { label: 'DB Configs', href: 'reported/db_config.html', dividerAfter: true }

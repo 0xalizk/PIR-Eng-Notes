@@ -1131,7 +1131,7 @@
       textposition: 'outside',
       cliponaxis: false,
       hovertext: items.map(function (s) {
-        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
     }];
@@ -1187,7 +1187,7 @@
       cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'offline_comm_mb');
-        return isPos(v) ? consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Offline: ' + formatNum(v) + ' MB<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s) : '';
+        return isPos(v) ? consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s) : '';
       }),
       hoverinfo: 'text'
     });
@@ -1207,7 +1207,7 @@
       cliponaxis: false,
       hovertext: items.map(function (s) {
         var v = getVal(s, 'client_storage_mb');
-        return isPos(v) ? consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Client Storage: ' + formatNum(v) + ' MB' + storageNote(s) + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s) : '';
+        return isPos(v) ? consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + storageNote(s) + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s) : '';
       }),
       hoverinfo: 'text'
     });
