@@ -53,7 +53,7 @@
 
 | Field | Value |
 |-------|--------|
-| **Builds on** | Spiral [Group A/B] (Regev+GSW composition, hypercube database layout, external products); Angel et al. [ACLS18] (query packing/compression); ring switching [BV11, BGV12, GHPS12]; split modulus switching [MW22a] |
+| **Builds on** | Spiral [Group 1a] (Regev+GSW composition, hypercube database layout, external products); Angel et al. [ACLS18] (query packing/compression); ring switching [BV11, BGV12, GHPS12]; split modulus switching [MW22a] |
 | **What changed** | Prior RLWE-based PIR schemes communicate at least one full ring element (d=2048, q~2^56) per query/response. Respire introduces subring embedding and dimension reduction to project responses onto a smaller ring R_{d2} (d2=512), and embeds queries into subring coefficients, achieving total online communication smaller than a single element of the main ring. |
 | **Superseded by** | N/A |
 | **Concurrent work** | YPIR [MW24], HintlessPIR [LMRS24], WhisPIR [dCLS24] (all 2024, addressing communication in different sub-models) |

@@ -244,7 +244,7 @@ h4 {
 .radar-mode-tabs {
   display: none;
   justify-content: center;
-  margin: 8px 0 6px;
+  margin: 18px 0 6px;
 }
 .radar-mode-tabs-inner {
   display: inline-flex;
@@ -383,8 +383,6 @@ h4 {
   font-weight: 600;
   color: var(--group-1a);
   list-style: none;
-}
-.metric-note summary {
   display: flex;
   align-items: center;
 }
@@ -925,36 +923,6 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   font-weight: 400;
 }
 
-/* ── Pareto Links (reported landing) ───────────────────── */
-.pareto-links {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin: 12px 0;
-}
-.pareto-links a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  aspect-ratio: 1;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  transition: background 0.15s, border-color 0.15s;
-}
-.pareto-links a:hover {
-  background: var(--bg-alt);
-  border-color: var(--link);
-  text-decoration: none;
-}
-@media (max-width: 900px) {
-  .pareto-links {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
 
 /* ── Page Navigation Tiles ──────────────────────────────── */
 .page-nav-tiles {

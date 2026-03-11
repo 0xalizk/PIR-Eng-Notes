@@ -1985,25 +1985,10 @@
     var modeTabsEl = document.getElementById('radar-mode-tabs');
     if (!tabsEl || !gridEl) return;
 
-    // build construction-type legend (once)
+    // build construction-type legend (once): tier line-styles first, taxonomy second
     if (legendEl && !legendEl.hasChildNodes()) {
+      // tier line-style legend (first row)
       legendEl.className = 'construction-legend';
-      Object.keys(GROUP_COLORS).forEach(function (g) {
-        if (g === 'X') return; // excluded from radar per convention
-        var span = document.createElement('span');
-        span.className = 'construction-legend-item';
-        var dot = document.createElement('span');
-        dot.className = 'construction-dot';
-        dot.style.background = GROUP_COLORS[g];
-        span.appendChild(dot);
-        span.appendChild(document.createTextNode(GROUP_NAMES[g]));
-        legendEl.appendChild(span);
-      });
-
-      // tier line-style legend (separate row)
-      var tierDiv = document.createElement('div');
-      tierDiv.className = 'construction-legend';
-      tierDiv.style.marginTop = '6px';
       [
         { label: 'From data',              dash: '' },
         { label: 'From figures/analytics', dash: '6,4' },
@@ -2025,9 +2010,26 @@
         svg.appendChild(line);
         item.appendChild(svg);
         item.appendChild(document.createTextNode(t.label));
-        tierDiv.appendChild(item);
+        legendEl.appendChild(item);
       });
-      legendEl.parentNode.insertBefore(tierDiv, legendEl.nextSibling);
+
+      // taxonomy group-color legend (second row)
+      var groupDiv = document.createElement('div');
+      groupDiv.id = 'radar-group-legend';
+      groupDiv.className = 'construction-legend';
+      groupDiv.style.marginTop = '6px';
+      Object.keys(GROUP_COLORS).forEach(function (g) {
+        if (g === 'X') return; // excluded from radar per convention
+        var span = document.createElement('span');
+        span.className = 'construction-legend-item';
+        var dot = document.createElement('span');
+        dot.className = 'construction-dot';
+        dot.style.background = GROUP_COLORS[g];
+        span.appendChild(dot);
+        span.appendChild(document.createTextNode(GROUP_NAMES[g]));
+        groupDiv.appendChild(span);
+      });
+      legendEl.parentNode.insertBefore(groupDiv, legendEl.nextSibling);
     }
 
     var radarMetrics = ALL_METRICS.filter(function (m) {
@@ -2048,6 +2050,8 @@
       gridEl.innerHTML = '';
       if (allPanel) allPanel.style.display = '';
       if (legendEl) legendEl.style.display = 'none';
+      var groupLeg = document.getElementById('radar-group-legend');
+      if (groupLeg) groupLeg.style.display = 'none';
       if (modeTabsEl) modeTabsEl.style.display = 'none';
       var re = document.getElementById('radar-explainer-relative');
       var ae = document.getElementById('radar-explainer-absolute');
@@ -2063,6 +2067,8 @@
       });
       if (allPanel) allPanel.style.display = 'none';
       if (legendEl) legendEl.style.display = 'flex';
+      var groupLeg = document.getElementById('radar-group-legend');
+      if (groupLeg) groupLeg.style.display = 'flex';
       if (modeTabsEl) modeTabsEl.style.display = 'flex';
       var re = document.getElementById('radar-explainer-relative');
       var ae = document.getElementById('radar-explainer-absolute');

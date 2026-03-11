@@ -108,7 +108,7 @@ These overlap with checks in Sections 3 and 5 but are called out separately beca
 
 **File naming:** `checkups/<pass>/issues/Checkup_<scheme>.md`
 
-**When validating a whole group**, create one file per scheme in that group (e.g., 11 files for Group A).
+**When validating a whole group**, create one file per scheme in that group (e.g., 11 files for Group 1a).
 
 ### Template
 
