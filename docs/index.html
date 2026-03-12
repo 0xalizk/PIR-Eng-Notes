@@ -9,20 +9,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script>
-    // Backward-compat redirect: old hash URLs → reported/
+    // Backward-compat redirect: old hash URLs → subpages
     (function () {
-      var reported = ['overview','communication','server-perf','client-cost',
-        'offline-storage'];
-      var pareto = ['pareto','pareto-comm-server','pareto-comm-client',
-        'pareto-comm-storage','pareto-3d-comm','pareto-3d-server'];
-      var misc = ['timeline','catalog','references'];
+      var defined = {
+        'overview':             'reported/',
+        'communication':        'reported/communication/',
+        'server-perf':          'reported/server/',
+        'client-cost':          'reported/client/',
+        'offline-storage':      'reported/offline/',
+        'pareto':               'reported/pareto/',
+        'pareto-comm-server':   'reported/pareto/#pareto-comm-server',
+        'pareto-comm-client':   'reported/pareto/#pareto-comm-client',
+        'pareto-comm-storage':  'reported/pareto/#pareto-comm-storage',
+        'pareto-server-client': 'reported/pareto/#pareto-server-client',
+        'pareto-3d-comm':       'reported/pareto/#pareto-3d-comm',
+        'pareto-3d-server':     'reported/pareto/#pareto-3d-server',
+        'timeline':             'misc/#timeline',
+        'catalog':              'misc/#catalog',
+        'references':           'misc/#references'
+      };
       var h = location.hash.replace('#', '');
-      if (h && reported.indexOf(h) !== -1) {
-        location.replace('reported/#' + h);
-      } else if (h && pareto.indexOf(h) !== -1) {
-        location.replace('reported/pareto/#' + h);
-      } else if (h && misc.indexOf(h) !== -1) {
-        location.replace('misc/#' + h);
+      if (h && defined[h]) {
+        location.replace(defined[h]);
       }
     })();
   </script>

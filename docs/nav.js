@@ -4,7 +4,7 @@
 
   // Detect base path: works on both GitHub Pages (/PIR-Eng-Notes/) and local dev (/)
   var BASE = '/PIR-Eng-Notes/';
-  var knownDirs = ['reported/communication/', 'reported/compute/', 'reported/offline/', 'reported/extensions/', 'reported/misc/', 'reported/pareto/', 'reported/db_config.html', 'reported/data_sources.html', 'reported/', 'replicated/', 'standardized/', 'misc/'];
+  var knownDirs = ['reported/communication/', 'reported/server/', 'reported/client/', 'reported/offline/', 'reported/extensions/', 'reported/misc/', 'reported/pareto/', 'reported/db_config.html', 'reported/data_sources.html', 'reported/', 'replicated/', 'standardized/', 'misc/'];
   var p = location.pathname;
   for (var i = 0; i < knownDirs.length; i++) {
     var idx = p.indexOf(knownDirs[i]);
@@ -22,10 +22,11 @@
       children: [
         { label: 'Overview', anchor: '#overview' },
         { label: 'Communication', href: 'reported/communication/' },
-        { label: 'Client / Server', href: 'reported/compute/', children: [
-          { label: 'Server', anchor: '#server-perf' },
-          { label: 'Client', anchor: '#client-cost' }
+        { label: 'Server Performance', href: 'reported/server/', children: [
+          { label: 'Linear Schemes', anchor: '#server-perf' },
+          { label: 'Sublinear Schemes', anchor: '#server-perf-sublinear' }
         ]},
+        { label: 'Client Compute', href: 'reported/client/' },
         { label: 'Offline / Preprocessing', href: 'reported/offline/', children: [
           { label: 'Offline & Client Storage', anchor: '#offline-storage' },
           { label: 'Preprocessing', anchor: '#preprocessing-time' }

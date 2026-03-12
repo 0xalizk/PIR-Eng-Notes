@@ -4,8 +4,8 @@
 
 | Metric | Asymptotic | Concrete (SimplePIR, 1 GB DB, 1-bit entries) | Concrete (DoublePIR, 1 GB DB, 1-bit entries) | Phase |
 |--------|-----------|---------------------------------------------|----------------------------------------------|-------|
-| Query size (upload) | O(sqrt(N)) elements in Z_q | 120 KB | 345 KB | Online |
-| Response size (download) | O(sqrt(N)) elements in Z_q (SimplePIR); O(kappa * (2n+1)) (DoublePIR) | 120 KB | 345 KB | Online |
+| Query size (upload) | O(sqrt(N)) elements in Z_q | 120 KB | 313 KB | Online |
+| Response size (download) | O(sqrt(N)) elements in Z_q (SimplePIR); O(kappa * (2n+1)) (DoublePIR) | 120 KB | 32 KB | Online |
 | Server computation (online) | 2N operations in Z_q (SimplePIR); 2N + 2(2n+1) * sqrt(N) * kappa (DoublePIR) | — | — | Online |
 | Client computation | O(n) per query (key generation + inner product) | < 1 ms (Recover only) | approximately 100 ms (1 GB DB, query+recover) | Online |
 | Client preprocessing (seed expansion) | O(sqrt(N) * n) PRG evals | ~50 ms (analytical estimate) | ~130 ms (analytical estimate) | Offline (one-time) |

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Benching PIR (WIP) — Client / Server</title>
+  <title>Benching PIR (WIP) — Server Performance</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
@@ -25,44 +25,30 @@
 <!-- Main Content -->
 <main class="content loading">
 
-<!-- Server Performance -->
+<h2>Server Performance</h2>
+<p class="chart-note"><em>Some schemes report only throughput or only server time; the missing metric is derived where possible (throughput = DB size / server time). Derived values are shown with hatched bars.</em></p>
+
+<!-- Linear Schemes -->
 <section id="server-perf">
-  <h2><a href="#server-perf">Server Performance</a></h2>
+  <h3><a href="#server-perf">Linear Schemes</a></h3>
   <details class="metric-note">
     <summary>A note on the throughput metric in PIR literature</summary>
     <p>&ldquo;Throughput&rdquo; in PIR literature means <em>DB scan rate</em>
     (GB/s &equals; DB size &divide; server time) &mdash; not queries/sec.
     For schemes with O(N) server work (Groups 1a, 1b, some 2a), this is bounded
-    by memory bandwidth. Preprocessing schemes (Groups 2a, 2b) with sublinear
-    online work can have very low server times but the rate metric is less meaningful.</p>
-
-    <p>Evidence from each scheme&rsquo;s paper that throughput &equals; DB&nbsp;size &divide; server&nbsp;time:</p>
-    <table class="evidence-table">
-      <thead>
-        <tr><th>Scheme</th><th>Evidence</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>SealPIR</td><td>Table 2: throughput &equals; DB size &divide; reply generation time</td></tr>
-        <tr><td>MulPIR</td><td>Table 4: throughput &equals; DB size &divide; reply generation time (same methodology as SealPIR)</td></tr>
-        <tr><td>FastPIR (Addra)</td><td>Table 2: throughput &equals; DB size &divide; server response time</td></tr>
-        <tr><td>OnionPIR</td><td>Table 1: throughput &equals; DB size &divide; total server time</td></tr>
-        <tr><td>Spiral</td><td>Table 3 &amp; Figure 6: throughput &equals; DB size &divide; server time</td></tr>
-        <tr><td>SimplePIR</td><td>Table 1 &amp; Figure 5: throughput &equals; DB size &divide; server time; note near-bandwidth performance</td></tr>
-        <tr><td>DoublePIR</td><td>Table 1 &amp; Figure 5: throughput &equals; DB size &divide; server time</td></tr>
-        <tr><td>CWPIR (FastPIR)</td><td>Table 1: throughput &equals; DB size &divide; total time</td></tr>
-        <tr><td>OnionPIR v2</td><td>Table 2: throughput &equals; DB size &divide; server time</td></tr>
-        <tr><td>HintlessPIR</td><td>Table 1: throughput &equals; DB size &divide; server time</td></tr>
-        <tr><td>YPIR</td><td>Table 1: throughput &equals; DB size &divide; server time</td></tr>
-        <tr><td>Respire</td><td>Table 2: throughput &equals; DB size &divide; server time</td></tr>
-        <tr><td>WhisPIR</td><td>Table 1 &amp; Figure 3: throughput &equals; DB size &divide; server time</td></tr>
-      </tbody>
-    </table>
+    by memory bandwidth (~10&ndash;14 GB/s/core). Only Respire explicitly defines
+    throughput as &ldquo;ratio of the database size to the server&rsquo;s computation
+    time&rdquo; (Table 1 caption); all other schemes report MB/s or GB/s values
+    consistent with this definition without stating it.</p>
 
     <p><strong>Exception &mdash; XPIR (2016):</strong> XPIR defines &ldquo;PIR processing throughput&rdquo;
     as the rate of homomorphic absorption operations (bits/s through crypto ops), and
     &ldquo;user-perceived throughput&rdquo; as end-to-end including network transfer.
     Neither is simply DB&nbsp;size &divide; server&nbsp;time. XPIR throughput values in our
     charts use the standard definition for comparability.</p>
+
+    <p><strong>Exception &mdash; SealPIR (2018):</strong> SealPIR reports throughput as
+    requests/second (~7 req/s concurrent client saturation), not DB scan rate.</p>
   </details>
   <div class="dim-tabs-container">
     <div class="db-tab-row primary">
@@ -80,10 +66,15 @@
   </div>
 </section>
 
-<!-- Client Compute -->
-<section id="client-cost">
-  <h2><a href="#client-cost">Client Compute</a></h2>
-  <p class="subtitle">Client-side computation time (only 10 schemes report this metric)</p>
+<!-- Sublinear Schemes -->
+<section id="server-perf-sublinear">
+  <h3><a href="#server-perf-sublinear">Sublinear Schemes</a></h3>
+  <p class="desc">
+    Group 2b schemes (Piano, Plinko, RMS24) have O(&radic;N) server work per query &mdash;
+    the server makes &radic;N point lookups rather than scanning the full DB.
+    The standard DB-scan-rate throughput metric is not meaningful here; instead we show
+    queries per second (1 &divide; server time).
+  </p>
   <div class="dim-tabs-container">
     <div class="db-tab-row primary">
       <div class="tab-row-buttons">
@@ -94,13 +85,16 @@
       </div>
     </div>
   </div>
-  <div class="chart-container" id="chart-client-cost"><div class="chart-loading">Loading charts...</div></div>
+  <div class="chart-pair">
+    <div class="chart-container" id="chart-sublinear-qps"><div class="chart-loading">Loading charts...</div></div>
+    <div class="chart-container" id="chart-sublinear-latency"><div class="chart-loading">Loading charts...</div></div>
+  </div>
 </section>
 
 <nav class="page-nav-tiles">
   <a href="../" class="page-nav-tile home" title="Overview">&#8962;</a>
   <a href="../communication/" class="page-nav-tile prev">Communication</a>
-  <a href="../offline/" class="page-nav-tile next">Offline / Preprocessing</a>
+  <a href="../client/" class="page-nav-tile next">Client Compute</a>
 </nav>
 
 </main>

@@ -596,7 +596,10 @@
           "data_tier": 2,
           "source_ref": "Figure 10",
           "threading": "single",
-          "estimation_meta": null,
+          "estimation_meta": {
+            "confidence": "moderate",
+            "method": "Values read from Figures 9-10 (approximate bar chart readings)"
+          },
           "metrics": {
             "query_size_kb": 1024,
             "response_size_kb": 64,
@@ -1059,7 +1062,7 @@
       "year": 2022,
       "implementation_url": "https://github.com/brave-experiments/frodo-pir",
       "source_pdf": "Group.2a.Download.Hint/frodopir_2022/FrodoPIR_2022_981.pdf",
-      "notes_path": "Group.2a.Download.Hint/frodopir_2022/frodopir_2022_notes.md",
+      "notes_path": "Group.2a.Download.Hint/frodopir_2022/FrodoPIR_2022_notes.md",
       "hardware": {
         "cpu": "Amazon t2.2xlarge (8 CPU cores)",
         "platform": "Amazon EC2 t2.2xlarge",
@@ -1254,7 +1257,7 @@
       "year": 2024,
       "implementation_url": null,
       "source_pdf": "Group.2b.Interactive.Hint/thorpir_2024/FHEPIR_2024_482.pdf",
-      "notes_path": "Group.2b.Interactive.Hint/thorpir_2024/thorpir_2024_notes.md",
+      "notes_path": "Group.2b.Interactive.Hint/thorpir_2024/ThorPIR_2024_notes.md",
       "hardware": null,
       "asymptotic": {
         "query_size": "O(N^{1/3})",
@@ -1287,7 +1290,7 @@
         {
           "variant": "ThorPIR-proven",
           "config_id": "2^30x360B",
-          "data_tier": 2,
+          "data_tier": 3,
           "source_ref": "Table 2",
           "threading": null,
           "estimation_meta": {
@@ -1308,7 +1311,7 @@
         {
           "variant": "ThorPIR-conjectured",
           "config_id": "2^30x360B",
-          "data_tier": 2,
+          "data_tier": 3,
           "source_ref": "Table 2",
           "threading": null,
           "estimation_meta": {
@@ -1336,7 +1339,7 @@
       "year": 2025,
       "implementation_url": "https://github.com/chenyue42/OnionPIRv2",
       "source_pdf": "Group.1a.Stateless.Client.Stateful.Server/onionpirv2_2025/FHEPIR_2025_1142.pdf",
-      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/onionpirv2_2025/onionpirv2_2025_notes.md",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/onionpirv2_2025/OnionPIRv2_2025_notes.md",
       "hardware": {
         "cpu": "Intel Xeon Platinum 8124M @ 3.00 GHz",
         "platform": "Amazon EC2 c5n.9xlarge",
@@ -1623,6 +1626,81 @@
           "footnotes": [
             "Server preprocessing 2128s from Table 2, p.29."
           ]
+        },
+        {
+          "variant": "HintlessPIR",
+          "config_id": "2^20x8B",
+          "data_tier": 1,
+          "source_ref": "Table 3, p.30",
+          "threading": "4",
+          "estimation_meta": null,
+          "metrics": {
+            "server_time_ms": 115,
+            "throughput_gbps": 0.07
+          },
+          "footnotes": [
+            "4-thread benchmarks from Table 3 (p.30). Query/response sizes same as single-threaded."
+          ]
+        },
+        {
+          "variant": "HintlessPIR",
+          "config_id": "2^20x256B",
+          "data_tier": 1,
+          "source_ref": "Table 3, p.30",
+          "threading": "4",
+          "estimation_meta": null,
+          "metrics": {
+            "server_time_ms": 162,
+            "throughput_gbps": 1.66
+          },
+          "footnotes": [
+            "4-thread benchmarks from Table 3 (p.30). Query/response sizes same as single-threaded."
+          ]
+        },
+        {
+          "variant": "HintlessPIR",
+          "config_id": "2^26x8B",
+          "data_tier": 1,
+          "source_ref": "Table 3, p.30",
+          "threading": "4",
+          "estimation_meta": null,
+          "metrics": {
+            "server_time_ms": 193,
+            "throughput_gbps": 2.78
+          },
+          "footnotes": [
+            "4-thread benchmarks from Table 3 (p.30). Query/response sizes same as single-threaded."
+          ]
+        },
+        {
+          "variant": "HintlessPIR",
+          "config_id": "2^30x1B",
+          "data_tier": 1,
+          "source_ref": "Table 3, p.30",
+          "threading": "4",
+          "estimation_meta": null,
+          "metrics": {
+            "server_time_ms": 232,
+            "throughput_gbps": 4.63
+          },
+          "footnotes": [
+            "4-thread benchmarks from Table 3 (p.30). Query/response sizes same as single-threaded."
+          ]
+        },
+        {
+          "variant": "HintlessPIR",
+          "config_id": "2^18x32KB",
+          "data_tier": 1,
+          "source_ref": "Table 3, p.30",
+          "threading": "4",
+          "estimation_meta": null,
+          "metrics": {
+            "server_time_ms": 418,
+            "throughput_gbps": 20.55
+          },
+          "footnotes": [
+            "4-thread benchmarks from Table 3 (p.30). Query/response sizes same as single-threaded."
+          ]
         }
       ],
       "theory_only": false
@@ -1650,7 +1728,6 @@
       },
       "group_specific": {
         "non_compact_bgv": true,
-        "stateless": true,
         "ring_dimension_range": "2^12 to 2^13"
       },
       "variants": [
@@ -1831,9 +1908,17 @@
         "packing_technique": "CDKS ring packing"
       },
       "variants": [
-        "YPIR"
+        "YPIR",
+        "YPIR+SP"
       ],
       "configs": [
+        {
+          "config_id": "~2^29x64KB",
+          "num_entries": 524288,
+          "num_entries_label": "2^19",
+          "entry_size_bytes": 65536,
+          "entry_size_label": "64 KB"
+        },
         {
           "config_id": "~2^33x1bit",
           "num_entries": 8589934592,
@@ -1868,9 +1953,11 @@
             "query_size_kb": 846,
             "response_size_kb": 12,
             "server_time_ms": 129,
-            "throughput_gbps": 7.8
+            "throughput_gbps": 8.32
           },
-          "footnotes": []
+          "footnotes": [
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
+          ]
         },
         {
           "variant": "YPIR",
@@ -1883,9 +1970,11 @@
             "query_size_kb": 1536,
             "response_size_kb": 12,
             "server_time_ms": 687,
-            "throughput_gbps": 11.6
+            "throughput_gbps": 12.5
           },
-          "footnotes": []
+          "footnotes": [
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
+          ]
         },
         {
           "variant": "YPIR",
@@ -1898,10 +1987,29 @@
             "query_size_kb": 2560,
             "response_size_kb": 12,
             "server_time_ms": 2640,
-            "throughput_gbps": 12.1
+            "throughput_gbps": 13.02
           },
           "footnotes": [
-            "YPIR optimized for 1-bit PIR. Table 2 (1/8/32 GB, 1-bit entries)."
+            "YPIR optimized for 1-bit PIR. Table 2 (1/8/32 GB, 1-bit entries).",
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
+          ]
+        },
+        {
+          "variant": "YPIR+SP",
+          "config_id": "~2^29x64KB",
+          "data_tier": 1,
+          "source_ref": "Table 7, p.28; Section 4.6",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 2158,
+            "response_size_kb": 444,
+            "server_time_ms": 5200,
+            "throughput_gbps": 6.61
+          },
+          "footnotes": [
+            "YPIR+SP variant: packs SimplePIR response (full DB column) instead of DoublePIR response, optimized for large records (32-64 KB). Password breach checking: 32 GB DB, 2^19 records x 64 KB each.",
+            "Total communication 2.6 MB. 7-14x smaller response than HintlessPIR (444 KB vs 3.2 MB), ~5% throughput reduction vs base YPIR."
           ]
         }
       ],
@@ -1970,10 +2078,12 @@
             "query_size_kb": 473.1,
             "response_size_kb": 15.5,
             "server_time_ms": 442,
-            "throughput_gbps": 2.26,
+            "throughput_gbps": 2.43,
             "server_preprocessing_time_ms": 1060
           },
-          "footnotes": []
+          "footnotes": [
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
+          ]
         },
         {
           "variant": "VIA",
@@ -1986,10 +2096,12 @@
             "query_size_kb": 587.1,
             "response_size_kb": 15.5,
             "server_time_ms": 1361,
-            "throughput_gbps": 2.94,
+            "throughput_gbps": 3.16,
             "server_preprocessing_time_ms": 4195
           },
-          "footnotes": []
+          "footnotes": [
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
+          ]
         },
         {
           "variant": "VIA",
@@ -2002,10 +2114,12 @@
             "query_size_kb": 674.75,
             "response_size_kb": 15.5,
             "server_time_ms": 10286,
-            "throughput_gbps": 3.11,
+            "throughput_gbps": 3.34,
             "server_preprocessing_time_ms": 33340
           },
-          "footnotes": []
+          "footnotes": [
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
+          ]
         }
       ],
       "theory_only": false
@@ -2088,11 +2202,13 @@
             "query_size_kb": 0.568,
             "response_size_kb": 1.439,
             "server_time_ms": 830,
-            "throughput_gbps": 1.2,
+            "throughput_gbps": 1.29,
             "offline_comm_mb": 14.8,
             "server_preprocessing_time_ms": 2090
           },
-          "footnotes": []
+          "footnotes": [
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
+          ]
         },
         {
           "variant": "VIA Compress",
@@ -2105,11 +2221,13 @@
             "query_size_kb": 0.604,
             "response_size_kb": 1.439,
             "server_time_ms": 2777,
-            "throughput_gbps": 1.44,
+            "throughput_gbps": 1.55,
             "offline_comm_mb": 14.8,
             "server_preprocessing_time_ms": 7786
           },
-          "footnotes": []
+          "footnotes": [
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
+          ]
         },
         {
           "variant": "VIA Compress",
@@ -2122,11 +2240,13 @@
             "query_size_kb": 0.659,
             "response_size_kb": 1.439,
             "server_time_ms": 20307,
-            "throughput_gbps": 1.58,
+            "throughput_gbps": 1.69,
             "offline_comm_mb": 14.8,
             "server_preprocessing_time_ms": 67539
           },
-          "footnotes": []
+          "footnotes": [
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
+          ]
         },
         {
           "variant": "Batched",
@@ -3017,6 +3137,13 @@
           "num_entries_label": "~2^33",
           "entry_size_bytes": 0.125,
           "entry_size_label": "1 bit"
+        },
+        {
+          "config_id": "~2^33x1bit-colmajor",
+          "num_entries": 8589934592,
+          "num_entries_label": "~2^33",
+          "entry_size_bytes": 0.125,
+          "entry_size_label": "1 bit"
         }
       ],
       "benchmarks": [
@@ -3031,13 +3158,14 @@
             "query_size_kb": 120.5,
             "response_size_kb": 120.5,
             "server_time_ms": 95.73,
-            "throughput_gbps": 10.4,
+            "throughput_gbps": 11.22,
             "offline_comm_mb": 1.26,
             "client_preprocessing_time_ms": 1770
           },
           "footnotes": [
             "Table 2 (p.18): Row-major scenario, 1 GB DB, 1-bit entries, 1% update. Online comm 241 KB total (split ~120.5 KB each way).",
-            "Row-major is the worst case for entry-level; row-level and entry-level perform similarly."
+            "Row-major is the worst case for entry-level; row-level and entry-level perform similarly.",
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
           ]
         },
         {
@@ -3051,18 +3179,19 @@
             "query_size_kb": 120,
             "response_size_kb": 120,
             "server_time_ms": 94.62,
-            "throughput_gbps": 10.6,
+            "throughput_gbps": 11.35,
             "offline_comm_mb": 1.26,
             "client_preprocessing_time_ms": 1700
           },
           "footnotes": [
             "Table 2 (p.18): Row-major scenario, 1 GB DB, 1-bit entries, 1% update. Online comm 240 KB total.",
-            "Row-major: entry-level matches row-level due to automatic row aggregation."
+            "Row-major: entry-level matches row-level due to automatic row aggregation.",
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
           ]
         },
         {
           "variant": "Row-level Update",
-          "config_id": "~2^33x1bit",
+          "config_id": "~2^33x1bit-colmajor",
           "data_tier": 1,
           "source_ref": "Table 2, p.18 (col-major)",
           "threading": "single",
@@ -3071,18 +3200,19 @@
             "query_size_kb": 120,
             "response_size_kb": 120,
             "server_time_ms": 97.23,
-            "throughput_gbps": 10.3,
+            "throughput_gbps": 11.04,
             "offline_comm_mb": 120.75,
             "client_preprocessing_time_ms": 172450
           },
           "footnotes": [
             "Table 2 (p.18): Col-major scenario, 1 GB DB, 1-bit entries, 1% update. Online comm 240 KB.",
-            "Col-major is the best case for entry-level improvement. Row-level: 172.45 s preprocessing, 120.75 MB offline comm."
+            "Col-major is the best case for entry-level improvement. Row-level: 172.45 s preprocessing, 120.75 MB offline comm.",
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
           ]
         },
         {
           "variant": "Entry-level Update",
-          "config_id": "~2^33x1bit",
+          "config_id": "~2^33x1bit-colmajor",
           "data_tier": 1,
           "source_ref": "Table 2, p.18 (col-major)",
           "threading": "single",
@@ -3091,13 +3221,14 @@
             "query_size_kb": 120,
             "response_size_kb": 120,
             "server_time_ms": 95.63,
-            "throughput_gbps": 10.5,
+            "throughput_gbps": 11.23,
             "offline_comm_mb": 28.5,
             "client_preprocessing_time_ms": 770
           },
           "footnotes": [
             "Table 2 (p.18): Col-major scenario, 1 GB DB, 1-bit entries, 1% update. Online comm 240 KB.",
-            "224x reduction in preprocessing computation (0.77 s vs 172.45 s) and 4.2x reduction in offline comm (28.50 MB vs 120.75 MB) compared to row-level."
+            "224x reduction in preprocessing computation (0.77 s vs 172.45 s) and 4.2x reduction in offline comm (28.50 MB vs 120.75 MB) compared to row-level.",
+            "Throughput converted to decimal GB/s (paper reports in GiB/s)."
           ]
         }
       ],
@@ -3340,7 +3471,7 @@
           ]
         }
       ],
-      "theory_only": false
+      "theory_only": true
     },
     {
       "id": "rms24_2024",
@@ -3421,6 +3552,7 @@
             "query_size_kb": 2.18,
             "response_size_kb": 0.0625,
             "server_time_ms": 0.14,
+            "client_time_ms": 1,
             "client_storage_mb": 6.25,
             "offline_comm_mb": 32,
             "amortized_offline_comm_kb": 2.99,
@@ -3428,7 +3560,8 @@
             "client_preprocessing_time_ms": 4000
           },
           "footnotes": [
-            "Single-server. Online comm 2.18 KB, amortized total comm 2.99 KB."
+            "Single-server. Online comm 2.18 KB, amortized total comm 2.99 KB.",
+            "client_time_ms < 1 ms per paper (hint lookup + subset construction); recorded as 1 ms upper bound."
           ]
         },
         {
@@ -3442,6 +3575,7 @@
             "query_size_kb": 8.56,
             "response_size_kb": 0.0625,
             "server_time_ms": 0.62,
+            "client_time_ms": 1,
             "client_storage_mb": 25,
             "offline_comm_mb": 512,
             "amortized_offline_comm_kb": 11.76,
@@ -3463,6 +3597,7 @@
             "query_size_kb": 34.02,
             "response_size_kb": 0.015625,
             "server_time_ms": 2.4,
+            "client_time_ms": 1,
             "client_storage_mb": 40,
             "offline_comm_mb": 2048,
             "amortized_offline_comm_kb": 37.22,
@@ -3484,6 +3619,7 @@
             "query_size_kb": 34.06,
             "response_size_kb": 0.0625,
             "server_time_ms": 2.7,
+            "client_time_ms": 1,
             "client_storage_mb": 100,
             "offline_comm_mb": 8192,
             "amortized_offline_comm_kb": 46.86,
@@ -3505,6 +3641,7 @@
             "query_size_kb": 34.5,
             "response_size_kb": 0.5,
             "server_time_ms": 4.2,
+            "client_time_ms": 1,
             "client_storage_mb": 660,
             "offline_comm_mb": 65536,
             "amortized_offline_comm_kb": 136.9,
@@ -3924,12 +4061,12 @@
           "estimation_meta": null,
           "metrics": {
             "response_size_kb": 21504,
-            "server_time_ms": 4,
+            "server_time_ms": 544,
             "client_storage_mb": 65
           },
           "footnotes": [
-            "CrowdSurf end-to-end: PIR GPU time 0.004 s, hint compression 0.54 core-s (CPU), total cost $0.0057/request. Communication download 21 MB. Server uses GPU (V100) for PIR, CPU cluster for hint compression. B=24 batch size, kappa_avg=0.8, kappa_worst=0.01.",
-            "server_time_ms=4.0 is GPU PIR time only; hint compression adds 540 ms of CPU core-time."
+            "CrowdSurf end-to-end: PIR GPU time 4 ms + hint compression 540 ms CPU = 544 ms total server time. Communication download 21 MB. Server uses GPU (V100) for PIR, CPU cluster for hint compression. B=24 batch size, kappa_avg=0.8, kappa_worst=0.01.",
+            "server_time_ms=544 is total (GPU PIR 4 ms + CPU hint compression 540 ms). Cost $0.0057/request."
           ]
         },
         {

@@ -2,10 +2,10 @@
 
 ## PIR Engineering Notes
 
-**TLDR**: [Deep reading](https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434) of PIR papers to extract eng. notes ([eg](research/Group.2b.Interactive.Hint/thorpir_2024/thorpir_2024_notes.md)) and [visualize](https://0xalizk.github.io/PIR-Eng-Notes/) comparative benchs/asymptotics. The correctness of these notes are [continuously validated](checkups/README.md#checking-correctness-of-cited-claims):
+**TLDR**: [Deep reading](https://gist.github.com/0xalizk/50f0d78712c6afe952ab2f9a2cc07434) of PIR papers to extract eng. notes ([eg](research/Group.2b.Interactive.Hint/thorpir_2024/ThorPIR_2024_notes.md)) and [visualize](https://0xalizk.github.io/PIR-Eng-Notes/) comparative benchs/asymptotics. The correctness of these notes are [continuously validated](checkups/README.md#checking-correctness-of-cited-claims):
 - Scheme grouping [based on this taxonomy](https://notes.ethereum.org/U9xM4VOPR9isPK7lOZJUQg?view#41-Taxonomy) (client state architecture)
 - Multi-server schemes are excluded
-- Engineering notes ([eg](research/Group.2b.Interactive.Hint/thorpir_2024/thorpir_2024_notes.md)) for 30 Private Information Retrieval (PIR) scheme entries with [validated](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/.claude/skills/footnotes-checkup) [[2]](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/checkups#checking-correctness-of-cited-claims) footnotes
+- Engineering notes ([eg](research/Group.2b.Interactive.Hint/thorpir_2024/ThorPIR_2024_notes.md)) for 30 Private Information Retrieval (PIR) scheme entries with [validated](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/.claude/skills/footnotes-checkup) [[2]](https://github.com/0xalizk/PIR-Eng-Notes/tree/main/checkups#checking-correctness-of-cited-claims) footnotes
 - Per-scheme notes are produced by reading the source PDF (incl. tables/figures which Claude can do) using a [standardized methodology](.claude/skills/pir-paper-analyzer/SKILL.md).
 - Classification rationale for each scheme is documented in [research/README.md](research/README.md)
 
@@ -20,7 +20,7 @@ Server caches per-client cryptographic material (evaluation keys). Queries linka
 |-------------------------------|-----------------|
 | 2026 [NPIR](research/Group.1a.Stateless.Client.Stateful.Server/npir_2026/NPIR_2026_notes.md) | NTRU packing for high communication rate |
 | 2025 [VIA-BC](research/Group.1b.Stateless.Client.Stateless.Server/via_2025/VIA_2025_notes.md) | VIA-C/VIA-B variants: LWE-to-RLWE query compression + batch repacking; 14.8 MB per-client eval keys |
-| 2025 [OnionPIRv2](research/Group.1a.Stateless.Client.Stateful.Server/onionpirv2_2025/onionpirv2_2025_notes.md) | Multi-base decomposition + NTT-domain DB engineering |
+| 2025 [OnionPIRv2](research/Group.1a.Stateless.Client.Stateful.Server/onionpirv2_2025/OnionPIRv2_2025_notes.md) | Multi-base decomposition + NTT-domain DB engineering |
 | 2025 [Pirouette](research/Group.1a.Stateless.Client.Stateful.Server/pirouette_2025/Pirouette_2025_notes.md) | 36-byte queries via blind rotation |
 | 2024 [WhisPIR](research/Group.1a.Stateless.Client.Stateful.Server/whispir_2024/WhisPIR_2024_notes.md) | BGV-based, non-compact BGV optimization |
 | 2024 [Respire](research/Group.1a.Stateless.Client.Stateful.Server/respire_2024/Respire_2024_notes.md) | Small-record optimization, 5-ring architecture |
@@ -52,7 +52,7 @@ Client downloads server-computed global hint. Hint generation is server→client
 |-------------------------------|-----------------|
 | 2026 [IncrementalPIR](research/Group.2a.Download.Hint/incrementalpir_2026/IncrementalPIR_2026_notes.md) | Entry-level incremental preprocessing for SimplePIR |
 | 2024 [VeriSimplePIR](research/Group.2a.Download.Hint/verisimplepir_2024/VeriSimplePIR_2024_notes.md) | Verifiability via SIS commitments + VLHE |
-| 2022 [FrodoPIR](research/Group.2a.Download.Hint/frodopir_2022/frodopir_2022_notes.md) | Plain LWE with client-independent global hint |
+| 2022 [FrodoPIR](research/Group.2a.Download.Hint/frodopir_2022/FrodoPIR_2022_notes.md) | Plain LWE with client-independent global hint |
 | 2022 [DoublePIR](research/Group.2a.Download.Hint/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md) | Compressed hints via LWE-on-LWE composition |
 | 2022 [SimplePIR](research/Group.2a.Download.Hint/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md) | 10 GB/s throughput via plain LWE matrix-vector multiply |
 
@@ -62,7 +62,7 @@ Hint generation requires client↔server communication. Only category achieving 
 
 | Paper &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Key Contribution |
 |-------------------------------|-----------------|
-| 2024 [ThorPIR](research/Group.2b.Interactive.Hint/thorpir_2024/thorpir_2024_notes.md) | Client-dependent FHE preprocessing |
+| 2024 [ThorPIR](research/Group.2b.Interactive.Hint/thorpir_2024/ThorPIR_2024_notes.md) | Client-dependent FHE preprocessing |
 | 2024 [WangRen](research/Group.2b.Interactive.Hint/wangren_2024/WangRen_2024_notes.md) | Tight ST = O(nw) tradeoff (theory) |
 | 2024 [Plinko](research/Group.2b.Interactive.Hint/plinko_2024/Plinko_2024_notes.md) | Invertible PRFs, Õ(1) updates (theory) |
 | 2024 [RMS24](research/Group.2b.Interactive.Hint/rms24_2024/RMS24_2024_notes.md) | Dummy subsets, standard correctness |

@@ -959,6 +959,12 @@
       showarrow: false, font: { size: 11, color: t.muted }
     });
     yPos -= 18;
+    anns.push({
+      text: 'All throughput values use decimal GB (1 GB = 10\u2079 bytes); papers using GiB have been converted.',
+      xref: 'paper', yref: 'paper', x: 0.5, xanchor: 'center', y: 0, yanchor: 'top', yshift: yPos,
+      showarrow: false, font: { size: 11, color: t.muted }
+    });
+    yPos -= 18;
     // Group color legend — always show all groups, split into two lines
     var groups = Object.keys(GROUP_COLORS);
     if (groups.length > 1) {
@@ -980,7 +986,11 @@
   }
 
   // Prepare throughput items (with derivation from server_time)
+  var SUBLINEAR_GROUPS = { '2b': true };
+
   function _prepareThroughputItems(data) {
+    // Exclude sublinear groups — they have their own section
+    data = data.filter(function (s) { return !SUBLINEAR_GROUPS[s.group]; });
     var augmented = data.map(function (s) {
       var reported = getVal(s, 'throughput_gbps');
       var st = getVal(s, 'server_time_ms');
@@ -999,6 +1009,7 @@
     items.forEach(function (s) {
       s._tput = getVal(s, 'throughput_gbps');
       if (!s.hasOwnProperty('_tputDerived')) s._tputDerived = false;
+      s._gibConverted = (s.footnotes || []).some(function (f) { return f.indexOf('GiB') !== -1; });
     });
     items.sort(function (a, b) { return b._tput - a._tput; });
     return items;
@@ -1006,6 +1017,8 @@
 
   // Prepare server-time items (with derivation from throughput)
   function _prepareServerTimeItems(data) {
+    // Exclude sublinear groups — they have their own section
+    data = data.filter(function (s) { return !SUBLINEAR_GROUPS[s.group]; });
     var augmented = data.map(function (s) {
       var reported = getVal(s, 'server_time_ms');
       var tput = getVal(s, 'throughput_gbps');
@@ -1052,7 +1065,8 @@
       cliponaxis: false,
       hovertext: items.map(function (s) {
         var derivedNote = s._tputDerived ? '<br><i>Derived from DB size \u00F7 server time</i>' : '';
-        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + derivedNote + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+        var gibNote = s._gibConverted ? '<br><i>Converted from GiB/s to GB/s</i>' : '';
+        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + derivedNote + gibNote + '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
       }),
       hoverinfo: 'text'
     }];
@@ -1102,6 +1116,120 @@
       xaxis: { title: { text: 'Server Time (log)', standoff: 20 }, type: 'log', gridcolor: t.grid },
       margin: { l: barLeftMargin(), r: 60, t: 48, b: ann.bottomPad },
       height: sharedHeight,
+      annotations: ann.anns
+    });
+    Plotly.newPlot(el, traces, layout, plotConfig());
+  }
+
+  // ── 3b. Sublinear Server Charts (Group 2b) ──────────────
+  // Queries per second and latency for O(sqrt(N)) schemes.
+
+  function _prepareSublinearItems(data) {
+    var items = data.filter(function (s) {
+      return SUBLINEAR_GROUPS[s.group] && isPos(getVal(s, 'server_time_ms'));
+    });
+    items = consolidateVariants(items, ['server_time_ms']);
+    items = items.filter(function (s) { return isPos(getVal(s, 'server_time_ms')); });
+    items.forEach(function (s) {
+      s._st = getVal(s, 'server_time_ms');
+      s._qps = 1000 / s._st;
+    });
+    return items;
+  }
+
+  function _sublinearAnnotations(items, t) {
+    var anns = [];
+    var yPos = -60;
+    var badge = tierBadgeLegend(items, t);
+    if (badge) { anns = anns.concat(badge); yPos -= 18; }
+    // Tier opacity legend
+    anns.push({
+      text: '<span style="opacity:1">\u2588</span> Tier 1 (exact) &nbsp; ' +
+            '<span style="opacity:0.8">\u2588</span> Tier 2 (from figures) &nbsp; ' +
+            '<span style="opacity:0.55">\u2588</span> Tier 3 (from asymptotics)',
+      xref: 'paper', yref: 'paper', x: 0.5, xanchor: 'center', y: 0, yanchor: 'top', yshift: yPos,
+      showarrow: false, font: { size: 11, color: t.muted }
+    });
+    yPos -= 18;
+    var bottomPad = 48 + Math.abs(yPos + 60) + 10;
+    return { anns: anns, bottomPad: bottomPad };
+  }
+
+  function renderSublinearQps(data) {
+    var el = document.getElementById('chart-sublinear-qps');
+    if (!el) return;
+    var t = themeColors();
+    var items = _prepareSublinearItems(data);
+    if (items.length === 0) { Plotly.purge(el); el.innerHTML = '<p class="no-data">No sublinear-server benchmarks in this DB-size range.</p>'; return; }
+    items.sort(function (a, b) { return b._qps - a._qps; });
+
+    var h = Math.max(300, items.length * 32 + 120);
+    var traces = [{
+      y: items.map(function (s) { return _serverPerfLabel(s); }),
+      x: items.map(function (s) { return s._qps; }),
+      type: 'bar', orientation: 'h',
+      showlegend: false,
+      marker: {
+        color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+        line: { color: items.map(function (s) { return GROUP_COLORS[s.group]; }), width: 1.5 }
+      },
+      text: items.map(function (s) { return formatNum(s._qps) + ' q/s'; }),
+      textposition: 'outside',
+      cliponaxis: false,
+      hovertext: items.map(function (s) {
+        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') +
+          '<br>Server time: ' + formatNum(s._st) + ' ms' +
+          '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+      }),
+      hoverinfo: 'text'
+    }];
+    var ann = _sublinearAnnotations(items, t);
+    var layout = baseLayout('Queries per Second (higher is better)', {
+      yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
+      xaxis: { title: { text: 'Queries/sec (log)', standoff: 20 }, type: 'log', gridcolor: t.grid },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: ann.bottomPad },
+      height: h,
+      annotations: ann.anns
+    });
+    Plotly.newPlot(el, traces, layout, plotConfig());
+  }
+
+  function renderSublinearLatency(data) {
+    var el = document.getElementById('chart-sublinear-latency');
+    if (!el) return;
+    var t = themeColors();
+    var items = _prepareSublinearItems(data);
+    if (items.length === 0) { Plotly.purge(el); el.innerHTML = '<p class="no-data">No sublinear-server benchmarks in this DB-size range.</p>'; return; }
+    items.sort(function (a, b) { return a._st - b._st; });
+
+    var h = Math.max(300, items.length * 32 + 120);
+    var traces = [{
+      y: items.map(function (s) { return _serverPerfLabel(s); }),
+      x: items.map(function (s) { return s._st; }),
+      type: 'bar', orientation: 'h',
+      showlegend: false,
+      marker: {
+        color: items.map(function (s) { return GROUP_COLORS[s.group]; }),
+        opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
+        line: { color: items.map(function (s) { return GROUP_COLORS[s.group]; }), width: 1.5 }
+      },
+      text: items.map(function (s) { return formatNum(s._st) + ' ms'; }),
+      textposition: 'outside',
+      cliponaxis: false,
+      hovertext: items.map(function (s) {
+        return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') +
+          '<br>Queries/sec: ' + formatNum(s._qps) +
+          '<br>Source: ' + (s.source_ref || 'N/A') + consolidatedHoverSuffix(s);
+      }),
+      hoverinfo: 'text'
+    }];
+    var ann = _sublinearAnnotations(items, t);
+    var layout = baseLayout('Server Latency per Query (ms)', {
+      yaxis: { autorange: 'reversed', tickfont: { size: 11 }, gridcolor: t.grid },
+      xaxis: { title: { text: 'Latency (log)', standoff: 20 }, type: 'log', gridcolor: t.grid },
+      margin: { l: barLeftMargin(), r: 60, t: 48, b: ann.bottomPad },
+      height: h,
       annotations: ann.anns
     });
     Plotly.newPlot(el, traces, layout, plotConfig());
@@ -1178,7 +1306,7 @@
       x: items.map(function (s) { return getVal(s, 'offline_comm_mb'); }),
       type: 'bar', orientation: 'h',
       name: 'Offline',
-      marker: { color: HINT_COLOR, opacity: 0.85, line: { color: HINT_COLOR, width: 1.5 } },
+      marker: { color: HINT_COLOR, opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }), line: { color: HINT_COLOR, width: 1.5 } },
       text: items.map(function (s) {
         var v = getVal(s, 'offline_comm_mb');
         return isPos(v) ? formatNum(v) + ' MB' : '';
@@ -1198,7 +1326,7 @@
       x: items.map(function (s) { return getVal(s, 'client_storage_mb'); }),
       type: 'bar', orientation: 'h',
       name: 'Client Storage',
-      marker: { color: STORAGE_COLOR, opacity: 0.85, line: { color: STORAGE_COLOR, width: 1.5 } },
+      marker: { color: STORAGE_COLOR, opacity: items.map(function (s) { return TIER_OPACITY[s.data_tier]; }), line: { color: STORAGE_COLOR, width: 1.5 } },
       text: items.map(function (s) {
         var v = getVal(s, 'client_storage_mb');
         return isPos(v) ? formatNum(v) + ' MB' : '';
@@ -2842,6 +2970,8 @@
       var h = Math.max(350, maxBars * 28 + 120);
       renderServerTimeBars(stItems, h);
     });
+    make('chart-sublinear-qps', function () { renderSublinearQps(filterData(_cachedData, _chartToSection['chart-sublinear-qps'])); });
+    make('chart-sublinear-latency', function () { renderSublinearLatency(filterData(_cachedData, _chartToSection['chart-sublinear-latency'])); });
     make('chart-client-cost', function () { renderClientCost(filterData(_cachedData, _chartToSection['chart-client-cost'])); });
     make('chart-offline-storage', function () { renderOfflineStorage(filterData(_cachedData, _chartToSection['chart-offline-storage'])); });
     make('chart-preprocessing-time', function () { renderPreprocessingTime(filterData(_cachedData, _chartToSection['chart-preprocessing-time'])); });
