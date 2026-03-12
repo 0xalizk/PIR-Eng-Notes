@@ -128,10 +128,20 @@
     return { footnotes: footnotes, schemeLabels: schemeLabels };
   }
 
+  function prioritySort(data) {
+    var priorityIds = ['rms24', 'via', 'plinko', 'onionpirv2', 'inspire'];
+    return data.slice().sort(function (a, b) {
+      var aPri = priorityIds.some(function (p) { return a.id.indexOf(p) === 0; }) ? 0 : 1;
+      var bPri = priorityIds.some(function (p) { return b.id.indexOf(p) === 0; }) ? 0 : 1;
+      return aPri - bPri;
+    });
+  }
+
   function renderTable(data) {
     var tbody = document.getElementById('configs-body');
     if (!tbody) return;
 
+    data = prioritySort(data);
     var fnData = collectFootnotes(data);
     var schemeNum = 0;
 

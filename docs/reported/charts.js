@@ -868,7 +868,7 @@
           opacity: groups[g].marker.opacity,
           size: isMobile() ? groups[g].marker.size.map(function (s) { return Math.max(6, s * 0.7); }) : groups[g].marker.size,
           symbol: groups[g].marker.symbol,
-          line: { width: 1, color: t.text }
+          line: { width: 0 }
         }
       });
     });
@@ -1214,7 +1214,7 @@
 
     var layout = baseLayout('Offline & Client Storage', {
       barmode: 'group',
-      xaxis: { title: 'Size (MB)', gridcolor: t.grid },
+      xaxis: { title: 'Size (MB), log', type: 'log', gridcolor: t.grid },
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
       legend: { orientation: 'h', x: 0, y: -0.12, font: { size: 11 } },
       margin: { l: barLeftMargin(), r: 60, t: 48, b: 100 },
@@ -1327,7 +1327,7 @@
       barmode: 'group',
       showlegend: false,
       yaxis: { tickfont: { size: 11 }, gridcolor: t.grid },
-      xaxis: { title: { text: 'Time (ms)', standoff: 20 }, type: 'log', gridcolor: t.grid },
+      xaxis: { title: { text: 'Time (log)', standoff: 20 }, type: 'log', gridcolor: t.grid },
       margin: { l: isMobile() ? 140 : 160, r: 80, t: 48, b: 50 },
       height: Math.max(300, items.length * 30 + 80)
     });
@@ -1431,13 +1431,13 @@
         text: gItems.map(function (s) { return consolidatedName(s); }),
         textposition: gItems.map(function (s) { return posMap[itemIdx[s.id + '|' + s.display_name]] || 'top center'; }),
         cliponaxis: false,
-        textfont: { size: 9, color: t.muted },
+        textfont: { size: 11, color: t.muted },
         marker: {
-          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 14 : 8; }),
+          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 18 : 12; }),
           color: GROUP_COLORS[g],
           symbol: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 'star' : (s.data_tier === 3 ? 'diamond' : 'circle'); }),
           opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
-          line: { width: 1, color: t.text }
+          line: { width: 0 }
         },
         hovertext: gItems.map(function (s) {
           return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms' +
@@ -1533,11 +1533,11 @@
         textposition: gItems.map(function (s) { return posMap[itemIdx[s.id + '|' + s.display_name]] || 'top center'; }), cliponaxis: false,
         textfont: { size: 9, color: t.muted },
         marker: {
-          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 14 : 8; }),
+          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 18 : 12; }),
           color: GROUP_COLORS[g],
           symbol: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 'star' : (s.data_tier === 3 ? 'diamond' : 'circle'); }),
           opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
-          line: { width: 1, color: t.text }
+          line: { width: 0 }
         },
         hovertext: gItems.map(function (s) {
           return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' + storageNote(s) +
@@ -1627,11 +1627,11 @@
         textposition: gItems.map(function (s) { return posMap[itemIdx[s.id + '|' + s.display_name]] || 'top center'; }), cliponaxis: false,
         textfont: { size: 9, color: t.muted },
         marker: {
-          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 14 : 8; }),
+          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 18 : 12; }),
           color: GROUP_COLORS[g],
           symbol: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 'star' : (s.data_tier === 3 ? 'diamond' : 'circle'); }),
           opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
-          line: { width: 1, color: t.text }
+          line: { width: 0 }
         },
         hovertext: gItems.map(function (s) {
           return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Total Comm: ' + formatNum(s._totalComm) + ' KB<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
@@ -1718,11 +1718,11 @@
         textposition: gItems.map(function (s) { return posMap[itemIdx[s.id + '|' + s.display_name]] || 'top center'; }), cliponaxis: false,
         textfont: { size: 9, color: t.muted },
         marker: {
-          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 14 : 8; }),
+          size: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 18 : 12; }),
           color: GROUP_COLORS[g],
           symbol: gItems.map(function (s) { return pareto.indexOf(s) >= 0 ? 'star' : (s.data_tier === 3 ? 'diamond' : 'circle'); }),
           opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
-          line: { width: 1, color: t.text }
+          line: { width: 0 }
         },
         hovertext: gItems.map(function (s) {
           return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server Time: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Client Time: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
@@ -1794,7 +1794,7 @@
       traces.push({
         x: [null], y: [null], z: [null], mode: 'markers', type: 'scatter3d',
         name: GROUP_NAMES[g],
-        marker: { size: 8, color: GROUP_COLORS[g], symbol: GROUP_SYMBOLS_3D[g], line: { width: 1, color: t.text } },
+        marker: { size: 8, color: GROUP_COLORS[g], symbol: GROUP_SYMBOLS_3D[g], line: { width: 0 } },
         hoverinfo: 'skip'
       });
     });
@@ -1810,13 +1810,13 @@
         showlegend: false,
         text: gItems.map(function (s) { return consolidatedName(s); }),
         textposition: 'top center',
-        textfont: { size: 9, color: t.muted },
+        textfont: { size: 11, color: t.muted },
         marker: {
-          size: 6,
+          size: 8,
           color: GROUP_COLORS[g],
           symbol: GROUP_SYMBOLS_3D[g],
           opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
-          line: { width: 1, color: t.text }
+          line: { width: 0 }
         },
         hovertext: gItems.map(function (s) {
           return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Comm: ' + formatNum(s._totalComm) + ' KB<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' + storageNote(s) + '<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
@@ -1884,7 +1884,7 @@
       traces.push({
         x: [null], y: [null], z: [null], mode: 'markers', type: 'scatter3d',
         name: GROUP_NAMES[g],
-        marker: { size: 8, color: GROUP_COLORS[g], symbol: GROUP_SYMBOLS_3D[g], line: { width: 1, color: t.text } },
+        marker: { size: 8, color: GROUP_COLORS[g], symbol: GROUP_SYMBOLS_3D[g], line: { width: 0 } },
         hoverinfo: 'skip'
       });
     });
@@ -1900,13 +1900,13 @@
         showlegend: false,
         text: gItems.map(function (s) { return consolidatedName(s); }),
         textposition: 'top center',
-        textfont: { size: 9, color: t.muted },
+        textfont: { size: 11, color: t.muted },
         marker: {
-          size: 6,
+          size: 8,
           color: GROUP_COLORS[g],
           symbol: GROUP_SYMBOLS_3D[g],
           opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
-          line: { width: 1, color: t.text }
+          line: { width: 0 }
         },
         hovertext: gItems.map(function (s) {
           return consolidatedName(s) + (entrySizeLabel(s) ? ' (' + entrySizeLabel(s) + ' entries)' : '') + '<br>Server: ' + formatNum(getVal(s, 'server_time_ms')) + ' ms<br>Storage: ' + formatNum(getVal(s, 'client_storage_mb')) + ' MB' + storageNote(s) + '<br>Client: ' + formatNum(getVal(s, 'client_time_ms')) + ' ms' +
@@ -2084,7 +2084,14 @@
           return radarMetrics.some(function (m) { return isPos(getVal(s, m)); });
         })
         .sort(function (a, b) {
-          if (a.group !== b.group) return a.group.localeCompare(b.group);
+          var priorityIds = ['rms24', 'via', 'plinko', 'onionpirv2', 'inspire'];
+          var aPri = priorityIds.some(function (p) { return a.id.indexOf(p) === 0; }) ? 0 : 1;
+          var bPri = priorityIds.some(function (p) { return b.id.indexOf(p) === 0; }) ? 0 : 1;
+          if (aPri !== bPri) return aPri - bPri;
+          var radarGroupOrder = { '1b': 0, '2b': 1, '2a': 2, '1a': 3 };
+          var ga = radarGroupOrder[a.group] !== undefined ? radarGroupOrder[a.group] : 9;
+          var gb = radarGroupOrder[b.group] !== undefined ? radarGroupOrder[b.group] : 9;
+          if (ga !== gb) return ga - gb;
           return a._composite - b._composite;
         });
 
@@ -2383,7 +2390,7 @@
             return Math.max(10, Math.min(40, 50 / Math.log10(comm + 1)));
           }),
           opacity: gItems.map(function (s) { return TIER_OPACITY[s.data_tier]; }),
-          line: { width: 1, color: t.text }
+          line: { width: 0 }
         },
         hovertext: gItems.map(function (s) {
           var lines = s.display_name + ' (' + s.year + ')';
@@ -2540,9 +2547,13 @@
             (s.db_size_categories && s.db_size_categories.some(function (c) { return activeDbSizes.has(c); }));
           return groupOk && tierOk && implOk && dbOk;
         });
+        var catalogPriorityIds = ['rms24', 'via', 'plinko', 'onionpirv2', 'inspire'];
+        function catalogPri(s) { return catalogPriorityIds.some(function (p) { return s.id.indexOf(p) === 0; }) ? 0 : 1; }
         if (sortCol) {
           var col = columns.filter(function (c) { return c.key === sortCol; })[0];
           filtered.sort(function (a, b) {
+            var pa = catalogPri(a), pb = catalogPri(b);
+            if (pa !== pb) return pa - pb;
             var va, vb;
             if (col && col.metric) { va = getVal(a, sortCol); vb = getVal(b, sortCol); }
             else if (sortCol === 'db_size') { va = (a.db_size_categories || []).length; vb = (b.db_size_categories || []).length; }
@@ -2553,7 +2564,11 @@
             return sortAsc ? va - vb : vb - va;
           });
         } else {
-          filtered.sort(function (a, b) { return a._composite - b._composite; });
+          filtered.sort(function (a, b) {
+            var pa = catalogPri(a), pb = catalogPri(b);
+            if (pa !== pb) return pa - pb;
+            return a._composite - b._composite;
+          });
         }
         sorted = filtered;
         renderRows(sorted);
@@ -3263,7 +3278,7 @@
       });
       traces.push({
         x: x, y: y, mode: 'markers', type: 'scatter', name: KW_VARIANT_LABELS[variant] || variant,
-        marker: { color: KW_VARIANT_COLORS[variant] || '#999', size: 12, line: { width: 1, color: t.text } },
+        marker: { color: KW_VARIANT_COLORS[variant] || '#999', size: 12, line: { width: 0 } },
         hovertext: text, hoverinfo: 'text'
       });
     });
