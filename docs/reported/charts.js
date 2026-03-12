@@ -1142,15 +1142,6 @@
     var yPos = -60;
     var badge = tierBadgeLegend(items, t);
     if (badge) { anns = anns.concat(badge); yPos -= 18; }
-    // Tier opacity legend
-    anns.push({
-      text: '<span style="opacity:1">\u2588</span> Tier 1 (exact) &nbsp; ' +
-            '<span style="opacity:0.8">\u2588</span> Tier 2 (from figures) &nbsp; ' +
-            '<span style="opacity:0.55">\u2588</span> Tier 3 (from asymptotics)',
-      xref: 'paper', yref: 'paper', x: 0.5, xanchor: 'center', y: 0, yanchor: 'top', yshift: yPos,
-      showarrow: false, font: { size: 11, color: t.muted }
-    });
-    yPos -= 18;
     var bottomPad = 48 + Math.abs(yPos + 60) + 10;
     return { anns: anns, bottomPad: bottomPad };
   }
@@ -1161,6 +1152,7 @@
     var t = themeColors();
     var items = _prepareSublinearItems(data);
     if (items.length === 0) { Plotly.purge(el); el.innerHTML = '<p class="no-data">No sublinear-server benchmarks in this DB-size range.</p>'; return; }
+    el.innerHTML = '';
     items.sort(function (a, b) { return b._qps - a._qps; });
 
     var h = Math.max(300, items.length * 32 + 120);
@@ -1201,6 +1193,7 @@
     var t = themeColors();
     var items = _prepareSublinearItems(data);
     if (items.length === 0) { Plotly.purge(el); el.innerHTML = '<p class="no-data">No sublinear-server benchmarks in this DB-size range.</p>'; return; }
+    el.innerHTML = '';
     items.sort(function (a, b) { return a._st - b._st; });
 
     var h = Math.max(300, items.length * 32 + 120);
