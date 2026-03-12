@@ -1909,7 +1909,7 @@
     },
     {
       "id": "via_2025",
-      "display_name": "VIA - Doubly Stateless",
+      "display_name": "VIA Hintless",
       "group": "1b",
       "year": 2025,
       "implementation_url": "https://anonymous.4open.science/r/VIA-8888/",
@@ -2011,13 +2011,13 @@
       "theory_only": false
     },
     {
-      "id": "via_bc_2025",
-      "display_name": "VIA - Stateful Server",
+      "id": "via_compress_2025",
+      "display_name": "VIA Compress",
       "group": "1a",
       "year": 2025,
       "implementation_url": "https://anonymous.4open.science/r/VIA-8888/",
       "source_pdf": "Group.1b.Stateless.Client.Stateless.Server/via_2025/VIA_2025_2074.pdf",
-      "notes_path": "Group.1b.Stateless.Client.Stateless.Server/via_2025/VIA_2025_notes.md",
+      "notes_path": "Group.1a.Stateless.Client.Stateful.Server/via_compress_2025/README.md",
       "hardware": {
         "cpu": "AMD 9950X",
         "platform": "Desktop, Ubuntu 22.04.5",
@@ -2036,7 +2036,7 @@
         "dmux_cmux_architecture": true
       },
       "variants": [
-        "Compressed",
+        "VIA Compress",
         "Batched"
       ],
       "configs": [
@@ -2078,7 +2078,7 @@
       ],
       "benchmarks": [
         {
-          "variant": "Compressed",
+          "variant": "VIA Compress",
           "config_id": "1GBx1B",
           "data_tier": 1,
           "source_ref": "Table 1, p.18",
@@ -2095,7 +2095,7 @@
           "footnotes": []
         },
         {
-          "variant": "Compressed",
+          "variant": "VIA Compress",
           "config_id": "4GBx1B",
           "data_tier": 1,
           "source_ref": "Table 1, p.18",
@@ -2112,7 +2112,7 @@
           "footnotes": []
         },
         {
-          "variant": "Compressed",
+          "variant": "VIA Compress",
           "config_id": "32GBx1B",
           "data_tier": 1,
           "source_ref": "Table 1, p.18",
@@ -3007,8 +3007,8 @@
         "client_storage_mb": 121
       },
       "variants": [
-        "iSimplePIR (Row-level)",
-        "iSimplePIR (Entry-level)"
+        "Row-level Update",
+        "Entry-level Update"
       ],
       "configs": [
         {
@@ -3021,7 +3021,7 @@
       ],
       "benchmarks": [
         {
-          "variant": "iSimplePIR (Row-level)",
+          "variant": "Row-level Update",
           "config_id": "~2^33x1bit",
           "data_tier": 1,
           "source_ref": "Table 2, p.18 (row-major)",
@@ -3041,7 +3041,7 @@
           ]
         },
         {
-          "variant": "iSimplePIR (Entry-level)",
+          "variant": "Entry-level Update",
           "config_id": "~2^33x1bit",
           "data_tier": 1,
           "source_ref": "Table 2, p.18 (row-major)",
@@ -3061,7 +3061,7 @@
           ]
         },
         {
-          "variant": "iSimplePIR (Row-level)",
+          "variant": "Row-level Update",
           "config_id": "~2^33x1bit",
           "data_tier": 1,
           "source_ref": "Table 2, p.18 (col-major)",
@@ -3081,7 +3081,7 @@
           ]
         },
         {
-          "variant": "iSimplePIR (Entry-level)",
+          "variant": "Entry-level Update",
           "config_id": "~2^33x1bit",
           "data_tier": 1,
           "source_ref": "Table 2, p.18 (col-major)",
