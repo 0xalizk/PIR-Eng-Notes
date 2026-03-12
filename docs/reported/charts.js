@@ -28,7 +28,7 @@
  *   5a. Offline/Storage — offline_comm_mb + client_storage_mb grouped bars
  *   5b. Preprocessing  — server_preprocessing_time_ms / client_preprocessing_time_ms bars (offline computation cost)
  *   6a–d. Pareto 2D    — four 2-metric scatter plots (comm/server/storage/client)
- *         Pareto 3D    — (commented out) two 3-metric scatter3d plots
+ *         Pareto 3D    — 3-metric scatter3d (comm×storage×client enabled; server variant disabled)
  *   6f. Radar          — per-scheme polar plots (tabbed by DB-size tier)
  *   7. Timeline        — throughput evolution by year (post-2020)
  *   8. Catalog         — sortable/filterable scheme table
@@ -440,7 +440,7 @@
       return data.map(function (s) {
         var best = null;
         (s._allBenchmarks || []).forEach(function (rec) {
-          var entryOk = rec._entryBucket === activeEntry;
+          var entryOk = activeEntry === 'all' || rec._entryBucket === activeEntry;
           var dbOk = !dbPills || dbPills.has(rec._dbTier);
           if (!entryOk || !dbOk) return;
           if (!best || rec._db_size_bytes > best._db_size_bytes ||
@@ -462,8 +462,8 @@
         return copy;
       }).filter(Boolean);
     } else {
-      // DB primary
-      dbTier = sectionState.activeDbTier;
+      // DB primary ('all' means no DB filtering)
+      dbTier = sectionState.activeDbTier === 'all' ? null : sectionState.activeDbTier;
       entryBuckets = sectionState.secondaryFilters.size > 0 ? sectionState.secondaryFilters : null;
     }
     var hasEntryFilter = entryBuckets && entryBuckets.size > 0;
@@ -1883,7 +1883,7 @@
     }), plotConfig());
   }
 
-  /* ── 3D Pareto plots (commented out — may revisit) ──────────────────
+  // ── 6d. 3D Scatter — Comm × Client Storage × Client Time ──────────
   function renderPareto3DComm(data) {
     var el = document.getElementById('chart-pareto-3d-comm');
     if (!el) return;
@@ -2065,7 +2065,7 @@
       height: 700
     }), plotConfig());
   }
-  ── end commented-out 3D Pareto plots ── */
+  // ── end 3D Pareto plots ──
 
   // ── 6f. Radar — Per-Scheme Polar Plots ────────────────
   //
@@ -2972,6 +2972,8 @@
     make('chart-pareto-comm-storage', function () { renderParetoCommStorage(filterData(_cachedData, _chartToSection['chart-pareto-comm-storage'])); });
     make('chart-pareto-comm-client', function () { renderParetoCommClient(filterData(_cachedData, _chartToSection['chart-pareto-comm-client'])); });
     make('chart-pareto-server-client', function () { renderParetoServerClient(filterData(_cachedData, _chartToSection['chart-pareto-server-client'])); });
+    make('chart-pareto-3d-comm', function () { renderPareto3DComm(filterData(_cachedData, _chartToSection['chart-pareto-3d-comm'])); });
+    make('chart-pareto-3d-server', function () { renderPareto3DServer(filterData(_cachedData, _chartToSection['chart-pareto-3d-server'])); });
     make('chart-rate', function () { renderRateBars(filterData(_cachedData, _chartToSection['chart-rate'])); });
     make('chart-amortized-offline-comm', function () { renderAmortizedOfflineComm(filterData(_cachedData, _chartToSection['chart-amortized-offline-comm'])); });
     make('chart-amortized-offline-time', function () { renderAmortizedOfflineTime(filterData(_cachedData, _chartToSection['chart-amortized-offline-time'])); });
@@ -3009,8 +3011,8 @@
       if (sib.classList.contains('chart-container') && sib.id) {
         ids.push(sib.id);
       }
-      // .chart-pair wraps multiple chart containers (e.g. throughput + server-time)
-      if (sib.classList.contains('chart-pair')) {
+      // .chart-pair or other wrapper divs that contain .chart-container children
+      if (sib.classList.contains('chart-pair') || (sib.tagName === 'DIV' && !sib.classList.contains('chart-container'))) {
         sib.querySelectorAll('.chart-container').forEach(function (el) {
           if (el.id) ids.push(el.id);
         });
@@ -3087,10 +3089,14 @@
 
   function initDimensionTabs() {
     document.querySelectorAll('.dim-tabs-container').forEach(function (container) {
+      // Detect if this container has an "All" button in the DB row
+      var dbRow = container.querySelector('.db-tab-row');
+      var hasAll = dbRow && dbRow.querySelector('.dim-tab[data-value="all"]');
+
       // Each container gets its own independent state
       var state = {
         primaryDim: 'db',
-        activeDbTier: 'tiny',
+        activeDbTier: hasAll ? 'all' : 'tiny',
         activeEntryBucket: null,
         secondaryFilters: new Set(),
         chartIds: _discoverChartIds(container)
@@ -3102,7 +3108,6 @@
       });
 
       // DB tab row
-      var dbRow = container.querySelector('.db-tab-row');
       if (dbRow) {
         dbRow.querySelectorAll('.dim-tab').forEach(function (btn) {
           btn.addEventListener('click', function () {
@@ -3122,6 +3127,23 @@
       entryRow.className = 'entry-tab-row secondary';
       var entryBtns = document.createElement('div');
       entryBtns.className = 'tab-row-buttons';
+      // Add "All" button to entry row if the DB row has one
+      if (hasAll) {
+        var allBtn = document.createElement('button');
+        allBtn.className = 'dim-tab entry-tab';
+        allBtn.dataset.value = 'all';
+        allBtn.textContent = 'All';
+        allBtn.addEventListener('click', function () {
+          if (state.primaryDim !== 'entry') {
+            state.primaryDim = 'entry';
+            state.secondaryFilters = new Set();
+          }
+          state.activeEntryBucket = 'all';
+          _syncSectionTabUI(container, state);
+          _renderSectionCharts(state);
+        });
+        entryBtns.appendChild(allBtn);
+      }
       ENTRY_BUCKETS.forEach(function (bucket) {
         var btn = document.createElement('button');
         btn.className = 'dim-tab entry-tab';

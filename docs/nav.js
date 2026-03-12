@@ -39,8 +39,8 @@
           { label: 'Comm × Server', anchor: '#pareto-comm-server' },
           { label: 'Comm × Client', anchor: '#pareto-comm-client' },
           { label: 'Comm × Storage', anchor: '#pareto-comm-storage' },
-          { label: 'Server × Client', anchor: '#pareto-server-client' }
-          // { label: 'Comm × Storage × Client', anchor: '#pareto-3d-comm' },
+          { label: 'Server × Client', anchor: '#pareto-server-client' },
+          { label: 'Comm × Storage × Client', anchor: '#pareto-3d-comm' }
           // { label: 'Server × Storage × Client', anchor: '#pareto-3d-server' }
         ]},
         { label: 'Misc Metrics', href: 'reported/misc/', dividerAfter: true, children: [
@@ -159,13 +159,14 @@
     });
   });
 
-  // Highlight nav link matching current hash
+  // Highlight nav link matching current hash (anchor links only — page-level
+  // active classes are set at build time and must not be overwritten)
   function highlightHash() {
     var hash = location.hash;
     container.querySelectorAll('.nav-link').forEach(function (a) {
       var href = a.getAttribute('href');
-      // Match anchor links on the current page
-      var isActive = hash && href && (href === hash || href.endsWith(hash));
+      if (!href || href.charAt(0) !== '#') return;        // skip page-level links
+      var isActive = hash && (href === hash);
       a.classList.toggle('active', isActive);
     });
   }

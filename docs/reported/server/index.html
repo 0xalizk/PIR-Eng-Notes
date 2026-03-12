@@ -31,6 +31,10 @@
 <!-- Linear Schemes -->
 <section id="server-perf">
   <h3><a href="#server-perf">Linear Schemes</a></h3>
+  <p class="desc">
+    Group 1a, 1b, and 2a schemes scan the full database per query &mdash; server cost is O(N)
+    and throughput is bounded by memory bandwidth (~10&ndash;14 GB/s/core).
+  </p>
   <details class="metric-note">
     <summary>A note on the throughput metric in PIR literature</summary>
     <p>&ldquo;Throughput&rdquo; in PIR literature means <em>DB scan rate</em>
@@ -53,6 +57,7 @@
   <div class="dim-tabs-container">
     <div class="db-tab-row primary">
       <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="all">All</button>
         <button class="dim-tab" data-value="tiny">&le;1GB</button>
         <button class="dim-tab" data-value="small">1–8GB</button>
         <button class="dim-tab" data-value="medium">8–32GB</button>
@@ -78,6 +83,7 @@
   <div class="dim-tabs-container">
     <div class="db-tab-row primary">
       <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="all">All</button>
         <button class="dim-tab" data-value="tiny">&le;1GB</button>
         <button class="dim-tab" data-value="small">1–8GB</button>
         <button class="dim-tab" data-value="medium">8–32GB</button>

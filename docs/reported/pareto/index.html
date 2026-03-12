@@ -36,6 +36,7 @@
   <div class="dim-tabs-container">
     <div class="db-tab-row primary">
       <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="all">All</button>
         <button class="dim-tab" data-value="tiny">&le;1GB</button>
         <button class="dim-tab" data-value="small">1–8GB</button>
         <button class="dim-tab" data-value="medium">8–32GB</button>
@@ -49,6 +50,7 @@
   <div class="dim-tabs-container">
     <div class="db-tab-row primary">
       <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="all">All</button>
         <button class="dim-tab" data-value="tiny">&le;1GB</button>
         <button class="dim-tab" data-value="small">1–8GB</button>
         <button class="dim-tab" data-value="medium">8–32GB</button>
@@ -62,6 +64,7 @@
   <div class="dim-tabs-container">
     <div class="db-tab-row primary">
       <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="all">All</button>
         <button class="dim-tab" data-value="tiny">&le;1GB</button>
         <button class="dim-tab" data-value="small">1–8GB</button>
         <button class="dim-tab" data-value="medium">8–32GB</button>
@@ -75,6 +78,7 @@
   <div class="dim-tabs-container">
     <div class="db-tab-row primary">
       <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="all">All</button>
         <button class="dim-tab" data-value="tiny">&le;1GB</button>
         <button class="dim-tab" data-value="small">1–8GB</button>
         <button class="dim-tab" data-value="medium">8–32GB</button>
@@ -84,11 +88,17 @@
   </div>
   <div class="chart-container" id="chart-pareto-server-client"></div>
 
-  <!-- 3D Pareto plots (commented out — may revisit)
   <h4 id="pareto-3d-comm"><a href="#pareto-3d-comm">Communication × Client Storage × Client Time:</a></h4>
+  <p class="desc">
+    3D Pareto surface across the three client-facing costs: total communication,
+    persistent storage, and computation time.<br>
+    Purple rings mark Pareto-optimal points
+    (no other scheme dominates on all three axes). Only schemes reporting all three metrics are shown.
+  </p>
   <div class="dim-tabs-container">
     <div class="db-tab-row primary">
       <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="all">All</button>
         <button class="dim-tab" data-value="tiny">&le;1GB</button>
         <button class="dim-tab" data-value="small">1–8GB</button>
         <button class="dim-tab" data-value="medium">8–32GB</button>
@@ -100,10 +110,12 @@
     <div class="chart-container wide" id="chart-pareto-3d-comm" style="flex:1;min-width:0"></div>
   </div>
 
+  <!-- Server × Storage × Client 3D (commented out — insufficient data coverage)
   <h4 id="pareto-3d-server"><a href="#pareto-3d-server">Server Time × Client Storage × Client Time:</a></h4>
   <div class="dim-tabs-container">
     <div class="db-tab-row primary">
       <div class="tab-row-buttons">
+        <button class="dim-tab" data-value="all">All</button>
         <button class="dim-tab" data-value="tiny">&le;1GB</button>
         <button class="dim-tab" data-value="small">1–8GB</button>
         <button class="dim-tab" data-value="medium">8–32GB</button>
