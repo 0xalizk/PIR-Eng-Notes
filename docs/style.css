@@ -611,6 +611,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   background: transparent;
 }
 .inline-table tbody td {
+  font-size: 13px;
   border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
 }
 .inline-table tbody tr:nth-child(even) { background: transparent; }
