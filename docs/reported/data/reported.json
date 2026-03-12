@@ -1909,7 +1909,7 @@
     },
     {
       "id": "via_2025",
-      "display_name": "VIA",
+      "display_name": "VIA - Doubly Stateless",
       "group": "1b",
       "year": 2025,
       "implementation_url": "https://anonymous.4open.science/r/VIA-8888/",
@@ -2012,7 +2012,7 @@
     },
     {
       "id": "via_bc_2025",
-      "display_name": "VIA-BC",
+      "display_name": "VIA - Stateful Server",
       "group": "1a",
       "year": 2025,
       "implementation_url": "https://anonymous.4open.science/r/VIA-8888/",
@@ -2036,8 +2036,8 @@
         "dmux_cmux_architecture": true
       },
       "variants": [
-        "VIA-C",
-        "VIA-B"
+        "Compressed",
+        "Batched"
       ],
       "configs": [
         {
@@ -2078,7 +2078,7 @@
       ],
       "benchmarks": [
         {
-          "variant": "VIA-C",
+          "variant": "Compressed",
           "config_id": "1GBx1B",
           "data_tier": 1,
           "source_ref": "Table 1, p.18",
@@ -2095,7 +2095,7 @@
           "footnotes": []
         },
         {
-          "variant": "VIA-C",
+          "variant": "Compressed",
           "config_id": "4GBx1B",
           "data_tier": 1,
           "source_ref": "Table 1, p.18",
@@ -2112,7 +2112,7 @@
           "footnotes": []
         },
         {
-          "variant": "VIA-C",
+          "variant": "Compressed",
           "config_id": "32GBx1B",
           "data_tier": 1,
           "source_ref": "Table 1, p.18",
@@ -2129,7 +2129,7 @@
           "footnotes": []
         },
         {
-          "variant": "VIA-B",
+          "variant": "Batched",
           "config_id": "256MBx1B",
           "data_tier": 1,
           "source_ref": "Table 2, p.20",
@@ -2141,11 +2141,11 @@
             "offline_comm_mb": 14.8
           },
           "footnotes": [
-            "VIA-B batch T=32, 256 MB DB, 1-byte records"
+            "Batched T=32, 256 MB DB, 1-byte records"
           ]
         },
         {
-          "variant": "VIA-B",
+          "variant": "Batched",
           "config_id": "1GBx1B-batch",
           "data_tier": 1,
           "source_ref": "Table 2, p.20",
@@ -2157,7 +2157,7 @@
             "offline_comm_mb": 14.8
           },
           "footnotes": [
-            "VIA-B batch T=256, 1 GB DB, 1-byte records"
+            "Batched T=256, 1 GB DB, 1-byte records"
           ]
         }
       ],
