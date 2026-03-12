@@ -408,6 +408,8 @@ h4 {
   border-collapse: collapse;
   font-size: 13px;
   line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 .evidence-table th,
 .evidence-table td {
