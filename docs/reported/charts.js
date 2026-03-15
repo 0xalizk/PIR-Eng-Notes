@@ -424,54 +424,22 @@
   // dbTier: string or null (null = any DB size)
   // entryBuckets: Set of bucket ids, or null (null/empty = any entry size)
   // Returns a new entity array with metrics swapped to the best matching benchmark.
-  // Filter data using a section state object { primaryDim, activeDbTier, activeEntryBucket, secondaryFilters }
+  // Filter data using a section state object { dbFilters: Set, entryFilters: Set }
   function filterData(data, sectionState) {
-    var dbTier, entryBuckets;
+    var dbFilters, entryFilters;
     if (!sectionState || typeof sectionState === 'string') {
       // Legacy call: filterData(data, tierString) — used by radar/heatmap
-      dbTier = sectionState || null;
-      entryBuckets = null;
-    } else if (sectionState.primaryDim === 'entry') {
-      dbTier = null;
-      entryBuckets = null;
-      // Filter by entry bucket primary + optional DB tier pills
-      var activeEntry = sectionState.activeEntryBucket;
-      var dbPills = sectionState.secondaryFilters.size > 0 ? sectionState.secondaryFilters : null;
-      return data.map(function (s) {
-        var best = null;
-        (s._allBenchmarks || []).forEach(function (rec) {
-          var entryOk = activeEntry === 'all' || rec._entryBucket === activeEntry;
-          var dbOk = !dbPills || dbPills.has(rec._dbTier);
-          if (!entryOk || !dbOk) return;
-          if (!best || rec._db_size_bytes > best._db_size_bytes ||
-              (rec._db_size_bytes === best._db_size_bytes && rec.data_tier < best.data_tier)) {
-            best = rec;
-          }
-        });
-        if (!best) return null;
-        var copy = {};
-        Object.keys(s).forEach(function (k) { copy[k] = s[k]; });
-        copy.concrete = best.metrics;
-        copy.data_tier = best.data_tier;
-        copy.source_ref = best.source_ref;
-        copy.estimation_meta = best.estimation_meta;
-        copy._db_size_bytes = best._db_size_bytes;
-        copy._entry_size_bytes = best._config.entry_size_bytes;
-        copy._entry_size_label = best._config.entry_size_label;
-        copy._num_entries = best._config.num_entries;
-        return copy;
-      }).filter(Boolean);
+      dbFilters = sectionState ? new Set([sectionState]) : null;
+      entryFilters = null;
     } else {
-      // DB primary ('all' means no DB filtering)
-      dbTier = sectionState.activeDbTier === 'all' ? null : sectionState.activeDbTier;
-      entryBuckets = sectionState.secondaryFilters.size > 0 ? sectionState.secondaryFilters : null;
+      dbFilters = sectionState.dbFilters && sectionState.dbFilters.size > 0 ? sectionState.dbFilters : null;
+      entryFilters = sectionState.entryFilters && sectionState.entryFilters.size > 0 ? sectionState.entryFilters : null;
     }
-    var hasEntryFilter = entryBuckets && entryBuckets.size > 0;
     return data.map(function (s) {
       var best = null;
       (s._allBenchmarks || []).forEach(function (rec) {
-        var dbOk = !dbTier || rec._dbTier === dbTier;
-        var entryOk = !hasEntryFilter || entryBuckets.has(rec._entryBucket);
+        var dbOk = !dbFilters || dbFilters.has(rec._dbTier);
+        var entryOk = !entryFilters || entryFilters.has(rec._entryBucket);
         if (!dbOk || !entryOk) return;
         if (!best || rec._db_size_bytes > best._db_size_bytes ||
             (rec._db_size_bytes === best._db_size_bytes && rec.data_tier < best.data_tier)) {
@@ -2934,7 +2902,7 @@
   // ── Per-section chart state ──────────────────────────
   //
   // Each .dim-tabs-container has its own independent filter state.
-  // Clicking a tab in one section only re-renders charts in that section.
+  // Clicking a filter button in one section only re-renders charts in that section.
   //
   // Chart ID → render function mapping (populated once in init).
   var _chartRenderers = {};
@@ -3022,83 +2990,31 @@
     return ids;
   }
 
-  // Sync a single tab container's DOM to its section state
+  // Sync a single filter container's DOM to its section state
   function _syncSectionTabUI(container, state) {
-    var dbRow = container.querySelector('.db-tab-row');
-    var entryRow = container.querySelector('.entry-tab-row');
-    var dbPills = container.querySelector('.db-pills');
-    var entryPills = container.querySelector('.entry-pills');
+    var dbRow = container.querySelector('.dim-filter-row-db');
+    var entryRow = container.querySelector('.dim-filter-row-entry');
     if (!dbRow || !entryRow) return;
 
-    if (state.primaryDim === 'db') {
-      dbRow.classList.add('primary');
-      dbRow.classList.remove('secondary');
-      entryRow.classList.add('secondary');
-      entryRow.classList.remove('primary');
-    } else {
-      entryRow.classList.add('primary');
-      entryRow.classList.remove('secondary');
-      dbRow.classList.add('secondary');
-      dbRow.classList.remove('primary');
-    }
+    // Toggle has-active class on rows (controls label color)
+    dbRow.classList.toggle('has-active', state.dbFilters.size > 0);
+    entryRow.classList.toggle('has-active', state.entryFilters.size > 0);
 
-    // Sync active tab highlights
-    dbRow.querySelectorAll('.dim-tab').forEach(function (b) {
-      b.classList.toggle('active', state.primaryDim === 'db' && b.dataset.value === state.activeDbTier);
+    // Sync active highlights
+    dbRow.querySelectorAll('.dim-filter-btn').forEach(function (b) {
+      b.classList.toggle('active', state.dbFilters.has(b.dataset.value));
     });
-    entryRow.querySelectorAll('.dim-tab').forEach(function (b) {
-      b.classList.toggle('active', state.primaryDim === 'entry' && b.dataset.value === state.activeEntryBucket);
+    entryRow.querySelectorAll('.dim-filter-btn').forEach(function (b) {
+      b.classList.toggle('active', state.entryFilters.has(b.dataset.value));
     });
-
-    // Rebuild secondary filter pills
-    function buildPills(el, items, labels) {
-      el.innerHTML = '';
-      items.forEach(function (id) {
-        var pill = document.createElement('button');
-        pill.className = 'secondary-pill' + (state.secondaryFilters.has(id) ? ' active' : '');
-        pill.dataset.value = id;
-        pill.textContent = labels[id];
-        pill.addEventListener('click', function () {
-          if (state.secondaryFilters.has(id)) {
-            state.secondaryFilters.delete(id);
-          } else {
-            state.secondaryFilters.add(id);
-          }
-          _syncSectionTabUI(container, state);
-          _renderSectionCharts(state);
-        });
-        el.appendChild(pill);
-      });
-    }
-
-    if (dbPills) {
-      if (state.primaryDim === 'db') {
-        buildPills(dbPills, ENTRY_BUCKETS, ENTRY_BUCKET_LABELS);
-      } else {
-        dbPills.innerHTML = '';
-      }
-    }
-    if (entryPills) {
-      if (state.primaryDim === 'entry') {
-        buildPills(entryPills, DB_SIZE_TIERS, DB_SIZE_LABELS);
-      } else {
-        entryPills.innerHTML = '';
-      }
-    }
   }
 
   function initDimensionTabs() {
     document.querySelectorAll('.dim-tabs-container').forEach(function (container) {
-      // Detect if this container has an "All" button in the DB row
-      var dbRow = container.querySelector('.db-tab-row');
-      var hasAll = dbRow && dbRow.querySelector('.dim-tab[data-value="all"]');
-
       // Each container gets its own independent state
       var state = {
-        primaryDim: 'db',
-        activeDbTier: hasAll ? 'all' : 'tiny',
-        activeEntryBucket: null,
-        secondaryFilters: new Set(),
+        dbFilters: new Set(),
+        entryFilters: new Set(),
         chartIds: _discoverChartIds(container)
       };
 
@@ -3107,75 +3023,64 @@
         _chartToSection[id] = state;
       });
 
-      // DB tab row
-      if (dbRow) {
-        dbRow.querySelectorAll('.dim-tab').forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            if (state.primaryDim !== 'db') {
-              state.primaryDim = 'db';
-              state.secondaryFilters = new Set();
-            }
-            state.activeDbTier = btn.dataset.value;
-            _syncSectionTabUI(container, state);
-            _renderSectionCharts(state);
-          });
-        });
-      }
+      // Clear existing content (old db-tab-row markup)
+      container.innerHTML = '';
 
-      // Entry tab row — generate dynamically
-      var entryRow = document.createElement('div');
-      entryRow.className = 'entry-tab-row secondary';
-      var entryBtns = document.createElement('div');
-      entryBtns.className = 'tab-row-buttons';
-      // Add "All" button to entry row if the DB row has one
-      if (hasAll) {
-        var allBtn = document.createElement('button');
-        allBtn.className = 'dim-tab entry-tab';
-        allBtn.dataset.value = 'all';
-        allBtn.textContent = 'All';
-        allBtn.addEventListener('click', function () {
-          if (state.primaryDim !== 'entry') {
-            state.primaryDim = 'entry';
-            state.secondaryFilters = new Set();
+      // Build DB size row
+      var dbRow = document.createElement('div');
+      dbRow.className = 'dim-filter-row dim-filter-row-db';
+      var dbLabel = document.createElement('span');
+      dbLabel.className = 'dim-filter-label';
+      dbLabel.textContent = 'DB size';
+      dbRow.appendChild(dbLabel);
+      var dbBtns = document.createElement('div');
+      dbBtns.className = 'dim-filter-buttons';
+      DB_SIZE_TIERS.forEach(function (tier) {
+        var btn = document.createElement('button');
+        btn.className = 'dim-filter-btn';
+        btn.dataset.value = tier;
+        btn.textContent = DB_SIZE_LABELS[tier];
+        btn.addEventListener('click', function () {
+          if (state.dbFilters.has(tier)) {
+            state.dbFilters.delete(tier);
+          } else {
+            state.dbFilters.add(tier);
           }
-          state.activeEntryBucket = 'all';
           _syncSectionTabUI(container, state);
           _renderSectionCharts(state);
         });
-        entryBtns.appendChild(allBtn);
-      }
+        dbBtns.appendChild(btn);
+      });
+      dbRow.appendChild(dbBtns);
+      container.appendChild(dbRow);
+
+      // Build Entry size row
+      var entryRow = document.createElement('div');
+      entryRow.className = 'dim-filter-row dim-filter-row-entry';
+      var entryLabel = document.createElement('span');
+      entryLabel.className = 'dim-filter-label';
+      entryLabel.textContent = 'Entry size';
+      entryRow.appendChild(entryLabel);
+      var entryBtns = document.createElement('div');
+      entryBtns.className = 'dim-filter-buttons';
       ENTRY_BUCKETS.forEach(function (bucket) {
         var btn = document.createElement('button');
-        btn.className = 'dim-tab entry-tab';
+        btn.className = 'dim-filter-btn';
         btn.dataset.value = bucket;
         btn.textContent = ENTRY_BUCKET_LABELS[bucket];
         btn.addEventListener('click', function () {
-          if (state.primaryDim !== 'entry') {
-            state.primaryDim = 'entry';
-            state.secondaryFilters = new Set();
+          if (state.entryFilters.has(bucket)) {
+            state.entryFilters.delete(bucket);
+          } else {
+            state.entryFilters.add(bucket);
           }
-          state.activeEntryBucket = bucket;
           _syncSectionTabUI(container, state);
           _renderSectionCharts(state);
         });
         entryBtns.appendChild(btn);
       });
       entryRow.appendChild(entryBtns);
-
-      // Secondary pills containers
-      var dbPills = document.createElement('div');
-      dbPills.className = 'secondary-pills db-pills';
-      dbRow.appendChild(dbPills);
-      var entryPills = document.createElement('div');
-      entryPills.className = 'secondary-pills entry-pills';
-      entryRow.appendChild(entryPills);
-
-      // Insert entry row after db row
-      if (dbRow) {
-        dbRow.parentNode.insertBefore(entryRow, dbRow.nextSibling);
-      } else {
-        container.appendChild(entryRow);
-      }
+      container.appendChild(entryRow);
 
       // Initial UI sync
       _syncSectionTabUI(container, state);

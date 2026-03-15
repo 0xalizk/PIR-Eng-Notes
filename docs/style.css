@@ -281,82 +281,54 @@ h4 {
   margin-top: 24px;
 }
 
-/* ── Dimension Tabs (DB size + Entry size) ────────────── */
+/* ── Dimension Filters (DB size + Entry size) ─────────── */
 .dim-tabs-container {
   display: flex;
-  align-items: flex-start;
-  gap: 18px;
-  margin: 12px 0 16px;
-  flex-wrap: wrap;
-}
-.tab-row-buttons {
-  display: flex;
+  flex-direction: column;
   gap: 6px;
-  flex-wrap: wrap;
+  margin: 12px 0 16px;
 }
-.dim-tab {
+.dim-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dim-filter-label {
   font-family: var(--font);
   font-size: 13px;
   font-weight: 600;
-  padding: 6px 13px;
-  border: 1px solid var(--border);
-  border-bottom: 3px solid transparent;
-  border-radius: 8px 8px 0 0;
-  background: var(--bg-card);
   color: var(--text-muted);
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s, opacity 0.15s;
+  white-space: nowrap;
+  min-width: 62px;
+  transition: color 0.15s;
 }
-.dim-tab:hover {
-  background: var(--nav-hover);
+.dim-filter-row.has-active .dim-filter-label {
   color: var(--text);
 }
-.dim-tab.active {
-  background: var(--bg-alt);
-  color: var(--text);
-  border-bottom-color: var(--link);
-}
-/* Secondary row: muted when not primary */
-.entry-tab-row.secondary .dim-tab,
-.db-tab-row.secondary .dim-tab {
-  opacity: 0.55;
-  border-bottom-width: 2px;
-}
-.entry-tab-row.secondary .dim-tab:hover,
-.db-tab-row.secondary .dim-tab:hover {
-  opacity: 0.85;
-}
-.entry-tab-row.secondary .dim-tab.active,
-.db-tab-row.secondary .dim-tab.active {
-  opacity: 1;
-}
-/* Secondary filter pills */
-.secondary-pills {
+.dim-filter-buttons {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-  margin: 7px 0 0;
 }
-.secondary-pill {
+.dim-filter-btn {
   font-family: var(--font);
-  font-size: 11px;
-  padding: 3px 10px;
+  font-size: 12px;
+  padding: 4px 11px;
   border: 1.5px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
   transition: all 0.15s;
-  opacity: 0.5;
 }
-.secondary-pill:hover {
-  opacity: 0.75;
+.dim-filter-btn:hover {
+  background: var(--nav-hover);
+  color: var(--text);
 }
-.secondary-pill.active {
+.dim-filter-btn.active {
   background: var(--bg-alt);
   color: var(--text);
   font-weight: 600;
-  opacity: 1;
   border-color: var(--link);
 }
 .rank-explainer-toggle {
