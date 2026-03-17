@@ -41,7 +41,7 @@ Pending. The detached runner writes:
 - `results/onionpirv2/<run-id>/<profile>/stdout.log`
 - `results/onionpirv2/<run-id>/<profile>/result.json`
 
-### Notes
+### Issues & Observations
 
 - The upstream binary always generates a fresh random database at startup.
 - The generated `rawDB.bin` is transient and is deleted on clean process exit by upstream code.

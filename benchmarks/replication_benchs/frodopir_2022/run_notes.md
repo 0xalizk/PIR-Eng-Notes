@@ -139,7 +139,9 @@ Scaling is consistent with paper: roughly 2x per doubling of m, as expected from
 
 ### Raw Output
 
-#### m=16 (quick bench)
+<details>
+<summary>F1: m=2^16, 64 MB</summary>
+
 ```
 === FrodoPIR Quick Benchmark ===
 m = 2^16 = 65536
@@ -168,8 +170,11 @@ Running client output parsing (5 trials)...
   Client download (hint): 5682.36 KB
   Matrix width (omega/w): 820
 ```
+</details>
 
-#### m=17 (quick bench)
+<details>
+<summary>F2: m=2^17, 128 MB</summary>
+
 ```
 === FrodoPIR Quick Benchmark ===
 m = 2^17 = 131072
@@ -198,8 +203,11 @@ Running client output parsing (5 trials)...
   Client download (hint): 5682.36 KB
   Matrix width (omega/w): 820
 ```
+</details>
 
-#### m=18 (quick bench)
+<details>
+<summary>F3: m=2^18, 256 MB</summary>
+
 ```
 === FrodoPIR Quick Benchmark ===
 m = 2^18 = 262144
@@ -228,8 +236,11 @@ Running client output parsing (5 trials)...
   Client download (hint): 5682.36 KB
   Matrix width (omega/w): 820
 ```
+</details>
 
-#### m=19 (quick bench)
+<details>
+<summary>F4: m=2^19, 512 MB</summary>
+
 ```
 === FrodoPIR Quick Benchmark ===
 m = 2^19 = 524288
@@ -258,8 +269,11 @@ Running client output parsing (5 trials)...
   Client download (hint): 6312.96 KB
   Matrix width (omega/w): 911
 ```
+</details>
 
-#### m=20 (quick bench)
+<details>
+<summary>F5: m=2^20, 1 GB</summary>
+
 ```
 === FrodoPIR Quick Benchmark ===
 m = 2^20 = 1048576
@@ -288,3 +302,4 @@ Running client output parsing (5 trials)...
   Client download (hint): 6312.96 KB
   Matrix width (omega/w): 911
 ```
+</details>

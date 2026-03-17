@@ -139,7 +139,7 @@ The ratio is consistent across database sizes (~1.2-1.4x), suggesting the overhe
 | 2^20 x 288B | 35 | 30,102 | 174 | 173 |
 | 2^16 x 1024B | 9 | 7,310 | 86 | 85 |
 
-### Issues / Notes
+### Issues & Observations
 
 1. **Implementation version mismatch:** The current SealPIR repo is significantly updated from the paper. Communication sizes cannot be directly compared. To replicate exact paper numbers, one would need to check out the original commit (`ccf86c50fd3291`) and use SEAL 2.3.0-4, which is no longer readily available.
 
@@ -155,7 +155,9 @@ The ratio is consistent across database sizes (~1.2-1.4x), suggesting the overhe
 
 ### Raw Output
 
-**2^16 x 288B, d=2 (5 trials):**
+<details>
+<summary>2^16 x 288B, d=2 (5 trials)</summary>
+
 ```
 Config: N=4096, logt=20, d=2, num_items=65536, item_size=288
 Correctness: ALL PASS
@@ -167,8 +169,11 @@ Avg Query size:      92893.4 bytes (90.7162 KB)
 Avg Reply size:      185469 bytes (181.122 KB)
 Reply num ciphertexts: 4
 ```
+</details>
 
-**2^18 x 288B, d=2 (5 trials):**
+<details>
+<summary>2^18 x 288B, d=2 (5 trials)</summary>
+
 ```
 Config: N=4096, logt=20, d=2, num_items=262144, item_size=288
 Correctness: ALL PASS
@@ -180,8 +185,11 @@ Avg Query size:      92882.8 bytes (90.7059 KB)
 Avg Reply size:      185598 bytes (181.248 KB)
 Reply num ciphertexts: 4
 ```
+</details>
 
-**2^20 x 288B, d=2 (5 trials):**
+<details>
+<summary>2^20 x 288B, d=2 (5 trials)</summary>
+
 ```
 Config: N=4096, logt=20, d=2, num_items=1048576, item_size=288
 Correctness: ALL PASS
@@ -193,8 +201,11 @@ Avg Query size:      92866.2 bytes (90.6896 KB)
 Avg Reply size:      185528 bytes (181.18 KB)
 Reply num ciphertexts: 4
 ```
+</details>
 
-**2^16 x 1024B, d=2 (5 trials):**
+<details>
+<summary>2^16 x 1024B, d=2 (5 trials)</summary>
+
 ```
 Config: N=4096, logt=20, d=2, num_items=65536, item_size=1024
 Correctness: ALL PASS
@@ -206,3 +217,4 @@ Avg Query size:      93014.6 bytes (90.8346 KB)
 Avg Reply size:      185390 bytes (181.045 KB)
 Reply num ciphertexts: 4
 ```
+</details>

@@ -21,7 +21,7 @@ git clone https://github.com/intel/hexl.git /tmp/intel-hexl
 cd /tmp/intel-hexl
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j$(nproc)
-cp build/hexl/lib/libhexl.a /path/to/schemes/VIA/lib/
+cp build/hexl/lib/libhexl.a schemes/VIA/lib/
 
 # 2. Build VIA
 cd schemes/VIA
@@ -177,6 +177,8 @@ Conclusion: Table 2 cannot be replicated locally without an additional non-publi
 
 ### Compute Performance Analysis
 
+**Online computation:**
+
 | Config | Variant | DB Size | Ours (s) | Paper (s) | Slowdown | Notes |
 |--------|---------|---------|----------|-----------|----------|-------|
 | V1     | VIA     | 1 GB    | 1.043    | 0.442     | 2.36x    | |
@@ -185,6 +187,8 @@ Conclusion: Table 2 cannot be replicated locally without an additional non-publi
 | V4     | VIA-C   | 1 GB    | 2.296    | 0.83      | 2.77x    | |
 | V5     | VIA-C   | 4 GB    | 7.673    | 2.777     | 2.76x    | |
 | V6     | VIA-C   | 32 GB   | 57.205   | 20.307    | 2.82x    | Memory simulation for >2GB |
+
+**Setup/offline computation:**
 
 | Config | Variant | DB Size | Ours (s) | Paper (s) | Slowdown |
 |--------|---------|---------|----------|-----------|----------|

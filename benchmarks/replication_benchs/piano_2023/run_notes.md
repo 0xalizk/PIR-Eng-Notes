@@ -37,7 +37,7 @@ DB size is controlled via `config.txt` (first line: `N DBSeed`). Entry size is a
 | P2 | 268,435,456 (2^28) | 8 B | 2 GB | Table 1 |
 | P3 | 536,870,912 (2^29) | 8 B | 4 GB | (extrapolation) |
 
-### Run Commands
+### Running
 
 ```bash
 # Server (in one terminal):
@@ -132,7 +132,8 @@ Our machine (Intel i7-11700F @ 2.5 GHz base / 4.9 GHz boost) is consistently **f
 
 ### Raw Output
 
-#### P1 — 1 GB, 1 Thread
+<details>
+<summary>P1: 1 GB, 1 Thread</summary>
 
 ```
 DBSize 134217728, DBSeed 1211212, ChunkSize 32768, SetSize 4096
@@ -152,8 +153,10 @@ Average Server Time 0.24242387899999998 ms
 Average Client Time 1.2091861460000002 ms
 Average Find Hint Time 1.069642274 ms
 ```
+</details>
 
-#### P1 — 1 GB, 8 Threads
+<details>
+<summary>P1: 1 GB, 8 Threads</summary>
 
 ```
 DBSize 134217728, DBSeed 1211212, ChunkSize 32768, SetSize 4096
@@ -173,8 +176,10 @@ Average Server Time 0.260593051 ms
 Average Client Time 1.217017542 ms
 Average Find Hint Time 1.077915425 ms
 ```
+</details>
 
-#### P2 — 2 GB, 1 Thread
+<details>
+<summary>P2: 2 GB, 1 Thread</summary>
 
 ```
 DBSize 268435456, DBSeed 1211212, ChunkSize 32768, SetSize 8192
@@ -194,8 +199,10 @@ Average Server Time 0.536367673 ms
 Average Client Time 1.3345803809999999 ms
 Average Find Hint Time 1.061426688 ms
 ```
+</details>
 
-#### P2 — 2 GB, 8 Threads
+<details>
+<summary>P2: 2 GB, 8 Threads</summary>
 
 ```
 DBSize 268435456, DBSeed 1211212, ChunkSize 32768, SetSize 8192
@@ -215,8 +222,10 @@ Average Server Time 0.52287965 ms
 Average Client Time 1.325570014 ms
 Average Find Hint Time 1.052370634 ms
 ```
+</details>
 
-#### P3 — 4 GB, 1 Thread
+<details>
+<summary>P3: 4 GB, 1 Thread</summary>
 
 ```
 DBSize 536870912, DBSeed 1211212, ChunkSize 65536, SetSize 8192
@@ -236,8 +245,10 @@ Average Server Time 0.664860361 ms
 Average Client Time 2.3495820339999995 ms
 Average Find Hint Time 2.078926077 ms
 ```
+</details>
 
-#### P3 — 4 GB, 8 Threads
+<details>
+<summary>P3: 4 GB, 8 Threads</summary>
 
 ```
 DBSize 536870912, DBSeed 1211212, ChunkSize 65536, SetSize 8192
@@ -257,3 +268,4 @@ Average Server Time 0.682961936 ms
 Average Client Time 2.327387101 ms
 Average Find Hint Time 2.054629599 ms
 ```
+</details>

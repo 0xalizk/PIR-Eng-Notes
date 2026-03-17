@@ -146,7 +146,7 @@ Speedup ratio is consistent across configs (1.48-1.60x), confirming the differen
 | SpiralStream 2^18x30KB | 32768 | 27 | 10 | 8 | 4 | 32 | 2 | 2 | 2 |
 | SpiralStreamPack 2^18x30KB | 32768 | 26 | 11 | 6 | 3 | 56 | 56 | 4 | 1 |
 
-### Issues / Notes
+### Issues & Observations
 
 1. **git-lfs required:** Parameter pickle files (~38 MB each) are stored via git-lfs. Without git-lfs, the files appear as text pointers and fail to load.
 
@@ -160,44 +160,68 @@ Speedup ratio is consistent across configs (1.48-1.60x), confirming the differen
 
 6. **Rate differences (2^14x100KB Spiral):** Our Spiral rate (0.375) differs from paper (0.4129). The parameter selector chose p=256 (log_p=8) with factor=13, while the paper likely chose p=512 (log_p=9) with factor=11. Different p values yield different response sizes and rates. The SpiralPack variant matches closely (0.543 vs 0.5307).
 
-### Raw Output (JSON, averaged over 3 trials)
+### Raw Output
 
-**Spiral 2^20 x 256B:**
+<details>
+<summary>Spiral 2^20 x 256B (JSON, averaged over 3 trials)</summary>
+
 ```json
 {"exp_us": 453316.67, "conv_us": 270020.0, "fdim_us": 197306.33, "fold_us": 208198.67, "total_us": 1128841.67, "resp_sz": 20992.0, "query_sz": 14336.0, "param_sz": 14221312.0, "is_corr": 1.0, "rate": 0.0122}
 ```
+</details>
 
-**Spiral 2^18 x 30KB:**
+<details>
+<summary>Spiral 2^18 x 30KB (JSON, averaged over 3 trials)</summary>
+
 ```json
 {"exp_us": 779911.67, "conv_us": 365643.0, "fdim_us": 6639038.67, "fold_us": 8323188.0, "total_us": 16107781.33, "resp_sz": 83968.0, "query_sz": 14336.0, "param_sz": 18120704.0, "is_corr": 1.0, "rate": 0.366}
 ```
+</details>
 
-**Spiral 2^14 x 100KB:**
+<details>
+<summary>Spiral 2^14 x 100KB (JSON, averaged over 3 trials)</summary>
+
 ```json
 {"exp_us": 445553.67, "conv_us": 216724.33, "fdim_us": 1348802.0, "fold_us": 1170589.33, "total_us": 3181669.33, "resp_sz": 272896.0, "query_sz": 14336.0, "param_sz": 14221312.0, "is_corr": 1.0, "rate": 0.375}
 ```
+</details>
 
-**SpiralPack 2^20 x 256B:**
+<details>
+<summary>SpiralPack 2^20 x 256B (JSON, averaged over 3 trials)</summary>
+
 ```json
 {"exp_us": 435380.67, "conv_us": 36672.67, "fdim_us": 191503.33, "fold_us": 219277.67, "pack_us": 1644.0, "total_us": 884478.33, "resp_sz": 20480.0, "query_sz": 14336.0, "param_sz": 14106624.0, "is_corr": 1.0, "rate": 0.0125}
 ```
+</details>
 
-**SpiralPack 2^18 x 30KB:**
+<details>
+<summary>SpiralPack 2^18 x 30KB (JSON, averaged over 3 trials)</summary>
+
 ```json
 {"exp_us": 1209129.0, "conv_us": 53623.0, "fdim_us": 5950296.0, "fold_us": 3814966.67, "pack_us": 6242.67, "total_us": 11034257.33, "resp_sz": 86016.0, "query_sz": 14336.0, "param_sz": 18464768.0, "is_corr": 1.0, "rate": 0.357}
 ```
+</details>
 
-**SpiralPack 2^14 x 100KB:**
+<details>
+<summary>SpiralPack 2^14 x 100KB (JSON, averaged over 3 trials)</summary>
+
 ```json
 {"exp_us": 647733.33, "conv_us": 49555.33, "fdim_us": 1535268.67, "fold_us": 641336.0, "pack_us": 100395.67, "total_us": 2974289.0, "resp_sz": 188416.0, "query_sz": 14336.0, "param_sz": 47022080.0, "is_corr": 1.0, "rate": 0.543}
 ```
+</details>
 
-**SpiralStream 2^18 x 30KB:**
+<details>
+<summary>SpiralStream 2^18 x 30KB (JSON, averaged over 3 trials)</summary>
+
 ```json
 {"exp_us": 148705.0, "conv_us": 1657947.33, "fdim_us": 3200374.0, "fold_us": 902202.0, "total_us": 5909228.33, "resp_sz": 62464.0, "query_sz": 15138816.0, "param_sz": 2752512.0, "is_corr": 1.0, "rate": 0.492}
 ```
+</details>
 
-**SpiralStreamPack 2^18 x 30KB:**
+<details>
+<summary>SpiralStreamPack 2^18 x 30KB (JSON, averaged over 3 trials)</summary>
+
 ```json
 {"exp_us": 0.0, "conv_us": 7118.67, "fdim_us": 3141135.67, "fold_us": 413522.67, "pack_us": 33696.0, "total_us": 3595473.0, "resp_sz": 96256.0, "query_sz": 29876224.0, "param_sz": 16056320.0, "is_corr": 1.0, "rate": 0.319}
 ```
+</details>

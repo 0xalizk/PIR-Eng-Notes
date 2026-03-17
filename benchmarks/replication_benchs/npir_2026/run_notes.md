@@ -118,7 +118,7 @@ Observations:
 - Packing time is roughly constant (~3.5 s for phi=16), independent of DB size.
 - Query recovery time doubles with each DB size doubling (scales with log(ell) expansion levels).
 
-### Issues
+### Issues & Observations
 
 1. **SIGSEGV in `pack_db`:** Alignment bug (see Build section). Required patching `npirstandard.rs` and `npirbatch.rs` to use `AlignedMemory64` for the temporary NTT buffer. Without this fix, every test crashes with SIGSEGV.
 2. **Memory usage:** The NTT-domain packed database uses ~8x the raw DB size (each polynomial coefficient stored as a packed u64 with both CRT components). This limits benchmarking on machines with <512 GB RAM to databases of ~4 GB or smaller.
@@ -126,7 +126,8 @@ Observations:
 
 ### Raw Output
 
-#### N1: 1 GB / 32 KB
+<details>
+<summary>N1: 1 GB / 32 KB</summary>
 
 ```
 Generate the database with size 2^33 ...
@@ -149,8 +150,10 @@ Server time: 5082119 μs
 [Trial 6] Server time: 4516369 μs
 Server ave time: 4524478 μs
 ```
+</details>
 
-#### N2: 2 GB / 32 KB
+<details>
+<summary>N2: 2 GB / 32 KB</summary>
 
 ```
 Generate the database with size 2^34 ...
@@ -173,8 +176,10 @@ Server time: 7127006 μs
 [Trial 6] Server time: 5692475 μs
 Server ave time: 5456253 μs
 ```
+</details>
 
-#### N3: 4 GB / 32 KB
+<details>
+<summary>N3: 4 GB / 32 KB</summary>
 
 ```
 Generate the database with size 2^35 ...
@@ -197,3 +202,4 @@ Server time: 15884740 μs
 [Trial 6] Server time: 7460509 μs
 Server ave time: 7490610 μs
 ```
+</details>
