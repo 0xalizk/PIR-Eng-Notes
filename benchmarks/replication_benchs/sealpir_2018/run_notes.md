@@ -130,6 +130,17 @@ Our timings are ~1.2-1.4x slower than the paper. This is a combination of factor
 
 The ratio is consistent across database sizes (~1.2-1.4x), suggesting the overhead is from the larger ring dimension rather than algorithmic differences.
 
+#### Server Throughput (computed from reply gen time)
+
+| Config | DB Size (MB) | Reply Gen (s) | Throughput (MB/s) |
+|--------|-------------|---------------|-------------------|
+| 2^16 x 288B | 18.0 | 0.238 | 75.6 |
+| 2^18 x 288B | 72.0 | 0.761 | 94.6 |
+| 2^20 x 288B | 288.0 | 2.607 | 110.5 |
+| 2^16 x 1024B | 64.0 | 0.732 | 87.4 |
+
+Throughput increases with DB size (better amortization of fixed-cost query expansion). The updated implementation (N=4096) achieves 75-110 MB/s, which is lower than Spiral or YPIR but comparable to the original paper's performance when accounting for the larger ring dimension.
+
 ### PIR Parameters Detail
 
 | Config | Elements/ptxt | BFV plaintexts (padded) | Dim 1 | Dim 2 |
@@ -138,6 +149,51 @@ The ratio is consistent across database sizes (~1.2-1.4x), suggesting the overhe
 | 2^18 x 288B | 35 | 7,569 | 87 | 87 |
 | 2^20 x 288B | 35 | 30,102 | 174 | 173 |
 | 2^16 x 1024B | 9 | 7,310 | 86 | 85 |
+
+### Derived Cross-Scheme Comparison Metrics
+
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+
+#### Rate (useful_bytes / response_bytes)
+
+| Config | Item Size | Response Size | Rate |
+|--------|-----------|---------------|------|
+| 2^16 x 288B | 288 B | 181.1 KB (185,469 B) | 0.00155 |
+| 2^18 x 288B | 288 B | 181.2 KB (185,598 B) | 0.00155 |
+| 2^20 x 288B | 288 B | 181.2 KB (185,528 B) | 0.00155 |
+| 2^16 x 1024B | 1,024 B | 181.0 KB (185,390 B) | 0.00552 |
+
+Rate is very low because the updated implementation (N=4096) returns 4 full BFV ciphertexts regardless of item size. The original paper implementation (N=2048) would have different rates.
+
+#### Throughput (DB_size / server_reply_gen_time)
+
+| Config | DB Size (MB) | Reply Gen (s) | Throughput (MB/s) | Throughput (GB/s) |
+|--------|-------------|---------------|-------------------|-------------------|
+| 2^16 x 288B | 18.0 | 0.238 | 75.6 | 0.074 |
+| 2^18 x 288B | 72.0 | 0.761 | 94.6 | 0.092 |
+| 2^20 x 288B | 288.0 | 2.607 | 110.5 | 0.108 |
+| 2^16 x 1024B | 64.0 | 0.732 | 87.4 | 0.085 |
+
+Throughput increases with DB size due to better amortization of query expansion.
+
+#### Client Storage & Offline Communication
+
+Not precisely measured. Requires implementation modification to serialize and measure:
+- **Galois keys:** Required for query expansion. For N=4096 with the current modulus chain (36+36+37 bits), each Galois key element is 2 × N × 3 × 8 bytes. With ~log2(N) rotation keys, estimated total is **several MB**.
+- **Secret key:** N × 8 bytes ≈ 32 KB.
+
+These sizes are measurable via SEAL's `save()` API but are not currently captured by the benchmark binary.
+
+#### Preprocessing Throughput (DB_size / setup_time)
+
+| Config | DB Size (MB) | Setup Time (s) | Preprocessing Throughput (MB/s) |
+|--------|-------------|-----------------|--------------------------------|
+| 2^16 x 288B | 18.0 | 0.315 | 57.1 |
+| 2^18 x 288B | 72.0 | 1.298 | 55.5 |
+| 2^20 x 288B | 288.0 | 5.223 | 55.2 |
+| 2^16 x 1024B | 64.0 | 1.220 | 52.5 |
+
+Setup includes BFV encoding (NTT transform) of the database. Throughput is consistent (~55 MB/s) across configs.
 
 ### Issues & Observations
 

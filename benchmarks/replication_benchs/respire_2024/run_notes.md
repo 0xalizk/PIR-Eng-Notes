@@ -145,6 +145,17 @@ Paper reference (Intel Xeon Platinum 8488C, from Table 2 p.21):
 
 The first dimension scan dominates computation (~40% for 256 MB, ~60% for 1 GB), as expected. This scales linearly with 2^{v1}.
 
+#### Client-Side Metrics (from timing breakdown)
+
+| Config | DB Size | Client Query Gen (ms) | Client Extract/Decode (ms) |
+|--------|---------|-----------------------|----------------------------|
+| S1 | 256 MB | 0.29 | 0.02 |
+| S2 | 1 GB | 0.27 | 0.02 |
+| B1 | 256 MB (T=32) | 12.80 (+ 1.43 cuckoo) | 0.90 |
+| B2 | 256 MB (T=256) | 104.74 (+ 1.60 cuckoo) | 6.16 |
+
+Client operations are negligible for single-query (<0.3 ms total). For batch, query generation scales linearly with batch size T, and extract scales similarly.
+
 #### Timing Breakdown: Batch 256 MB
 
 | Phase | T=32 (ms) | T=256 (ms) |
@@ -163,6 +174,56 @@ The first dimension scan dominates computation (~40% for 256 MB, ~60% for 1 GB),
 | **total** | **10388.17** | **42955.70** |
 
 For batch, query expansion dominates (>50% of total time). This scales roughly linearly with T due to the Cuckoo hashing approach (3T/2 buckets).
+
+### Derived Cross-Scheme Comparison Metrics
+
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+
+#### Client Storage (= public parameter size)
+
+| Config | Type | Public Param Size (KB) | Public Param Size (MB) |
+|--------|------|----------------------|----------------------|
+| S1, S2 | Single-query | 3,980 | 3.89 |
+| B1, B2 | Batch | 4,680 | 4.57 |
+
+Client downloads public parameters once per setup. Batch configs require slightly larger params for Cuckoo hashing support.
+
+#### Throughput (DB_size / server_online_time)
+
+| Config | Type | DB Size | Online Time (s) | Throughput (MB/s) | Throughput (GB/s) |
+|--------|------|---------|------------------|-------------------|-------------------|
+| S1 | Single | 256 MB | 0.861 | 297 | 0.290 |
+| S2 | Single | 1 GB | 2.293 | 446 | 0.436 |
+| B1 | Batch (T=32) | 256 MB | 10.388 | 24.6 | 0.024 |
+| B2 | Batch (T=256) | 256 MB | 42.956 | 5.96 | 0.006 |
+
+Single-query throughput scales well with DB size. Batch throughput is lower because the server processes T queries simultaneously (query expansion dominates).
+
+Per-query amortized throughput for batch:
+- B1: 256 MB * 32 queries / 10.388s = 789 MB/s (per-query equivalent)
+- B2: 256 MB * 256 queries / 42.956s = 1,525 MB/s (per-query equivalent)
+
+#### Preprocessing Throughput (DB_size / encode_time)
+
+| Config | Type | DB Size | Encode Time (s) | Preprocessing Throughput (MB/s) |
+|--------|------|---------|------------------|--------------------------------|
+| S1 | Single | 256 MB | 14.79 | 17.3 |
+| S2 | Single | 1 GB | 66.90 | 15.3 |
+| B1 | Batch (T=32) | 256 MB | 42.88 | 5.97 |
+| B2 | Batch (T=256) | 256 MB | 40.63 | 6.30 |
+
+Batch preprocessing is ~3x slower than single-query because the Cuckoo hashing bucketing step subdivides the database differently.
+
+#### Server Storage Overhead Ratio
+
+| Config | Type | DB Size | Estimated RAM | Overhead Ratio |
+|--------|------|---------|---------------|----------------|
+| S1 | Single | 256 MB | ~4.4 GB | ~17x |
+| S2 | Single | 1 GB | ~17 GB | ~17x |
+| B1 | Batch | 256 MB | ~12.5 GB | ~49x |
+| B2 | Batch | 256 MB | ~14.5 GB | ~57x |
+
+Respire's NTT-domain representation has very high memory overhead. This is the primary limiting factor for larger database sizes.
 
 ### Issues & Observations
 

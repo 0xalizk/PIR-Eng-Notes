@@ -118,6 +118,53 @@ Our machine (Intel i7-11700F @ 2.5 GHz base / 4.9 GHz boost) is consistently **f
 - **100 GB (N~1.68*10^9, 64B entries):** Would require ~100 GB server RAM for the database alone, exceeding our 50 GB limit. The paper used 128 GB RAM instances.
 - **Configs >30 GB:** Skipped per memory constraint policy.
 
+### Derived Cross-Scheme Comparison Metrics
+
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+
+#### Rate (useful_bytes / response_bytes)
+
+| Config | Record Size | Response Size | Rate |
+|--------|-------------|---------------|------|
+| P1-P3 (all) | 8 B | 8 B | 1.000 |
+
+Piano achieves **perfect rate** — the server returns exactly the requested record with no ciphertext overhead. This is possible because Piano uses symmetric-key techniques (XOR-based), not FHE.
+
+#### Throughput
+
+**Note:** Piano has **sublinear** server computation — the server touches O(sqrt(N)) entries per query, not the full database. Reporting throughput as db_size / server_time would be misleading.
+
+Server computation per query (already reported):
+
+| Config | DB Size | Server Compute (ms) | Entries Touched (SetSize) |
+|--------|---------|---------------------|-----------------------------|
+| P1     | 1 GB    | 0.242               | 4,096 (sqrt(N)/4)          |
+| P2     | 2 GB    | 0.536               | 8,192                      |
+| P3     | 4 GB    | 0.665               | 8,192                      |
+
+For reference, apparent throughput (db_size / server_compute):
+- P1: 1024 MB / 0.000242s = 4,132 GB/s (misleading — not comparable to linear-scan schemes)
+
+#### Offline Communication (= full DB streaming)
+
+| Config | DB Size | Offline Comm | Amortized Offline Comm/query |
+|--------|---------|-------------|-------------------------------|
+| P1     | 1 GB    | 1,024 MB    | 4.84 KB |
+| P2     | 2 GB    | 2,048 MB    | 6.60 KB |
+| P3     | 4 GB    | 4,096 MB    | 9.01 KB |
+
+Piano requires streaming the full database during preprocessing. The amortized cost per query is low because the preprocessing window supports sqrt(N) × ln(N) queries.
+
+#### Preprocessing Throughput (DB_size / preprocessing_time)
+
+| Config | DB Size | Preprocessing Time (1T) | Preprocessing Time (8T) | Throughput 1T (MB/s) | Throughput 8T (MB/s) |
+|--------|---------|-------------------------|-------------------------|----------------------|----------------------|
+| P1     | 1 GB    | 315 s                   | 72 s                    | 3.25                 | 14.22                |
+| P2     | 2 GB    | 728 s                   | 163 s                   | 2.81                 | 12.56                |
+| P3     | 4 GB    | 1,404 s                 | 297 s                   | 2.91                 | 13.77                |
+
+Preprocessing throughput is dominated by PRF evaluation (AES-NI) for hint construction. Multi-threaded preprocessing achieves ~4.3-4.7x speedup with 8 threads.
+
 ### Issues & Observations
 
 1. **Online query count capped at 1000:** The implementation caps `totalQueryNum` to 1000 for the online phase (line 139 of `client_new/client_new.go`), regardless of the theoretical window size. This means timing averages are over 1000 queries, not the full window of sqrt(n)*ln(n) queries. The paper likely used the same cap since the code is the reference implementation.

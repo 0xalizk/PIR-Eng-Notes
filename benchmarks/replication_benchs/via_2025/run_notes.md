@@ -208,6 +208,50 @@ The online slowdown is consistent across all configs (~2.7x average), with a sli
 
 Setup/offline time slowdown is less consistent (1.4-2.7x), which is expected since setup is dominated by NTT conversion and memory allocation patterns that scale differently across architectures.
 
+### Derived Cross-Scheme Comparison Metrics
+
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+
+#### Rate (useful_bytes / response_bytes)
+
+| Config | Variant | Record Size | Response Size | Rate |
+|--------|---------|-------------|---------------|------|
+| V1-V3  | VIA     | 1 B (8 bits) | 23.0 KB | 0.0000425 |
+| V4-V6  | VIA-C   | 0.5 B (4 bits) | 2.188 KB | 0.000223 |
+
+VIA is optimized for single-bit/byte retrieval from very large databases. Rate is inherently low because the response contains full RLWE ciphertexts for a single record.
+
+#### Throughput (DB_size / server_online_time)
+
+| Config | DB Size | Server Time (s) | Throughput (GB/s) |
+|--------|---------|------------------|-------------------|
+| V1     | 1 GB    | 1.043            | 0.96              |
+| V2     | 4 GB    | 3.701            | 1.08              |
+| V3     | 32 GB   | 28.774           | 1.11              |
+| V4     | 1 GB    | 2.296            | 0.44              |
+| V5     | 4 GB    | 7.673            | 0.52              |
+| V6     | 32 GB   | 57.205           | 0.56              |
+
+#### Client Storage
+
+| Variant | Persistent Client Storage | Notes |
+|---------|--------------------------|-------|
+| VIA     | 0 MB | Stateless — no offline phase, no client-side hint |
+| VIA-C   | 14.84 MB | = offline hint download (compressed query material) |
+
+#### Preprocessing Throughput (DB_size / setup_time)
+
+| Config | DB Size | Setup Time (s) | Preprocessing Throughput (MB/s) |
+|--------|---------|-----------------|--------------------------------|
+| V1     | 1 GB    | 1.495           | 685  |
+| V2     | 4 GB    | 8.933           | 459  |
+| V3     | 32 GB   | 52.534          | 624  |
+| V4     | 1 GB    | 5.586           | 183  |
+| V5     | 4 GB    | 17.183          | 238  |
+| V6     | 32 GB   | 106.037         | 309  |
+
+Note: VIA/VIA-C setup is server-side NTT preprocessing of the database. For DBs > 4 GB (VIA) / > 2 GB (VIA-C), the implementation simulates larger databases, so these throughput values are approximations.
+
 ### Issues & Observations
 
 - **Compile-time config:** Database size parameters are compile-time constants in `core.hpp`. Each config requires a recompile.

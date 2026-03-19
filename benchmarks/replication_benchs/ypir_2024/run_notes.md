@@ -97,6 +97,28 @@ Paper reference (Table 2, p.20):
 
 **Preprocessing replication:** Local prep throughput is actually higher than the paper's reported numbers (48.95 / 56.55 / 58.55 MiB/s vs. 39 / 46 / 48 MB/s). This likely reflects implementation, toolchain, and measurement-environment differences rather than a protocol discrepancy.
 
+#### Client-Side Metrics (from JSON)
+
+| Config | DB Size | Client Query Gen (ms) | Client Decode (ms) |
+|--------|---------|-----------------------|--------------------|
+| Y1     | 1 GB    | 364                   | 0                  |
+| Y4     | 4 GB    | 1077                  | 0                  |
+| Y2     | 8 GB    | 1514                  | 0                  |
+| Y3     | 32 GB   | 3044                  | 0                  |
+
+Client query generation scales roughly linearly with DB size. Client decode is reported as 0 ms by the implementation (negligible).
+
+#### Offline Hint Sizes (from JSON)
+
+| Config | DB Size | SimplePIR Hint (MiB) | DoublePIR Hint (MiB) | Total Hint (MiB) |
+|--------|---------|-----------------------|----------------------|-------------------|
+| Y1     | 1 GB    | 112.0                 | 14.0                 | 126.0             |
+| Y4     | 4 GB    | 224.0                 | 14.0                 | 238.0             |
+| Y2     | 8 GB    | 224.0                 | 14.0                 | 238.0             |
+| Y3     | 32 GB   | 448.0                 | 14.0                 | 462.0             |
+
+DoublePIR hint is constant (14 MiB) across all DB sizes. SimplePIR hint scales with sqrt(N).
+
 #### Supplementary: 4 GB Local Run
 
 This config is not part of paper Table 2, but it is useful as an intermediate point and for the paper's Table 3 style breakdown.
@@ -112,6 +134,45 @@ Indicative breakdown fields from the 4 GB JSON:
 | Y4     | 350              | 33               | 42           | 49.39             |
 
 **Important caveat:** in the current implementation, `online.serverTimeMs` is averaged across post-warmup trials, but `firstPassTimeMs`, `secondPassTimeMs`, and `ringPackingTimeMs` are copied from the first retained measurement rather than averaged. They are useful as indicative breakdowns, not as rigorously averaged Table 3 replications.
+
+### Derived Cross-Scheme Comparison Metrics
+
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+
+#### Rate (useful_bytes / response_bytes)
+
+| Config | Record Size | Response Size | Rate |
+|--------|-------------|---------------|------|
+| Y1-Y3 (all) | 1 bit (0.125 B) | 12 KB (12,288 B) | 1.02 × 10⁻⁵ |
+
+Rate is extremely low because YPIR was benchmarked for 1-bit retrieval. The response contains full RLWE ciphertexts regardless of record size. For larger records, rate would improve proportionally.
+
+#### Client Storage (= total hint size)
+
+| Config | DB Size | SimplePIR Hint (MiB) | DoublePIR Hint (MiB) | Total (MiB) |
+|--------|---------|-----------------------|----------------------|-------------|
+| Y1     | 1 GB    | 112.0                 | 14.0                 | 126.0       |
+| Y4     | 4 GB    | 224.0                 | 14.0                 | 238.0       |
+| Y2     | 8 GB    | 224.0                 | 14.0                 | 238.0       |
+| Y3     | 32 GB   | 448.0                 | 14.0                 | 462.0       |
+
+DoublePIR hint is constant (14 MiB). SimplePIR hint scales as O(sqrt(N)) — it doubles from 1 GB → 4 GB but stays constant from 4 GB → 8 GB (same sqrt(N) bucket).
+
+#### Offline Communication
+
+| Config | DB Size | Offline Upload | Offline Download | Total Offline Comm |
+|--------|---------|---------------|------------------|--------------------|
+| Y1-Y3 (all) | — | 0 B | 0 B | 0 B |
+
+YPIR has **no offline communication** in the traditional sense — the hints are computed server-side and transmitted as part of the setup phase, which is accounted for in `offline.serverTimeMs`. The hint bytes above represent the hint *size*, not a separate download step.
+
+#### Preprocessing Throughput (already reported, reproduced in standardized units)
+
+| Config | DB Size | Prep Time (s) | SimplePIR Prep (s) | Preprocessing Throughput (MB/s) |
+|--------|---------|----------------|---------------------|--------------------------------|
+| Y1     | 1 GB    | 20.92          | 16.26               | 48.95 (total) / 62.99 (SimplePIR only) |
+| Y2     | 8 GB    | 144.87         | 136.09              | 56.55 / 60.19 |
+| Y3     | 32 GB   | 559.63         | 538.71              | 58.55 / 60.83 |
 
 ### Issues & Observations
 

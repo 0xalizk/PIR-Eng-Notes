@@ -105,6 +105,72 @@ Run date: 2026-03-03. Apple M-series, single-threaded, `s3pir_simlargeserver`, C
 
 S3PIR is **single-threaded by design** — no OpenMP, pthreads, or std::thread in the codebase. Paper benchmarks (m5.8xlarge) are also single-threaded. Multi-threaded benchmarks would require source modifications (e.g., parallelizing the offline loop over partitions). Out of scope for now.
 
+### Derived Cross-Scheme Comparison Metrics
+
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+
+#### Rate (useful_bytes / response_bytes)
+
+| Config | Entry Size | Response Size | Rate |
+|--------|-----------|---------------|------|
+| R1-R5 (all) | w bytes | 2w bytes | 0.50 |
+
+Rate is always 0.5 — the protocol returns two XOR parities (2 × entry_size). This is protocol-determined and independent of database size.
+
+#### Throughput
+
+**Note:** RMS24 has **sublinear** server computation — the server touches O(sqrt(N)) entries per query, not the full database. Reporting throughput as db_size / online_time would be misleading. Instead, the relevant metric is **server work per query** (already reported as online_time/query).
+
+For reference, the effective "apparent throughput" (db_size / online_time) would be:
+
+| Config | DB Size | Online/query (ms) | Apparent Throughput (GB/s) | Note |
+|--------|---------|-------------------|-----------------------------|------|
+| R1     | 32 MB   | 0.191             | 163.6 | Misleading — server only touches sqrt(N)=1024 entries |
+| R2     | 512 MB  | 0.792             | 631.3 | Misleading |
+| R3     | 2 GB    | 3.254             | 599.9 | Misleading |
+| R4     | 8 GB    | 22.378            | 348.9 | Misleading |
+| R5     | 64 GB   | 4.193             | 14,901 | Misleading — SimLargeServer regenerates entries on-the-fly |
+
+These values are **not comparable** to throughput of linear-scan schemes (SimplePIR, Spiral, etc.).
+
+#### Client Storage
+
+Client stores lambda regular hints and ~lambda/2 backup hints, each of entry_size bytes. Estimated from protocol parameters:
+
+| Config | N | sqrt(N) | lambda | Estimated Client Hint Storage |
+|--------|---|---------|--------|-------------------------------|
+| R1     | 2^20 | 1,024 | 80 | ~3.75 MB (1.5 × 80 × 1024 × 32B) |
+| R2     | 2^24 | 4,096 | 80 | ~15 MB (1.5 × 80 × 4096 × 32B) |
+| R3     | 2^28 | 16,384 | 80 | ~15 MB (1.5 × 80 × 16384 × 8B) |
+| R4     | 2^28 | 16,384 | 80 | ~60 MB (1.5 × 80 × 16384 × 32B) |
+| R5     | 2^28 | 16,384 | 80 | ~480 MB (1.5 × 80 × 16384 × 256B) |
+
+These are estimates based on the protocol formula. The C++ implementation uses M/2 backup hints (vs M in the Python spec), so the 1.5x multiplier accounts for regular + backup.
+
+#### Offline Communication (= full DB download)
+
+| Config | DB Size | Offline Communication |
+|--------|---------|----------------------|
+| R1     | 32 MB   | 32 MB   |
+| R2     | 512 MB  | 512 MB  |
+| R3     | 2 GB    | 2 GB    |
+| R4     | 8 GB    | 8 GB    |
+| R5     | 64 GB   | 64 GB   |
+
+RMS24 requires downloading the full database during the offline/preprocessing phase.
+
+#### Preprocessing Throughput (DB_size / offline_time)
+
+| Config | DB Size | Offline Time (s) | Preprocessing Throughput (MB/s) |
+|--------|---------|-------------------|--------------------------------|
+| R1     | 32 MB   | 4.53              | 7.06  |
+| R2     | 512 MB  | 73.71             | 6.95  |
+| R3     | 2 GB    | 1,242.06          | 1.65  |
+| R4     | 8 GB    | 1,269.06          | 6.45  |
+| R5     | 64 GB   | 1,485.90          | 44.1  |
+
+R3's low throughput is anomalous — smaller entry size (8B) creates more partitions to process with the same N=2^28. R5 uses SimLargeServer (on-the-fly entry generation), so its throughput is not directly comparable.
+
 ### Issues & Observations
 
 - **`-Ofast` deprecation:** Apple Clang warns that `-Ofast` is deprecated; recommends `-O3 -ffast-math`. Harmless — kept as-is to match upstream.

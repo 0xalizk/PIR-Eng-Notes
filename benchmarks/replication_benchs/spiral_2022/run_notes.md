@@ -146,6 +146,44 @@ Speedup ratio is consistent across configs (1.48-1.60x), confirming the differen
 | SpiralStream 2^18x30KB | 32768 | 27 | 10 | 8 | 4 | 32 | 2 | 2 | 2 |
 | SpiralStreamPack 2^18x30KB | 32768 | 26 | 11 | 6 | 3 | 56 | 56 | 4 | 1 |
 
+### Derived Cross-Scheme Comparison Metrics
+
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+
+#### Client Storage (= public parameter size)
+
+| Config | Variant | Param Size (MB) |
+|--------|---------|-----------------|
+| 2^20x256B | Spiral | 14 |
+| 2^20x256B | SpiralPack | 14 |
+| 2^18x30KB | Spiral | 18 |
+| 2^18x30KB | SpiralPack | 18 |
+| 2^18x30KB | SpiralStream | 2.6 |
+| 2^18x30KB | SpiralStreamPack | 15 |
+| 2^14x100KB | Spiral | 14 |
+| 2^14x100KB | SpiralPack | 47 |
+
+Client must download and store the public parameters before querying. For Spiral/SpiralPack, this is 14-47 MB. SpiralStream trades smaller params (2.6 MB) for a much larger query (15 MB).
+
+#### Throughput (DB_size / server_total_time)
+
+| Config | Variant | DB Size | Server Time (s) | Throughput (GB/s) |
+|--------|---------|---------|------------------|-------------------|
+| 2^20x256B | Spiral | 268 MB | 1.129 | 0.232 |
+| 2^20x256B | SpiralPack | 268 MB | 0.884 | 0.296 |
+| 2^18x30KB | Spiral | 7.9 GB | 16.11 | 0.490 |
+| 2^18x30KB | SpiralPack | 7.9 GB | 11.03 | 0.716 |
+| 2^18x30KB | SpiralStream | 7.9 GB | 5.91 | 1.337 |
+| 2^18x30KB | SpiralStreamPack | 7.9 GB | 3.60 | 2.194 |
+| 2^14x100KB | Spiral | 1.6 GB | 3.18 | 0.503 |
+| 2^14x100KB | SpiralPack | 1.6 GB | 2.97 | 0.539 |
+
+Throughput improves with larger databases (better amortization of query expansion cost) and with Stream/Pack variants.
+
+#### Preprocessing Throughput
+
+Not applicable — Spiral uses implicit database representation (no server-side DB preprocessing). The public parameter generation is a one-time client-side cost.
+
 ### Issues & Observations
 
 1. **git-lfs required:** Parameter pickle files (~38 MB each) are stored via git-lfs. Without git-lfs, the files appear as text pointers and fail to load.

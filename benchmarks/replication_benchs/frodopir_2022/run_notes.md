@@ -127,6 +127,50 @@ Our hardware (Intel i7-11700F) is roughly **2x faster** than the paper's Amazon 
 
 Scaling is consistent with paper: roughly 2x per doubling of m, as expected from the O(m) or O(n*m) complexity of each operation.
 
+### Derived Cross-Scheme Comparison Metrics
+
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+
+#### Rate (useful_bytes / response_bytes)
+
+| Config | plaintext_bits | Elem Size | Response Size | Rate |
+|--------|---------------|-----------|---------------|------|
+| F1-F3  | 10 | 1024 B | 3.203 KB (3279.9 B) | 0.312 |
+| F4-F5  | 9  | 1024 B | 3.559 KB (3644.4 B) | 0.281 |
+
+FrodoPIR achieves a relatively high rate (~0.28-0.31) due to efficient LWE-based plaintext packing.
+
+#### Throughput (DB_size / server_respond_time)
+
+| Config | DB Size | Server Respond (ms) | Throughput (GB/s) |
+|--------|---------|---------------------|-------------------|
+| F1     | 64 MB   | 20.15               | 3.10              |
+| F2     | 128 MB  | 36.01               | 3.47              |
+| F3     | 256 MB  | 90.00               | 2.78              |
+| F4     | 512 MB  | 212.15              | 2.36              |
+| F5     | 1 GB    | 355.49              | 2.81              |
+
+#### Client Storage
+
+| Config | Hint Size (KB) | Notes |
+|--------|---------------|-------|
+| F1-F3  | 5,682.36 KB (5.55 MB) | n × omega × 4 + seed (16 B); same for all m with p=10 |
+| F4-F5  | 6,312.96 KB (6.16 MB) | n × omega × 4 + seed (16 B); same for all m with p=9 |
+
+Client stores the downloaded hint matrix. This is independent of database size m — it depends only on LWE dimension n and matrix width omega.
+
+#### Preprocessing Throughput (DB_size / DB_preprocessing_time)
+
+| Config | DB Size | Preprocessing Time (s) | Preprocessing Throughput (MB/s) |
+|--------|---------|------------------------|--------------------------------|
+| F1     | 64 MB   | 47.57                  | 1.35 |
+| F2     | 128 MB  | 94.88                  | 1.35 |
+| F3     | 256 MB  | 192.29                 | 1.33 |
+| F4     | 512 MB  | 430.98                 | 1.19 |
+| F5     | 1 GB    | 799.59                 | 1.28 |
+
+FrodoPIR's preprocessing throughput is notably low (~1.3 MB/s) because it computes a matrix-vector product for each DB element. This is a known bottleneck of the scheme.
+
 ### Issues & Observations
 
 1. **Criterion benchmarks impractical for large m:** The default Criterion setup requires 10 samples per benchmark. For DB preprocessing at m=16, this means 10 x ~40s = ~400s just for that single benchmark. At m=20, it would be ~19,000s (~5.3 hours). We created a custom `bench_quick.rs` binary that runs DB preprocessing once and averages online operations over 5 trials.

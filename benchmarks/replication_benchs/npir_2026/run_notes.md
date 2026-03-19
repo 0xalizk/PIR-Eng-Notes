@@ -118,6 +118,48 @@ Observations:
 - Packing time is roughly constant (~3.5 s for phi=16), independent of DB size.
 - Query recovery time doubles with each DB size doubling (scales with log(ell) expansion levels).
 
+### Derived Cross-Scheme Comparison Metrics
+
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+
+#### Rate (useful_bytes / response_bytes)
+
+| Config | Record Size | Response Size | Rate |
+|--------|-------------|---------------|------|
+| N1-N3  | 32 KB       | 128 KB        | 0.25 |
+
+Constant across all configs — the response packing is fixed at 4x expansion.
+
+#### Client Storage (= public parameter size)
+
+| Config | DB Size | PP Size (KB) | PP Size (MB) |
+|--------|---------|-------------|-------------|
+| N1     | 1 GB    | 910         | 0.89        |
+| N2     | 2 GB    | 1,022       | 1.00        |
+| N3     | 4 GB    | 1,134       | 1.11        |
+
+Client storage is very small (~1 MB), scaling logarithmically with DB size (adds 112 KB per doubling).
+
+#### Preprocessing Throughput (DB_size / preprocessing_time)
+
+| Config | DB Size | Preprocessing Time (s) | Preprocessing Throughput (MB/s) |
+|--------|---------|------------------------|---------------------------------|
+| N1     | 1 GB    | 13.40                  | 76.4  |
+| N2     | 2 GB    | 27.06                  | 75.7  |
+| N3     | 4 GB    | 68.38                  | 59.9  |
+
+Preprocessing throughput decreases slightly at larger DB sizes due to NTT-domain memory pressure.
+
+#### Server Storage Overhead Ratio
+
+| Config | DB Size | NTT-Domain Size | Overhead Ratio |
+|--------|---------|-----------------|----------------|
+| N1     | 1 GB    | ~8 GB           | 8x             |
+| N2     | 2 GB    | ~16 GB          | 8x             |
+| N3     | 4 GB    | ~32 GB          | 8x             |
+
+Each polynomial coefficient is stored as a packed u64 (CRT representation), yielding a constant 8x overhead. This is the binding RAM constraint: N4 (8 GB) would require ~64 GB, exceeding available memory.
+
 ### Issues & Observations
 
 1. **SIGSEGV in `pack_db`:** Alignment bug (see Build section). Required patching `npirstandard.rs` and `npirbatch.rs` to use `AlignedMemory64` for the temporary NTT buffer. Without this fix, every test crashes with SIGSEGV.

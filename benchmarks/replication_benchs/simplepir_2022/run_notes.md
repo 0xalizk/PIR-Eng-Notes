@@ -187,6 +187,16 @@ Paper reports SimplePIR's maximum throughput as 10,305 MB/s (Table 1). Our avera
 
 DoublePIR's offline download and online download grow with entry size because larger entries require more Z_p elements (Ne > 1), confirming the paper's observation that "as soon as the entry size exceeds roughly 100 bits, SimplePIR incurs less communication than DoublePIR."
 
+#### Client Query Generation Time (from raw output)
+
+| Scheme | Config | Avg Query Gen (ms) | Notes |
+|--------|--------|--------------------|-------|
+| SimplePIR | 1 GB (2^33 x 1-bit) | 34.5 | Avg of runs 2-5: 33.7, 35.3, 36.4, 32.4 ms |
+| DoublePIR | 1 GB (2^33 x 1-bit) | 93.9 | Avg of runs 2-5: 88.4, 96.7, 91.2, 99.2 ms |
+| SimplePIR | Max (2^22 x 2048-bit) | 30.6 | Avg of runs 2-5: 32.9, 29.7, 29.8, 30.2 ms |
+
+Client query generation is dominated by random number generation for the LWE query vector. DoublePIR queries take ~2.7x longer because they require generating both a SimplePIR query and a DoublePIR query component.
+
 ### Summary Table
 
 | Metric | SimplePIR (Ours) | SimplePIR (Paper) | DoublePIR (Ours) | DoublePIR (Paper) |
@@ -197,6 +207,35 @@ DoublePIR's offline download and online download grow with entry size because la
 | Online total | 240 KB | 242 KB | 344 KB | 345 KB |
 | Throughput (1 GB DB) | 13,852 MB/s | 10,138 MB/s | 10,422 MB/s | 7,622 MB/s |
 | Throughput delta | +37% | baseline | +37% | baseline |
+
+### Derived Cross-Scheme Comparison Metrics
+
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+
+#### Rate (useful_bytes / response_bytes)
+
+| Scheme | Config | Record Size | Response Size | Rate |
+|--------|--------|-------------|---------------|------|
+| SimplePIR | 2^33 x 1-bit | 0.125 B | 120 KB | 1.02 × 10⁻⁶ |
+| DoublePIR | 2^33 x 1-bit | 0.125 B | 32 KB | 3.81 × 10⁻⁶ |
+| SimplePIR | 2^22 x 2048-bit | 256 B | 118 KB | 0.00212 |
+
+Rates are extremely low for 1-bit configurations. This is inherent to LWE-based PIR: the response contains full ciphertexts regardless of record size. For practical use with larger records (e.g., 256B+), rates improve significantly.
+
+#### Client Storage (= offline hint download)
+
+| Scheme | Config | Hint Size | Notes |
+|--------|--------|-----------|-------|
+| SimplePIR | 1 GB (2^33 x 1-bit) | 121 MB | Scales as O(sqrt(N) × n × log q) |
+| SimplePIR | 8 GB (2^36 x 1-bit) | 362 MB | |
+| DoublePIR | 1 GB (2^33 x 1-bit) | 16 MB | Constant: kappa × n² × log q |
+| DoublePIR | 8 GB (2^36 x 1-bit) | 16 MB | Same — independent of DB size |
+
+DoublePIR's key advantage: client storage is **constant** regardless of database size (16 MB for n=1024).
+
+#### Preprocessing Throughput
+
+Not measured — the benchmark uses `RunFakePIR` which skips the preprocessing step (uses randomly generated hints). The real preprocessing involves computing A × DB, which is O(n × N) and would dominate total runtime for large databases.
 
 ### Issues & Observations
 
