@@ -118,9 +118,40 @@ Observations:
 - Packing time is roughly constant (~3.5 s for phi=16), independent of DB size.
 - Query recovery time doubles with each DB size doubling (scales with log(ell) expansion levels).
 
+### Peak Server Memory (RSS)
+
+Measured via `/usr/bin/time -v` wrapping the NPIR test binary directly. Run date: 2026-03-20.
+
+| Config | DB Size | Peak RSS (KB) | Peak RSS (GB) | Overhead (RSS / DB) |
+|--------|---------|---------------|---------------|---------------------|
+| N1     | 1 GB    | 12,727,056    | 12.13         | 12.1x               |
+| N2     | 2 GB    | 25,309,620    | 24.14         | 12.1x               |
+| N3     | 4 GB    | 48,873,140    | 46.62         | 11.7x               |
+
+**Notes:**
+- Memory overhead is ~12x (higher than the theoretical 8x NTT-domain ratio) due to additional allocations for query processing, temporary polynomial buffers, and the non-NTT database copy during generation.
+- N3 (4 GB) uses 46.6 GB peak RSS, nearly exhausting the 50 GB system memory. This confirms that N4 (8 GB) is infeasible on this hardware (~96 GB RSS expected).
+- The consistent ~12x ratio validates the linear memory scaling model.
+
+### Client-Side Timing
+
+Measured from binary output. Averages over trials 2-6 (trial 1 excluded as warmup). Run date: 2026-03-20.
+
+| Config | DB Size | Compressed Query Gen (μs) | Data Recovery (μs) |
+|--------|---------|---------------------------|---------------------|
+| N1     | 1 GB    | 898                       | 2,315               |
+| N2     | 2 GB    | 846                       | 2,177               |
+| N3     | 4 GB    | 844                       | 2,181               |
+
+**Notes:**
+- Query gen (~0.9 ms) and data recovery (~2.2 ms) are both fast and essentially constant across DB sizes.
+- Query gen is dominated by LWE sample generation (independent of DB size).
+- Data recovery involves polynomial reconstruction from 16 blocks, explaining the ~2 ms cost.
+- Total client-side time (query gen + recovery) is ~3 ms, negligible compared to server time (4.5-24s).
+
 ### Derived Cross-Scheme Comparison Metrics
 
-The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`).
 
 #### Rate (useful_bytes / response_bytes)
 

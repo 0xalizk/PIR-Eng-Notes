@@ -208,9 +208,53 @@ The online slowdown is consistent across all configs (~2.7x average), with a sli
 
 Setup/offline time slowdown is less consistent (1.4-2.7x), which is expected since setup is dominated by NTT conversion and memory allocation patterns that scale differently across architectures.
 
+### Peak Server Memory (RSS)
+
+Measured via `/usr/bin/time -v` wrapping the VIA_PIR binary. Run date: 2026-03-20.
+
+| Config | Variant | DB Size | Peak RSS (KB) | Peak RSS (GB) |
+|--------|---------|---------|---------------|---------------|
+| V1     | VIA     | 1 GB    | 8,768,128     | 8.36          |
+| V2     | VIA     | 4 GB    | 34,056,448    | 32.48         |
+| V3     | VIA     | 32 GB   | 35,064,448    | 33.44         |
+| V4     | VIA-C   | 1 GB    | 16,992,896    | 16.20         |
+| V5     | VIA-C   | 4 GB    | 33,944,064    | 32.37         |
+| V6     | VIA-C   | 32 GB   | 34,207,872    | 32.62         |
+
+**Notes:**
+- V2, V3, V5, V6 all plateau at ~32-33 GB RSS. This is because the implementation caps physical allocation at 4 GB (VIA) / 2 GB (VIA-C) and simulates larger databases during the first-dimension step.
+- VIA-C (V4) uses ~2x more RSS than VIA (V1) for the same 1 GB DB due to the additional compressed query material and conversion key storage.
+- V1 (8.4 GB) for a 1 GB DB implies ~8.4x memory overhead from NTT-domain representation + key material.
+
+### Client-Side Timing
+
+Measured from binary output. Averages over rounds 2-5 (round 1 excluded as warmup).
+
+#### VIA (V1-V3)
+
+| Config | DB Size | Query Gen (ms) | Recover (μs) |
+|--------|---------|----------------|---------------|
+| V1     | 1 GB    | 2.90           | 26            |
+| V2     | 4 GB    | 2.87           | 21            |
+| V3     | 32 GB   | 3.11           | 31            |
+
+#### VIA-C (V4-V6)
+
+| Config | DB Size | Client Setup (ms) | Query Gen (ms) | Recover (μs) |
+|--------|---------|-------------------|----------------|---------------|
+| V4     | 1 GB    | 25.69             | 0.48           | 5             |
+| V5     | 4 GB    | 25.58             | 0.54           | 10            |
+| V6     | 32 GB   | 24.99             | 0.61           | 5             |
+
+**Notes:**
+- VIA client query gen (~3 ms) is independent of DB size — only depends on LOG_ROW and LOG_COL.
+- VIA-C client query gen (~0.5 ms) is much faster because the query is a compressed LWE sample rather than RLWE ciphertexts.
+- VIA-C has an additional client setup phase (~25 ms) for generating the compressed query keys.
+- Recover time is negligible for both variants (< 0.1 ms).
+
 ### Derived Cross-Scheme Comparison Metrics
 
-The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`).
 
 #### Rate (useful_bytes / response_bytes)
 

@@ -146,9 +146,50 @@ Speedup ratio is consistent across configs (1.48-1.60x), confirming the differen
 | SpiralStream 2^18x30KB | 32768 | 27 | 10 | 8 | 4 | 32 | 2 | 2 | 2 |
 | SpiralStreamPack 2^18x30KB | 32768 | 26 | 11 | 6 | 3 | 56 | 56 | 4 | 1 |
 
+### Peak Server Memory (RSS)
+
+Measured via `/usr/bin/time -v` wrapping the Spiral binary (through `select_params.py`). Run date: 2026-03-20. Reports the maximum RSS across all 3 trials per config.
+
+| Config | Variant | DB Size | Peak RSS (KB) | Peak RSS (GB) |
+|--------|---------|---------|---------------|---------------|
+| 2^20x256B | Spiral | 268 MB | 1,789,468 | 1.71 |
+| 2^18x30KB | Spiral | 7.9 GB | 2,763,768 | 2.64 |
+| 2^14x100KB | Spiral | 1.6 GB | 1,698,524 | 1.62 |
+| 2^20x256B | SpiralPack | 268 MB | 1,953,064 | 1.86 |
+| 2^18x30KB | SpiralPack | 7.9 GB | 2,703,424 | 2.58 |
+| 2^14x100KB | SpiralPack | 1.6 GB | 2,414,400 | 2.30 |
+| 2^18x30KB | SpiralStream | 7.9 GB | 2,464,848 | 2.35 |
+| 2^18x30KB | SpiralStreamPack | 7.9 GB | 3,451,688 | 3.29 |
+
+**Notes:**
+- Spiral uses implicit database representation — the server never allocates the full database in memory. Peak RSS is dramatically lower than the logical DB size (e.g., 2.64 GB RSS for a 7.9 GB DB).
+- SpiralStreamPack has the highest RSS (3.29 GB) because it stores both streaming query encodings and packing matrices simultaneously.
+- For comparison, linear-scan schemes (SimplePIR, NPIR, etc.) require RSS proportional to or exceeding the DB size.
+
+### Client-Side Timing
+
+Measured from binary output (averaged over 3 trials). Run date: 2026-03-20.
+
+| Config | Variant | Key Gen (ms) | Query Gen (ms) | Decoding (μs) |
+|--------|---------|-------------|----------------|---------------|
+| 2^20x256B | Spiral | 243.1 | 24.4 | 189 |
+| 2^18x30KB | Spiral | 265.5 | 18.7 | 152 |
+| 2^14x100KB | Spiral | 245.5 | 27.0 | 259 |
+| 2^20x256B | SpiralPack | 251.0 | 0.6 | 221 |
+| 2^18x30KB | SpiralPack | 331.9 | 0.6 | 199 |
+| 2^14x100KB | SpiralPack | 1,030.2 | 0.6 | 2,377 |
+| 2^18x30KB | SpiralStream | 117.8 | 530.9 | 197 |
+| 2^18x30KB | SpiralStreamPack | 385.6 | 1,227.1 | 545 |
+
+**Notes:**
+- Key gen (~240-330 ms for most configs) dominates client-side cost. This is a one-time cost per session.
+- SpiralPack 2^14x100KB has unusually long key gen (1.03s) and decoding (2.4ms) due to the large factor (13 sub-databases) and packing overhead.
+- SpiralStream/StreamPack trade very large query gen time (0.5-1.2s) for faster server computation.
+- SpiralPack base variants have near-zero query gen (~0.6 ms) because the query is a single RLWE ciphertext.
+
 ### Derived Cross-Scheme Comparison Metrics
 
-The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`). No re-run required.
+The following metrics are computed from the raw benchmark data above to enable standardized cross-scheme comparison (see `schema_v2.jsonc`).
 
 #### Client Storage (= public parameter size)
 
