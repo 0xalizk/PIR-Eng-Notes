@@ -367,8 +367,8 @@
         "encryption_scheme": "GSW + PVW batched (compressible FHE)"
       },
       "variants": [
-        "Section5",
-        "AppendixA"
+        "PureGSW",
+        "QueryExpansion"
       ],
       "configs": [
         {
@@ -381,7 +381,7 @@
       ],
       "benchmarks": [
         {
-          "variant": "Section5",
+          "variant": "PureGSW",
           "config_id": "2^29x64B",
           "data_tier": 3,
           "source_ref": "Section 5.2",
@@ -399,7 +399,7 @@
           ]
         },
         {
-          "variant": "AppendixA",
+          "variant": "QueryExpansion",
           "config_id": "2^29x64B",
           "data_tier": 3,
           "source_ref": "Appendix A.3",

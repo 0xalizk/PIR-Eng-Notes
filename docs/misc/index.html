@@ -88,6 +88,49 @@
 
 <section id="security">
   <h2><a href="#security">Security Profiles</a></h2>
+  <details class="concepts-box" style="margin-bottom:12px;">
+    <summary style="cursor:pointer;font-weight:500;font-size:17px;color:var(--text-muted);">Concepts</summary>
+    <div style="font-size:12.5px;line-height:1.6;padding:8px 0 4px;columns:2;column-gap:28px;color:var(--text-muted);">
+      <p style="margin:0 0 8px;break-inside:avoid;"><b style="color:#1f77b4">Hardness assumptions</b> &mdash; the mathematical problem whose presumed difficulty guarantees privacy:</p>
+      <ul style="margin:0 0 10px;padding-left:18px;">
+        <li><b>RLWE</b> (Ring Learning With Errors) &mdash; structured lattice problem over polynomial rings. Most common in PIR; enables efficient homomorphic encryption. Post-quantum secure.</li>
+        <li><b>LWE</b> (Learning With Errors) &mdash; unstructured lattice problem. Stronger theoretical footing than RLWE but slower. Post-quantum secure.</li>
+        <li><b>MLWE</b> (Module-LWE) &mdash; middle ground between LWE and RLWE, parameterized by module rank.</li>
+        <li><b>KD-RLWE</b> (Key-Dependent RLWE) &mdash; strengthened RLWE variant where encryptions of key-dependent messages remain secure. Stronger than standard RLWE.</li>
+        <li><b>NTRU</b> &mdash; older lattice-based assumption with a different algebraic structure. Post-quantum, but parameter estimation is less mature.</li>
+        <li><b>OWF</b> (One-Way Functions) &mdash; minimal assumption; any function easy to compute but hard to invert (e.g., AES, SHA). Used by PRF-based schemes.</li>
+        <li><b>SIS</b> (Short Integer Solution) &mdash; lattice problem used for commitments and verification proofs.</li>
+        <li><b>LWR</b> (Learning With Rounding) &mdash; deterministic variant of LWE; replaces random noise with rounding.</li>
+        <li><b>FPE</b> (Format-Preserving Encryption) &mdash; encrypts while preserving input format (e.g., NIST FF1). FF1 has a formal proof under the PRP assumption, but relies on the underlying cipher&rsquo;s empirical strength.</li>
+        <li><b>&Phi;-hiding</b> &mdash; number-theoretic assumption (small prime divides &phi;(N) for RSA modulus N). Not post-quantum.</li>
+      </ul>
+      <p style="margin:0 0 8px;break-inside:avoid;"><b style="color:#1f77b4">Correctness model</b> &mdash; whether the scheme always returns the right answer:</p>
+      <ul style="margin:0 0 10px;padding-left:18px;">
+        <li><b>Deterministic</b> &mdash; always correct.</li>
+        <li><b>Probabilistic</b> &mdash; correct with overwhelming probability (failure &le; 2<sup>&minus;40</sup> or similar). Noise-based FHE or PRF-based schemes.</li>
+        <li><b>Statistical</b> &mdash; statistical soundness guarantee (verification may reject valid answers with negligible probability).</li>
+        <li><b>Relaxed</b> &mdash; weaker model, e.g., correctness only for queries drawn from a known distribution.</li>
+      </ul>
+      <p style="margin:0 0 8px;break-inside:avoid;"><b style="color:#1f77b4">Proof status</b> &mdash; how the security claim is justified:</p>
+      <ul style="margin:0 0 10px;padding-left:18px;">
+        <li><b>Proven</b> &mdash; formal reduction to a standard hardness assumption.</li>
+        <li><b>Empirical</b> &mdash; validated experimentally (e.g., noise budget tested over thousands of runs) but no formal proof.</li>
+        <li><b>Conjectured</b> &mdash; relies on an unproven conjecture for full security.</li>
+      </ul>
+      <p style="margin:0 0 8px;break-inside:avoid;"><b style="color:#1f77b4">Threat model:</b></p>
+      <ul style="margin:0 0 10px;padding-left:18px;">
+        <li><b>Semi-honest</b> &mdash; server follows the protocol but tries to learn the query. Standard PIR model.</li>
+        <li><b>Malicious</b> &mdash; server may deviate arbitrarily (return wrong answers, tamper with proofs). Only VeriSimplePIR achieves this.</li>
+      </ul>
+      <p style="margin:0 0 8px;break-inside:avoid;"><b style="color:#1f77b4">Extra assumptions</b> (beyond the base hardness assumption):</p>
+      <ul style="margin:0 0 4px;padding-left:18px;">
+        <li><b>Circular / KDM</b> &mdash; encryption of the secret key (or functions of it) is assumed secure. Required by many RLWE schemes for automorphism keys and bootstrapping.</li>
+        <li><b>ROM</b> (Random Oracle Model) &mdash; hash functions are modeled as ideal random functions. Standard in practice.</li>
+        <li><b>CRS</b> (Common Reference String) &mdash; trusted public parameters from a setup phase.</li>
+      </ul>
+    </div>
+  </details>
+
   <div class="dim-filter-row" style="margin-bottom:8px;">
     <span class="dim-filter-label">Correctness</span>
     <div id="correctness-filters" class="dim-filter-buttons"></div>
@@ -168,7 +211,7 @@ var SECURITY_DATA = [
   { scheme: 'DoublePIR',         group: '2a', year: 2022, hardness: 'LWE',   bits: 128,  bitsNote: '', extra: [], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: '' },
   { scheme: 'FrodoPIR',          group: '2a', year: 2022, hardness: 'LWE',   bits: 128,  bitsNote: '', extra: [], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: 'Ternary LWE (reduction to standard LWE exists)' },
   { scheme: 'VeriSimplePIR',     group: '2a', year: 2024, hardness: 'LWE+SIS', bits: 128, bitsNote: '', extra: ['ROM (Fiat-Shamir)'], correctness: 'Statistical', threat: 'Malicious', status: 'Proven', caveats: 'Only scheme with malicious-server security' },
-  { scheme: 'iSimplePIR',        group: '2a', year: 2026, hardness: 'LWE',   bits: 128,  bitsNote: 'inherited', extra: [], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: '' },
+  { scheme: 'IncrementalPIR',    group: '2a', year: 2026, hardness: 'LWE',   bits: 128,  bitsNote: 'inherited', extra: [], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: '' },
 
   // Group 2b
   { scheme: 'Piano',             group: '2b', year: 2023, hardness: 'OWF',   bits: null, bitsNote: '', extra: [], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: 'Non-adaptive correctness caveat' },
@@ -188,8 +231,8 @@ var SEC_GROUP_COLORS = { '1a': '#1f77b4', '1b': '#2ca02c', '2a': '#ff7f0e', '2b'
 var SEC_GROUP_NAMES = {
   '1a': 'Stateless Client, Stateful Server',
   '1b': 'Stateless Client, Stateless Server',
-  '2a': 'Download Hint',
-  '2b': 'Interactive Hint',
+  '2a': 'Download-Hint',
+  '2b': 'Interactive-Hint',
   'X': 'Extensions'
 };
 var SEC_GROUP_SHORT = { '1a': '1a', '1b': '1b', '2a': '2a', '2b': '2b', 'X': 'X' };

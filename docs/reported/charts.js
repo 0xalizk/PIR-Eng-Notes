@@ -888,7 +888,7 @@
       },
       margin: { t: 48, r: isMobile() ? 16 : 48, b: 100, l: isMobile() ? 44 : 60 },
       legend: { orientation: 'h', x: 0, y: isMobile() ? -0.18 : -0.12, traceorder: 'grouped', groupclick: 'toggleitem', font: { size: isMobile() ? 9 : 11 } },
-      height: isMobile() ? 550 : 750
+      height: isMobile() ? 550 : 950
     });
 
     Plotly.newPlot(el, traces, layout, plotConfig());
@@ -2512,9 +2512,9 @@
 
   // ── 8. Scheme Catalog Table ───────────────────────────
   //
-  // Sortable, filterable HTML table listing all 29 schemes.
+  // Sortable, filterable HTML table listing all 31 schemes.
   //
-  // Columns: Scheme (linked to notes), Group, DB Sizes (colored pills),
+  // Columns: Scheme (with group dot), DB Sizes (colored pills),
   // Year, Open-Source Impl?, Tier, and 5 metric columns (query, response,
   // server time, throughput, client time).
   //
@@ -3334,8 +3334,14 @@
           '<br>Source: ' + b.source_ref
         );
       });
+      var labels = benches.map(function (b) {
+        var c = configs[b.config_id];
+        return c ? c.num_entries_label + '×' + c.entry_size_label : b.config_id;
+      });
       traces.push({
-        x: x, y: y, mode: 'markers', type: 'scatter', name: KW_VARIANT_LABELS[variant] || variant,
+        x: x, y: y, mode: 'markers+text', type: 'scatter', name: KW_VARIANT_LABELS[variant] || variant,
+        text: labels, textposition: 'top center', cliponaxis: false,
+        textfont: { size: 9, color: themeColors().muted },
         marker: { color: KW_VARIANT_COLORS[variant] || '#999', size: 12, line: { width: 0 } },
         hovertext: text, hoverinfo: 'text'
       });

@@ -41,7 +41,11 @@
   </p>
 
   <h3 id="kw-tradeoff"><a href="#kw-tradeoff">Communication vs Server Time</a></h3>
-  <p class="subtitle">Core trade-off: lower communication costs more computation, and vice versa. Log-log scale.</p>
+  <ul class="subtitle" style="margin:4px 0 8px 18px;font-size:13px;color:var(--text-muted);line-height:1.5;">
+    <li><b>GR vs ClientAidedGR:</b> GR has ~10× less comm but ~12× more server time.</li>
+    <li><b>SealPIR vs MulPIR (large entries):</b> MulPIR has ~5× less comm but slightly more server time.</li>
+    <li><b>SealPIR vs MulPIR (small entries):</b> MulPIR is worse on both axes — trade-off does not hold here.</li>
+  </ul>
   <div class="chart-container" id="chart-kw-comm-server"><div class="chart-loading">Loading charts...</div></div>
 
   <h3 id="kw-server-time"><a href="#kw-server-time">Server Time by Configuration</a></h3>
@@ -74,7 +78,7 @@
   <div class="chart-container" id="chart-dist-metrics"><div class="chart-loading">Loading charts...</div></div>
 
   <h3 id="dist-vs-underlying"><a href="#dist-vs-underlying">Compiler Overhead vs Underlying Schemes</a></h3>
-  <p class="subtitle">DistributionalPIR variants compared against the index-PIR schemes they wrap (SimplePIR, YPIR).</p>
+  <p class="subtitle">DistributionalPIR variants compared against the index-PIR schemes they wrap (SimplePIR, Respire, YPIR).</p>
   <div class="chart-container" id="chart-dist-comparison"><div class="chart-loading">Loading charts...</div></div>
 </section>
 
