@@ -177,7 +177,7 @@ var SECURITY_DATA = [
   { scheme: 'RMS24',             group: '2b', year: 2024, hardness: 'OWF',   bits: null, bitsNote: '', extra: [], correctness: 'Probabilistic', threat: 'Semi-honest (2-server)', status: 'Proven', caveats: 'Primary construction requires two servers' },
   { scheme: 'WangRen',           group: '2b', year: 2024, hardness: 'OWF',   bits: null, bitsNote: '', extra: [], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: 'Theory-only' },
   { scheme: 'ThorPIR',           group: '2b', year: 2024, hardness: 'RLWE+LWR', bits: 128, bitsNote: 'heuristic', extra: ['Conjectured Thorp bound'], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Conjectured', caveats: 'Best parameters require Conjecture 3.3; LWR estimation heuristic' },
-  { scheme: 'HarmonyPIR',        group: '2b', year: 2026, hardness: 'OWF / FPE', bits: null, bitsNote: '', extra: ['FF1 PRP (Harmony-FF1)'], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven / Empirical', caveats: 'Harmony-AES: proven (OWF). Harmony-FF1: empirical (NIST FF1)' },
+  { scheme: 'Harmony',           group: '2b', year: 2026, hardness: 'OWF / FPE', bits: null, bitsNote: '', extra: ['FF1 PRP (Harmony-FF1)'], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven / Empirical', caveats: 'Harmony-AES: proven (OWF). Harmony-FF1: empirical (NIST FF1)' },
 
   // Group X
   { scheme: 'KeywordPIR',        group: 'X', year: 2019, hardness: 'RLWE + \u03A6-hiding', bits: null, bitsNote: '115\u2013180 varies', extra: ['\u03A6-hiding (quantum-unsafe)'], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: 'Gentry-Ramzan paradigm uses quantum-unsafe assumption' },
