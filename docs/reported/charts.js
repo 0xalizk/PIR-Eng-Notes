@@ -2553,8 +2553,7 @@
           return '<span class="db-size-pill" style="border-color:' + DB_SIZE_COLORS[c] + ';color:' + DB_SIZE_COLORS[c] + '">' + DB_SIZE_LABELS[c] + '</span>';
         }).join(' ') || '<span style="color:var(--text-muted)">\u2014</span>';
         tr.innerHTML =
-          '<td><a href="' + link + '" target="_blank" rel="noopener noreferrer">' + s.display_name + '</a></td>' +
-          '<td style="text-align:center"><span class="group-dot" style="background:' + GROUP_COLORS[s.group] + '"></span> ' + s.group + '</td>' +
+          '<td><span class="group-dot" style="background:' + GROUP_COLORS[s.group] + '"></span><a href="' + link + '" target="_blank" rel="noopener noreferrer">' + s.display_name + '</a></td>' +
           '<td>' + dbPills + '</td>' +
           '<td style="text-align:center">' + s.year + '</td>' +
           '<td style="text-align:center">' + (s.implementation_url ? '<a href="' + s.implementation_url + '" target="_blank" rel="noopener noreferrer">Yes</a>' : '<span style="color:var(--text-muted)">' + (s.theory_only ? 'Theory-only' : 'No') + '</span>') + '</td>' +
@@ -2571,7 +2570,6 @@
     // sortable headers
     var columns = [
       { key: 'display_name', label: 'Scheme' },
-      { key: 'group', label: 'Group' },
       { key: 'db_size', label: 'DB Size' },
       { key: 'year', label: 'Year' },
       { key: 'theory_only', label: 'Open-Source<br>Impl?' },
@@ -2588,7 +2586,7 @@
       var th = document.createElement('th');
       th.innerHTML = col.label;
       th.style.cursor = 'pointer';
-      if (ci !== 0 && ci !== 2) th.style.textAlign = 'center';
+      if (ci !== 0 && ci !== 1) th.style.textAlign = 'center';
       th.addEventListener('click', function () {
         if (sortCol === col.key) {
           sortAsc = !sortAsc;
@@ -2622,6 +2620,16 @@
     var filterEl = document.getElementById('catalog-filters');
     if (filterEl) {
       filterEl.innerHTML = '';
+      // group legend
+      var legendRow = document.createElement('div');
+      legendRow.className = 'filter-row-line';
+      legendRow.style.cssText = 'font-size:12px;display:flex;gap:14px;flex-wrap:wrap;margin-bottom:4px;';
+      Object.keys(GROUP_COLORS).forEach(function (g) {
+        var span = document.createElement('span');
+        span.innerHTML = '<span class="group-dot" style="background:' + GROUP_COLORS[g] + '"></span>' + GROUP_NAMES[g];
+        legendRow.appendChild(span);
+      });
+      filterEl.appendChild(legendRow);
       var activeGroups = new Set(Object.keys(GROUP_COLORS));
       var activeTiers = new Set([1, 2, 3]);
       var activeDbSizes = new Set(DB_SIZE_TIERS);

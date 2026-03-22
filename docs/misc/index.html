@@ -9,6 +9,65 @@
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8" integrity="sha384-cCVCZkAjYNxaYKbM8lsArLznDF/SvMFr1jcZrvOpSTCa0W40ZAdLzHCEulnUa5i7" crossorigin="anonymous"></script>
+  <style>
+    /* ── Security-specific styles ──────────────────────────── */
+    .sec-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: auto; }
+    .sec-table th { position: sticky; top: 0; background: var(--bg-card); z-index: 2;
+      padding: 8px 10px; text-align: center; border-bottom: 2px solid var(--border);
+      font-weight: 500; white-space: nowrap; cursor: pointer; user-select: none; }
+    .sec-table th:hover { color: var(--link); }
+    .sec-table th .sort-arrow { font-size: 14px; margin-left: 4px; opacity: 0.4; }
+    .sec-table th.sorted .sort-arrow { opacity: 1; }
+    .sec-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; text-align: center; }
+    .sec-table tr:hover td { background: var(--bg-alt); }
+    .sec-table .scheme-name { font-weight: 500; white-space: nowrap; }
+
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px;
+      font-size: 11px; font-weight: 500; line-height: 1.4; white-space: nowrap; }
+    .badge-rlwe { background: #dbeafe; color: #1e40af; }
+    .badge-lwe { background: #fef3c7; color: #92400e; }
+    .badge-owf { background: #d1fae5; color: #065f46; }
+    .badge-ntru { background: #ede9fe; color: #5b21b6; }
+    .badge-sis { background: #fce7f3; color: #9d174d; }
+    .badge-mixed { background: #f3f4f6; color: #374151; }
+
+    .badge-proven { background: #d1fae5; color: #065f46; }
+    .badge-empirical { background: #fef3c7; color: #92400e; }
+    .badge-conjectured { background: #fee2e2; color: #991b1b; }
+
+    .badge-det { background: #e0e7ff; color: #3730a3; }
+    .badge-prob { background: #fef3c7; color: #92400e; }
+    .badge-stat { background: #fce7f3; color: #9d174d; }
+
+    .badge-malicious { background: #fee2e2; color: #991b1b; font-weight: 700; }
+    .badge-semihonest { background: #f3f4f6; color: #6b7280; }
+
+    .extra-assumptions { font-size: 12px; color: var(--text-muted); max-width: 180px; }
+
+    .sec-bits { font-weight: 500; font-variant-numeric: tabular-nums; }
+    .sec-bits.below128 { color: #dc2626; }
+    .sec-bits.at128 { color: #16a34a; }
+    .sec-bits.unspecified { color: var(--text-muted); font-style: italic; font-weight: 400; }
+
+    .group-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+
+    @media (prefers-color-scheme: dark) {
+      .badge-rlwe { background: #1e3a5f; color: #93c5fd; }
+      .badge-lwe { background: #451a03; color: #fcd34d; }
+      .badge-owf { background: #064e3b; color: #6ee7b7; }
+      .badge-ntru { background: #2e1065; color: #c4b5fd; }
+      .badge-sis { background: #500724; color: #f9a8d4; }
+      .badge-mixed { background: #1f2937; color: #d1d5db; }
+      .badge-proven { background: #064e3b; color: #6ee7b7; }
+      .badge-empirical { background: #451a03; color: #fcd34d; }
+      .badge-conjectured { background: #450a0a; color: #fca5a5; }
+      .badge-det { background: #1e1b4b; color: #a5b4fc; }
+      .badge-prob { background: #451a03; color: #fcd34d; }
+      .badge-stat { background: #500724; color: #f9a8d4; }
+      .badge-malicious { background: #450a0a; color: #fca5a5; }
+      .badge-semihonest { background: #1f2937; color: #9ca3af; }
+    }
+  </style>
 </head>
 <body>
 
@@ -25,14 +84,22 @@
 <!-- Main Content -->
 <main class="content loading">
 
-<!-- Timeline -->
-<section id="timeline">
-  <h2><a href="#timeline">Timeline</a></h2>
-  <p class="desc">
-    Throughput evolution by year.<br>
-    Bubble size inversely proportional to total communication (smaller bubble = more bandwidth-efficient). Color = construction type.
-  </p>
-  <div class="chart-container" id="chart-timeline"></div>
+<!-- ════════════════ Security ════════════════ -->
+
+<section id="security">
+  <h2><a href="#security">Security Profiles</a></h2>
+  <div class="dim-filter-row" style="margin-bottom:8px;">
+    <span class="dim-filter-label">Correctness</span>
+    <div id="correctness-filters" class="dim-filter-buttons"></div>
+  </div>
+  <div id="sec-group-legend" style="margin-bottom:12px;font-size:12px;display:flex;gap:14px;flex-wrap:wrap;"></div>
+
+  <div class="table-wrap">
+    <table class="sec-table">
+      <thead><tr id="sec-header"></tr></thead>
+      <tbody id="sec-body"></tbody>
+    </table>
+  </div>
 </section>
 
 <!-- Scheme Catalog -->
@@ -72,5 +139,194 @@
 <script src="../nav.js"></script>
 <script src="../script.js"></script>
 <script src="../reported/charts.js"></script>
+<script>
+/* ── Security data ─────────────────────────────────────── */
+var SECURITY_DATA = [
+  // Group 1a
+  { scheme: 'XPIR (2014)',       group: '1a', year: 2014, hardness: 'RLWE',  bits: 225,  bitsNote: 'old estimator', extra: ['NTRU-to-RLWE reduction'], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: 'Pre-2016 Hermite factor estimate; modern estimators likely lower' },
+  { scheme: 'XPIR (2016)',       group: '1a', year: 2016, hardness: 'RLWE',  bits: null, bitsNote: 'auto-selected', extra: [], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: '' },
+  { scheme: 'SealPIR',           group: '1a', year: 2018, hardness: 'RLWE',  bits: 115,  bitsNote: '', extra: [], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: 'Below 128-bit target (N=2048)' },
+  { scheme: 'MulPIR',            group: '1a', year: 2019, hardness: 'RLWE',  bits: 128,  bitsNote: '', extra: ['Circular (FHE only)'], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: 'Heuristic Gaussian independence; theory-only' },
+  { scheme: 'Addra/FastPIR',     group: '1a', year: 2021, hardness: 'RLWE',  bits: 128,  bitsNote: '', extra: [], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: '' },
+  { scheme: 'OnionPIR',          group: '1a', year: 2021, hardness: 'RLWE',  bits: 111,  bitsNote: '', extra: ['Circular (implicit)'], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: 'Below 128-bit; circular sec. not acknowledged in paper' },
+  { scheme: 'CwPIR',             group: '1a', year: 2022, hardness: 'RLWE',  bits: 128,  bitsNote: 'implicit', extra: [], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: '' },
+  { scheme: 'Spiral',            group: '1a', year: 2022, hardness: 'RLWE',  bits: 128,  bitsNote: '', extra: ['KDM/Circular'], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: 'Independence heuristic for parameter selection' },
+  { scheme: 'WhisPIR',           group: '1a', year: 2024, hardness: 'RLWE',  bits: 128,  bitsNote: '', extra: [], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: 'Avoids circular sec. via non-compact BGV' },
+  { scheme: 'Respire',           group: '1a', year: 2024, hardness: 'RLWE',  bits: 128,  bitsNote: '', extra: ['KDM/Circular'], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: '' },
+  { scheme: 'OnionPIRv2',        group: '1a', year: 2025, hardness: 'RLWE',  bits: 113,  bitsNote: '', extra: [], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Empirical', caveats: 'Below 128-bit; noise budget validated empirically (5000+ runs)' },
+  { scheme: 'Pirouette',         group: '1a', year: 2025, hardness: 'LWE+RLWE', bits: 128, bitsNote: '', extra: ['KDM/Circular', 'ROM'], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: 'Dual hardness assumptions (LWE + RLWE)' },
+  { scheme: 'NPIR',              group: '1a', year: 2025, hardness: 'NTRU',  bits: 128,  bitsNote: 'NIST-I', extra: ['Circular'], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: 'NTRU parameter estimation less mature than RLWE' },
+
+  // Group 1b
+  { scheme: 'HintlessPIR',       group: '1b', year: 2023, hardness: 'RLWE',  bits: 128,  bitsNote: 'implied', extra: ['Circular', 'ROM'], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: '' },
+  { scheme: 'YPIR',              group: '1b', year: 2024, hardness: 'RLWE',  bits: 128,  bitsNote: '', extra: ['KDM/Circular'], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: '' },
+  { scheme: 'InsPIRe',           group: '1b', year: 2025, hardness: 'KD-RLWE', bits: 128, bitsNote: '', extra: ['Circular', 'CRS'], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: 'KD-RLWE is stronger than standard RLWE' },
+  { scheme: 'VIA',               group: '1b', year: 2025, hardness: 'RLWE/MLWE', bits: 110, bitsNote: '', extra: ['KDM/Circular'], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: 'Below 128-bit target (110 bits classical)' },
+
+  // Group 2a
+  { scheme: 'SimplePIR',         group: '2a', year: 2022, hardness: 'LWE',   bits: 128,  bitsNote: '', extra: [], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: 'Plain LWE \u2014 cleanest assumption profile in collection' },
+  { scheme: 'DoublePIR',         group: '2a', year: 2022, hardness: 'LWE',   bits: 128,  bitsNote: '', extra: [], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: '' },
+  { scheme: 'FrodoPIR',          group: '2a', year: 2022, hardness: 'LWE',   bits: 128,  bitsNote: '', extra: [], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: 'Ternary LWE (reduction to standard LWE exists)' },
+  { scheme: 'VeriSimplePIR',     group: '2a', year: 2024, hardness: 'LWE+SIS', bits: 128, bitsNote: '', extra: ['ROM (Fiat-Shamir)'], correctness: 'Statistical', threat: 'Malicious', status: 'Proven', caveats: 'Only scheme with malicious-server security' },
+  { scheme: 'iSimplePIR',        group: '2a', year: 2026, hardness: 'LWE',   bits: 128,  bitsNote: 'inherited', extra: [], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: '' },
+
+  // Group 2b
+  { scheme: 'Piano',             group: '2b', year: 2023, hardness: 'OWF',   bits: null, bitsNote: '', extra: [], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: 'Non-adaptive correctness caveat' },
+  { scheme: 'TreePIR',           group: '2b', year: 2023, hardness: 'OWF',   bits: null, bitsNote: '', extra: [], correctness: 'Probabilistic', threat: 'Semi-honest (2-server)', status: 'Proven', caveats: 'Requires two non-colluding servers' },
+  { scheme: 'Plinko',            group: '2b', year: 2024, hardness: 'OWF',   bits: null, bitsNote: '', extra: [], correctness: 'Probabilistic', threat: 'Semi-honest', status: 'Proven', caveats: 'Theory-only' },
+  { scheme: 'RMS24',             group: '2b', year: 2024, hardness: 'OWF',   bits: null, bitsNote: '', extra: [], correctness: 'Probabilistic', threat: 'Semi-honest (2-server)', status: 'Proven', caveats: 'Primary construction requires two servers' },
+  { scheme: 'WangRen',           group: '2b', year: 2024, hardness: 'OWF',   bits: null, bitsNote: '', extra: [], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: 'Theory-only' },
+  { scheme: 'ThorPIR',           group: '2b', year: 2024, hardness: 'RLWE+LWR', bits: 128, bitsNote: 'heuristic', extra: ['Conjectured Thorp bound'], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Conjectured', caveats: 'Best parameters require Conjecture 3.3; LWR estimation heuristic' },
+  { scheme: 'HarmonyPIR',        group: '2b', year: 2026, hardness: 'OWF / FPE', bits: null, bitsNote: '', extra: ['FF1 PRP (Harmony-FF1)'], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven / Empirical', caveats: 'Harmony-AES: proven (OWF). Harmony-FF1: empirical (NIST FF1)' },
+
+  // Group X
+  { scheme: 'KeywordPIR',        group: 'X', year: 2019, hardness: 'RLWE + \u03A6-hiding', bits: null, bitsNote: '115\u2013180 varies', extra: ['\u03A6-hiding (quantum-unsafe)'], correctness: 'Deterministic', threat: 'Semi-honest', status: 'Proven', caveats: 'Gentry-Ramzan paradigm uses quantum-unsafe assumption' },
+  { scheme: 'DistributionalPIR', group: 'X', year: 2025, hardness: 'Inherited', bits: 128, bitsNote: 'with SimplePIR', extra: [], correctness: 'Relaxed', threat: 'Inherited', status: 'Proven', caveats: 'Compiler proof; weaker correctness model' }
+];
+
+var SEC_GROUP_COLORS = { '1a': '#1f77b4', '1b': '#2ca02c', '2a': '#ff7f0e', '2b': '#d62728', 'X': '#7f7f7f' };
+var SEC_GROUP_NAMES = {
+  '1a': 'Stateless Client, Stateful Server',
+  '1b': 'Stateless Client, Stateless Server',
+  '2a': 'Download Hint',
+  '2b': 'Interactive Hint',
+  'X': 'Extensions'
+};
+var SEC_GROUP_SHORT = { '1a': '1a', '1b': '1b', '2a': '2a', '2b': '2b', 'X': 'X' };
+
+/* ── Security table ─────────────────────────────────────── */
+function renderSecTable() {
+  var header = document.getElementById('sec-header');
+  var body = document.getElementById('sec-body');
+  var correctRow = document.getElementById('correctness-filters');
+  if (!header || !body) return;
+
+  var cols = [
+    { key: 'scheme', label: 'Scheme' },
+    { key: 'hardness', label: 'Hardness' },
+    { key: 'bits', label: 'Bits' },
+    { key: 'correctness', label: 'Correctness' },
+    { key: 'threat', label: 'Threat Model' },
+    { key: 'status', label: 'Proof Status' },
+    { key: 'extra', label: 'Extra Assumptions' },
+    { key: 'caveats', label: 'Caveats' }
+  ];
+
+  // Group legend
+  var legendEl = document.getElementById('sec-group-legend');
+  if (legendEl) {
+    legendEl.innerHTML = Object.keys(SEC_GROUP_COLORS).map(function(g) {
+      return '<span><span class="group-dot" style="background:' + SEC_GROUP_COLORS[g] + '"></span>' + SEC_GROUP_NAMES[g] + '</span>';
+    }).join('');
+  }
+
+  var sortCol = 'group', sortAsc = true;
+  // Inclusive filter: null = no filter active (show all), otherwise a Set of active types
+  var activeCorrectness = null;
+
+  // Correctness filters — all greyed out on load
+  var correctTypes = ['Deterministic', 'Probabilistic', 'Statistical', 'Relaxed'];
+  var correctColors = { 'Deterministic': '#6366f1', 'Probabilistic': '#d97706', 'Statistical': '#db2777', 'Relaxed': '#6b7280' };
+  correctRow.innerHTML = correctTypes.map(function(c) {
+    return '<button class="dim-filter-btn" data-correct="' + c + '">' + c + '</button>';
+  }).join('');
+  correctRow.querySelectorAll('.dim-filter-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var c = this.dataset.correct;
+      if (activeCorrectness === null) activeCorrectness = {};
+      if (activeCorrectness[c]) {
+        delete activeCorrectness[c];
+        if (Object.keys(activeCorrectness).length === 0) activeCorrectness = null;
+      } else {
+        activeCorrectness[c] = true;
+      }
+      // Update button styles
+      correctRow.querySelectorAll('.dim-filter-btn').forEach(function(p) {
+        p.classList.toggle('active', !!(activeCorrectness && activeCorrectness[p.dataset.correct]));
+      });
+      // Update label highlight
+      correctRow.parentElement.classList.toggle('has-active', activeCorrectness !== null);
+      render();
+    });
+  });
+
+  function badgeClass(h) {
+    if (h.indexOf('OWF') !== -1 || h.indexOf('FPE') !== -1) return 'badge-owf';
+    if (h.indexOf('NTRU') !== -1) return 'badge-ntru';
+    if (h.indexOf('SIS') !== -1) return 'badge-sis';
+    if (h === 'LWE' || h === 'LWE+SIS') return 'badge-lwe';
+    if (h.indexOf('LWE') !== -1 || h.indexOf('LWR') !== -1) return 'badge-mixed';
+    if (h.indexOf('Inherited') !== -1 || h.indexOf('hiding') !== -1) return 'badge-mixed';
+    return 'badge-rlwe';
+  }
+
+  function render() {
+    var data = SECURITY_DATA.filter(function(s) {
+      return activeCorrectness === null || activeCorrectness[s.correctness];
+    });
+    data.sort(function(a, b) {
+      var va = a[sortCol], vb = b[sortCol];
+      if (sortCol === 'bits') { va = va || 0; vb = vb || 0; }
+      if (sortCol === 'extra') { va = va.length; vb = vb.length; }
+      if (va < vb) return sortAsc ? -1 : 1;
+      if (va > vb) return sortAsc ? 1 : -1;
+      return 0;
+    });
+
+    header.innerHTML = cols.map(function(c) {
+      var arrow = sortCol === c.key ? (sortAsc ? ' \u25B4' : ' \u25BE') : '';
+      var cls = sortCol === c.key ? ' class="sorted"' : '';
+      return '<th data-col="' + c.key + '"' + cls + '>' + c.label + '<span class="sort-arrow">' + (arrow || ' \u25B4') + '</span></th>';
+    }).join('');
+
+    body.innerHTML = data.map(function(s) {
+      var bitsHtml;
+      if (s.bits === null) {
+        bitsHtml = '<span class="sec-bits unspecified">\u2014</span>';
+      } else {
+        var cls = s.bits >= 128 ? 'at128' : 'below128';
+        bitsHtml = '<span class="sec-bits ' + cls + '">' + s.bits + '</span>';
+        if (s.bitsNote) bitsHtml += '<br><span style="font-size:11px;color:var(--text-muted)">(' + s.bitsNote + ')</span>';
+      }
+
+      var statusBadge = 'badge-proven';
+      if (s.status.indexOf('Empirical') !== -1) statusBadge = 'badge-empirical';
+      if (s.status.indexOf('Conjectured') !== -1) statusBadge = 'badge-conjectured';
+
+      var correctBadge = 'badge-det';
+      if (s.correctness === 'Probabilistic') correctBadge = 'badge-prob';
+      if (s.correctness === 'Statistical' || s.correctness === 'Relaxed') correctBadge = 'badge-stat';
+
+      var threatBadge = s.threat === 'Malicious' ? 'badge-malicious' : 'badge-semihonest';
+
+      return '<tr>' +
+        '<td class="scheme-name"><span class="group-dot" style="background:' + SEC_GROUP_COLORS[s.group] + '"></span>' + s.scheme + '</td>' +
+        '<td><span class="badge ' + badgeClass(s.hardness) + '">' + s.hardness + '</span></td>' +
+        '<td>' + bitsHtml + '</td>' +
+        '<td><span class="badge ' + correctBadge + '">' + s.correctness + '</span></td>' +
+        '<td><span class="badge ' + threatBadge + '">' + s.threat + '</span></td>' +
+        '<td><span class="badge ' + statusBadge + '">' + s.status + '</span></td>' +
+        '<td class="extra-assumptions">' + (s.extra.length ? s.extra.join(', ') : '<span style="color:var(--text-muted)">None</span>') + '</td>' +
+        '<td style="font-size:12px;color:var(--text-muted);max-width:220px;word-wrap:break-word;white-space:normal;">' + (s.caveats || '\u2014') + '</td>' +
+        '</tr>';
+    }).join('');
+
+    header.querySelectorAll('th').forEach(function(th) {
+      th.addEventListener('click', function() {
+        var col = this.dataset.col;
+        if (sortCol === col) { sortAsc = !sortAsc; } else { sortCol = col; sortAsc = true; }
+        render();
+      });
+    });
+  }
+
+  render();
+}
+
+/* ── Init security sections ────────────────────────────── */
+(function initSecurity() {
+  renderSecTable();
+})();
+</script>
 </body>
 </html>

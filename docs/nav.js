@@ -66,8 +66,8 @@
       path: 'misc/',
       noHeader: true,
       children: [
-        { label: 'Timeline', anchor: '#timeline' },
-        { label: 'Scheme Catalog', anchor: '#catalog' },
+        { label: 'Security', anchor: '#security' },
+        { label: 'Catalog', anchor: '#catalog' },
         { label: 'References', anchor: '#references' }
       ]
     }

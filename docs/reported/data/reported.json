@@ -3709,6 +3709,191 @@
       "theory_only": true
     },
     {
+      "id": "harmonypir_2026",
+      "display_name": "HarmonyPIR",
+      "group": "2b",
+      "year": 2026,
+      "implementation_url": null,
+      "source_pdf": "Group.2b.Interactive.Hint/harmonypir_2026/harmonypir_2026.pdf",
+      "notes_path": "Group.2b.Interactive.Hint/harmonypir_2026/HarmonyPIR_2026_notes.md",
+      "hardware": {
+        "cpu": "Apple M4 Pro",
+        "platform": "MacBook Pro, 24 GB RAM",
+        "ram_gb": 24,
+        "notes": "Single-threaded. CryptoPP (AES). 900 LOC C++."
+      },
+      "asymptotic": {
+        "query_size": "O(T * log N)",
+        "response_size": "O(T * w)",
+        "server_computation": "O(T)",
+        "client_computation": "O(T)",
+        "preprocessing": "O(n * w)"
+      },
+      "group_specific": {
+        "preprocessing_model": "client-dependent",
+        "assumption": "Harmony-AES: OWF (AES PRF). Harmony-FF1: empirical FPE security (FF1, NIST-standardized)",
+        "space_time_tradeoff": "ST = O(nw) (tight, matches Yeo lower bound)",
+        "correctness": "deterministic",
+        "preprocessing_comm_model": "streaming, single-pass"
+      },
+      "variants": [
+        "Harmony-FF1",
+        "Harmony-AES"
+      ],
+      "configs": [
+        {
+          "config_id": "2^19x32B",
+          "num_entries": 524288,
+          "num_entries_label": "2^19",
+          "entry_size_bytes": 32,
+          "entry_size_label": "32 B"
+        },
+        {
+          "config_id": "2^23x32B",
+          "num_entries": 8388608,
+          "num_entries_label": "2^23",
+          "entry_size_bytes": 32,
+          "entry_size_label": "32 B"
+        },
+        {
+          "config_id": "2^27x32B",
+          "num_entries": 134217728,
+          "num_entries_label": "2^27",
+          "entry_size_bytes": 32,
+          "entry_size_label": "32 B"
+        }
+      ],
+      "benchmarks": [
+        {
+          "variant": "Harmony-FF1",
+          "config_id": "2^19x32B",
+          "data_tier": 1,
+          "source_ref": "Table 2, p.11",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 0.98,
+            "response_size_kb": 12.52,
+            "client_time_ms": 0.52,
+            "offline_comm_mb": 16,
+            "client_storage_mb": 0.06,
+            "client_preprocessing_time_ms": 260,
+            "amortized_offline_time_ms": 0.25,
+            "amortized_offline_comm_kb": 16
+          },
+          "footnotes": [
+            "Online comm 13.5 KB total (Table 2). Query/response split derived: request = T*ceil(log(2N)) bits, response = T*w bits. Matched to WR PIR client storage (0.06 MB)."
+          ]
+        },
+        {
+          "variant": "Harmony-AES",
+          "config_id": "2^19x32B",
+          "data_tier": 1,
+          "source_ref": "Table 2, p.11",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 0.98,
+            "response_size_kb": 12.52,
+            "client_time_ms": 8.9,
+            "offline_comm_mb": 16,
+            "client_storage_mb": 0.06,
+            "client_preprocessing_time_ms": 3900,
+            "amortized_offline_time_ms": 3.8,
+            "amortized_offline_comm_kb": 16
+          },
+          "footnotes": [
+            "Online comm 13.5 KB total (Table 2). Query/response split derived. Provably secure under AES/PRF assumption."
+          ]
+        },
+        {
+          "variant": "Harmony-FF1",
+          "config_id": "2^23x32B",
+          "data_tier": 1,
+          "source_ref": "Table 2, p.11",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 4.63,
+            "response_size_kb": 49.37,
+            "client_time_ms": 2.3,
+            "offline_comm_mb": 256,
+            "client_storage_mb": 0.27,
+            "client_preprocessing_time_ms": 3900,
+            "amortized_offline_time_ms": 1.0,
+            "amortized_offline_comm_kb": 64
+          },
+          "footnotes": [
+            "Online comm 54 KB total (Table 2). Query/response split derived. Matched to WR PIR client storage (0.27 MB)."
+          ]
+        },
+        {
+          "variant": "Harmony-AES",
+          "config_id": "2^23x32B",
+          "data_tier": 1,
+          "source_ref": "Table 2, p.11",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 4.63,
+            "response_size_kb": 49.37,
+            "client_time_ms": 39.8,
+            "offline_comm_mb": 256,
+            "client_storage_mb": 0.27,
+            "client_preprocessing_time_ms": 76000,
+            "amortized_offline_time_ms": 18.6,
+            "amortized_offline_comm_kb": 64
+          },
+          "footnotes": [
+            "Online comm 54 KB total (Table 2). Query/response split derived. Provably secure under AES/PRF assumption."
+          ]
+        },
+        {
+          "variant": "Harmony-FF1",
+          "config_id": "2^27x32B",
+          "data_tier": 1,
+          "source_ref": "Table 2, p.11",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 21.3,
+            "response_size_kb": 194.7,
+            "client_time_ms": 9.36,
+            "offline_comm_mb": 4096,
+            "client_storage_mb": 1.06,
+            "client_preprocessing_time_ms": 63700,
+            "amortized_offline_time_ms": 3.84,
+            "amortized_offline_comm_kb": 256
+          },
+          "footnotes": [
+            "Online comm 216 KB total (Table 2). Query/response split derived. Matched to WR PIR client storage (1.06 MB)."
+          ]
+        },
+        {
+          "variant": "Harmony-AES",
+          "config_id": "2^27x32B",
+          "data_tier": 1,
+          "source_ref": "Table 2, p.11",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 21.3,
+            "response_size_kb": 194.7,
+            "client_time_ms": 190.9,
+            "offline_comm_mb": 4096,
+            "client_storage_mb": 1.06,
+            "client_preprocessing_time_ms": 1421000,
+            "amortized_offline_time_ms": 86.7,
+            "amortized_offline_comm_kb": 256
+          },
+          "footnotes": [
+            "Online comm 216 KB total (Table 2). Query/response split derived. Provably secure under AES/PRF assumption."
+          ]
+        }
+      ],
+      "theory_only": false
+    },
+    {
       "id": "keywordpir_2019",
       "display_name": "KeywordPIR",
       "group": "X",
