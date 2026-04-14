@@ -1,80 +1,100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Benching PIR (WIP)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script>
-    // Backward-compat redirect: old hash URLs → subpages
-    (function () {
-      var defined = {
-        'overview':             'reported/',
-        'communication':        'reported/communication/',
-        'server-perf':          'reported/server/',
-        'client-cost':          'reported/client/',
-        'offline-storage':      'reported/offline/',
-        'pareto':               'reported/pareto/',
-        'pareto-comm-server':   'reported/pareto/#pareto-comm-server',
-        'pareto-comm-client':   'reported/pareto/#pareto-comm-client',
-        'pareto-comm-storage':  'reported/pareto/#pareto-comm-storage',
-        'pareto-server-client': 'reported/pareto/#pareto-server-client',
-        'pareto-3d-comm':       'reported/pareto/#pareto-3d-comm',
-        'pareto-3d-server':     'reported/pareto/#pareto-3d-server',
-        'catalog':              'misc/#catalog',
-        'references':           'misc/#references'
-      };
-      var h = location.hash.replace('#', '');
-      if (h && defined[h]) {
-        location.replace(defined[h]);
-      }
-    })();
-  </script>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Benching PIR (WIP)</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="style.css" />
+        <script>
+            // Backward-compat redirect: old hash URLs → subpages
+            (function () {
+                var defined = {
+                    overview: "reported/",
+                    communication: "reported/communication/",
+                    "server-perf": "reported/server/",
+                    "client-cost": "reported/client/",
+                    "offline-storage": "reported/offline/",
+                    pareto: "reported/pareto/",
+                    "pareto-comm-server": "reported/pareto/#pareto-comm-server",
+                    "pareto-comm-client": "reported/pareto/#pareto-comm-client",
+                    "pareto-comm-storage":
+                        "reported/pareto/#pareto-comm-storage",
+                    "pareto-server-client":
+                        "reported/pareto/#pareto-server-client",
+                    "pareto-3d-comm": "reported/pareto/#pareto-3d-comm",
+                    "pareto-3d-server": "reported/pareto/#pareto-3d-server",
+                    catalog: "misc/#catalog",
+                    references: "misc/#references",
+                };
+                var h = location.hash.replace("#", "");
+                if (h && defined[h]) {
+                    location.replace(defined[h]);
+                }
+            })();
+        </script>
+    </head>
+    <body>
+        <!-- Hamburger (mobile) -->
+        <button class="hamburger" aria-label="Menu">&#9776;</button>
+        <div class="sidebar-overlay"></div>
 
-<!-- Hamburger (mobile) -->
-<button class="hamburger" aria-label="Menu">&#9776;</button>
-<div class="sidebar-overlay"></div>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="./" class="sidebar-title">Benching PIR (WIP)</a>
+            <nav id="sidebar-nav"></nav>
+        </aside>
 
-<!-- Sidebar -->
-<aside class="sidebar">
-  <a href="./" class="sidebar-title">Benching PIR (WIP)</a>
-  <nav id="sidebar-nav"></nav>
-</aside>
+        <!-- Main Content -->
+        <main class="content">
+            <section>
+                <h2>Benching PIR (WIP)</h2>
+                <p class="desc">
+                    Performance data for single-server Private Information
+                    Retrieval schemes.
+                </p>
 
-<!-- Main Content -->
-<main class="content">
-  <section>
-    <h2>Benching PIR (WIP)</h2>
-    <p class="desc">
-      Performance data for single-server Private Information Retrieval schemes.
-    </p>
+                <div class="section-cards">
+                    <a href="reported/" class="section-card">
+                        <h3>Reported</h3>
+                        <p>
+                            Paper-reported benchmarks across 31 single-server
+                            PIR schemes, organized by communication,
+                            server/client performance, and Pareto frontiers.
+                        </p>
+                        <span class="card-status">31 schemes</span>
+                    </a>
+                    <a href="replicated/" class="section-card">
+                        <h3>Replicated</h3>
+                        <p>
+                            Re-running paper benchmarks on controlled hardware
+                            to verify reported numbers.
+                        </p>
+                        <span class="card-status coming-soon-label"
+                            >Coming soon..</span
+                        >
+                    </a>
+                    <a href="standardized/" class="section-card">
+                        <h3>Standardized</h3>
+                        <p>
+                            Head-to-head GPU-focused comparisons across 1 GB, 8
+                            GB, and 32 GB databases with 32 B, 64 B, and 256 B
+                            entries.
+                        </p>
+                        <span class="card-status coming-soon-label"
+                            >Coming soon..</span
+                        >
+                    </a>
+                </div>
+            </section>
+        </main>
 
-    <div class="section-cards">
-      <a href="reported/" class="section-card">
-        <h3>Reported</h3>
-        <p>Paper-reported benchmarks across 31 single-server PIR schemes, organized by communication, server/client performance, and Pareto frontiers.</p>
-        <span class="card-status">31 schemes</span>
-      </a>
-      <a href="replicated/" class="section-card">
-        <h3>Replicated</h3>
-        <p>Re-running paper benchmarks on controlled hardware to verify reported numbers.</p>
-        <span class="card-status coming-soon-label">Coming soon..</span>
-      </a>
-      <a href="standardized/" class="section-card">
-        <h3>Standardized</h3>
-        <p>Head-to-head comparisons across 1 GB, 8 GB, and 32 GB databases with 32 B, 64 B, and 256 B entries.</p>
-        <span class="card-status coming-soon-label">Coming soon..</span>
-      </a>
-    </div>
-  </section>
-</main>
-
-<script src="nav.js"></script>
-<script src="script.js"></script>
-</body>
+        <script src="nav.js"></script>
+        <script src="script.js"></script>
+    </body>
 </html>

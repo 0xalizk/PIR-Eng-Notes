@@ -1,38 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Benching PIR (WIP) — Standardized</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../style.css">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Benching PIR (WIP) — Standardized</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="../style.css" />
+    </head>
+    <body>
+        <!-- Hamburger (mobile) -->
+        <button class="hamburger" aria-label="Menu">&#9776;</button>
+        <div class="sidebar-overlay"></div>
 
-<!-- Hamburger (mobile) -->
-<button class="hamburger" aria-label="Menu">&#9776;</button>
-<div class="sidebar-overlay"></div>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="../" class="sidebar-title">Benching PIR (WIP)</a>
+            <nav id="sidebar-nav"></nav>
+        </aside>
 
-<!-- Sidebar -->
-<aside class="sidebar">
-  <a href="../" class="sidebar-title">Benching PIR (WIP)</a>
-  <nav id="sidebar-nav"></nav>
-</aside>
+        <!-- Main Content -->
+        <main class="content">
+            <section>
+                <h2>Standardized Benchmarks</h2>
+                <p class="desc">
+                    Head-to-head GPU-focused comparisons across 1 GB, 8 GB, and
+                    32 GB databases with 32 B, 64 B, and 256 B entries.
+                </p>
+                <div class="coming-soon-msg">Coming soon..</div>
+            </section>
+        </main>
 
-<!-- Main Content -->
-<main class="content">
-  <section>
-    <h2>Standardized Benchmarks</h2>
-    <p class="desc">
-      Head-to-head comparisons across 1 GB, 8 GB, and 32 GB databases with 32 B, 64 B, and 256 B entries.
-    </p>
-    <div class="coming-soon-msg">Coming soon..</div>
-  </section>
-</main>
-
-<script src="../nav.js"></script>
-<script src="../script.js"></script>
-</body>
+        <script src="../nav.js"></script>
+        <script src="../script.js"></script>
+    </body>
 </html>
