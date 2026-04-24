@@ -26,8 +26,9 @@
 <sub><nobr>17. <a href="#comparison-with-prior-work">Comparison with Prior Work</a></nobr></sub><br>
 <sub><nobr>18. <a href="#portable-optimizations"><b>Portable Optimizations</b></a></nobr></sub><br>
 <sub><nobr>19. <a href="#implementation-notes"><b>Implementation Notes</b></a></nobr></sub><br>
-<sub><nobr>20. <a href="#open-problems">Open Problems</a></nobr></sub><br>
-<sub><nobr>21. <a href="#uncertainties">Uncertainties</a></nobr></sub>
+<sub><nobr>20. <a href="#gpu-strategy"><b>GPU Implementation Strategy</b></a></nobr></sub><br>
+<sub><nobr>21. <a href="#open-problems">Open Problems</a></nobr></sub><br>
+<sub><nobr>22. <a href="#uncertainties">Uncertainties</a></nobr></sub>
 
 </td></tr></table>
 
@@ -475,6 +476,85 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 - **Open source:** https://github.com/google/private-membership/tree/main/research/InsPIRe
 - **Parallelism:** Single-threaded for all benchmarks.
 - **SIMD / vectorization:** Not explicitly discussed; inherits from spiral-rs baseline.
+
+---
+
+<a id="gpu-strategy"></a>
+
+### GPU Implementation Strategy <a href="#toc">⤴</a>
+
+This section analyzes InsPIRe's suitability for GPU acceleration, the optimal GPU scheduling strategy, and the engineering toggles that most affect GPU throughput. The paper itself benchmarks only single-threaded CPU.&#8201;[^36] All GPU estimates below are derived from the paper's per-step asymptotic analysis (Theorem 11), the per-step runtime breakdown in Figure 3, and standard modern-GPU performance envelopes (H100 ≈ 3 TB/s HBM3, A100 ≈ 2 TB/s HBM2e, RTX 4090 ≈ 1 TB/s GDDR6X).
+
+[^36]: Section 7 (p.19): "We perform all experimental evaluations on an Intel Xeon CPU @ 2.6 GHz, where we run all experiments in single-threaded mode for fair comparison with related work."
+
+#### Per-kernel GPU-friendliness
+
+The online path has five distinct kernel classes (labelled per Theorem 5's five-part decomposition and the `Respond` algorithms, Algorithms 5 and 9):
+
+| Kernel | When | Asymptotic cost | Data-parallel pattern | GPU-friendliness | Notes |
+|--------|------|-----------------|----------------------|------------------|-------|
+| **First-dim matrix multiply** `[H, b'] ← D'·[A, b]` (Algo 9 line 7) | Online, every query | O(Nd) | Dense GEMM/GEMV, `Z_p · Z_q → Z_q` | **Very high** | Memory-bandwidth-bound, identical pattern to SimplePIR/YPIR which are already known to be memory-bound on CPU (~10 GB/s). GPU HBM gives ~300× bandwidth → this kernel's wall-clock drops by 1–2 orders of magnitude.&#8201;[^37] |
+| **InspiRING offline (Stages 1+2)** — `TRANSFORM` on fixed A plus X^k aggregation (Algo 1 highlighted lines) | Per-query re-derivation **or** once at CRS setup | O(d³) per invocation × t invocations | d independent Galois automorphisms (coefficient permutations) + monomial multiplications in NTT domain | **Very high** | Depends only on CRS components A, w_g, w_h. Compute-bound, embarrassingly parallel across d. Galois automorphism = coefficient relabeling + optional sign flip, trivial on GPU. |
+| **InspiRING online `COLLAPSE`** — d-2 sequential `CollapseOne` steps (Algo 1 `CollapseHalf` loop) | Online, t batches per query | O(t·ℓ_ks·d²) | Sequential chain inside one packing; t packings independent across batches | **Medium-high** | Each `CollapseOne` = one `KS.Switch` (gadget-decompose d ring coeffs → multiply by K_g ∈ R_q^{ℓ×2}, all in NTT domain) which is O(ℓ_ks·d). Inner work is fully parallel but the d-2 steps chain. For d=2048, ℓ_ks=3: ~2046 sequential steps × ~12K ring ops each. **Fuse into a single CUDA Graph; batch the t=t-many packings in parallel**. |
+| **`EvalPoly` Horner loop** (Algo 9 subroutine) | Online per query | O(t·ℓ_gsw·d·lg(d)) | Sequential t−1 iterations; each iter = iNTT + gadget-decompose + NTT + 1×2ℓ_gsw · 2ℓ_gsw×2 matrix product + 2 RLWE additions&#8201;[^38] | **Medium** | Sequential in k (Horner dependency on `ct`). Per-iter: one RLWE ciphertext (2 polys × d coeffs). NTT of a single 2048-coefficient polynomial is ~10 μs on a modern GPU, so each Horner step ≈ 50–100 μs incl. launches. t−1 ≈ 31 steps → ~2–3 ms critical path. Useful but not order-of-magnitude faster than good CPU. |
+| **`EncodeDB` / Cooley-Tukey interpolation** (Algo 7) | Offline, once per DB change | O(N log t) | N/t independent size-t IFFTs over R_p | **Very high** | Trivially parallel across columns. Ideal batched-NTT workload. Runs at GPU peak throughput. |
+
+[^37]: Section 7.3 Table 3 (p.21): For 1 GB / 64 B entries, InsPIRe online server time is 280 ms at 3620 MB/s throughput (memory-bandwidth limited like SimplePIR). Figure 3 attributes the majority of this to "Mat Mult" for the interpolation-degree regime that minimizes communication.
+
+[^38]: Theorem 11 proof (p.32): "Each iteration of the loop in the homomorphic polynomial evaluation can be broken down as follows: 1) Inverse NTT ct back to coefficient form; 2) Gadget decompose ct; 3) NTT gadget decomposed ct; 4) Matrix-matrix product AB with A ∈ R_q^{1×2ℓ_gsw} and B ∈ R_q^{2ℓ_gsw×2}; 5) Add two RLWE ciphertexts."
+
+#### Offline/online scheduling with GPU in mind
+
+The paper's pseudocode convention (§2.2) already marks offline vs. online operations via highlighting, which maps naturally to a GPU execution plan:
+
+1. **Per-DB-change (runs once):** `EncodeDB` (IFFT across N/t columns) — GPU batched FFT, persistent residency of D' in HBM.
+2. **Per-CRS (runs once globally):** InspiRING Stages 1+2 on fixed A, w_g, w_h — outputs live in HBM.
+3. **Per-secret-key (runs once per query since s is fresh):** RGSW encryption of ω^j, KS material generation for y_g, y_h — client-side, no GPU needed.
+4. **Per-query online (GPU critical path):** first-dim GEMM → t·InspiRING.COLLAPSE (batched) → t-step Horner EvalPoly → modulus switch.
+
+#### Concrete GPU speedup estimate (1 GB DB, 64 B entries)
+
+Derived from Figure 3's per-step breakdown of the 280 ms CPU online time:
+
+| Step | CPU time (derived from Fig 3) | GPU ceiling | Rationale |
+|------|-------------------------------|-------------|-----------|
+| First-dim matrix multiply | ~150–170 ms | **1–3 ms** | 1 GB HBM read at 2 TB/s = 0.5 ms; 2–6× overhead for Z_q arithmetic and writes |
+| InspiRING packing (t batches, COLLAPSE + offline re-materialize) | ~60–80 ms | **3–8 ms** | t independent packings batched; per-packing d-2 sequential collapse steps of ~1 μs fused via CUDA Graphs |
+| Polynomial evaluation (Horner t-1 iters) | ~40–60 ms | **2–4 ms** | Sequential chain; per-iter ≈ 50–100 μs on GPU; irreducible critical path |
+| Modulus switch + mod-p rounding | small | negligible | Elementwise |
+| **Total online (overlapped)** | **~280 ms** | **~8–15 ms** | Expect **~20–30× speedup** with competent implementation; dominant residual is Horner sequentiality |
+
+For 32 GB databases (Table 4, 32 KB entries), the CPU online time is 3.5–4.3 s, of which the first-dim MM dominates. GPU H100 (80 GB HBM) is needed to hold D'; expected online time **50–150 ms**.
+
+#### Engineering toggles, ranked by GPU impact
+
+Tuning parameters to squeeze GPU throughput, highest leverage first:
+
+1. **Persistent GPU residency of D' and fixed CRS components.** D' is td × N/t elements of Z_p. For 1 GB DB with p=16-bit: D' ≈ 1 GB. For 32 GB DB: D' ≈ 32 GB → requires H100 80 GB / A100 80 GB.
+2. **Multi-query batching.** Queries share the same D' and the same offline InspiRING outputs. Batching 16–64 concurrent queries amortizes kernel launch overhead and saturates HBM bandwidth on the first-dim GEMM (the kernel becomes a GEMM instead of a GEMV — tensor-core-friendly if p fits in INT8/INT16).
+3. **Interpolation degree t: pick smaller on GPU than on CPU.** CPU-optimal t ≈ √N (paper's Section 7.2) balances GEMM cost against Horner cost. On GPU, first-dim MM accelerates ~100× while Horner accelerates only ~10–20× (bounded by t−1 sequential iterations with low per-step work). The balance shifts: **GPU-optimal t is 2–8× smaller than CPU-optimal t**, trading a larger indicator vector (which GPU handles cheaply) for a shorter Horner chain. Concretely, for 1 GB at 64 B, CPU picks t such that N/t ≈ 8192; GPU should try N/t ≈ 16384–32768.&#8201;[^39]
+4. **RNS / CRT decomposition of q.** Concrete log₂ q = 56 bits exceeds native GPU INT32. Standard CUDA NTT libraries (NVIDIA cuHE, HEonGPU) prefer 32-bit primes. Decompose q = q_1·q_2 with 28-bit factors: doubles NTT throughput via 32-bit pipelines, at the cost of 2× memory for ciphertexts. Net win on GPU because NTT is arithmetic-bound and HBM read is cheap.
+5. **Approximate gadget decomposition (Appendix G.1).** Paper estimates ~25% compute reduction, ~33% key-material reduction. On GPU the 33% bandwidth reduction is proportionally more valuable than the 25% compute reduction (GPU is bandwidth-rich but not so bandwidth-rich that 33% is free), especially for the Horner loop where each iteration touches the ℓ_gsw gadget components.&#8201;[^40]
+6. **Fuse `CollapseOne` chain into one CUDA Graph.** d-2 ≈ 2046 tiny sequential kernels per InspiRING.Pack × t packings = up to ~64K launches. CUDA Graphs or persistent kernels collapse launch overhead to a single capture. Essential.
+7. **Fuse iNTT + gadget-decompose + NTT in EvalPoly.** Steps 1–3 of each Horner iteration can be fused into one kernel that does coefficient-domain gadget decomposition then NTT-forward, avoiding a HBM round-trip. ~2× speedup on this critical path.
+8. **NTT-domain database storage.** Not applicable pre-packing: D' stores Z_p elements for GEMM. But after the first-dim MM, the resulting td LWE ciphertexts enter Stage 1 `TRANSFORM`, which embeds into R_q^d. Keeping the post-GEMM output in NTT domain through `COLLAPSE` avoids d·t NTT forwards. (This is standard practice in Spiral/YPIR-style implementations and should transfer.)
+9. **Smaller ℓ_ks / larger z_ks on GPU.** Paper uses ℓ_ks = 3, z_ks = 2^19. The product ℓ·z determines noise and compute. On GPU where compute is cheap, trying ℓ_ks = 2 with larger z_ks (if noise budget allows) cuts COLLAPSE cost by ~33%. Check correctness bound (Theorem 10, p.32) with revised parameters.
+10. **Pin down p to a packable power-of-two slot.** Paper uses p = 65535 = 2^16−1. Using p = 2^16 (if correctness still holds) enables INT16 tensor-core use on the first-dim MM. Even dropping to p = 2^8 for small-entry PIR would let INT8 tensor cores handle the MM at multi-TB/s effective throughput.
+11. **Fresh-secret-key regeneration cost.** Paper requires fresh s per query (multiplicative security loss argument, Appendix F.1). RGSW(ω^j) encryption and KS material generation happen client-side per query — keep on CPU unless the deployment runs client on GPU.
+
+[^39]: Section 7.2 (p.20) and Figure 3 (p.20): "the choice of the interpolation degree results in a tradeoff between communication and computation" with CPU-optimal t giving ~280 ms; different t values yield 410–640 ms but reduce communication.
+
+[^40]: Appendix G.1 (p.34): "We expect this technique to reduce the size of the key-switching matrices and the RGSW encrypted evaluation points by around 33% while reducing the total computation up to approximately 25%."
+
+#### What would NOT benefit from GPU
+
+- **Client-side query generation** (Algorithm 8): tiny work (~few ms), single ciphertext path, dominated by RGSW encryption. CPU is fine.
+- **Client-side Extract/Decrypt** (Algorithm 10): single RLWE decryption. CPU.
+- **`COLLAPSE` depth reduction:** the d-2 sequential dependency is inherent to the algorithm's invariant (Section 3.2, "iterative key-switching procedure is designed to maintain an important invariant"). No algorithmic restructuring lets GPU parallelize across the depth dimension.
+
+#### Summary
+
+InsPIRe is **well-suited to GPU acceleration**, with the biggest win on the first-dim matrix multiply (memory-bandwidth bound, classic GEMM) and a secondary win on `EncodeDB` / offline InspiRING preprocessing. The `COLLAPSE` chain and `EvalPoly` Horner loop are sequential but have parallel internal work; CUDA Graphs and kernel fusion are required to avoid launch overhead dominating. Expected end-to-end online speedup vs. the paper's single-core CPU baseline: **~20–30×** for 1 GB DBs, **~25–40×** for 32 GB DBs on H100-class hardware. The highest-leverage toggles are (a) persistent D' residency + multi-query batching, (b) **shift t downward** relative to the paper's CPU-optimal value, and (c) RNS/CRT decomposition of the 56-bit q to fit 32-bit NTT pipelines.
 
 ---
 
