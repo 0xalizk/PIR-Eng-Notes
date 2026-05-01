@@ -452,11 +452,11 @@ VIA-B's correctness analysis (Appendix C.2, which subsumes VIA and VIA-C) tracks
 - **Polynomial arithmetic:** NTT-based. CRT decomposition used for multi-prime moduli (q_1 = q_{1,1} * q_{1,2}).
 - **SIMD / vectorization:** AVX-512DQ and AVX-512IFMA52 instruction sets enabled for all schemes.
 - **Parallelism:** Single-threaded for all benchmarks.
-- **Open source:** https://anonymous.4open.science/r/VIA-8888/ (anonymized at time of writing).&#8201;[^39]
+- **Reference implementation:** [github.com/turanzv/via-spec](https://github.com/turanzv/via-spec) — pure-Python reference covering base **VIA** (`pir/via/`) and **VIA-C** (`pir/via_c/`). The **batched VIA-B variant is not implemented.**&#8201;[^39]
 
 [^38]: Section 5.2 (p.17): "Our implementation of VIA and VIA-C contains roughly 4,000 lines of C++."
 
-[^39]: Section 1.2 (p.4): Code anonymously open-sourced.
+[^39]: The paper's anonymized C++ implementation (https://anonymous.4open.science/r/VIA-8888/, Section 1.2 p.4) is superseded for our purposes by the public Python reference at github.com/turanzv/via-spec, which implements VIA and VIA-C but does not implement VIA-B (batched variant; would require homomorphic MLWE-to-RLWE repacking per §4.7 of the paper).
 
 <a id="deployment-considerations"></a>
 

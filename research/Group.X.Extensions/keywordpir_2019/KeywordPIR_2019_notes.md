@@ -329,6 +329,8 @@ Server selects hash function H mapping keys to m bins. Each database element (i,
 
 Server builds a cuckoo hash table with kappa hash functions, guaranteeing each element is in exactly one of kappa possible locations. Table size is proportional to |D| with constant multiplicative overhead. Client makes kappa PIR queries (one per hash function). This construction ensures each bucket contains at most one element, making it ideal for Gentry-Ramzan (small plaintext) and enabling CRT batching of the kappa queries into a single Gentry-Ramzan query.&#8201;[^40]
 
+> **See also:** [Section 7.1 — Keyword PIR Adapter](../../../post-supplement/section.7.1.keyword-pir-adapter.md) — forward-looking design proposal for a backend-agnostic, zero-cost keyword PIR wrapper composing this construction over heterogeneous index-PIR schemes (VIA, OnionPIRv2, InsPIRe).
+
 <a id="comparison-with-prior-work"></a>
 
 ### Comparison with Prior Work <a href="#toc">⤴</a>
