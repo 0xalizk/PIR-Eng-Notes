@@ -138,7 +138,7 @@ The paper benchmarks two multi-server PIR engines as suitable plug-ins (Appendix
 | Boyle-Gilboa-Ishai 2-server cPIR (CCS 2016) | `k = 2` | DPF-based; small queries | "highly efficient for million-sized databases"&#8201;[^27] |
 | Hafiz-Henry `k`-server cPIR (PoPETs 2019) | `k = 2^K` | DPF-tree-based; `(k/(k−1))×` overhead | most efficient `k`-server cPIR for the paper's range&#8201;[^28] |
 
-For both, query-side sampling of DPF keys is "around 400 µs for 2^{20} rows" and key-expansion on the server side is `≈ 0.5 ms`; reconstruction is `≈ 130 ms` for a `1 GiB` entry. Compared in Appendix B against SealPIR (`O(√N)` comm, `~100×` response overhead), OnionPIR (`O(log N)` comm, `4.2×` overhead), Corrigan-Gibbs-Henzinger (`O(√N)` comm, sublinear server with hint), and SimplePIR (`6.5 GiB/s/core`, `O(√N)` comm with `124 MB` hint).&#8201;[^29]
+For both, query-side sampling of DPF keys is "less than 100 µs" and key-expansion on the server side is `≈ 0.5 ms` for a database with `2^{20}` rows; reconstruction is `≈ 130 ms` for a `1 GiB` entry. Compared in Appendix B against SealPIR (`O(√N)` comm, `~100×` response overhead), OnionPIR (`O(log N)` comm, `4.2×` overhead), Corrigan-Gibbs-Henzinger (`O(√N)` comm, sublinear server with hint), and SimplePIR (`6.5 GiB/s/core`, `O(√N)` comm with `124 MB` hint).&#8201;[^29]
 
 [^27]: Appendix B.1 (p. 18): "Boyle-Gilboa-Ishai's construction for 2-server cPIR. This construction utilizes a PRG-based 2-party Distributed Point Function (DPF)."
 [^28]: Appendix B.2 (p. 18): Hafiz-Henry's `k = 2^K`-server construction with `(2,2)`-DPF key shares and concatenation; "the answer reconstruction time is almost constant for each extra bit retrieved."

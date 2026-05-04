@@ -6,12 +6,69 @@
 
 ---
 
-## Why multi-server is excluded from the main repo
+## What multi-server PIR adds (vs. single-server)
 
-Multi-server PIR uses a fundamentally different trust model (k≥2 non-colluding servers, or relaxations thereof) and a different problem class — the "single-server" benchmarking comparison stops being apples-to-apples. The two key facts that motivate this exploratory folder:
+Single-server PIR universally pays Ω(N) server work per query in the standard model — a structural floor that comes from "if a server skips position i, the query distribution leaks that i isn't being asked." Multi-server PIR uses k≥2 non-colluding servers (or some relaxation thereof) to **trade trust for asymptotically better resource usage** along three axes that single-server cannot reach:
 
-1. **Sublinear server work is achievable in single-server PIR via preprocessing alone** (Groups 2a, 2b in main taxonomy) — multi-server is not required for that.
-2. **Asymmetric server overhead is a distinct multi-server phenomenon** with no single-server analogue. This was the question that triggered the folder.
+1. **Communication.** O(N^{1/k}) (CGKS '95) → N^{o(1)} (Yekhanin / Efremenko / Dvir-Gopi) — sub-polynomial total bits, with no FHE.
+2. **Server work after preprocessing.** Polylog(N) per query in DEPIR (BIPW '17, CHR '17, Multi-Server DEPIR '25) — the only way to escape the Ω(N) floor.
+3. **Asymmetric server overhead.** A distinct phenomenon with no single-server analogue: protocols that deliberately put unequal load on different servers (HPIR's rich/poor split, CK20's offline/online split, DistributedPIR's central+delegates).
+
+The asymmetric-overhead axis is what made this folder worth building — it isn't visible in the single-server taxonomy at all.
+
+---
+
+## Comparison axes
+
+Useful dimensions for cross-comparing the 18 schemes here. The first is the new dimension multi-server adds; the rest are familiar from the single-server side but apply differently.
+
+| Axis | Values | Why it matters |
+|------|--------|----------------|
+| **Asymmetry profile** | None / Role / Compute / Content / Trust / Economic | Which server bears which load; whether protocol can be deployed on heterogeneous infrastructure (CDN + origin, smartphone + edge, etc.). |
+| **Number of servers** k | 2 / 3 / O(log N) / unbounded | More servers → looser per-server load and stronger non-collusion; but more deployment friction. |
+| **Trust threshold** t | 1 / k−1 / fractional | Max colluders that preserve privacy. t=1 is "any one honest"; t=k−1 is "all but one corrupt". |
+| **Adversary model** | Honest-but-curious / 1-of-k malicious / fully malicious | Whether protocol survives active deviation. Only Express (1-of-2 malicious) and TAPIR (with auth) here go beyond HBC. |
+| **Security flavor** | IT / Statistical / Computational(OWF/DDH/RLWE/factoring) / SPIR | IT > statistical > computational; SPIR adds DB privacy. Most papers here are IT or statistical — single-server PIR is mostly computational. |
+| **Per-server online work** | Θ(N) / Õ(√N) / polylog(N) | Sublinear requires preprocessing. Polylog is DEPIR territory. |
+| **Online communication** | Θ(N) / Õ(√N) / polylog / O(λ log N) | DPF-based schemes get O(λ log N) for the query; downloads can still be Õ(√N). |
+| **Preprocessing model** | None / Server-side / Offline-online (CK-style) / DEPIR-encoded DB | Determines cold-start, update cost, and per-client state. |
+| **Database mutability** | Static / Re-preprocess / Incremental updates | Only IncPIR and TAPIR support O(Δ) incremental updates. |
+| **Operation** | PIR-read / PIR-write / Both | Riposte, Express, DistributedPIR are PIR-write (anonymous mailbox). |
+| **Maturity** | Theory-only / Construction-with-pseudocode / Implemented-and-benchmarked | About half the corpus is theory-only. |
+
+---
+
+## Master comparison table
+
+Headline numbers; consult per-scheme notes for parameters, caveats, and concrete benchmarks.
+
+### Asymmetric (heterogeneous server loads)
+
+| Scheme | k | Trust | Security | Server work | Online comm | Preprocessing | Distinguishing feature |
+|--------|---|-------|----------|------------|-------------|---------------|-----------------------|
+| **HPIR** | 2 | t=1 (HBC) | IT (or factoring under collusion) | Rich Θ(qN) / Poor Θ(N) | Rich qrw / Poor rw | None | Tunable rich/poor compute & comm via multi-secret-sharing |
+| **DistributedPIR** | 1 + n workers | HBC | Computational (BGV + Freivalds soundness) | Central reduced from N² to N^{1.5} | O(√N) per round | Per-epoch BGV setup | Workers verify each other; messaging system |
+| **CK20** | 2 | t=1 (HBC) | Statistical (2-server) / OWF (online comm) | Offline Õ(N) / Online Õ(√N) | Õ(√N) | Offline server streams DB | Foundational offline/online split; PPS primitive |
+| **IncPIR** | 2 | t=1 (HBC) | Computational (OWF) | + O(b·m·log N) per update batch | Õ(√N) | CK-style + incremental | Update cost ∝ changes, not DB size |
+| **SinglePass** | 2 | t=1 (HBC) | Statistical | Offline 1× DB pass / Online Õ(√N) | Õ(√N) | Single offline pass (optimal per BIM) | 45–100× faster prep than Checklist; permutation-based |
+| **TAPIR** | 2 | t=1 (HBC) + 1 mal abort | Computational (VC + SinglePass) | SinglePass + VC verify | Õ(√N) + auth proofs | Bilateral DB streaming | First 2-server APIR with sublinear comm + comp + updates |
+| **DualSourceSPIR** | 2 | t=1 (HBC) | IT SPIR | Θ(N) per server | Capacity (L_i−1)R_i ≤ 1/2 | None | No replication, no shared randomness, no noisy channels |
+| **Express** | 2 | t=1 **malicious** | Computational (DPF+SNIP) | Θ(N) per server | O(λ) | None | DPF-write; 1-of-2 malicious; whistleblowing |
+| **MoreIsMerrier** | ℓ ≫ k | t=k−1 **rational** | Computational (any cPIR) | Inherits base PIR | Inherits + commitment | Smart contract setup | Non-collusion replaced by Nash equilibrium |
+
+### Symmetric (uniform server loads)
+
+| Scheme | k | Trust | Security | Server work | Online comm | Preprocessing | Distinguishing feature |
+|--------|---|-------|----------|------------|-------------|---------------|-----------------------|
+| **CGKS '95** | k | t=k−1 | IT | Θ(N) | k·O(N^{1/k}) | None | Foundational; proves single-server IT-PIR impossible |
+| **HenzingerRagavan** | 2..s | t=1..s−1 | IT | N^{0.82}, → 1/2 + 1/log s | n^{0.82} | N^{1+o(1)} storage | Breaks BIM '04 storage-time wall after 25 years |
+| **BGI** | p | t=p−1 | Computational (PRG) | Θ(N) per server | O(λ log N) per key | None | FSS / DPF foundational primitive |
+| **Riposte** | 3 | 1 mal of 3 | Computational (DPF + audit) | Θ(N) | O(λ log N) | None | DPF-write; 3rd auditor server; anonymous broadcast |
+| **CHR '17** | 1 | n/a | Computational (HPN) | Polylog(N) | Polylog(N) | N^{1+o(1)} encoded DB | Single-server DEPIR feasibility (concurrent w/ BIPW) |
+| **MultiServerDEPIR** | 3 (or O(log N)) | t=k−1 | IT or computational | O(log³ N) (3-server) | Polylog | N · polylog N preproc | Practical DEPIR via DORAM; bypasses FHE blow-up |
+| **ScalableMSPIR** | S | t=S−1 | IT | Tradeoff knob: equal / min-bw / min-bottleneck | n^{Õ(1/S)} achievable | Server-side | Generic balancing compiler; storage↔BW dial |
+| **ITMSPIR_CP** | 2t | t=1 | IT | Online Õ(√N) | Õ(√N) | Õ(λN) offline | First IT-secure CK-paradigm PIR; PMPRS primitive |
+| **TwoServerSublinearSPIR** | 2 | t=1 (HBC) | Statistical SPIR | Online Õ(√N) | Õ(√N) | CK-style + masked hints | First 2-server SPIR with stat. security + sublinear |
 
 ---
 
@@ -22,7 +79,7 @@ Multi-server PIR uses a fundamentally different trust model (k≥2 non-colluding
 | Subfolder | Asymmetry kind | Examples |
 |-----------|----------------|----------|
 | [`asymmetric.role/`](asymmetric.role/) | **Role split** — one server streams DB once (offline), another answers queries (online). The dominant pattern in modern preprocessing 2-server PIR. | CK20, SinglePass, TAPIR, IncPIR |
-| [`asymmetric.compute/`](asymmetric.compute/) | **Heterogeneous compute/communication** — protocol explicitly assigns more work to one server (strong/weak split, central+delegates, etc.) | HPIR (Mozaffari NDSS '20), DistributedPIR (CCS '24) |
+| [`asymmetric.compute/`](asymmetric.compute/) | **Heterogeneous compute/communication** — protocol explicitly assigns more work to one server (strong/weak split, central+delegates, etc.) | HPIR (NDSS '20), DistributedPIR (CCS '24) |
 | [`asymmetric.content/`](asymmetric.content/) | **Non-replicated data** — servers hold different content, not copies of the same DB | Dual-Source SPIR |
 | [`asymmetric.trust/`](asymmetric.trust/) | **Trust-model asymmetry** — secure against different fault models per server (e.g., 1 malicious + others honest) | Express |
 | [`asymmetric.economic/`](asymmetric.economic/) | **Rational/incentive asymmetry** — non-collusion replaced by economic mechanisms | More-is-Merrier (S&P '24) |
@@ -31,9 +88,9 @@ Multi-server PIR uses a fundamentally different trust model (k≥2 non-colluding
 
 | Subfolder | Class | Examples |
 |-----------|-------|----------|
-| [`symmetric.IT/`](symmetric.IT/) | **Information-theoretic** — unconditional security, no crypto assumptions | CGKS '95, Yekhanin, Efremenko, Dvir-Gopi, Henzinger-Ragavan |
+| [`symmetric.IT/`](symmetric.IT/) | **Information-theoretic** — unconditional security, no crypto assumptions | CGKS '95, Henzinger-Ragavan |
 | [`symmetric.dpf/`](symmetric.dpf/) | **DPF / FSS-based** — query distributed via Distributed Point Functions | BGI '15, Riposte |
-| [`symmetric.depir/`](symmetric.depir/) | **Doubly-Efficient PIR** — preprocessed DB → polylog server work | BIPW '17, Multi-Server DEPIR Classical |
+| [`symmetric.depir/`](symmetric.depir/) | **Doubly-Efficient PIR** — preprocessed DB → polylog server work | CHR '17, Multi-Server DEPIR |
 | [`symmetric.preprocessing/`](symmetric.preprocessing/) | **Other preprocessing models** — not strictly DEPIR but with offline phase | Scalable MSPIR, IT-MSPIR-CP, 2-Server Sublinear SPIR |
 
 ---
@@ -80,9 +137,16 @@ Multi-server PIR uses a fundamentally different trust model (k≥2 non-colluding
 
 ---
 
+## Notable cross-cutting threads
+
+- **Puncturable random sets** are the load-bearing primitive across the role-asymmetric line: CK20 introduces it (PPS); IncPIR weakens it for incremental updates; ITMSPIR_CP makes it *information-theoretic* via the new PMPRS primitive; SinglePass replaces it with permutations entirely. TAPIR layers vector commitments on top.
+- **DPF lineage**: BGI '15 (foundational FSS) → Riposte '15 (3-server with audit) → Express '21 (2-server, 1 malicious) — each generation halves the trust assumption.
+- **DEPIR practicality gap**: CHR '17 + BIPW '17 established feasibility; LMW '23 brought it to single-server under standard RLWE; Multi-Server DEPIR '25 brought it to *concretely* fast (≈1 ms on 8 GB) by trading single-server for 3-server + DORAM.
+- **The BIM '04 wall**: the IT preprocessing lower bound that stood for 25 years was only just broken by Henzinger-Ragavan '26 via a compact polynomial-derivative data structure.
+
+---
+
 ## Notable findings during analysis
 
 - **BIPW vs CHR identification.** The PDF at `cs.ucr.edu/~silas/papers/depir.pdf` (planned as BIPW '17) was actually **Canetti-Holmgren-Richelson '17** ("Towards Doubly Efficient Private Information Retrieval"), the concurrent TCC '17 DEPIR paper. The folder was renamed `bipw_2017/` → `chr_2017/`.
 - **Dual-Source SPIR authorship.** Single-authored by **Rémi A. Chou** (UT Arlington), not Wang/Banawan/Ulukus as initially attributed.
-- **Cross-cutting primitive: puncturable random sets.** CK20 introduces the abstraction; IncPIR weakens it for incrementality; ITMSPIR_CP makes it *information-theoretic* via the new PMPRS primitive; SinglePass replaces it with permutations entirely. This primitive line is the load-bearing technical thread across the entire role-asymmetric corpus.
-- **DPF lineage.** BGI '15 → Riposte '15 (3-server with audit) → Express '21 (2-server, 1 malicious) — each generation halves the trust assumption.

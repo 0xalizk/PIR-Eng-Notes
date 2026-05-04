@@ -70,7 +70,7 @@ HPIR introduces *asymmetric* multi-server PIR: a rich server (e.g., a CDN edge n
 
 [^16]: §IV-B (p. 6–7), eqs. (5)–(6): Sharing creates `q+1` points and reconstructs `s_i = f(i) mod p_i = Σ y_m (∏ (i − x_n)(x_m − x_n)^{-1}) mod p_i`.
 [^17]: §IV-C (p. 7): "Our PIR-tailored secret sharing scheme shares `q` secrets using a `t` degree polynomial. We add `q` random variables, `r_i`s, to the polynomial points… Therefore, the adversary's degree of freedom to reconstruct the secrets will be `t + q + 1`. Assuming that the adversary is provided with `t` shares, the degree of freedom given `t` secret shares will be `q + 1`, which is still larger than the number of secrets, `q`."
-[^18]: §IV-B (p. 6): primes "are from `{0, 1}` [for secret values], and only one of the secrets could be `1`. Then, the dealer calculates `n = p₁ × p₂ × … × p_q`."
+[^18]: §IV-B (p. 6): "the dealer generates `q` prime numbers `P = {p_1, p_2, ..., p_q}` at random ... the dealer calculates `n = p_1 × p_2 × ... × p_q`." §VI-B Constraints (p. 8): "we have the constraint that `gcd(x_i − x_j, n) = 1` for `x_i, x_j ∈ X`, `i ≠ j`."
 [^19]: §IV-A (p. 6): enumerates 4 differences from standard secret sharing.
 
 ### Cryptographic Foundation

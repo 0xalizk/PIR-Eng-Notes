@@ -184,8 +184,8 @@ Security games (Fig. 1, p. 5): correctness `G^{Corr-APIR}`, integrity `G^{Int-AP
 
 | Metric | Asymptotic | Concrete (`N = 2^{20}`, 32 B records, `M = √N ≈ 2^{10}`) | Phase |
 |--------|-----------|--------------------------------------------------------------|-------|
-| Online query size | `O(√N · log √N)` | TAPIR-MT 104.36 KiB; TAPIR-PP 69.65 KiB&#8201;[^28] | Online |
-| Online response size | `O(√N · (ℓ_r + \|proof\|))` ; MT proof = `O(log √N)`, PP proof = `O(1)` | TAPIR-MT 776.98 KiB; TAPIR-PP 69.65 KiB | Online |
+| Online BW (total, sum over both servers, query + response) | `O(√N · (ℓ_r + \|proof\|))` ; MT proof = `O(log √N)`, PP proof = `O(1)` | TAPIR-MT 776.98 KiB; TAPIR-PP 69.65 KiB&#8201;[^28] | Online |
+| Online query (uplink only, indices) | `O(√N · log √N)` bits | ~1.28 KiB at `N = 2^{20}` (`Q · log_2 M = 2^{10}·10` bits per server); the online BW figures above are dominated by the response (records + proofs) | Online |
 | Online server time per query (each) | `Õ(√N)` | TAPIR-MT 0.39 s; TAPIR-PP 2.63 s | Online |
 | Online client time | `O(√N · t_verify)` | TAPIR-MT 0.02 s; TAPIR-PP 0.05 s | Online |
 | Rounds | 1 | 1 | Online |
@@ -196,15 +196,15 @@ Security games (Fig. 1, p. 5): correctness `G^{Corr-APIR}`, integrity `G^{Int-AP
 
 | Metric | Asymptotic | Concrete (`N = 2^{20}`) | Phase |
 |--------|-----------|-------------------------|-------|
-| Server-side one-time setup time (per server) | `Q · t_VC.Commit(M) + N · t_VC.Open` | TAPIR-MT 75 852.05 s (≈ 21 h, **dominated by Pointproofs setup at higher N**; MT setup is much smaller). For TAPIR-PP @ `N = 2^{20}`: 75 938.00 s.&#8201;[^29] | Offline (one-time) |
-| Server-side one-time setup BW | `O(N · ℓ_r)` to disk + `O(N · \|proof\|)` | TAPIR-MT 256.05 MiB; TAPIR-PP 256.05 MiB | Offline (one-time) |
-| Per-client offline runtime (server) | `O(N)` for streaming both copies | TAPIR-MT 1.45 s; TAPIR-PP 105 304.90 s (Pointproofs digest re-aggregation dominates) | Offline (per client) |
-| Per-client offline BW (down) | `2 · N · ℓ_r` (bilateral stream) + `pp` | TAPIR-MT 354.00 KiB query side (offline streaming = `2·N·ℓ_r`, off-chart for Pointproofs); see Fig. 7 — TAPIR-PP up to 8× higher per-client offline RT than SinglePass at `N = 2^{24}`.&#8201;[^30] | Offline (per client) |
+| Server-side one-time setup time (per server) | `Q · t_VC.Commit(M) + N · t_VC.Open` | TAPIR-MT 1.45 s; TAPIR-PP 105 304.90 s (≈ 29 h) at `N = 2^{20}` — the two variants differ by ~70 000× because Pointproofs digest setup is dramatically more expensive than Merkle-tree commit; at `N = 2^{22}` TAPIR-PP rises to 844 441.96 s (~234 h), which is why TAPIR-PP is omitted for `N > 2^{22}`.&#8201;[^29] | Offline (one-time) |
+| Server-side one-time setup BW | `O(N · ℓ_r)` to disk + `O(N · \|proof\|)` | TAPIR-MT 75 852.05 kiB (~74 MiB); TAPIR-PP 75 938.00 kiB at `N = 2^{20}` (the small ~86 kiB delta is extra Pointproofs digest material in `pp`) | Offline (one-time) |
+| Per-client offline runtime (server) | `O(N)` for streaming both copies | TAPIR-MT 0.02 s; TAPIR-PP 0.05 s at `N = 2^{20}` — comparable across VC choice since the dominant cost is streaming the DB to the client (the §6.2 note that "client-dependent offline runtime of TAPIR does not depend on the selected vector commitment scheme" applies here).&#8201;[^30] | Offline (per client) |
+| Per-client offline BW (down) | `2 · N · ℓ_r` (bilateral stream) + `pp` | At `N = 2^{20}`, `2 · N · ℓ_r = 2 · 2^{20} · 32 B = 64 MiB` of streaming per client (off-chart for Pointproofs in Fig. 7 due to digest material in `pp`). | Offline (per client) |
 | Client-side offline runtime | `O(N)` | Hint computation matches SinglePass (the dominant cost is XOR over `N` records) | Offline |
 | Client persistent storage | `O(M · ℓ_r) + O(Q · \|σ\|)` | `M = √N` hint slots + `Q` permutations stored as Knuth-shuffle data | Persistent |
 
-[^29]: Table 1 (p. 11): row for `N = 2^{20}`, record size 32 B, "Offline RT (1-Time)" column: TAPIR-MT 75 852.05 s; TAPIR-PP 75 938.00 s. The one-time cost is essentially identical for the two TAPIR variants because Pointproofs/MT one-time setup scales similarly at this N — see also caption: "Offline costs are split into one-time server costs and per-client costs."
-[^30]: §6.2 (p. 12): "the client-dependent offline runtime of TAPIR does not depend on the selected vector commitment scheme … this offline runtime is up to 8× higher for N = 2^{24} due to the setup time" relative to SinglePass.
+[^29]: Table 1 (p. 11), row for `N = 2^{20}`, record size 32 B. The "Offline RT (1-Time)" column reads TAPIR-MT = **1.45 s** and TAPIR-PP = **105 304.90 s** — the two variants differ by ~70 000×, not "essentially identical": Pointproofs one-time digest generation is the bottleneck for TAPIR-PP and is what forces the omission of TAPIR-PP for `N > 2^{22}` (Table 1 caption: "omitted due to high to high Pointproofs setup costs"). The 75 852.05 / 75 938.00 figures are the **Offline BW (kiB)** column at the same `N`, not RT.
+[^30]: §6.2 (p. 12): "the client-dependent offline runtime of TAPIR does not depend on the selected vector commitment scheme … this offline runtime is up to 8× higher for N = 2^{24} due to the setup time" relative to SinglePass. Table 1 (p. 11) "Offline RT (Per-Client)" column at `N = 2^{20}`: TAPIR-MT = 0.02 s; TAPIR-PP = 0.05 s.
 
 #### Update metrics
 
@@ -369,6 +369,6 @@ For `N = 2^{20}`, 32 B records (from Table 1 + §6.3 + Fig. 8):
 ### Uncertainties
 
 - Table 1 reports `Offline BW` with TAPIR-MT and TAPIR-PP at *different* but very close values (e.g., `N = 2^{18}`: 18 982.05 vs. 19 025.02 KiB; `N = 2^{20}`: 75 852.05 vs. 75 938.00). The paper does not break down what contributes the small delta; likely additional Pointproofs digest material in `pp`.
-- §6 footnote on TAPIR-PP `Per-Client` RT for `N = 2^{20}` reports 105 304.90 s (≈ 29 hours), which seems extreme for a per-client cost. This is consistent with Fig. 7 showing TAPIR-PP runtime growing very steeply, but the paper does not isolate which sub-step dominates (likely Pointproofs digest re-aggregation during the client's own preprocessing). Reproduced verbatim from Table 1; treat as upper-bound experimental measurement, not a tight asymptotic.
+- Table 1 reports TAPIR-PP `Offline RT (1-Time)` of 105 304.90 s (≈ 29 hours) at `N = 2^{20}` and 844 441.96 s (≈ 234 hours) at `N = 2^{22}`. These are server-side one-time costs (Pointproofs digest generation), amortised across all clients — not per-client costs. Per-Client offline RT remains modest (0.02–1.86 s across the benchmarked range). This dramatic asymmetry between TAPIR-MT (1.45 s) and TAPIR-PP (105 304.90 s) one-time setup at `N = 2^{20}` is the principal cost of choosing Pointproofs and is what forces omission of TAPIR-PP for `N > 2^{22}`.
 - The paper's "online server runtime" totals are reported as a single number without specifying whether it is the max or sum over the two servers. Throughout these notes I report the per-server max where the paper is ambiguous; cross-check against §6.3 Fig. 8 if exact attribution matters.
 - Pointproofs aggregation uses bilinear pairings; specific curve (BLS12-381 vs. BN254) is not stated in §6 but is standard for Pointproofs implementations.

@@ -283,7 +283,7 @@ Source: Table 1 (p. 4) and Appendix A (p. 31).&#8201;[^38]
 - **No implementation.** All concrete claims are author estimates; the §6 ≈1 ms claim is borrowed from GigaDORAM's existing benchmarks, not measured by this paper.
 - **Small-characteristic field constraint.** Bhargava et al.'s preprocessing requires `p = d^{o(1)}` — this rules out direct use of arbitrary fields and forces the parameter regime in §4.&#8201;[^41]
 
-[^41]: §4 (p. 13): Bhargava et al. "introduces some new constraints (e.g., the characteristic of `F_q` the polynomial works over `p` needs to be `d^{o(1)}` where `d` is the individual degree of the polynomial)."
+[^41]: §1.1 (p. 5): Bhargava et al. "introduces some new constraints (e.g., the characteristic of `F_q` the polynomial works over `p` needs to be `d^{o(1)}` where `d` is the individual degree of the polynomial)."
 
 ### Open Problems
 
