@@ -193,13 +193,20 @@
   // Catches null, undefined, NaN, 0, strings, and objects in one test.
   function isPos(v) { return typeof v === 'number' && isFinite(v) && v > 0; }
 
+  // Like isPos but also accepts an exact 0 — a legitimate best-case value for
+  // lower-is-better metrics (e.g. hintless schemes report 0 client preprocessing
+  // and 0 client storage). Used by the rank-based views (composite/heatmap/radar).
+  // The log-scale cost charts deliberately keep using isPos, so a 0 there just
+  // yields no bar/point ("no offline cost"), which can't be drawn on a log axis.
+  function hasData(v) { return typeof v === 'number' && isFinite(v) && v >= 0; }
+
   // Three-state classification of a (scheme, metric) pair:
   //   'data'    → a real measured value is present (always wins over any rule)
   //   'na'      → structurally inapplicable for this scheme's group (METRIC_NA_GROUPS)
   //   'missing' → applicable but unreported / not derivable
   // Renderers use this to keep 'na' and 'missing' OFF the worst edge.
   function metricStatus(s, m) {
-    if (isPos(getVal(s, m))) return 'data';
+    if (hasData(getVal(s, m))) return 'data';
     var na = METRIC_NA_GROUPS[m];
     return (na && na[s.group]) ? 'na' : 'missing';
   }
@@ -503,6 +510,7 @@
 
   function formatNum(v) {
     if (typeof v !== 'number' || !isFinite(v)) return '\u2014';
+    if (v === 0) return '0';
     if (v >= 1000) return v.toLocaleString('en-US', { maximumFractionDigits: 1 });
     if (v >= 1) return v.toFixed(v < 10 ? 2 : 1);
     return v.toPrecision(3);
@@ -587,7 +595,7 @@
     data.forEach(function (s) {
       ALL_METRICS.forEach(function (m) {
         var v = getVal(s, m);
-        if (isPos(v)) allMetricVals[m].push(v);
+        if (hasData(v)) allMetricVals[m].push(v);
       });
     });
     ALL_METRICS.forEach(function (m) {
@@ -602,7 +610,7 @@
       s._ranks = {};
       ALL_METRICS.forEach(function (m) {
         var v = getVal(s, m);
-        if (isPos(v)) {
+        if (hasData(v)) {
           var idx = allMetricVals[m].indexOf(v);
           s._ranks[m] = allMetricVals[m].length > 1 ? idx / (allMetricVals[m].length - 1) : 0.5;
         } else {
@@ -633,6 +641,11 @@
           var norm = range > 0 ? (logV - absMin[m]) / range : 0.5;
           // Invert for higher-is-better so 0 = best for all metrics
           s._absNorm[m] = HIGHER_IS_BETTER[m] ? 1 - norm : norm;
+        } else if (v === 0) {
+          // Exact zero is a real best-case value (hintless schemes: no client
+          // preprocessing/storage). Log-scale can't represent 0, so map straight
+          // to the best end (0 for lower-is-better; the rare higher-is-better → 1).
+          s._absNorm[m] = HIGHER_IS_BETTER[m] ? 1 : 0;
         } else {
           s._absNorm[m] = null;
         }
@@ -672,10 +685,10 @@
         var raw = getVal(s, m);
         // N/A cells get a muted "n/a" label so they read as "doesn't apply"
         // rather than an unexplained blank; genuinely-missing stays blank.
-        tRow.push(isPos(raw) ? formatNum(raw) + TIER_BADGE[s.data_tier] : (metricStatus(s, m) === 'na' ? 'n/a' : ''));
+        tRow.push(hasData(raw) ? formatNum(raw) + TIER_BADGE[s.data_tier] : (metricStatus(s, m) === 'na' ? 'n/a' : ''));
         var lbl = METRIC_LABELS[m];
         var lblMatch = lbl.match(/^(.+?) \((.+)\)$/);
-        if (!isPos(raw)) {
+        if (!hasData(raw)) {
           hRow.push('');
         } else {
           var hoverVal = lblMatch ? formatNum(raw) + ' ' + lblMatch[2] : formatNum(raw);
