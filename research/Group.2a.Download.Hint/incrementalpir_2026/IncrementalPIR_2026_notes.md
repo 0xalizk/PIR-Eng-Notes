@@ -29,7 +29,7 @@
 |-------|-------|
 | **Paper** | [Incremental Single-Server Private Information Retrieval](https://eprint.iacr.org/2026/030) (2026) |
 | **Archetype** | Construction + Update/maintenance |
-| **PIR Category** | Group 2a — Download-Hint |
+| **PIR Category** | Group 2a — Client-independent hint (download) |
 | **Security model** | Semi-honest single-server preprocessing PIR |
 | **Additional assumptions** | None beyond decisional LWE |
 | **Correctness model** | Deterministic (noise bounded by rounding parameter) |

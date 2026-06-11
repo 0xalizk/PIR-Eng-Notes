@@ -1,4 +1,4 @@
-## Group 2a — Download-Hint
+## Group 2a — Client-independent hint (download)
 
 #### SimplePIR/DoublePIR (2022)
 

@@ -33,7 +33,7 @@
 |-------|-------|
 | **Paper** | [Piano: Extremely Simple, Single-Server PIR with Sublinear Server Computation](https://eprint.iacr.org/2022/452) (2023, IEEE S&P 2024) |
 | **Archetype** | Construction |
-| **PIR Category** | Group 2b — Interactive-Hint |
+| **PIR Category** | Group 2b — Client-specific hint (interactive) |
 | **Security model** | Semi-honest single-server, client-specific preprocessing (subscription model) |
 | **Additional assumptions** | None beyond OWF (PRF instantiated via AES; PRP for load balancing) |
 | **Correctness model** | Probabilistic (failure prob bounded by negl(kappa) + negl(λ) over all Q queries in a window) |

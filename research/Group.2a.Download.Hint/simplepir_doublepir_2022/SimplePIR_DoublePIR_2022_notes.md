@@ -32,7 +32,7 @@
 |-------|-------|
 | **Paper** | [One Server for the Price of Two: Simple and Fast Single-Server Private Information Retrieval](https://eprint.iacr.org/2022/949) (2022) |
 | **Archetype** | Construction (multi-construction: SimplePIR + DoublePIR) + Building-block (linearly homomorphic encryption with preprocessing) |
-| **PIR Category** | Group 2a — Download-Hint |
+| **PIR Category** | Group 2a — Client-independent hint (download) |
 | **Security model** | Semi-honest single-server CPIR with preprocessing |
 | **Additional assumptions** | None beyond plain LWE (no circular security, no ROM; pseudorandom matrix A derived from hash function modeled as random oracle for compression, but security holds without it) |
 | **Correctness model** | Probabilistic (correctness error delta, configurable; delta = 2^{-40} in benchmarks) |

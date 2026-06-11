@@ -37,7 +37,7 @@
 |-------|-------|
 | **Paper** | [Incremental Offline/Online PIR (extended version)](https://eprint.iacr.org/2021/1438) (2021) |
 | **Archetype** | Construction + Update/maintenance |
-| **PIR Category** | Group 2b — Interactive-Hint |
+| **PIR Category** | Group 2b — Client-specific hint (interactive) |
 | **Security model** | 2-server non-colluding, semi-honest |
 | **Additional assumptions** | OWF (for PRF/PRP instantiation); non-collusion between offline and online servers |
 | **Correctness model** | Probabilistic (failure probability grows over DB mutations; see Correctness Analysis) |

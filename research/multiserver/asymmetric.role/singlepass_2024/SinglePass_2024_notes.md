@@ -5,7 +5,7 @@
 | **Paper** | [Single Pass Client-Preprocessing Private Information Retrieval](https://www.usenix.org/conference/usenixsecurity24/presentation/lazzaretti) (USENIX Security 2024) |
 | **Authors** | Arthur Lazzaretti, Charalampos Papamanthou (Yale University) |
 | **Archetype** | Construction |
-| **PIR Category** | 2-server, role-asymmetric (offline/online split) — exploratory `multiserver/asymmetric.role/`. Conceptually closest to **Group 2b — Interactive-Hint** in the single-server taxonomy, but inherently 2-server (Server 0 runs `Hint`, Server 1 runs `Answer`).&#8201;[^1] |
+| **PIR Category** | 2-server, role-asymmetric (offline/online split) — exploratory `multiserver/asymmetric.role/`. Conceptually closest to **Group 2b — Client-specific hint (interactive)** in the single-server taxonomy, but inherently 2-server (Server 0 runs `Hint`, Server 1 runs `Answer`).&#8201;[^1] |
 | **Security model** | 2-server non-colluding, semi-honest. Privacy holds against an adversary corrupting *either* server (and any number of clients), but not against a joint Server-0/Server-1 adversary.&#8201;[^2] |
 | **Additional assumptions** | OWF (PRGs/PRFs for permutation seeds and randomness sampling). No FHE, no DDH, no setup. |
 | **Correctness model** | **Deterministic** — by construction, the client's reconstructed value equals DB[x] for any honest execution.&#8201;[^3] |

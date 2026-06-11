@@ -36,7 +36,7 @@
 | **Paper** | [Efficient Single-Server Stateful PIR Using Format-Preserving Encryption](https://eprint.iacr.org/2026/437) (2026) |
 | **Authors** | Pranav Shriram Arunachalaramanan, Ling Ren |
 | **Archetype** | Construction + Engineering optimization (improves WangRen with new hint organization and optimized PRP) |
-| **PIR Category** | Group 2b — Interactive-Hint |
+| **PIR Category** | Group 2b — Client-specific hint (interactive) |
 | **Security model** | Semi-honest single-server, computational (OWF for Harmony-AES; empirical FPE security for Harmony-FF1) |
 | **Additional assumptions** | Harmony-AES: OWF (PRP from PRF from AES). Harmony-FF1: FF1 FPE is a secure small-domain PRP (NIST-standardized, empirical assumption)&#8201;[^1] |
 | **Correctness model** | Deterministic at the information-theoretic layer (permutation-based hint row ensures each DB entry appears exactly once; correctness proved by induction in Lemma 5.1 and Theorem 5.2). The formal PIR definition (Section 3.2) allows negligible failure probability ε, but the actual construction never fails.&#8201;[^2] |

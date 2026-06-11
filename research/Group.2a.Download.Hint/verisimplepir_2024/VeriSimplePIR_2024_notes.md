@@ -27,7 +27,7 @@
 |-------|-------|
 | **Paper** | [VeriSimplePIR: Verifiability in SimplePIR at No Online Cost for Honest Servers](https://eprint.iacr.org/2024/341) (2024) |
 | **Archetype** | Construction + Security upgrade + Building-block (VLHE) |
-| **PIR Category** | Group 2a — Download-Hint |
+| **PIR Category** | Group 2a — Client-independent hint (download) |
 | **Security model** | Malicious single-server verifiable PIR (stateful) |
 | **Additional assumptions** | SIS (Short Integer Solution), LWE, Random Oracle Model (Fiat-Shamir heuristic) |
 | **Correctness model** | Statistical (correctness error delta from LWE noise; verification soundness 1 - 2^{-λ}) |

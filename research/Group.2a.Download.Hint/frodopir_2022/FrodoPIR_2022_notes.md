@@ -33,7 +33,7 @@
 |-------|-------|
 | **Paper** | [FrodoPIR: Simple, Scalable, Single-Server Private Information Retrieval](https://eprint.iacr.org/2022/981) (2022) |
 | **Archetype** | Construction |
-| **PIR Category** | Group 2a — Download-Hint |
+| **PIR Category** | Group 2a — Client-independent hint (download) |
 | **Security model** | Semi-honest single-server |
 | **Additional assumptions** | PRG (to expand seed mu into matrix **A**); hardness of decisional ternary LWE (Assumption 1)[^ternary] |
 | **Correctness model** | Probabilistic (correct with high probability when q >= 8*rho^2*sqrt(m); Theorem 2)[^correct] |

@@ -34,7 +34,7 @@
 |-------|-------|
 | **Paper** | [TreePIR: Sublinear-Time and Polylog-Bandwidth Private Information Retrieval from DDH](https://eprint.iacr.org/2023/204) (2023) |
 | **Archetype** | Construction (primary) + Building-block (secondary: weak privately puncturable PRF / wpPRF) |
-| **PIR Category** | **Group 2b** — Interactive-Hint, 2-server non-colluding |
+| **PIR Category** | **Group 2b** — Client-specific hint (interactive), 2-server non-colluding |
 | **Security model** | Semi-honest 2-server non-colluding&#8201;[^1] |
 | **Additional assumptions** | OWF (for wpPRF / TreePIR base); DDH (only for the polylog-bandwidth variant via Dottling et al. single-server PIR recursion)&#8201;[^2] |
 | **Correctness model** | Probabilistic (failure prob ≤ negl(λ)); deterministic variant via shift optimization (Appendix A.1)&#8201;[^3] |

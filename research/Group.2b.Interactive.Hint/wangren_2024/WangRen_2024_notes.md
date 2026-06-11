@@ -32,7 +32,7 @@
 |-------|-------|
 | **Paper** | [Single-Server Client Preprocessing PIR with Tight Space-Time Trade-off](https://eprint.iacr.org/2024/1845) (2024) |
 | **Archetype** | Construction (theory-only) + Theory (proves tight space-time tradeoff) |
-| **PIR Category** | Group 2b — Interactive-Hint |
+| **PIR Category** | Group 2b — Client-specific hint (interactive) |
 | **Security model** | Semi-honest single-server, computational (OWF) |
 | **Additional assumptions** | None beyond OWF (PRF and small-domain PRP are both constructible from OWF) [^1] |
 | **Correctness model** | Deterministic (permutation-based hint table covers every DB entry exactly once per row; correctness proved via Lemma 4.4) [^2] |

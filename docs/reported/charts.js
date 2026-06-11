@@ -76,13 +76,13 @@
   // PIR scheme groups per taxonomy (https://notes.ethereum.org/U9xM4VOPR9isPK7lOZJUQg?view#41-Taxonomy):
   //   1a = Stateless Client, Stateful Server (server caches per-client eval keys)
   //   1b = Stateless Client, Stateless Server (no per-client state anywhere)
-  //   2a = Download-Hint (client downloads server-computed global hint)
-  //   2b = Interactive-Hint (bidirectional hint generation, sublinear server)
+  //   2a = Client-independent hint (download) (server precomputes one global hint; every client downloads the same hint)
+  //   2b = Client-specific hint (interactive) (each client derives its own private hint via interactive preprocessing, sublinear server)
   //   X  = Extensions (keyword PIR, distributional PIR — different problem class)
   var GROUP_COLORS = { '1a': '#1f77b4', '1b': '#2ca02c', '2a': '#ff7f0e', '2b': '#d62728', X: '#7f7f7f' };
   var GROUP_NAMES = {
     '1a': 'Stateless Client, Stateful Server', '1b': 'Stateless Client, Stateless Server',
-    '2a': 'Download-Hint', '2b': 'Interactive-Hint', X: 'Extensions'
+    '2a': 'Client-independent hint (download)', '2b': 'Client-specific hint (interactive)', X: 'Extensions'
   };
   // Plotly scatter3d only supports: circle, circle-open, cross, diamond,
   // diamond-open, square, square-open, x — no 'star' or 'triangle'.
@@ -151,6 +151,26 @@
   // This affects ranking (sort direction) and normalization (inversion).
   var HIGHER_IS_BETTER = { throughput_gbps: true, rate: true };
 
+  // Metric applicability by group. A metric listed here is STRUCTURALLY N/A for
+  // those groups — the scheme class makes it meaningless — so an ABSENT value
+  // must render as "n/a" (excluded from ranking, color, penalty, and the radar
+  // polygon), NOT as worst-case. Before this, missing/inapplicable values were
+  // pinned to the worst edge, which inverted their meaning (a sublinear scheme
+  // with no DB-scan throughput, or a stateless client with no hint storage,
+  // looked worst-in-class instead of "doesn't apply").
+  //   throughput_gbps  → N/A for 2b: sublinear-server schemes touch O(sqrt(N)),
+  //                       so the DB-scan-rate metric is meaningless (see CLAUDE.md).
+  //   client_storage_mb, client_preprocessing_time_ms → N/A for 1b: stateless
+  //                       client + stateless server, no client offline/hint phase
+  //                       (no 1b scheme reports either).
+  // RULE: a present (measured) value ALWAYS wins — we never hide real data
+  // (e.g. Spiral's reported client preprocessing). This only governs ABSENT values.
+  var METRIC_NA_GROUPS = {
+    throughput_gbps: { '2b': true },
+    client_storage_mb: { '1b': true },
+    client_preprocessing_time_ms: { '1b': true }
+  };
+
   var BASE_URL = 'https://github.com/0xalizk/PIR-Eng-Notes/blob/main/research/';
 
   function schemeUrl(s) {
@@ -172,6 +192,17 @@
   // positive when reported, so this is the canonical check for "has data".
   // Catches null, undefined, NaN, 0, strings, and objects in one test.
   function isPos(v) { return typeof v === 'number' && isFinite(v) && v > 0; }
+
+  // Three-state classification of a (scheme, metric) pair:
+  //   'data'    → a real measured value is present (always wins over any rule)
+  //   'na'      → structurally inapplicable for this scheme's group (METRIC_NA_GROUPS)
+  //   'missing' → applicable but unreported / not derivable
+  // Renderers use this to keep 'na' and 'missing' OFF the worst edge.
+  function metricStatus(s, m) {
+    if (isPos(getVal(s, m))) return 'data';
+    var na = METRIC_NA_GROUPS[m];
+    return (na && na[s.group]) ? 'na' : 'missing';
+  }
 
   // True if v is a finite number >= 0. For computed ranks/norms (0–1 scale)
   // where 0 is a valid value meaning "best".
@@ -539,10 +570,13 @@
         }
       });
 
-      // Penalize schemes missing core metrics: +0.1 per missing metric when <3 available.
-      // A scheme reporting only 1 of 4 core metrics gets +0.3 penalty, making it rank lower
-      // than a scheme with full data. Schemes with 0 metrics get composite = 1.0 (worst).
-      var coveragePenalty = available < 3 ? 0.1 * (4 - available) : 0;
+      // Penalize schemes missing core metrics: +0.1 per missing metric when fewer
+      // than 3 APPLICABLE core metrics are available. Metrics that are structurally
+      // N/A for this group (e.g. throughput for sublinear-server 2b schemes) are
+      // excluded from the expected count, so a scheme is never penalized for a
+      // metric that does not apply to its class.
+      var applicableCore = CORE_METRICS.filter(function (m) { return metricStatus(s, m) !== 'na'; }).length;
+      var coveragePenalty = available < Math.min(3, applicableCore) ? 0.1 * (applicableCore - available) : 0;
       s._composite = ranks.length > 0 ? (ranks.reduce(function (a, b) { return a + b; }, 0) / ranks.length) + coveragePenalty : 1.0;
       s._coreAvailable = available;
     });
@@ -636,7 +670,9 @@
         var rank = s._ranks[m];
         row.push(isNum(rank) ? rank : NaN);
         var raw = getVal(s, m);
-        tRow.push(isPos(raw) ? formatNum(raw) + TIER_BADGE[s.data_tier] : '');
+        // N/A cells get a muted "n/a" label so they read as "doesn't apply"
+        // rather than an unexplained blank; genuinely-missing stays blank.
+        tRow.push(isPos(raw) ? formatNum(raw) + TIER_BADGE[s.data_tier] : (metricStatus(s, m) === 'na' ? 'n/a' : ''));
         var lbl = METRIC_LABELS[m];
         var lblMatch = lbl.match(/^(.+?) \((.+)\)$/);
         if (!isPos(raw)) {
@@ -2055,7 +2091,9 @@
   //   - Line color = group color (1a/1b/2a/2b)
   //   - Line style = data tier (solid/dashed/dotted)
   //   - Fill opacity = data tier (full/light/none)
-  //   - Red "?" markers at outer edge = missing data for that metric
+  //   - Inapplicable ('na', per METRIC_NA_GROUPS) and unreported metrics are
+  //     NOT drawn as vertices (no false worst-edge spike); they're summarized in
+  //     a muted footer note ("n/a: …" / "N no-data") instead.
   //   - "(no impl)" annotation below radar if scheme has no open-source code
   //
   // Group X (Extensions) is excluded from radar per project convention.
@@ -2222,63 +2260,55 @@
         cell.appendChild(plotDiv);
 
         var vals = useAbs ? s._absNorm : s._ranks;
-        var r = radarMetrics.map(function (m) {
-          return isNum(vals[m]) ? vals[m] : 1;
+        // Build the polygon from ONLY metrics with real measured data. Metrics
+        // that are inapplicable ('na') or unreported ('missing') for this scheme
+        // are NOT plotted — previously they were pinned to r=1 (the worst edge),
+        // which inverted their meaning (a sublinear scheme with no DB-scan
+        // throughput looked worst-in-class). The angular axis still lists every
+        // metric (categoryarray below), so axes stay consistent across the grid.
+        var dataR = [], dataTheta = [], dataHover = [], naMetrics = [], missingMetrics = [];
+        radarMetrics.forEach(function (m) {
+          var st = metricStatus(s, m);
+          if (st === 'data') {
+            dataR.push(vals[m]);
+            dataTheta.push(METRIC_LABELS[m]);
+            var raw = getVal(s, m);
+            var rankLine = useAbs
+              ? 'Log-norm: ' + (s._absNorm[m] * 100).toFixed(0) + '%'
+              : 'Rank: ' + (s._ranks[m] * 100).toFixed(0) + '%';
+            dataHover.push(METRIC_NAMES[m] + ': ' + formatNum(raw) + ' ' + METRIC_UNITS[m] +
+              '<br>' + rankLine +
+              '<br>DB / Entry: ' + (dbSizeLabel(s) || 'N/A') + ' / ' + (s._entry_size_label || 'N/A') +
+              '<br>Source: ' + (s.source_ref || 'N/A'));
+          } else if (st === 'na') {
+            naMetrics.push(METRIC_NAMES[m]);
+          } else {
+            missingMetrics.push(METRIC_NAMES[m]);
+          }
         });
-        r.push(r[0]);
+        // close the polygon over the available metrics
+        if (dataR.length) { dataR.push(dataR[0]); dataTheta.push(dataTheta[0]); dataHover.push(dataHover[0]); }
 
         var tierDash = { 1: 'solid', 2: 'dash', 3: 'dot' };
         var tierFill = { 1: color + '22', 2: color + '0d', 3: 'rgba(0,0,0,0)' };
         var trace = {
           type: 'scatterpolar', mode: 'lines+markers',
-          r: r, theta: theta,
+          r: dataR, theta: dataTheta,
           name: s.display_name,
           marker: { size: 5, color: color },
           line: { color: color, width: 2, dash: tierDash[s.data_tier] || 'solid' },
           fill: 'toself',
           fillcolor: tierFill[s.data_tier] || color + '22',
-          hovertext: (function () {
-            var ht = radarMetrics.map(function (m) {
-              var raw = getVal(s, m);
-              var rankLine = useAbs
-                ? 'Log-norm: ' + (isNum(s._absNorm[m]) ? (s._absNorm[m] * 100).toFixed(0) + '%' : 'N/A')
-                : 'Rank: ' + (isNum(s._ranks[m]) ? (s._ranks[m] * 100).toFixed(0) + '%' : 'N/A');
-              var valStr = isPos(raw) ? formatNum(raw) + ' ' + METRIC_UNITS[m] : 'N/A';
-              var dbEntry = 'DB / Entry: ' + (dbSizeLabel(s) || 'N/A') + ' / ' + (s._entry_size_label || 'N/A');
-              return METRIC_NAMES[m] + ': ' + valStr +
-                '<br>' + rankLine +
-                '<br>' + dbEntry +
-                '<br>Source: ' + (s.source_ref || 'N/A');
-            });
-            ht.push(ht[0]); // closing point matches first metric
-            return ht;
-          })(),
+          hovertext: dataHover,
           hoverinfo: 'text'
         };
-
-        // Missing-data markers: red "?" at outer edge where data is null
-        var missingR = [], missingTheta = [], missingText = [];
-        radarMetrics.forEach(function (m, i) {
-          if (!isNum(vals[m])) {
-            missingR.push(1);
-            missingTheta.push(theta[i]);
-            missingText.push(METRIC_LABELS[m] + ': no data');
-          }
-        });
         var traces = [trace];
-        if (missingR.length) {
-          traces.push({
-            type: 'scatterpolar', mode: 'markers+text',
-            r: missingR, theta: missingTheta,
-            text: missingR.map(function () { return '?'; }),
-            textposition: 'top center',
-            textfont: { size: 10, color: '#e74c3c', family: 'Ubuntu, sans-serif' },
-            marker: { size: 7, color: 'rgba(0,0,0,0)', line: { color: '#e74c3c', width: 1.5 } },
-            hovertext: missingText,
-            hoverinfo: 'text',
-            showlegend: false
-          });
-        }
+
+        // Footer note: which metrics are inapplicable vs simply unreported.
+        // Replaces the old red "?" markers that sat at the worst edge.
+        var naNote = [];
+        if (naMetrics.length) naNote.push('n/a: ' + naMetrics.join(', '));
+        if (missingMetrics.length) naNote.push(missingMetrics.length + ' no-data');
 
         var layout = {
           polar: {
@@ -2291,6 +2321,9 @@
               tickfont: { color: t.muted, size: 9 }
             },
             angularaxis: {
+              type: 'category',
+              categoryorder: 'array',
+              categoryarray: radarMetrics.map(function (m) { return METRIC_LABELS[m]; }),
               tickfont: { size: 9, color: t.text },
               gridcolor: t.grid, linecolor: t.grid
             },
@@ -2302,13 +2335,16 @@
           hoverdistance: -1,
           margin: { t: 8, r: 8, b: 8, l: 8 },
           height: 280,
-          annotations: s.implementation_url ? [] : [{
-            text: '(no impl)',
-            showarrow: false,
-            xref: 'paper', yref: 'paper',
-            x: 0.5, y: -0.02,
-            font: { size: 10, color: t.muted }
-          }]
+          annotations: (function () {
+            var anns = [];
+            if (!s.implementation_url) {
+              anns.push({ text: '(no impl)', showarrow: false, xref: 'paper', yref: 'paper', x: 0.5, y: -0.02, font: { size: 10, color: t.muted } });
+            }
+            if (naNote.length) {
+              anns.push({ text: naNote.join('  •  '), showarrow: false, xref: 'paper', yref: 'paper', x: 0.5, y: (s.implementation_url ? -0.02 : -0.10), font: { size: 9, color: t.muted } });
+            }
+            return anns;
+          })()
         };
 
         Plotly.newPlot(plotDiv, traces, layout, plotConfig());

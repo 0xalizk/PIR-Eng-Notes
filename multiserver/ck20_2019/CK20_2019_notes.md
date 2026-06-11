@@ -34,7 +34,7 @@
 |-------|-------|
 | **Paper** | [Private Information Retrieval with Sublinear Online Time](https://eprint.iacr.org/2019/1075) (2019, Eurocrypt 2020) |
 | **Archetype** | Construction (theory-only) + Building-block (puncturable pseudorandom sets) + Model/definition (offline/online PIR) |
-| **PIR Category** | Group 2b — Interactive-Hint |
+| **PIR Category** | Group 2b — Client-specific hint (interactive) |
 | **Security model** | Two-server non-colluding (statistical or computational); single-server (computational) |
 | **Additional assumptions** | OWF (for puncturable PRFs from GGM tree); PRGs (for computational variant); linearly homomorphic encryption + standard single-server PIR (for single-server constructions); FHE (for optimal single-server variant) |
 | **Correctness model** | Probabilistic (failure per-read <= 1/2, amplified to 2^{-λ} via λ parallel repetitions) |
