@@ -4,8 +4,8 @@ Based on the [client-state architecture taxonomy](https://notes.ethereum.org/U9x
 
 - **1a** — Stateless Client, Stateful Server: server caches per-client crypto material (eval keys, public keys)
 - **1b** — Stateless Client, Stateless Server: no per-client state anywhere; CRS or public-parameter model
-- **2a** — Download-Hint: client downloads a server-computed global hint matrix
-- **2b** — Interactive-Hint: bidirectional hint generation (client streams DB or interactive preprocessing)
+- **2a** — Client-independent hint (download): server precomputes one global hint from the public matrix + DB; every client downloads the same hint
+- **2b** — Client-specific hint (interactive): each client derives its own private hint via interactive preprocessing — streaming the full DB (Piano/Plinko/WangRen/HarmonyPIR) or a shared-key/FHE setup (RMS24/ThorPIR)
 - **X** — Extensions: orthogonal problem class, not classified by state architecture
 
 | Scheme | Group | Rationale | Source |
@@ -38,5 +38,6 @@ Based on the [client-state architecture taxonomy](https://notes.ethereum.org/U9x
 | RMS24 | 2b | Dummy-subset hints with interactive preprocessing; offline server generates hints via shared PRF key | [Protocol Phases](Group.2b.Interactive.Hint/rms24_2024/RMS24_2024_notes.md#protocol-phases), paper p.5-6 (Section 3.2) |
 | WangRen | 2b | Client streams entire DB per preprocessing window; tight S*T tradeoff, interactive setup (theory-only) | [Protocol Phases](Group.2b.Interactive.Hint/wangren_2024/WangRen_2024_notes.md#protocol-phases), paper p.21 (Section 4.3) |
 | ThorPIR | 2b | Client-dependent FHE preprocessing: server homomorphically shuffles DB under client's BFV key; resolves old Group A (now 1a) + D (now 2b) hybrid classification | [Protocol Phases](Group.2b.Interactive.Hint/thorpir_2024/ThorPIR_2024_notes.md#protocol-phases), paper p.6-7 (Section 3) |
+| HarmonyPIR | 2b | Client streams entire DB to build a single size-2N PRP hint row; interactive preprocessing re-run per M/2-query window (optimizes WangRen) | [Protocol Phases](Group.2b.Interactive.Hint/harmonypir_2026/HarmonyPIR_2026_notes.md#protocol-phases), paper p.6 (Algorithm 3) |
 | KeywordPIR | X | Keyword PIR (query by key, not index); orthogonal to client-state architecture | [Protocol Phases](Group.X.Extensions/keywordpir_2019/KeywordPIR_2019_notes.md#protocol-phases), paper p.5 (Section 3) |
 | DistributionalPIR | X | Distribution-dependent model; reduces to any underlying PIR scheme via routing | [Protocol Phases](Group.X.Extensions/distributionalpir_2025/DistributionalPIR_2025_notes.md#protocol-phases), paper p.8 (Section 4) |

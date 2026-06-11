@@ -34,7 +34,7 @@
 |-------|-------|
 | **Paper** | [Single Pass Client-Preprocessing Private Information Retrieval](https://eprint.iacr.org/2024/303) (2024) |
 | **Archetype** | Construction |
-| **PIR Category** | Group 2b — Interactive-Hint |
+| **PIR Category** | Group 2b — Client-specific hint (interactive) |
 | **Security model** | 2-server non-colluding (semi-honest, at least one server honest) |
 | **Additional assumptions** | PRG security (for seed-compressed permutations); information-theoretic correctness and security against each server individually |
 | **Correctness model** | Deterministic |

@@ -34,7 +34,7 @@
 |-------|-------|
 | **Paper** | [PIR with Client-Side Preprocessing: Information-Theoretic Constructions and Lower Bounds](https://eprint.iacr.org/2024/976) (2025) |
 | **Archetype** | Theory (information-theoretic constructions + lower bounds) |
-| **PIR Category** | Group 2b — Interactive-Hint |
+| **PIR Category** | Group 2b — Client-specific hint (interactive) |
 | **Security model** | Information-theoretic (perfect privacy against semi-honest server) |
 | **Additional assumptions** | None (information-theoretic; no computational assumptions) |
 | **Correctness model** | Probabilistic (failure prob amplifiable to negl(n) via parallel repetition); adaptive correctness achieved for 1-server constructions |

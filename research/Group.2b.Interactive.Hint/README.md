@@ -1,4 +1,4 @@
-## Group 2b — Interactive-Hint
+## Group 2b — Client-specific hint (interactive)
 
 #### CK20 (2019)
 

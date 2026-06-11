@@ -34,7 +34,7 @@
 |-------|-------|
 | **Paper** | [Simple and Practical Amortized Sublinear Private Information Retrieval using Dummy Subsets](https://doi.org/10.1145/3658644.3690266) (2024) |
 | **Archetype** | Construction |
-| **PIR Category** | Group 2b — Interactive-Hint |
+| **PIR Category** | Group 2b — Client-specific hint (interactive) |
 | **Security model** | Semi-honest two-server non-colluding (primary) / Semi-honest single-server (secondary variant) |
 | **Additional assumptions** | OWF (PRF instantiated with AES-128) |
 | **Correctness model** | Probabilistic with standard (non-degrading) guarantees -- failure probability bounded by a union bound over queries, does not grow per query&#8201;[^1] |

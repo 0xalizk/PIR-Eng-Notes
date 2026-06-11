@@ -44,9 +44,9 @@ No per-client state anywhere. Server preprocesses DB into a shared structure.
 | 2024 [YPIR](research/Group.1b.Stateless.Client.Stateless.Server/ypir_2024/YPIR_2024_notes.md) | Memory-bandwidth-limited throughput, CDKS packing |
 | 2023 [HintlessPIR](research/Group.1b.Stateless.Client.Stateless.Server/hintlesspir_2023/HintlessPIR_2023_notes.md) | Composable RLWE preprocessing, LinPIR primitive |
 
-### Group 2a — Download-Hint
+### Group 2a — Client-independent hint (download)
 
-Client downloads server-computed global hint. Hint generation is server→client only (one-directional).
+Server precomputes one global hint from the public matrix + DB; the same hint serves every client (client-independent), downloaded server→client only (one-directional).
 
 | Paper &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Key Contribution |
 |-------------------------------|-----------------|
@@ -56,12 +56,13 @@ Client downloads server-computed global hint. Hint generation is server→client
 | 2022 [DoublePIR](research/Group.2a.Download.Hint/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md) | Compressed hints via LWE-on-LWE composition |
 | 2022 [SimplePIR](research/Group.2a.Download.Hint/simplepir_doublepir_2022/SimplePIR_DoublePIR_2022_notes.md) | 10 GB/s throughput via plain LWE matrix-vector multiply |
 
-### Group 2b — Interactive-Hint
+### Group 2b — Client-specific hint (interactive)
 
-Hint generation requires client↔server communication. Only category achieving sublinear online server time.
+Each client derives its own private hint via client↔server preprocessing (streaming the full DB, or a shared-key/FHE setup). Only category achieving sublinear online server time.
 
 | Paper &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Key Contribution |
 |-------------------------------|-----------------|
+| 2026 [HarmonyPIR](research/Group.2b.Interactive.Hint/harmonypir_2026/HarmonyPIR_2026_notes.md) | Single size-2N PRP hint row; FPE/AES instantiation (optimizes WangRen) |
 | 2024 [ThorPIR](research/Group.2b.Interactive.Hint/thorpir_2024/ThorPIR_2024_notes.md) | Client-dependent FHE preprocessing |
 | 2024 [WangRen](research/Group.2b.Interactive.Hint/wangren_2024/WangRen_2024_notes.md) | Tight ST = O(nw) tradeoff (theory) |
 | 2024 [Plinko](research/Group.2b.Interactive.Hint/plinko_2024/Plinko_2024_notes.md) | Invertible PRFs, Õ(1) updates (theory) |

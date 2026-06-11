@@ -10,7 +10,7 @@
 <sub><nobr>4. <a href="#cryptographic-foundation">Cryptographic Foundation</a></nobr></sub><br>
 <sub><nobr>5. <a href="#key-data-structures"><b>Key Data Structures</b></a></nobr></sub><br>
 <sub><nobr>6. <a href="#protocol-phases"><b>Protocol Phases</b></a></nobr></sub><br>
-<sub><nobr>7. <a href="#preprocessing-metrics-group-d-style">Preprocessing Metrics (Group 2b style)</a></nobr></sub><br>
+<sub><nobr>7. <a href="#preprocessing-metrics-group-2b-style">Preprocessing Metrics (Group 2b style)</a></nobr></sub><br>
 <sub><nobr>8. <a href="#correctness-analysis">Correctness Analysis</a></nobr></sub><br>
 <sub><nobr>9. <a href="#complexity"><b>Complexity</b></a></nobr></sub>
 
@@ -32,7 +32,7 @@
 |-------|-------|
 | **Paper** | [ThorPIR: Single Server PIR via Homomorphic Thorp Shuffles](https://eprint.iacr.org/2024/482) (2024) |
 | **Archetype** | Construction (primary) + Building-block (secondary: LWR-based FHE-friendly PRG) |
-| **PIR Category** | Group 2b — Interactive-Hint |
+| **PIR Category** | Group 2b — Client-specific hint (interactive) |
 | **Security model** | Semi-honest single-server |
 | **Additional assumptions** | LWR (Learning With Rounding); conjectured tighter Thorp shuffle bound (Conjecture 3.3) for best parameters&#8201;[^2] |
 | **Correctness model** | Deterministic (given correct FHE decryption) |
@@ -154,7 +154,7 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 
 ---
 
-<a id="preprocessing-metrics-group-d-style"></a>
+<a id="preprocessing-metrics-group-2b-style"></a>
 
 ### Preprocessing Metrics (Group 2b style) <a href="#toc">⤴</a>
 

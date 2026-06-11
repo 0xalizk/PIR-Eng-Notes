@@ -28,7 +28,7 @@
 |-------|-------|
 | **Paper** | [Barely Doubly-Efficient SimplePIR](https://eprint.iacr.org/2025/1305) (Keewoo Lee, 2025) |
 | **Archetype** | Construction (theory-only) / Feasibility |
-| **PIR Category** | Group 2a — Download-Hint |
+| **PIR Category** | Group 2a — Client-independent hint (download) |
 | **Security model** | Semi-honest single-server DEPIR in the CRS model (unkeyed); equivalently, keyed DEPIR with public preprocessing in the standard model |
 | **Additional assumptions** | Plain LWE with polynomial modulus-to-noise ratio (Definition 2.4); CRS model |
 | **Correctness model** | Statistical (overwhelming probability over Setup randomness) |

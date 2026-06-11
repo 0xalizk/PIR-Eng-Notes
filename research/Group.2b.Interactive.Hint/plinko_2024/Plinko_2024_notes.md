@@ -34,7 +34,7 @@
 |-------|-------|
 | **Paper** | [Plinko: Single-Server PIR with Efficient Updates via Invertible PRFs](https://eprint.iacr.org/2024/318) (Hoover et al., 2024) |
 | **Archetype** | Construction (theory-only) + Building-block (invertible PRFs) + Update/maintenance |
-| **PIR Category** | Group 2b — Interactive-Hint |
+| **PIR Category** | Group 2b — Client-specific hint (interactive) |
 | **Security model** | Semi-honest single-server |
 | **Additional assumptions** | Existence of one-way functions (OWF) only — no public-key cryptography required |
 | **Correctness model** | Probabilistic (failure prob <= negl(λ)); inherited from base schemes [RMS24, Piano] |
