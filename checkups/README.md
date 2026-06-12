@@ -22,6 +22,12 @@
 
 **[Fixes](3rd_pass/fixes#3rd-pass--fixes-applied) applied:** Group [A](3rd_pass/fixes/Fixes_groupA.md) - [B](3rd_pass/fixes/Fixes_groupB.md) - [C](3rd_pass/fixes/Fixes_groupC.md) - [D](3rd_pass/fixes/Fixes_groupD.md) - [X](3rd_pass/fixes/Fixes_groupX.md)
 
+### 4th Pass — June 11–12, 2026
+
+Post-benchmark-refactor re-audit; first pass to also cover the **group READMEs**, **reported.json**, and **cross-file consistency** (where several errors had survived earlier notes-only passes). 10 audit agents + one adversarial reviewer per finding → 62 confirmed, 5 refuted; all applied via PR #3.
+
+**[Issues found & fixes applied](4th_pass/README.md):** Group [A](4th_pass/README.md#group-a--fhe-based-pir-1a) - [B](4th_pass/README.md#group-b--stateless-single-server-pir-1b) - [C](4th_pass/README.md#group-c--client-independent-preprocessing-2a) - [D](4th_pass/README.md#group-d--client-dependent-preprocessing-2b) - [X](4th_pass/README.md#group-x--extensions) - [Multiserver](4th_pass/README.md#group-m--multiserver) - [Cross-cutting](4th_pass/README.md#group-cc--cross-cutting--classification)
+
 ---
 
 <details>
