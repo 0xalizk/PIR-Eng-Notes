@@ -290,9 +290,9 @@ Hardware: Two AWS m5.8xlarge instances with 128 GB RAM. Server computation is si
 | Assumption | OWF | LWE | LWE | LWE | LWE |
 | Communication | O(sqrt(n)) | O~_λ(sqrt(n)) | O~_λ(sqrt(n)) | O~_λ(sqrt(n)) | O~_λ(1) |
 | Per-query time | O~_λ(sqrt(n)) | O(n) | O~_λ(n) | O~_λ(sqrt(n)) | O~_λ(sqrt(n)) |
-| Extra space | O~_λ(sqrt(n)) | O~_λ(sqrt(n)) | O~_λ(n) | O~_λ(sqrt(n)) | O~_λ(sqrt(n)) |
+| Extra space | O~_λ(sqrt(n)) | O~_λ(sqrt(n)) | O~_λ(sqrt(n)) | O~_λ(sqrt(n)) | O~_λ(sqrt(n)) |
 
-[^42]: Table 3 (p.14): Piano is the only scheme with OWF assumption (vs LWE for all others) and O(sqrt(n)) per-query time. CK20 has O~_λ(n) per-query time and extra space. ZLTS23/LP22 achieve O~_λ(1) communication but require LWE (and use FHE).
+[^42]: Table 3 (p.14): Piano is the only scheme with OWF assumption (vs LWE for all others) and O(sqrt(n)) per-query time. CK20 has O~_λ(n) per-query time and O~_λ(sqrt(n)) extra space. ZLTS23/LP22 achieve O~_λ(1) communication but require LWE (and use FHE).
 
 #### Concrete comparison at key database sizes
 

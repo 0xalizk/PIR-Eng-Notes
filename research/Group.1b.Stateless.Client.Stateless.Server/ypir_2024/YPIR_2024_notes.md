@@ -252,7 +252,7 @@ YPIR uses the independence heuristic to bound noise as sub-Gaussian variance rat
 | **8 GB** | Prep. Throughput | 3.1 MB/s | 2.9 MB/s | 1.6 MB/s | 5.2 MB/s | 46 MB/s |
 | | Off. Download | 362 MB | 16 MB | -- | -- | -- |
 | | Upload | 362 KB | 724 KB | 33 MB | 1.4 MB | 1.5 MB |
-| | Download | 362 KB | 32 KB | 1.7 MB | 1.7 MB | 12 KB |
+| | Download | 362 KB | 32 KB | 8.6 MB | 1.7 MB | 12 KB |
 | | Server Time | 708 ms | 845 ms | 9.75 s | 1.62 s | 687 ms |
 | | Throughput | 11.3 GB/s | 9.5 GB/s | 840 MB/s | 4.9 GB/s | 11.6 GB/s |
 | **32 GB** | Prep. Throughput | 3.3 MB/s | 3.3 MB/s | 1.4 MB/s | 5.7 MB/s | 48 MB/s |

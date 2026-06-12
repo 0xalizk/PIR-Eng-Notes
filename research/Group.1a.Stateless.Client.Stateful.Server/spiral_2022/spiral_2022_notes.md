@@ -311,7 +311,7 @@ Spiral uses **five** distinct decomposition bases, each controlling a different 
 | Metric | Best Previous | Spiral | SpiralStream | SpiralPack | SpiralStreamPack |
 |--------|-------------|--------|-------------|------------|-----------------|
 | Param. Size | 1 MB | 14 MB | 344 KB | 14 MB | 16 MB |
-| Query Size | 34 KB | **14 KB** | 8 MB | **14 KB** | 15 MB |
+| Query Size | 34 MB | **14 KB** | 8 MB | **14 KB** | 15 MB |
 | Response Size | 66 KB | 21 KB | **20 KB** | **20 KB** | 71 KB |
 | Computation | 1.44 s | 1.68 s | **0.86 s** | 1.37 s | **0.42 s** |
 | Rate | 0.0039 | 0.0122 | **0.0125** | **0.0125** | 0.0036 |

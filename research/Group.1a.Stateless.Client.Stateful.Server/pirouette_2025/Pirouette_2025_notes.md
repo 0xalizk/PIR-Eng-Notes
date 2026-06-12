@@ -57,7 +57,7 @@
 
 | Field | Value |
 |-------|--------|
-| **Builds on** | Respire [Group 1b] (hypercube structure, record selection, response compression); TFHE/FHEW bootstrapping [Chillotti et al.] (blind rotation); Micciancio-Polyakov [72] (large-precision digit decomposition) |
+| **Builds on** | Respire [Group 1a] (hypercube structure, record selection, response compression); TFHE/FHEW bootstrapping [Chillotti et al.] (blind rotation); Micciancio-Polyakov [72] (large-precision digit decomposition) |
 | **What changed** | Replaces RLWE query compression (Respire's 14.8 KB query) with a single high-precision LWE ciphertext (36 B), using blind rotation and negacyclic LUT evaluation to homomorphically bit-decompose the LWE query and convert it to RGSW ciphertexts server-side. Eliminates transciphering entirely. |
 | **Superseded by** | N/A |
 | **Concurrent work** | N/A |
@@ -307,7 +307,7 @@ Pirouette's correctness relies on bounding the noise variance through a cascade 
 | | Throughput | 170 MB/s | 1 MB/s | 13 MB/s | 17 MB/s |
 | 2^22 x 256 B (1 GB) | Offline Comm. | 4 MB | 91 MB | 1.2 GB | 650 MB |
 | | Query Size | 7.7 KB | 208 B | 36 B | 57 B |
-| | Computation | 4 s | 296 s | 26 s | 22 s |
+| | Computation | 4 s | 296 s | 26 s | 21 s |
 | | Throughput | 256 MB/s | 3 MB/s | 39 MB/s | 48 MB/s |
 | 2^25 x 256 B (8 GB) | Offline Comm. | 4 MB | 91 MB | 1.2 GB | 650 MB |
 | | Query Size | 14.8 KB | 336 B | 36 B | 60 B |
@@ -531,7 +531,7 @@ Steps:
 
 ### Related Papers in Collection <a href="#toc">⤴</a>
 
-- **Respire [Group 1b]:** Direct predecessor. Pirouette uses Respire's hypercube structure, record selection via RLWE' selectors, and response compression via ModSwitch + RingSwitch. Pirouette replaces Respire's RLWE query with a single high-precision LWE ciphertext.
+- **Respire [Group 1a]:** Direct predecessor. Pirouette uses Respire's hypercube structure, record selection via RLWE' selectors, and response compression via ModSwitch + RingSwitch. Pirouette replaces Respire's RLWE query with a single high-precision LWE ciphertext.
 - **Spiral [Group 1a]:** Shares the Regev+GSW composition paradigm and ciphertext translation ideas. Pirouette's selector construction is conceptually similar to Spiral's GSW-based dimension folding. Compared in Figure 4.
 - **SimplePIR [Group 2a]:** Compared in Figure 4. SimplePIR achieves much higher throughput (memory-bandwidth-bound) with larger queries and database-dependent hints.
 - **TFHE/FHEW [building-block, not in collection]:** Source of the blind rotation, bootstrapping, and negacyclic LUT evaluation primitives that enable Pirouette's bit decomposition.

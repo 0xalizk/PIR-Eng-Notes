@@ -239,7 +239,7 @@ TreePIR is a two-server client-preprocessing PIR scheme that achieves sublinear 
 | Metric | Asymptotic | Concrete (benchmark params) | Phase |
 |--------|-----------|---------------------------|-------|
 | Query size (to each server) | O(λ * log N) | ~1 KB (at N = 2^32)&#8201;[^29] | Online |
-| Response size (per server) | O(sqrt(N) * w) | 16.6 KB (N=2^32, w=1 bit) | Online |
+| Response size (per server) | O(sqrt(N) * w) | ~8 KB (8192 bytes = sqrt(N)*w bits, N=2^32, w=1 bit) | Online |
 | Server computation (each server) | O(sqrt(N) * log N) | ~1754 ms per server (amortized, N=2^32, w=1 bit)&#8201;[^30] | Online |
 | Client computation | O(sqrt(N)) probabilistic; O(sqrt(N)) deterministic with shift | <1 ms | Online |
 | Total online bandwidth | O(sqrt(N)) (base); O(polylog N) (with DDH recursion) | 16.6 KB (base, N=2^32, w=1); 50 KB (with SPIRAL) | Online |

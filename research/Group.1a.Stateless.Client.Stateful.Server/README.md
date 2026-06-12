@@ -91,33 +91,6 @@
 | Rate | n^2 log p / (n^2 log q_1 + n log q_2) | 0.3573 | 0.1969 | -- |
 | Throughput | -- | 322 MB/s | 114 MB/s | -- |
 
-#### FrodoPIR (2022)
-
-| Metric | Asymptotic | Concrete (m = 2^20, w = 1 KB) | Phase |
-|--------|-----------|-------------------------------|-------|
-| Query size | O(m * log(q)) | 4096 KB (4 MB) | Online |
-| Response size | O(omega * log(q)) | 3.556 KB | Online |
-| Server computation | O(m * omega) mults | 825.37 ms | Online |
-| Client query computation | O(1) (single vector add) | 0.34 ms | Online |
-| Client output computation | O(omega) | 0.43 ms | Online |
-| Response overhead | < 3.6x | 3.556x (over 1 KB element) | -- |
-| Throughput | O(m * w / server_time) | ~1.27 GB/s | Online |
-
-#### ThorPIR (2024)
-
-| Metric | Asymptotic | Phase |
-|--------|-----------|-------|
-| Preprocessing depth | O_λ(1) | Offline |
-| Offline bandwidth | O(N^{2/3}) | Offline |
-| Preprocessing time (client) | O_λ(N) (decryption) | Offline |
-| Preprocessing time (server) | O_λ(N) (FHE computation) | Offline |
-| Online query + answer time (client) | O_λ(Q) | Online |
-| Online bandwidth | O(N^{1/3}) per query | Online |
-| Online server time | O(Q) per query | Online |
-| # queries per epoch | N^{1/3} (for Q = T = N^{1/3}) | -- |
-| Client storage | O(N^{2/3}) | Persistent |
-| Update time | O_λ(1) per element update | Online |
-
 #### OnionPIRv2 (2025)
 
 | Metric | Asymptotic | Concrete (n=2048, ~1 GB DB) | Concrete (n=4096, ~8 GB DB) | Phase |
@@ -128,3 +101,44 @@
 | Server computation | O(N * n * log q / log t) | ~0.8 s (0.9 GB) | ~6.9 s (7.5 GB) | Online |
 | Throughput | — | 1109 MB/s | 1098 MB/s | Online |
 | Per-client server storage | — | 0.63 MB | 2.9 MB | Persistent |
+
+#### Respire (2024)
+
+| Metric | Concrete (256 MB, 2^20 x 256B) | Concrete (1 GB, 2^22 x 256B) | Concrete (8 GB, 2^25 x 256B) | Phase |
+|--------|-------------------------------|-------------------------------|-------------------------------|-------|
+| Query size | 4.1 KB | 7.7 KB | 14.8 KB | Online |
+| Response size | 2.0 KB | 2.0 KB | 2.0 KB | Online |
+| Server computation | 1.26 s | 3.48 s | 20.84 s | Online |
+| Throughput | 204 MB/s | 295 MB/s | 393 MB/s | Online |
+| Offline communication | 3.9 MB | 3.9 MB | 3.9 MB | Offline (per client) |
+
+#### WhisPIR (2024)
+
+| Metric | Concrete (benchmark params) | Phase |
+|--------|---------------------------|-------|
+| Query size (upload) | ~10--30 KB (depends on B, w) (approximate, from Figure 2) | Online |
+| Response size (download) | ~200--1200 KB (depends on p, chunks, k) (approximate, from Figure 1) | Online |
+| Total communication | ~300--3000 KB (approximate, from Figures 2, 4) | Online |
+| Server computation | ~0.5--30 s single-threaded (approximate, from Figures 2, 4; varies with DB size and param settings) | Online |
+| Client computation | "A few dozen milliseconds regardless of the database size" (key generation, encryption, decryption) | Online |
+
+#### Pirouette (2025)
+
+| Metric | Asymptotic | Concrete (2^25 x 256 B = 8 GB) | Phase |
+|--------|-----------|-------------------------------|-------|
+| Query size | O(log q) = O(1) w.r.t. N | 36 B (Pirouette) / 60 B (Pirouette^H) | Online |
+| Response size | O(N_1 * log Q_1) | ~2 KB | Online |
+| Server computation (seq.) | O(N) | 60 s (Pirouette) / 55 s (Pirouette^H) | Online |
+| Throughput (seq.) | -- | 137 MB/s (Pirouette) / 148 MB/s (Pirouette^H) | Online |
+| Throughput (32-core par.) | -- | 585 MB/s (Pirouette full par.) / 178 MB/s (Pirouette^H par. Phase 0) | Online |
+
+#### NPIR (2026)
+
+| Metric | Asymptotic | Concrete (32 KB records, 8 GB DB) | Phase |
+|--------|-----------|----------------------------------|-------|
+| Query size | O(N * log q * (1 + t_g)) | 84 KB | Online |
+| Response size | O(N * phi * log q_1) | 128 KB | Online |
+| Server computation | O(N * ell * phi) multiplications + O(phi) packing ops | 14.87 s | Online |
+| Client computation | O(1 + t_g) encryptions + O(phi) decryptions | 1.62 ms | Online |
+| Throughput | -- | 550.91 MB/s | Online |
+| Response overhead | O(1) | 4x (128 KB / 32 KB) | -- |

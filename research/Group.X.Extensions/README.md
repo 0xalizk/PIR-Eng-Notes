@@ -7,11 +7,11 @@
 | Metric | SealPIR | Optimized SealPIR | MulPIR (d=2) | Phase |
 |--------|------------|-------------------|-------------|-------|
 | Upload size | 61.4 kB | 15.4 kB | 122 kB | Online |
-| Download size | 307 kB | 128 kB | 122 kB | Online |
-| Total communication | 368.4 kB | 143.4 kB | 244 kB | Online |
+| Download size | 307 kB | 128 kB | 119 kB | Online |
+| Total communication | 368.4 kB | 143.4 kB | 241 kB | Online |
 | Client Query (ms) | 19 | 19 | 172 | Online |
-| Server Expand (ms) | 145 | 294 | 391 | Online |
-| Server Response (ms) | 1,020 | 590 (approximate) | 1,919 | Online |
+| Server Expand (ms) | 294 | 294 | 391 | Online |
+| Server Response (ms) | 3,520 | 590 (approximate) | 1,919 | Online |
 | Server Cost (US cents) | 0.0040 | 0.0028 (approximate) | 0.0026 | Online |
 
 **Gentry-Ramzan (5,000 entries of 288B, no recursion):**
@@ -20,8 +20,8 @@
 |--------|------------|---------------------------|---------------------------|----------------------------|
 | Upload (kB) | 0.5 | 4.1 | 13.1 | 25.8 |
 | Download (kB) | 1.3 | 1.3 | 1.3 | 1.3 |
-| C.Setup (ms) | 1,532 | 1,540 | 1,594 | 1,796 |
-| S.Setup (ms) | 3,294 | 2,688 | 3,966 | 7,980 |
+| S.Setup (ms) | 1,532 | 1,540 | 1,594 | 1,796 |
+| C.Create (ms) | 3,294 | 2,688 | 3,966 | 7,980 |
 | S.Respond (ms) | 51,803 | 5,495 | 2,988 | 2,904 |
 | Server Cost (US cents) | 0.0145 | 0.0016 | **0.0011** | 0.0014 |
 

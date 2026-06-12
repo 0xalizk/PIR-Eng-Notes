@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Paper** | [Function Secret Sharing](https://eprint.iacr.org/2018/707) (EuroCrypt 2015), Boyle, Gilboa, Ishai |
+| **Paper** | [Function Secret Sharing](https://www.iacr.org/archive/eurocrypt2015/90560300/90560300.pdf) (EuroCrypt 2015), Boyle, Gilboa, Ishai |
 | **Archetype** | Building-block (primary) + Construction (theory-only) + Model/definition |
 | **Asymmetry profile** | **Symmetric** — every party runs identical `Eval` on every input; servers do equal work and hold identical DB replicas in the PIR application&#8201;[^1] |
 | **Multi-server model** | p-party additive secret sharing of functions; (p−1)-private (any strict subset of keys hides f). Default focus: 2-party (DPF) and p ≥ 3 (multi-party DPF) |

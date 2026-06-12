@@ -56,4 +56,16 @@
 | Preprocessing communication (entry-level) | O(M * (log p + log sqrt(N))) per entry, or O(n * log q + log sqrt(N)) per row-aggregated | 28.50 MB | Offline |
 | Preprocessing communication (row-level) | O(M_r * n * log q) per M_r modified rows | 120.75 MB | Offline |
 | Hint size (client storage) | sqrt(N) * n * log q bits | 241 MB (for 4GB password DB) | Stored |
-| Amortization window | Per-entry (real-time) or per-row (when M' > t in a row) | t = ceil((n log q + log sqrt(N)) / (log p + log sqrt(N))) | -- |
+| Amortization window | Per-entry (real-time) or per-row (when M' > t in a row) | t = ceil(n log q / (log p + log sqrt(N))) | -- |
+
+#### FrodoPIR (2022)
+
+| Metric | Asymptotic | Concrete (m = 2^20, w = 1 KB) | Phase |
+|--------|-----------|-------------------------------|-------|
+| Query size | O(m * log(q)) | 4096 KB (4 MB) | Online |
+| Response size | O(omega * log(q)) | 3.556 KB | Online |
+| Server computation | O(m * omega) mults | 825.37 ms | Online |
+| Client query computation | O(1) (single vector add) | 0.34 ms | Online |
+| Client output computation | O(omega) | 0.43 ms | Online |
+| Response overhead | < 3.6x | 3.556x (over 1 KB element) | -- |
+| Throughput | O(m * w / server_time) | ~1.27 GB/s | Online |

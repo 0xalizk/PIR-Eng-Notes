@@ -206,7 +206,7 @@ The construction also supports a **D-tradeoff** parameter (§4.4, p.21): set siz
 | Online server time (per server) | O(√N log N) | folded into amortized 3508 ms / query | Online |
 | Online client time | O(√N log N) probabilistic (deterministic via shifts, App. A.1) | folded into amortized total | Online |
 | Online upload (per server) | O(λ log N) | sub-KB | Online |
-| Online download (per server) | O(√N · w) plain; O(polylog N) with recursion | 16.6 KB plain; ~50 KB with SPIRAL | Online |
+| Online download (per server) | O(√N · w) plain; O(polylog N) with recursion | ~8 KB plain (√N·w bits); ~50 KB with SPIRAL | Online |
 | Throughput | not the relevant metric (sublinear server) | — | — |
 
 #### Preprocessing metrics

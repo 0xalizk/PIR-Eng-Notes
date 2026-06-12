@@ -286,7 +286,7 @@ AWS EC2 c5n.metal instance, Ubuntu 22.04. Single-threaded execution. Five runs, 
 | Offline upload (MB) | 5 | 0.06 | 5 | 15 | 19 | 0.34 | 15 | **0** | **0** |
 | Offline download (MB) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | **121** | **16** |
 | Online upload (KB) | 91 | 33,000 | 256 | 14 | 14 | 15,000 | 29,000 | **121** | **313** |
-| Online download (KB) | 181 | 64 | 128 | 20 | 20 | 99 | 20 | **121** | **32** |
+| Online download (KB) | 181 | 64 | 128 | 20 | 20 | 20 | 99 | **121** | **32** |
 | Throughput (MB/s) | 97 | 217 | 60 | 259 | 260 | 485 | 1,370 | **10,138** | **7,622** |
 
 #### Batching throughput (Table 19, p.31; Figure 9, p.13)
@@ -309,7 +309,7 @@ SimplePIR's throughput scales linearly with batch size, exceeding 100 GB/s at ba
 | Entry size | 1 bit | 1 B | 8 B | 64 B | 512 B | 4 KB |
 |------------|-------|-----|-----|------|-------|------|
 | SimplePIR (MB) | 1.4 | 1.5 | 1.4 | 1.4 | 1.4 | 1.4 |
-| DoublePIR (MB) | 0.5 | 1.0 | 3.1 | 11 | 86 | 690 |
+| DoublePIR (MB) | 0.5 | 0.5 | 1.8 | 11 | 86 | 690 |
 
 SimplePIR's amortized communication is nearly constant across entry sizes. DoublePIR's communication grows with entry size because larger entries require more hint downloads.&#8201;[^30]
 
