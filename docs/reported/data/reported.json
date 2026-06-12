@@ -2418,14 +2418,14 @@
           "metrics": {
             "query_size_kb": 193,
             "response_size_kb": 52,
-            "server_time_ms": 480,
-            "throughput_gbps": 2.237,
+            "server_time_ms": 440,
+            "throughput_gbps": 2.31,
             "client_storage_mb": 0,
             "client_preprocessing_time_ms": 0
           },
           "footnotes": [
             "Client preprocessing & client storage = 0: InsPIRe is a stateless-client CRS-model scheme — offline preprocessing is server-side, with no client hint or persistent client state.",
-            "Upload keys 80 KB + query 113 KB = 193 KB total upload; total comm 245 KB. Throughput corrected: paper Table 2 reports 2880 MB/s but this is inconsistent with 480 ms server time for 1.074 GB DB; computed as 1.074/0.480 = 2.237 GB/s."
+            "Upload keys 80 KB + query 113 KB = 193 KB total upload; total comm 244 KB. Paper Table 2 (p.20) InsPIRe^(2) sub-column with 113 KB query: 440 ms / 2310 MB/s (the 480 ms / 2880 MB/s figures belong to other sweep points)."
           ]
         },
         {
@@ -2438,14 +2438,14 @@
           "metrics": {
             "query_size_kb": 224,
             "response_size_kb": 12,
-            "server_time_ms": 280,
-            "throughput_gbps": 3.615,
+            "server_time_ms": 650,
+            "throughput_gbps": 1.58,
             "client_storage_mb": 0,
             "client_preprocessing_time_ms": 0
           },
           "footnotes": [
             "Client preprocessing & client storage = 0: InsPIRe is a stateless-client CRS-model scheme — offline preprocessing is server-side, with no client hint or persistent client state.",
-            "Upload keys 84 KB + query 140 KB = 224 KB total upload; total comm 236 KB"
+            "Upload keys 84 KB + query 140 KB = 224 KB total upload; total comm 236 KB. Paper Table 2 (p.20) InsPIRe minimum-communication sub-column (140 KB query / 236 KB total): 650 ms / 1580 MB/s."
           ]
         },
         {
@@ -2458,14 +2458,14 @@
           "metrics": {
             "query_size_kb": 189,
             "response_size_kb": 52,
-            "server_time_ms": 360,
-            "throughput_gbps": 2.877,
+            "server_time_ms": 470,
+            "throughput_gbps": 2.20,
             "client_storage_mb": 0,
             "client_preprocessing_time_ms": 0
           },
           "footnotes": [
             "Client preprocessing & client storage = 0: InsPIRe is a stateless-client CRS-model scheme — offline preprocessing is server-side, with no client hint or persistent client state.",
-            "Upload keys 80 KB + query 109 KB = 189 KB total upload; total comm 241 KB"
+            "Upload keys 80 KB + query 109 KB = 189 KB total upload; total comm 241 KB. Paper Table 3 (p.21) InsPIRe^(2) sub-column with 109 KB query: 470 ms / 2200 MB/s."
           ]
         },
         {
@@ -2478,41 +2478,41 @@
           "metrics": {
             "query_size_kb": 280,
             "response_size_kb": 12,
-            "server_time_ms": 280,
-            "throughput_gbps": 3.615,
+            "server_time_ms": 400,
+            "throughput_gbps": 2.53,
             "client_storage_mb": 0,
             "client_preprocessing_time_ms": 0
           },
           "footnotes": [
             "Client preprocessing & client storage = 0: InsPIRe is a stateless-client CRS-model scheme — offline preprocessing is server-side, with no client hint or persistent client state.",
-            "Upload keys 84 KB + query 196 KB = 280 KB total upload; total comm 292 KB"
-          ]
-        },
-        {
-          "variant": "InsPIRe^(2)",
-          "config_id": "2^15x32KB",
-          "data_tier": 1,
-          "source_ref": "Table 4, p.21",
-          "threading": "single",
-          "estimation_meta": null,
-          "metrics": {
-            "query_size_kb": 196,
-            "response_size_kb": 96,
-            "server_time_ms": 640,
-            "throughput_gbps": 1.597,
-            "client_storage_mb": 0,
-            "client_preprocessing_time_ms": 0
-          },
-          "footnotes": [
-            "Client preprocessing & client storage = 0: InsPIRe is a stateless-client CRS-model scheme — offline preprocessing is server-side, with no client hint or persistent client state.",
-            "Upload keys 84 KB + query 112 KB = 196 KB total upload; total comm 292 KB"
+            "Upload keys 84 KB + query 196 KB = 280 KB total upload; total comm 292 KB. Paper Table 3 (p.21) InsPIRe sub-column with 196 KB query: 400 ms / 2530 MB/s."
           ]
         },
         {
           "variant": "InsPIRe",
           "config_id": "2^15x32KB",
           "data_tier": 1,
-          "source_ref": "Table 4, p.21",
+          "source_ref": "Table 4, p.22",
+          "threading": "single",
+          "estimation_meta": null,
+          "metrics": {
+            "query_size_kb": 196,
+            "response_size_kb": 96,
+            "server_time_ms": 1170,
+            "throughput_gbps": 0.88,
+            "client_storage_mb": 0,
+            "client_preprocessing_time_ms": 0
+          },
+          "footnotes": [
+            "Client preprocessing & client storage = 0: InsPIRe is a stateless-client CRS-model scheme — offline preprocessing is server-side, with no client hint or persistent client state.",
+            "Upload keys 84 KB + query 112 KB = 196 KB total upload; total comm 292 KB. Table 4 (p.22) has no InsPIRe^(2) column for 32 KB entries; this is the InsPIRe sub-column with 112 KB query (292 KB total): 1170 ms / 880 MB/s."
+          ]
+        },
+        {
+          "variant": "InsPIRe",
+          "config_id": "2^15x32KB",
+          "data_tier": 1,
+          "source_ref": "Table 4, p.22",
           "threading": "single",
           "estimation_meta": null,
           "metrics": {

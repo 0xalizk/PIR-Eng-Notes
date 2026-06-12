@@ -283,14 +283,14 @@ When the database has more than N (ring dimension) elements, a single ciphertext
 |--------|-----------|---------------------------------------|-------|
 | Query size | O(d * ceil(N^{1/d} / N_ring) * \|ct\|) | 64 KB | Online |
 | Response size | O(F^{d-1} * \|ct\|) | 256 KB | Online |
-| Server computation (Expand) | O(d * N^{1/d}) substitutions | 0.11 s&#8201;[^26] | Online |
+| Server computation (Expand) | O(d * N^{1/d}) substitutions | 0.23 s&#8201;[^26] | Online |
 | Server computation (Answer) | O(N) plaintext-ct multiplications | 2.01 s&#8201;[^26] | Online |
-| Server computation (total) | O(N + d*N^{1/d}) | 6.38 s (Setup + Expand + Answer)&#8201;[^26] | Online |
+| Server computation (total) | O(N + d*N^{1/d}) | 6.50 s (Setup + Expand + Answer)&#8201;[^26] | Online |
 | Client computation (Query) | O(d) encryptions | 3.37 ms&#8201;[^26] | Online |
 | Client computation (Extract) | O(F^{d-1}) decryptions | 1.69 ms&#8201;[^26] | Online |
 | Response overhead | F^{d-1} | F = approximately 5-12 depending on t'; for d=2, 1 ciphertext response | -- |
 
-[^26]: Figure 9 (p. 11), column "SealPIR (d=2)", row n = 1,048,576: Query 3.37 ms, Extract 1.69 ms, Setup 4.26 s, Expand 0.11 s, Answer 2.01 s. Total server time = 4.26 + 0.11 + 2.01 = 6.38 s. For n = 262,144: Extract 1.39 ms, Setup 1.04 s, Answer 0.5 s.
+[^26]: Figure 9 (p. 11), column "SealPIR (d=2)", row n = 1,048,576: Query 3.37 ms, Extract 1.69 ms, Setup 4.26 s, Expand 0.23 s, Answer 2.01 s. Total server time = 4.26 + 0.23 + 2.01 = 6.50 s. For n = 262,144: Extract 1.39 ms, Setup 1.04 s, Answer 0.5 s.
 
 #### FHE-specific metrics
 
@@ -317,7 +317,7 @@ Hardware: Microsoft Azure H16 instances (16-core 3.6 GHz Intel Xeon E5-2667, 112
 | Extract | 1.37 | 1.39 | 1.69 |
 | **Server CPU (sec)** | | | |
 | Setup | 0.23 | 1.04 | 4.26 |
-| Expand | 0.05 | 0.11 | 0.11 |
+| Expand | 0.05 | 0.11 | 0.23 |
 | Answer | 0.13 | 0.5 | 2.01 |
 | **Network (KB)** | | | |
 | Query | 64 | 64 | 64 |
@@ -341,7 +341,7 @@ Hardware: Microsoft Azure H16 instances (16-core 3.6 GHz Intel Xeon E5-2667, 112
 
 1. **Query compression:** SealPIR achieves 274x smaller queries than XPIR (d=2) for 2^20 elements (64 KB vs 17,536 KB).&#8201;[^27]
 2. **Client cost reduction:** Query generation is 16.4x less expensive for the client (3.37 ms vs 55.14 ms).&#8201;[^27]
-3. **Server overhead from Expand:** SealPIR introduces 11% to 24% CPU overhead to the server for oblivious expansion (e.g., at n=1,048,576: Expand=0.11s vs Answer=2.01s, overhead = 5%).&#8201;[^28]
+3. **Server overhead from Expand:** SealPIR introduces 11% to 24% CPU overhead to the server for oblivious expansion (e.g., at n=1,048,576: Expand=0.23s vs Answer=2.01s, overhead = 11%).&#8201;[^28]
 4. **Query size is constant** for d=2 at all database sizes tested (64 KB), because all indices fit in ceil(sqrt(n)/N) = 1 ciphertext per dimension up to n = 2^20 with N = 2048.
 5. **Answer size is constant** at 256 KB (= F ciphertexts for d=2).
 
@@ -428,7 +428,7 @@ SealPIR + mPIR integrated into the Pung private communication system:
 |--------|--------------|------------|------------|
 | Query size (n=2^20) | 64 KB | 17,536 KB | 4,064 KB |
 | Response size | 256 KB | 256 KB | 1,952 KB |
-| Server CPU (n=2^20) | 6.38 s | 4.39 s | 4.84 s |
+| Server CPU (n=2^20) | 6.50 s | 4.39 s | 4.84 s |
 | Client Query CPU | 3.37 ms | 55.14 ms | 12.74 ms |
 | Query compression factor | **274x** over XPIR d=2 | 1x | 6.8x over XPIR d=2 |
 | Throughput | 7 req/s (approximate) | 9 req/s (approximate) | lower |
@@ -485,7 +485,7 @@ SealPIR + mPIR integrated into the Pung private communication system:
 - **No ciphertext multiplication compression:** Unlike later schemes (MulPIR, OnionPIR), SealPIR does not use GSW/RGSW to compress the response. The response is always F^{d-1} BFV ciphertexts.
 - **Substitution key size:** 2.9 MB per client is manageable but non-trivial for mobile deployments. Later schemes (OnionPIR) address this.
 
-[^39]: Section 7.1, p. 11.
+[^39]: Section 1, p. 1: "SealPIR introduces between 11% and 24% CPU overhead to the server (over XPIR)."
 [^40]: Section 7.2.1, p. 11.
 
 <a id="open-problems-section-8-p-14"></a>

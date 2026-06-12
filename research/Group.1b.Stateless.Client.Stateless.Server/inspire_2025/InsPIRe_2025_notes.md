@@ -281,8 +281,8 @@ The noise analysis tracks sub-Gaussian parameters through three sources, combine
 | Query size | (N/t)*log_2(q) + (d*ell_ks + 4*ell_gsw*d + 2*d)*log_2(q) | 196 KB upload (query) + 84 KB upload (keys) | Online |
 | Response size | 2*d*log_2(q) | 12 KB | Online |
 | Total communication | d*ell_ks*log_2(q) + (N/t)*log_2(q) + 4*ell_gsw*d*log_2(q) + 2*d*log_2(q) (Theorem 12) | 292 KB | Online |
-| Server computation | O(N*d + t*ell_ks*d^2 + t*ell_gsw*d*lg(d)) online | 960 ms (online server time) | Online |
-| Throughput | -- | 1006 MB/s (1 GB, 64 B entry) | Online |
+| Server computation | O(N*d + t*ell_ks*d^2 + t*ell_gsw*d*lg(d)) online | 400 ms (online server time) | Online |
+| Throughput | -- | 2530 MB/s (1 GB, 64 B entry) | Online |
 
 #### FHE-specific metrics
 
@@ -318,7 +318,7 @@ The noise analysis tracks sub-Gaussian parameters through three sources, combine
 
 | Scheme | d | log_2(q) | sigma_chi | p | ell_KS | ell_GSW | z_KS | z_GSW |
 |--------|---|----------|-----------|---|--------|---------|------|-------|
-| InsPIRe_0 (ring 1) | 1024 | 32 | 6.4 | 256 | 3 | -- | -- | -- |
+| InsPIRe_0 (ring 1) | 1024 | 32 | 6.4 | 256 | -- | -- | -- | -- |
 | InsPIRe_0 (ring 2) | 2048 | 56 | 6.4 | 8192 | 3 | -- | 2^19 | -- |
 | InsPIRe^(2) | 2048 | 53 | 6.4 | 65536 | 3 | -- | 2^19 | -- |
 | InsPIRe | 2048 | 56 | 6.4 | 65535 | 3 | 3 | 2^19 | 2^19 |
@@ -332,33 +332,33 @@ Security: 128-bit, based on lattice-estimator [2] with correctness parameter del
 | Metric | YPIR | SimpleYPIR | KSPIR | HintlessPIR | InsPIRe_0 | InsPIRe^(2) | InsPIRe |
 |--------|------|-----------|-------|-------------|-----------|-------------|---------|
 | Upload (Keys) | 462 KB | 462 KB | 2352 KB | 360 KB | 84 KB | 80 KB | 84 KB |
-| Upload (Query) | 384 KB | 112 KB | 14 KB | 512 KB | 106 KB | 113 KB | 140 KB |
-| Download | 12 KB | 52 KB | 52 KB | 3316 KB | 36 KB | 52 KB | 12 KB |
-| Total Comm | 858 KB | 626 KB | 2418 KB | 4188 KB | 226 KB | 245 KB | 236 KB |
-| Server Time | 148 ms | 148 ms | 780 ms | 470 ms | 320 ms | 480 ms | 280 ms |
-| Throughput | 7420 MB/s | 7420 MB/s | 1390 MB/s | 2310 MB/s | -- | 2880 MB/s | 3620 MB/s |
+| Upload (Query) | 384 KB | 112 KB | 14 KB | 128 KB | 384 KB | 113 KB | 140 KB |
+| Download | 12 KB | 228 KB | 224 KB | 1748 KB | 36 KB | 52 KB | 12 KB |
+| Total Comm | 858 KB | 802 KB | 2590 KB | 2236 KB | 504 KB | 244 KB | 236 KB |
+| Server Time | 140 ms | 600 ms | 780 ms | 750 ms | 120 ms | 440 ms | 650 ms |
+| Throughput | 7420 MB/s | 1720 MB/s | 1310 MB/s | 1370 MB/s | 8750 MB/s | 2310 MB/s | 1580 MB/s |
 
 #### Table 3: 64 B entries (selected rows, 1 GB = 2^24 x 64 B)
 
-| Metric | YPIR | SimpleYPIR | KSPIR | HintlessPIR | InsPIRe^(2) (selected) | InsPIRe |
-|--------|------|-----------|-------|-------------|----------------------|---------|
-| Upload (Keys) | 462 KB | 462 KB | 2352 KB | 360 KB | 80 KB | 84 KB |
-| Upload (Query) | 384 KB | 112 KB | 14 KB | 128 KB | 109 KB | 196 KB |
-| Download | 12 KB | 228 KB | 224 KB | 1748 KB | 52 KB | 12 KB |
-| Total Comm | 858 KB | 802 KB | 2590 KB | 2236 KB | 241 KB | 292 KB |
-| Server Time | 600 ms | 600 ms | 780 ms | 750 ms | 360 ms | 280 ms |
-| Throughput | 1720 MB/s | 1720 MB/s | 1310 MB/s | 1370 MB/s | 2880 MB/s | 3620 MB/s |
+| Metric | SimpleYPIR | KSPIR | HintlessPIR | InsPIRe^(2) (selected) | InsPIRe |
+|--------|-----------|-------|-------------|----------------------|---------|
+| Upload (Keys) | 462 KB | 2352 KB | 360 KB | 80 KB | 84 KB |
+| Upload (Query) | 112 KB | 14 KB | 128 KB | 109 KB | 196 KB |
+| Download | 228 KB | 224 KB | 1748 KB | 52 KB | 12 KB |
+| Total Comm | 802 KB | 2590 KB | 2236 KB | 241 KB | 292 KB |
+| Server Time | 600 ms | 780 ms | 750 ms | 470 ms | 400 ms |
+| Throughput | 1720 MB/s | 1310 MB/s | 1370 MB/s | 2200 MB/s | 2530 MB/s |
 
 #### Table 4: 32 KB entries (selected rows, 1 GB = 2^15 x 32 KB)
 
-| Metric | YPIR | SimpleYPIR | KSPIR | HintlessPIR | InsPIRe^(2) (selected) | InsPIRe |
-|--------|------|-----------|-------|-------------|----------------------|---------|
-| Upload (Keys) | 462 KB | 462 KB | 360 KB | 128 KB | 84 KB | 84 KB |
-| Upload (Query) | 112 KB | 112 KB | 14 KB | 128 KB | 112 KB | 196 KB |
-| Download | 228 KB | 888 KB | 224 KB | 6452 KB | 96 KB | 96 KB |
-| Total Comm | 802 KB | 1462 KB | 598 KB | 6708 KB | 292 KB | 376 KB |
-| Server Time | 600 ms | 600 ms | 780 ms | 750 ms | 640 ms | 410 ms |
-| Throughput | 1720 MB/s | 1720 MB/s | 1310 MB/s | 1370 MB/s | 1600 MB/s | 2500 MB/s |
+| Metric | SimpleYPIR | KSPIR | HintlessPIR | InsPIRe |
+|--------|-----------|-------|-------------|---------|
+| Upload (Keys) | 462 KB | 2352 KB | 360 KB | 84 KB |
+| Upload (Query) | 112 KB | 14 KB | 128 KB | 196 KB |
+| Download | 228 KB | 224 KB | 1748 KB | 96 KB |
+| Total Comm | 802 KB | 2590 KB | 2236 KB | 376 KB |
+| Server Time | 600 ms | 780 ms | 750 ms | 410 ms |
+| Throughput | 1720 MB/s | 1310 MB/s | 1370 MB/s | 2500 MB/s |
 
 #### Ring packing benchmark (Table 5, p.22): Packing 2^12 LWE ciphertexts
 
@@ -440,14 +440,14 @@ Chrome OS device enrollment checks membership in a server-held database. InsPIRe
 
 **1 GB database, 64 B entries (Table 3):**
 
-| Metric | InsPIRe | YPIR | KSPIR | HintlessPIR | SimpleYPIR |
-|--------|---------|------|-------|-------------|-----------|
-| Total Comm | **292 KB** | 858 KB | 598 KB | 2004 KB | 802 KB |
-| Server Time | **280 ms** | 600 ms | 780 ms | 750 ms | 600 ms |
-| Throughput | **3620 MB/s** | 1720 MB/s | 1310 MB/s | 1370 MB/s | 1720 MB/s |
-| Upload Keys | 84 KB | 462 KB | 360 KB | 128 KB | 462 KB |
+| Metric | InsPIRe | KSPIR | HintlessPIR | SimpleYPIR |
+|--------|---------|-------|-------------|-----------|
+| Total Comm | **292 KB** | 2590 KB | 2236 KB | 802 KB |
+| Server Time | **400 ms** | 780 ms | 750 ms | 600 ms |
+| Throughput | **2530 MB/s** | 1310 MB/s | 1370 MB/s | 1720 MB/s |
+| Upload Keys | 84 KB | 2352 KB | 360 KB | 462 KB |
 
-**Key takeaway:** InsPIRe simultaneously achieves the lowest total communication (67% less than YPIR, 51% less than KSPIR) and the highest throughput (2.1x over YPIR) among all CRS-model and hintless PIR schemes, without any offline communication. For 1-bit entries, InsPIRe_0 achieves even lower communication (226 KB) and faster server time (320 ms). The only scenario where InsPIRe is outperformed is when minimizing only server runtime for 1-bit entries (where InsPIRe_0 with its simpler DoublePIR-based structure may be preferred).&#8201;[^33]
+**Key takeaway:** InsPIRe simultaneously achieves the lowest total communication (~64% less than SimpleYPIR — 292 vs 802 KB — and ~89% less than KSPIR) and the highest throughput (~1.47x over SimpleYPIR, 2530 vs 1720 MB/s) among all CRS-model and hintless PIR schemes, without any offline communication. (Table 3 benchmarks no YPIR at 64 B; SimpleYPIR is the closest comparator.) For 1-bit entries, InsPIRe_0 achieves even lower communication (504 KB) and faster server time (120 ms). The only scenario where InsPIRe is outperformed is when minimizing only server runtime for 1-bit entries (where InsPIRe_0 with its simpler DoublePIR-based structure may be preferred).&#8201;[^33]
 
 [^33]: Section 7.3 (p.21): "In summary, InsPIRe strictly improves over existing PIR schemes with server-side preprocessing, and may also be parameterized to optimize specific metrics such as communication."
 

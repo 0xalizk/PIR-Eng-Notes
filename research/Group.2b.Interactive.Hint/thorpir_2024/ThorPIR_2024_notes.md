@@ -94,8 +94,8 @@ ThorPIR is a single-server client-preprocessing PIR scheme achieving sublinear o
 | **Name** | Theorem 3.2 (Improved Thorp Shuffle Bound) |
 | **Type** | Theoretical result |
 | **Statement** | For N = 2^n, after t rounds of Thorp Shuffle, any adaptive q-query unbounded adversary has advantage at most (2q(4n+t)/(4n-4)) * (4qn/N)^{t/(4(n-2))} over a random permutation. |
-| **Improvement over prior** | Reduces the number of required rounds by ~2.5x compared to Morris et al. [72], which had advantage bound 2q(4n+t)/(4n-4) * (4qn/N)^{t/(4(n-2))} (Section 2.5, p.11). The improvement comes from tightening the coupling argument, increasing the coupling probability per round by more than half compared to [72]. |
-| **Proof technique** | Refined Markov chain coupling argument. Identifies two new "convergence opportunities" where pair processes can match, increasing the coupling probability per round by more than half compared to [72]. |
+| **Improvement over prior** | Reduces the number of required rounds by ~2.5x compared to Morris et al. [72], which had advantage bound 2q(4n+t)/(4n-4) * (4qn/N)^{t/(4(n-2))} (Section 2.5, p.11). The improvement comes from tightening the coupling argument, increasing the per-round coupling probability and thereby reducing the number of shuffle steps needed by more than half compared to [72]. |
+| **Proof technique** | Refined Markov chain coupling argument. Identifies two new "convergence opportunities" where pair processes can match, increasing the per-round coupling probability and thereby reducing the number of shuffle steps needed by more than half compared to [72]. |
 
 ---
 

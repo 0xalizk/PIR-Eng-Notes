@@ -273,7 +273,7 @@ Given set S = X x Y x Z and point (x,y,z) in S, Resample(S, (x,y,z)) produces S'
 
 #### Adaptive Correctness Upgrade (Appendix A)
 
-The paper introduces a novel technique using hint-specific permutations to achieve adaptive correctness. Each hint entry stores (S, pi) where pi is a special-purpose random permutation over {0,...,n-1}^3 defined by a random vector r in GF(2^k)^{3x3} (where k = log(n)/3). The permutation pi_r(v) = Rv is a GF(2^k)-linear map, which can be described in O(1) field elements (Õ(1) bits).&#8201;[^21]
+The paper introduces a novel technique using hint-specific permutations to achieve adaptive correctness. Each hint entry stores (S, pi) where pi is a special-purpose random permutation over {0,...,n^{1/3}-1}^3 (i.e. GF(2^k)^3, with k = log(n)/3) defined by a random vector r = (r1,r2,r3) in GF(2^k)^3 (with r3 != 0). The permutation pi_r(v) = Rv is a GF(2^k)-linear map, where R in GF(2^k)^{3x3} is the invertible matrix built from r; it can be described in O(1) field elements (Õ(1) bits).&#8201;[^21]
 
 [^21]: Appendix A.3 (p.35): The permutation pi_r maps (x_0, y_0, z_0) to (x, y, z) via an invertible 3x3 matrix R over GF(2^k), achieving the key property that for distinct v != v', the probability Pr_r[x = x'] <= 1/(n^{1/3}-1) for each coordinate.
 
@@ -319,10 +319,10 @@ The key property: for distinct points v, v', if (x,y,z) = pi_r(v) and (x',y',z')
 | Response size (online bandwidth) | O_tilde(n^{1/3}) | N/A (no implementation) | Online |
 | Server computation | O_tilde(n^{2/3}) | N/A (no implementation) | Online |
 | Client computation | O_tilde(n^{1/2}) | N/A (no implementation) | Online |
-| Offline bandwidth | Not explicitly stated in theorem (see [^25]) | N/A (no implementation) | Per query (amortized) |
+| Offline bandwidth | O_tilde(n^{1/6}) | N/A (no implementation) | Per query (amortized) |
 | Client space | O_tilde(n^{2/3}) | N/A (no implementation) | -- |
 
-[^25]: Theorem B.1 (p.39): The 2-server variant offloads preprocessing to the left server, maintaining O_tilde(n^{1/3}) online bandwidth.
+[^25]: Theorem B.1 (2-server preprocessing PIR for unbounded queries) and intro Theorem 1.5: each query takes O~(n^{1/3}) online bandwidth, O~(n^{1/6}) offline bandwidth, O~(n^{1/2}) client computation, O~(n^{2/3}) server computation; the 2-server variant offloads preprocessing to the left server.
 
 #### Preprocessing Characterization
 

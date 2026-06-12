@@ -203,7 +203,7 @@ Security games (Fig. 1, p. 5): correctness `G^{Corr-APIR}`, integrity `G^{Int-AP
 | Client-side offline runtime | `O(N)` | Hint computation matches SinglePass (the dominant cost is XOR over `N` records) | Offline |
 | Client persistent storage | `O(M · ℓ_r) + O(Q · \|σ\|)` | `M = √N` hint slots + `Q` permutations stored as Knuth-shuffle data | Persistent |
 
-[^29]: Table 1 (p. 11), row for `N = 2^{20}`, record size 32 B. The "Offline RT (1-Time)" column reads TAPIR-MT = **1.45 s** and TAPIR-PP = **105 304.90 s** — the two variants differ by ~70 000×, not "essentially identical": Pointproofs one-time digest generation is the bottleneck for TAPIR-PP and is what forces the omission of TAPIR-PP for `N > 2^{22}` (Table 1 caption: "omitted due to high to high Pointproofs setup costs"). The 75 852.05 / 75 938.00 figures are the **Offline BW (kiB)** column at the same `N`, not RT.
+[^29]: Table 1 (p. 11), row for `N = 2^{20}`, record size 32 B. The "Offline RT (1-Time)" column reads TAPIR-MT = **1.45 s** and TAPIR-PP = **105 304.90 s** — the two variants differ by ~70 000×, not "essentially identical": Pointproofs one-time digest generation is the bottleneck for TAPIR-PP and is what forces the omission of TAPIR-PP for `N > 2^{22}` (Table 1 caption: "omitted due to high Pointproofs setup costs"). The 75 852.05 / 75 938.00 figures are the **Offline BW (kiB)** column at the same `N`, not RT.
 [^30]: §6.2 (p. 12): "the client-dependent offline runtime of TAPIR does not depend on the selected vector commitment scheme … this offline runtime is up to 8× higher for N = 2^{24} due to the setup time" relative to SinglePass. Table 1 (p. 11) "Offline RT (Per-Client)" column at `N = 2^{20}`: TAPIR-MT = 0.02 s; TAPIR-PP = 0.05 s.
 
 #### Update metrics
@@ -277,10 +277,10 @@ Security games (Fig. 1, p. 5): correctness `G^{Corr-APIR}`, integrity `G^{Int-AP
 | `2^{24}` | TAPIR-MT       | 1 212 720.05 | 22.14      | 7.65               | 3 662.97  | 0.12      |
 | `2^{24}` | SinglePass     | 148.03    | 0.00          | 0.96               | 279.51    | 0.01      |
 
-Note: TAPIR-PP and APIR-Matrix-PP omitted for `N > 2^{22}` due to "high to high Pointproofs setup costs."&#8201;[^40]
+Note: TAPIR-PP and APIR-Matrix-PP omitted for `N > 2^{22}` due to "high Pointproofs setup costs."&#8201;[^40]
 
 [^39]: §6 (p. 11): "Our protocol is implemented in Go, utilizing and adapting existing libraries for Merkle trees and Pointproofs. … We compare our approach against the two-server APIR schemes of [CNC+23] (denoted APIR-DPF and APIR-Matrix), and we compare our scheme to SinglePass [LP24]." §6.1 (p. 11): hardware spec.
-[^40]: Table 1 caption (p. 11): "Results for APIR-Matrix-PP and TAPIR-PP (N > 2^{22}) are omitted due to high to high Pointproofs setup costs."
+[^40]: Table 1 caption (p. 11): "Results for APIR-Matrix-PP and TAPIR-PP (N > 2^{22}) are omitted due to high Pointproofs setup costs."
 
 **Online comparison (from §6.3 + Fig. 8, p. 12):** for `N ≥ 2^{20}`, TAPIR-MT is the fastest APIR scheme online, outperforming APIR-Matrix-MT and APIR-DPF by up to **5.83×** and **23.82×** respectively. TAPIR-MT online BW is 13.11× SinglePass at `N = 2^{20}` (worst); TAPIR-PP online BW is 0.11% over SinglePass at `N = 2^{22}` (best).
 

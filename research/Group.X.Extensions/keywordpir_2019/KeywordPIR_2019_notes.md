@@ -66,9 +66,9 @@ Finally, the paper introduces **keyword PIR** for sparse databases via two hashi
 
 | Approach | Paradigm | Upload (kB) | Download (kB) | Server Time (ms) | Server Cost (US cents) | Best For |
 |----------|----------|-------------|---------------|-------------------|----------------------|----------|
-| **SealPIR [5]** (d=2) | Additive HE (FV/BFV) | 61.4 | 307 | 1,185 (Expand+Response) | 0.0040 | Moderate entries, bandwidth-constrained settings |
+| **SealPIR [5]** (d=2) | Additive HE (FV/BFV) | 61.4 | 307 | 1,165 (Expand+Response) | 0.0033 | Moderate entries, bandwidth-constrained settings |
 | **Optimized SealPIR** (d=2) | Additive HE (FV/BFV) | 15.4 | 128 | 884 (Expand+Response) | 0.0028 (approximate) | Same as SealPIR but with better communication |
-| **MulPIR** (d=2) | Somewhat HE (FV multiplicative) | 119 | 119 | 1,174 (Expand+Response) | 0.0026 | Large entries (8kB+); balanced upload/download&#8201;[^8] |
+| **MulPIR** (d=2) | Somewhat HE (FV multiplicative) | 119 | 119 | 2,310 (Expand+Response) | 0.0026 | Large entries (8kB+); balanced upload/download&#8201;[^8] |
 | **Gentry-Ramzan** (1 gen.) | Number-theoretic (CRT + discrete log) | 0.5 | 1.3 | 54,125 (Setup+Response) | 0.0145 | Minimal communication; small DB; cost-insensitive&#8201;[^9] |
 | **Client-Aided GR** (50 gen.) | Number-theoretic (CRT + Straus multi-exp) | 13.1 | 1.3 | 6,654 (Setup+Response) | 0.0011 | Small entries; client willing to precompute&#8201;[^10] |
 | **ElGamal** | Additive HE (NIST P-224r1) | 280 | 8 | 55,044 (Setup+Response) | 0.0091 | Baseline comparison only |
@@ -140,7 +140,7 @@ All values from Table 5 (p. 13) for the 1MB database (5,000 elements of 288B) wi
 | Setup (offline) | Server | Encode database D via CRT: compute E such that E = D_i mod pi_i; use fast modular interpolation (Borodin-Moenck, Õ(n log^2 n))&#8201;[^21] | -- | One-time; reusable across queries if DB unchanged |
 | Query | Client | Generate safe primes Q_1, Q_2; compute m = Q_1 * Q_2; sample generator g of appropriate subgroup | (m, g) sent to server: 3 * λ_GR bits&#8201;[^22] | Client must generate large primes (expensive) |
 | Response | Server | Compute g' = g^E mod m (modular exponentiation with exponent E) | g' in Z_m*: single group element | Server computation dominates |
-| Extract | Client | Compute h = g'^{q_2}, h' = g'^{q_1*q_2}; solve for d via Pohlig-Hellman in Z_{pi_k} | -- | DLP in small subgroup is efficient |
+| Extract | Client | Compute h = g^{q_1*q_2}, h' = g'^{q_1*q_2}; solve h' = h^d for d via Pohlig-Hellman in the order-pi_k subgroup | -- | DLP in small subgroup is efficient |
 
 #### Client-Aided Gentry-Ramzan (Section 4.3)
 
@@ -274,7 +274,7 @@ For large entries, MulPIR reduces communication of SealPIR by 7x at similar comp
 | Scheme | # chunks | Upload (kB) | Download (kB) | S.Setup (ms) | S.Respond (ms) | Server Cost (US cents) |
 |--------|----------|-------------|---------------|-------------|----------------|----------------------|
 | MulPIR | 100 | 79.4 | 1,385 | 88,815 | 34,388 | **0.0417** |
-| Client-Aided GR (50 gen.) | 4,955 | 13.1 | 1,259 | 1,347,036 | 28,684 | 0.0016 (approximate) |
+| Client-Aided GR (50 gen.) | 4,955 | 13.1 | 1,259 | 1,347,036 | 28,684 | 1.4782 |
 | Damgard-Jurik (s=1) | 1,060 | 2,960 | 614 | approximately 80,000 | approximately 3,200 | 11.7451 |
 | ElGamal | 76,800 | 280 | 4,300 | approximately 300 | approximately 88,800 | 1.4338 |
 
@@ -321,11 +321,11 @@ The server rewrites the exponent E in base b >= 2: E = E_0 + E_1*b + E_2*b^2 + .
 
 Standard PIR assumes dense indices [1, n], but many real-world databases are *sparse*: the database has |D| elements indexed by keys from a much larger domain. Keyword PIR aims for server computation proportional to |D|, not the domain size.&#8201;[^39]
 
-#### Construction 1: Simple Hashing
+#### Simple Hashing (warm-up)
 
 Server selects hash function H mapping keys to m bins. Each database element (i, d) is placed in bin H(i). Client queries for key i by running PIR on the bucket at H(i). Bucket size grows as O(|D| / m), which works well with MulPIR (large plaintext space absorbs large buckets) but poorly with Gentry-Ramzan (which wants small plaintexts).
 
-#### Construction 2: Cuckoo Hashing
+#### Construction 1: Cuckoo Hashing
 
 Server builds a cuckoo hash table with kappa hash functions, guaranteeing each element is in exactly one of kappa possible locations. Table size is proportional to |D| with constant multiplicative overhead. Client makes kappa PIR queries (one per hash function). This construction ensures each bucket contains at most one element, making it ideal for Gentry-Ramzan (small plaintext) and enabling CRT batching of the kappa queries into a single Gentry-Ramzan query.&#8201;[^40]
 
@@ -342,8 +342,8 @@ Server builds a cuckoo hash table with kappa hash functions, guaranteeing each e
 | Upload (kB) | 14 | 280 | 1,480 | 0.5 | 13.1 |
 | Download (kB) | 21 | 8 | 0.6 | 1.3 | 1.3 |
 | Total comm. (kB) | 35 | 288 | 1,480.6 | 1.8 | 14.4 |
-| S.Setup (ms) | 39 | 29 | 40,636 | 1,532 | 1,594 |
-| S.Respond (ms) | 3,910 | 893 | 20,710 | 51,803 | 2,988 |
+| S.Setup (ms) | 39 | 29 | 2 | 1,532 | 1,594 |
+| S.Respond (ms) | 3,910 | 10,105 | 20,710 | 51,803 | 2,988 |
 | Server Cost (US cents) | **0.0019** | 0.0091 | 0.0382 | 0.0145 | **0.0011** |
 
 Key findings: Client-Aided GR (50 generators) achieves the lowest server cost for small entries. MulPIR achieves the best server cost among HE-based schemes. Damgard-Jurik and ElGamal are significantly slower on the client side.&#8201;[^41]

@@ -327,7 +327,7 @@ The paper identifies three open problems, framed as intermediate steps toward LW
 
 [^24]: Corollary 3.1 (p. 11): "Under the LWE with polynomial modulus-to-noise ratio assumption, there exists a keyed DEPIR scheme with public preprocessing in the standard model, achieving the same efficiency stated in Theorem 3.1."
 
-[^25]: Section 1 (p. 2): "This remains essentially the only known construction to date, and realizing DEPIR from alternative foundations, particularly from plain LWE, has remained elusive."
+[^25]: Abstract (p. 1): "This remains essentially the only known construction to date, and realizing DEPIR from alternative foundations, particularly from plain LWE, has remained elusive."
 
 [^26]: Section 1.2 — Role of the CRS (p. 3): "As n = polylog(N), computing D-hat * A online would nullify the O(log^2 N)-factor savings afforded by [Wil07]. Therefore, we follow SimplePIR and treat A as a CRS."
 

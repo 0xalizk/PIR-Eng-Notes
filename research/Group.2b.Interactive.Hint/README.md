@@ -47,7 +47,7 @@
 | Response size | O(w) -- constant (two-server); O(w) per query (single-server) | 64 bytes (two parities, w=32) | Online |
 | Server computation | O(sqrt(N)) | 2.7 ms (two-server); 2.7 ms online (single-server) | Online |
 | Client computation | O(sqrt(N)) | < 1 ms (finding hint + subset construction) | Online |
-| Response overhead | 2x insecure baseline (two-server); 4x (single-server) | 2x (two-server); 4x (single-server) | -- |
+| Response overhead | 4x insecure baseline (two-server); O(sqrt(N)/λ) (single-server) | 4x (two-server); O(sqrt(N)/λ) (single-server) | -- |
 
 #### IshaiShiWichs (2024)
 
@@ -91,3 +91,18 @@ Construction 2: Sublinear Server Computation (Theorem 4.4/A.3)
 | Server computation | O(T) accesses to w-bit entries | N/A (no implementation) | Online |
 | Client computation | O(T) XORs of w-bit entries + O(T) small-domain PRP calls | N/A (no implementation) | Online |
 | Amortized communication | O(Tw + T log n) bits per query | N/A (no implementation) | Online + amortized preprocessing |
+
+#### ThorPIR (2024)
+
+| Metric | Asymptotic | Phase |
+|--------|-----------|-------|
+| Preprocessing depth | O_λ(1) | Offline |
+| Offline bandwidth | O(N^{2/3}) | Offline |
+| Preprocessing time (client) | O_λ(N) (decryption) | Offline |
+| Preprocessing time (server) | O_λ(N) (FHE computation) | Offline |
+| Online query + answer time (client) | O_λ(Q) | Online |
+| Online bandwidth | O(N^{1/3}) per query | Online |
+| Online server time | O(Q) per query | Online |
+| # queries per epoch | N^{1/3} (for Q = T = N^{1/3}) | -- |
+| Client storage | O(N^{2/3}) | Persistent |
+| Update time | O_λ(1) per element update | Online |

@@ -183,7 +183,7 @@ Security is parameterized via the Hermite factor gamma. The feasibility boundary
 | Scheme | BW Complexity | alpha (d=5) | alpha (d=4) | alpha (d=3) | Query (d=5) | Query (d=4) | Query (d=3) |
 |--------|-------------|------------|------------|------------|------------|------------|------------|
 | Boneh-Goh-Nissim | alpha sqrt(N) | 6144 | 6144 | 6144 | 96 MB | 384 KB | 24 KB |
-| Kushilevitz-Ostrovsky | alpha sqrt(N) | 2048 | 2048 | 2048 | 32 MB | 128 KB | 8 KB |
+| Kushilevitz-Ostrovsky | alpha N | 2048 | 2048 | 2048 | 32 MB | 128 KB | 8 KB |
 | **Ours (Single)** | **alpha log N** | **8388608** | **2047500** | **655360** | **32 MB** | **249 KB** | **80 KB** |
 | **Ours (Bundled)** | **alpha log N** | **8192** | **3250** | **2560** | **32 KB** | **406 B** | **320 B** |
 
