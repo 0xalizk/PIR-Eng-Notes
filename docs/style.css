@@ -897,6 +897,84 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
   font-style: italic;
   font-weight: 400;
 }
+/* Disabled section card (e.g. InsPIRe — coming soon) */
+.section-card.is-disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.section-card.is-disabled:hover {
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+/* Non-clickable sidebar placeholder child */
+.nav-coming-soon-item {
+  display: block;
+  padding: 6px 20px 6px 48px;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* ── Embedded scheme page (full-screen iframe + back bar) ── */
+body.embed-page {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.embed-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+  flex: 0 0 auto;
+}
+.embed-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.embed-back:hover {
+  background: var(--bg-alt);
+  border-color: var(--link);
+  text-decoration: none;
+}
+.embed-back-arrow {
+  font-size: 18px;
+  line-height: 1;
+}
+.embed-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.embed-external {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--link);
+  text-decoration: none;
+}
+.embed-external:hover {
+  text-decoration: underline;
+}
+.embed-frame {
+  flex: 1 1 auto;
+  width: 100%;
+  border: 0;
+}
 
 
 /* ── Page Navigation Tiles ──────────────────────────────── */

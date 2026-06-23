@@ -4,7 +4,7 @@
 
   // Detect base path: works on both GitHub Pages (/PIR-Eng-Notes/) and local dev (/)
   var BASE = '/PIR-Eng-Notes/';
-  var knownDirs = ['reported/communication/', 'reported/server/', 'reported/client/', 'reported/offline/', 'reported/extensions/', 'reported/misc/', 'reported/pareto/', 'reported/db_config.html', 'reported/data_sources.html', 'reported/', 'replicated/', 'standardized/', 'misc/'];
+  var knownDirs = ['reported/communication/', 'reported/server/', 'reported/client/', 'reported/offline/', 'reported/extensions/', 'reported/misc/', 'reported/pareto/', 'reported/db_config.html', 'reported/data_sources.html', 'reported/', 'featured/via/', 'featured/', 'misc/'];
   var p = location.pathname;
   for (var i = 0; i < knownDirs.length; i++) {
     var idx = p.indexOf(knownDirs[i]);
@@ -52,14 +52,12 @@
       ]
     },
     {
-      label: 'Replicated',
-      path: 'replicated/',
-      children: []
-    },
-    {
-      label: 'Standardized',
-      path: 'standardized/',
-      children: []
+      label: 'Featured Schemes',
+      path: 'featured/',
+      children: [
+        { label: 'VIA Scheme', href: 'featured/via/' },
+        { label: 'InsPIRe Scheme', comingSoon: true }
+      ]
     },
     {
       label: 'Misc',
@@ -116,7 +114,11 @@
     html += '<div class="nav-submenu' + (isUnderSection ? ' open' : '') + '">';
     if (hasChildren) {
       sec.children.forEach(function (child) {
-        if (child.children) {
+        if (child.comingSoon) {
+          // Non-clickable placeholder (e.g. InsPIRe Scheme)
+          html += '<span class="nav-coming-soon-item">' + child.label + ' &middot; soon</span>';
+          if (child.dividerAfter) html += '<div class="divider"></div>';
+        } else if (child.children) {
           // Item with its own sub-page (e.g. Pareto)
           var childPageUrl = BASE + child.href;
           var isOnChildPage = path.indexOf(child.href) === 0;

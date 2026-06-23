@@ -1,6 +1,6 @@
 /* ── PIR Engineering Notes — charts.js ────────────────────────────────
  *
- * Main visualization engine for the "Benching PIR (WIP)" site.
+ * Main visualization engine for the "PIR Benchs & Docs" site.
  * Renders all Plotly charts from data/reported.json (v2 schema).
  *
  * ── Architecture Overview ──────────────────────────────────────────

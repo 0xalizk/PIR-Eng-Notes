@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PIR Benchs & Docs — Featured Schemes</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="../style.css" />
+    </head>
+    <body>
+        <!-- Hamburger (mobile) -->
+        <button class="hamburger" aria-label="Menu">&#9776;</button>
+        <div class="sidebar-overlay"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="../" class="sidebar-title">PIR Benchs & Docs</a>
+            <nav id="sidebar-nav"></nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <section>
+                <h2>Featured Schemes</h2>
+                <p class="desc">
+                    Interactive, embedded explorations of select PIR scheme
+                    implementations.
+                </p>
+
+                <div class="section-cards">
+                    <a href="via/" class="section-card">
+                        <h3>VIA Scheme</h3>
+                        <p>
+                            Interactive walkthrough of the VIA single-server PIR
+                            implementation.
+                        </p>
+                        <span class="card-status">Explore &rarr;</span>
+                    </a>
+                    <div class="section-card is-disabled" aria-disabled="true">
+                        <h3>InsPIRe Scheme</h3>
+                        <p>
+                            Interactive walkthrough of the InsPIRe scheme
+                            implementation.
+                        </p>
+                        <span class="card-status coming-soon-label"
+                            >Coming soon..</span
+                        >
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script src="../nav.js"></script>
+        <script src="../script.js"></script>
+    </body>
+</html>
